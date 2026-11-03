@@ -1,0 +1,3130 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10101e">
+  <meta name="description" content="Advanced Topics and Emerging Technologies in Agentic AI">
+  <title>Advanced Topics and Emerging Technologies | فصل ۱۲ — M_Ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --purple: #9275f5;
+      --purple-strong: #7657e8;
+      --cyan: #51cbdc;
+      --green: #49c9a3;
+      --radius: 18px;
+      --transition: .28s ease;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #10101e;
+      --bg-secondary: #151529;
+      --surface: #1b1b32;
+      --surface-hover: #242440;
+      --surface-soft: rgba(255, 255, 255, .045);
+      --text: #f5f3ff;
+      --text-secondary: #c3c1d5;
+      --muted: #9695ae;
+      --border: rgba(255, 255, 255, .09);
+      --border-strong: rgba(255, 255, 255, .15);
+      --header-bg: rgba(16, 16, 30, .92);
+      --shadow: 0 18px 50px rgba(0, 0, 0, .24);
+      --callout-bg: rgba(146, 117, 245, .1);
+      --callout-border: rgba(146, 117, 245, .45);
+      --tip-bg: rgba(81, 203, 220, .08);
+      --tip-border: rgba(81, 203, 220, .4);
+      --warning-bg: rgba(217, 119, 6, .1);
+      --warning-border: rgba(217, 119, 6, .45);
+      --code-bg: #0c0c18;
+      --code-text: #b8f0d8;
+      --diagram-bg: rgba(146, 117, 245, .1);
+      --diagram-border: rgba(146, 117, 245, .28);
+      --table-head: rgba(146, 117, 245, .12);
+      --table-alt: rgba(255, 255, 255, .03);
+      --tag-bg: rgba(146, 117, 245, .15);
+      --tag-text: #c4b5fd;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .22), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .12), transparent 45%);
+      --progress-track: rgba(255, 255, 255, .08);
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f5fb;
+      --bg-secondary: #eeeefa;
+      --surface: #fff;
+      --surface-hover: #f7f5ff;
+      --surface-soft: rgba(102, 78, 190, .045);
+      --text: #202039;
+      --text-secondary: #55556f;
+      --muted: #77778f;
+      --border: rgba(40, 35, 90, .10);
+      --border-strong: rgba(40, 35, 90, .17);
+      --header-bg: rgba(255, 255, 255, .92);
+      --shadow: 0 18px 50px rgba(45, 35, 100, .09);
+      --callout-bg: #f5f3ff;
+      --callout-border: #6658e8;
+      --tip-bg: #f0fdfa;
+      --tip-border: #0d9488;
+      --warning-bg: #fffbeb;
+      --warning-border: #d97706;
+      --code-bg: #111827;
+      --code-text: #d1fae5;
+      --diagram-bg: #eef2ff;
+      --diagram-border: #c7d2fe;
+      --table-head: #f3f4f6;
+      --table-alt: #fafafa;
+      --tag-bg: #ede9fe;
+      --tag-text: #5b21b6;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .15), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .1), transparent 45%);
+      --progress-track: rgba(40, 35, 90, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+      transition: background .35s, color .35s;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--progress-track);
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      z-index: 200;
+    }
+    #progress {
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      transition: width .1s linear;
+    }
+
+    /* HEADER */
+    .site-header {
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--header-bg);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(146, 117, 245, .24);
+    }
+    .site-header::after {
+      content: "";
+      position: absolute;
+      bottom: -1px; right: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent 3%, rgba(81, 203, 220, .35) 25%, rgba(146, 117, 245, .85) 50%, rgba(81, 203, 220, .35) 75%, transparent 97%);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      direction: ltr;
+      flex-shrink: 0;
+    }
+    .brand-mark {
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #a58cff, #6848df);
+      box-shadow: 0 4px 18px rgba(118, 87, 232, .28), inset 0 1px 0 rgba(255,255,255,.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-mark::before {
+      content: "";
+      position: absolute; inset: 1px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 11px;
+    }
+    .brand-mark svg { width: 26px; height: 26px; position: relative; z-index: 1; }
+    .brand-name { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--text); }
+    .brand-name span { color: var(--purple); }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: 12px;
+      display: grid; place-items: center;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    .theme-toggle:hover { border-color: var(--purple); transform: rotate(12deg); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-icon-sun { display: none; }
+    html[data-theme="light"] .theme-icon-moon { display: none; }
+    html[data-theme="light"] .theme-icon-sun { display: block; }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 11px;
+      background: rgba(146, 117, 245, .12);
+      border: 1px solid rgba(146, 117, 245, .32);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .back-home:hover { background: var(--purple); color: #fff; }
+    .back-home svg { width: 15px; height: 15px; }
+
+    /* CHAPTER HERO */
+    .chapter-hero {
+      position: relative;
+      padding: 48px 20px 40px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .chapter-hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--hero-overlay);
+      pointer-events: none;
+    }
+    .chapter-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .chapter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(146, 117, 245, .35);
+      background: rgba(146, 117, 245, .1);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .8px;
+      direction: ltr;
+      margin-bottom: 16px;
+    }
+    .chapter-badge::before {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .chapter-hero h1 {
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 900;
+      line-height: 1.45;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .chapter-hero .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 2.1;
+      max-width: 720px;
+    }
+    .chapter-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .meta-chip {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .meta-chip strong {
+      color: var(--text);
+      font-size: 15px;
+      margin-left: 6px;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    /* LAYOUT */
+    .page-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static !important; order: -1; }
+    }
+
+    /* SIDEBAR TOC */
+    .sidebar {
+      position: sticky;
+      top: 88px;
+    }
+    .toc-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 18px 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.04);
+    }
+    .toc-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-title::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .toc-link {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      transition: .2s;
+      border: 1px solid transparent;
+    }
+    .toc-link:hover {
+      color: var(--text);
+      background: rgba(146, 117, 245, .08);
+      border-color: rgba(146, 117, 245, .2);
+      padding-right: 14px;
+    }
+    .toc-link-strong { color: var(--purple); font-weight: 800; }
+    .toc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+    .print-btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 11px;
+      border-radius: 12px;
+      background: linear-gradient(115deg, #a18aff, #7558e8);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .print-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* MAIN CONTENT SURFACE */
+    .content-area { min-width: 0; }
+
+    .section-card {
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      background: var(--surface) !important;
+      color: var(--text);
+    }
+    .section-number {
+      background: linear-gradient(135deg, #9275f5, #51cbdc) !important;
+      color: white !important;
+    }
+
+    /* Override common Tailwind color utilities for theme */
+    .content-area {
+      color: var(--text);
+    }
+    .content-area .text-slate-800,
+    .content-area .text-slate-700,
+    .content-area .text-slate-900 { color: var(--text) !important; }
+    .content-area .text-slate-500,
+    .content-area .text-slate-400,
+    .content-area .text-slate-600 { color: var(--muted) !important; }
+    .content-area .text-indigo-600,
+    .content-area .text-indigo-700,
+    .content-area .text-indigo-800 { color: var(--purple) !important; }
+    .content-area .bg-white { background: var(--surface) !important; }
+    .content-area .bg-slate-50,
+    .content-area .bg-slate-100,
+    .content-area .hover\:bg-slate-50:hover { background: var(--surface-soft) !important; }
+    .content-area .border,
+    .content-area .border-slate-200,
+    .content-area .border-slate-100 { border-color: var(--border) !important; }
+    .content-area .shadow-sm { box-shadow: 0 6px 24px rgba(0,0,0,.05) !important; }
+
+    .callout {
+      border-right: 4px solid var(--callout-border) !important;
+      background: var(--callout-bg) !important;
+      color: var(--text);
+    }
+    .tip {
+      border-right: 4px solid var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .warning {
+      border-right: 4px solid var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .code {
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .86rem;
+      border: 1px solid var(--border);
+    }
+    .ltr { direction: ltr; text-align: left; }
+    .diagram-box {
+      border: 1px solid var(--diagram-border) !important;
+      background: var(--diagram-bg) !important;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .arrow { color: var(--purple) !important; font-size: 1.5rem; font-weight: 800; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      background: var(--tag-bg) !important;
+      color: var(--tag-text) !important;
+      padding: 3px 10px;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+    .table-wrap { overflow-x: auto; border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td {
+      border: 1px solid var(--border) !important;
+      padding: 12px;
+      text-align: right;
+      vertical-align: top;
+      color: var(--text);
+    }
+    th { background: var(--table-head) !important; font-weight: 800; }
+    tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+    .content-area h2, .content-area h3, .content-area h4 {
+      color: var(--text);
+    }
+    .content-area p, .content-area li { color: var(--text-secondary); }
+    .content-area strong { color: var(--text); }
+
+    .content-area .bg-indigo-50,
+    .content-area .bg-teal-50 { background: var(--surface-soft) !important; }
+    .content-area .border-teal-300 { border-color: var(--diagram-border) !important; }
+    .content-area .text-teal-700 { color: var(--green) !important; }
+    .content-area .text-rose-700 { color: #f87171 !important; }
+    .content-area .text-amber-700 { color: #fbbf24 !important; }
+    .content-area .bg-indigo-700,
+    .content-area .hover\:bg-indigo-800:hover {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+    }
+    .content-area .text-indigo-900 { color: var(--text) !important; }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 2;
+    }
+    .site-footer strong {
+      color: var(--purple);
+      direction: ltr;
+      display: inline-block;
+      font-size: 15px;
+    }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .footer-nav a {
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      transition: .2s;
+    }
+    .footer-nav a:hover {
+      color: var(--purple);
+      border-color: rgba(146,117,245,.4);
+    }
+
+    @media print {
+      .site-header, .sidebar, .progress-bar, .no-print, .theme-toggle, .back-home { display: none !important; }
+      .page-layout { grid-template-columns: 1fr; }
+      .section-card { break-inside: avoid; }
+      body { background: white; color: black; }
+    }
+
+    @media (max-width: 640px) {
+      .chapter-hero { padding: 32px 16px 28px; }
+      .header-inner { padding: 0 14px; }
+      .back-home span.label { display: none; }
+      .page-layout { padding: 18px 14px 40px; }
+    }
+
+
+    .content-area .toc,
+    .content-area .chapter,
+    .content-area .intro-card {
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 17px !important;
+      box-shadow: 0 5px 18px rgba(0,0,0,.04) !important;
+      color: var(--text);
+      padding: 28px !important;
+      margin: 22px 0 !important;
+    }
+    .content-area .chapter h2 {
+      font-size: 1.45rem !important;
+      color: var(--text) !important;
+      border-bottom: 2px solid var(--border) !important;
+      padding-bottom: 13px !important;
+      margin: 0 0 18px !important;
+    }
+    .content-area .chapter h3 {
+      color: var(--purple) !important;
+      font-size: 1.1rem !important;
+      margin: 28px 0 10px !important;
+    }
+    .content-area .chapter h4 {
+      color: var(--text) !important;
+      font-size: 1rem !important;
+      margin: 22px 0 8px !important;
+    }
+    .content-area .lead {
+      font-size: 1.05rem; color: var(--text-secondary) !important; font-weight: 500;
+    }
+    .content-area .callout {
+      border-right: 4px solid var(--callout-border);
+      background: var(--callout-bg);
+      padding: 16px 19px; border-radius: 10px; margin: 20px 0;
+    }
+    .content-area .callout.green {
+      border-color: var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .content-area .callout.orange {
+      border-color: var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .content-area .callout.red {
+      border-color: #b42336 !important;
+      background: rgba(180,35,54,.1) !important;
+    }
+    .content-area .mini-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 17px;
+    }
+    .content-area pre {
+      direction: ltr; text-align: left; white-space: pre-wrap; overflow-wrap: anywhere;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      border-radius: 12px; padding: 19px; overflow-x: auto;
+      font-family: Consolas, monospace; font-size: 13px; line-height: 1.75;
+      margin: 17px 0; border: 1px solid var(--border);
+    }
+    .content-area code {
+      direction: ltr; unicode-bidi: embed;
+      background: rgba(146,117,245,.12) !important;
+      color: var(--purple) !important;
+      padding: 2px 6px; border-radius: 5px; font-size: .92em;
+    }
+    .content-area pre code { background: transparent !important; padding: 0; color: inherit !important; }
+    .content-area .diagram {
+      direction: ltr; text-align: center;
+      background: var(--surface-soft);
+      border: 1px dashed var(--border);
+      border-radius: 12px; padding: 18px; margin: 20px 0;
+      color: var(--text-secondary); font-family: Consolas, monospace;
+      white-space: pre-wrap; line-height: 1.9; overflow-wrap: anywhere;
+    }
+    .content-area .tag {
+      display: inline-block; padding: 2px 9px;
+      background: rgba(146,117,245,.12) !important;
+      color: var(--purple) !important;
+      border-radius: 20px; font-size: 12px; font-weight: 700; margin: 2px;
+    }
+    .content-area .chapter-end {
+      margin-top: 25px; padding-top: 15px;
+      border-top: 1px solid var(--border);
+      color: var(--muted); font-size: 13px;
+    }
+    .content-area th { background: var(--table-head) !important; color: var(--text) !important; }
+    .content-area td { border-color: var(--border) !important; color: var(--text-secondary); }
+    .content-area tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+  </style>
+</head>
+<body>
+  <div class="progress-bar no-print"><div id="progress"></div></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="M_Ai Home">
+        <div class="brand-name"><span>M_Ai</span></div>
+        <div class="brand-mark">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 29V10L15 22L20 15L25 22L35 10V29" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 15V8" stroke="#DDFBFF" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="20" cy="6" r="2.5" fill="#DDFBFF"/>
+          </svg>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="تغییر تم">
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>
+          </svg>
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>
+          </svg>
+        </button>
+        <a href="index.html" class="back-home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/>
+          </svg>
+          <span class="label">صفحه اصلی</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="chapter-hero">
+    <div class="chapter-hero-inner">
+      <div class="chapter-badge">CHAPTER 12 · ADVANCED TOPICS & EMERGING TECHNOLOGIES</div>
+      <h1>Advanced Topics and Emerging Technologies</h1>
+      <p class="subtitle">
+        بررسی عمیق نسل جدید عامل‌های هوشمند؛ از AI Coding Agents و Autonomous Software Engineering
+        تا Computer Use، Deep Research، Voice Agents، Multimodal Agents و آینده سیستم‌های Agentic AI.
+      </p>
+      <div class="chapter-meta">
+        <div class="meta-chip"><strong>11</strong> فصل تخصصی</div>
+        <div class="meta-chip"><strong>12</strong> از ۱۲ فصل</div>
+        <div class="meta-chip"><strong>Emerging</strong></div>
+        <div class="meta-chip"><strong>Future</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-layout">
+    <aside class="sidebar no-print">
+      <div class="toc-card">
+        <div class="toc-title">فهرست مطالب</div>
+        <nav class="toc-nav" id="toc">
+<a class="toc-link toc-link-strong" href="#intro">مقدمه</a>
+<a class="toc-link" href="#ch1">1. AI Coding Agents</a>
+<a class="toc-link" href="#ch2">2. Autonomous Software Engineering</a>
+<a class="toc-link" href="#ch3">3. Computer Use Agents</a>
+<a class="toc-link" href="#ch4">4. Browser Automation Agents</a>
+<a class="toc-link" href="#ch5">5. Deep Research Agents</a>
+<a class="toc-link" href="#ch6">6. Voice Agents</a>
+<a class="toc-link" href="#ch7">7. Multimodal Agents</a>
+<a class="toc-link" href="#ch8">8. Long-running Agents</a>
+<a class="toc-link" href="#ch9">9. Self-improving Agents</a>
+<a class="toc-link" href="#ch10">10. Agentic AI Design Patterns</a>
+<a class="toc-link" href="#ch11">11. Future of Agentic AI</a>
+<div class="toc-divider"></div>
+<a class="toc-link toc-link-strong" href="#summary">جمع‌بندی</a>
+        </nav>
+        <button class="print-btn" type="button" onclick="window.print()">چاپ یا ذخیره PDF</button>
+      </div>
+    </aside>
+
+    <main class="content-area min-w-0">
+
+
+    <section class="intro-card" id="intro">
+      <h2>مقدمه: از مدل زبانی تا عامل هوشمند پیشرفته</h2>
+
+      <p class="lead">
+        نسل جدید هوش مصنوعی فقط برای تولید متن، پاسخ دادن به سؤال یا خلاصه‌سازی اطلاعات طراحی نشده است.
+        سیستم‌های پیشرفته‌تر می‌توانند هدفی را دریافت کنند، آن را به وظایف کوچک‌تر تقسیم کنند،
+        ابزارهای مناسب را انتخاب کنند، محیط را مشاهده کنند، تصمیم بگیرند، اقدام انجام دهند و نتیجه را ارزیابی کنند.
+      </p>
+
+      <p>
+        این تغییر، حرکت از <strong>AI به‌عنوان یک ابزار پاسخ‌گو</strong> به
+        <strong>AI به‌عنوان یک سیستم اجرایی و تصمیم‌گیرنده</strong> است.
+        به چنین سیستم‌هایی معمولاً Agent یا Agentic System گفته می‌شود.
+      </p>
+
+      <p>
+        در یک سیستم Agentic، مدل زبانی می‌تواند نقش مغز تصمیم‌گیرنده را داشته باشد؛
+        اما برای انجام کار واقعی به اجزای دیگری نیز نیاز دارد: حافظه، ابزارها، محیط اجرایی،
+        دسترسی‌های کنترل‌شده، سیستم ارزیابی، مدیریت خطا و سازوکار نظارت انسانی.
+      </p>
+
+      <div class="callout">
+        <strong>نکته کلیدی:</strong>
+        هوشمند بودن یک مدل به‌تنهایی به معنی خودمختار بودن یک سیستم نیست.
+        خودمختاری واقعی از ترکیب مدل، ابزار، حافظه، حلقه اجرا، مشاهده محیط، کنترل دسترسی و ارزیابی نتیجه به وجود می‌آید.
+      </div>
+    </section>
+
+
+    <!-- CHAPTER 1 -->
+    <section class="chapter" id="ch1">
+      <h2>1. AI Coding Agents</h2>
+
+      <p class="lead">
+        AI Coding Agent یک عامل هوشمند است که می‌تواند در یک محیط توسعه نرم‌افزار فعالیت کند،
+        کد را بررسی کند، نیازمندی را بفهمد، فایل ایجاد یا اصلاح کند، تست اجرا کند و برای رسیدن به نتیجه تلاش کند.
+      </p>
+
+      <h3>1.1. تعریف AI Coding Agent</h3>
+
+      <p>
+        در برنامه‌نویسی سنتی، توسعه‌دهنده مسئول تمام مراحل است:
+        فهم مسئله، پیدا کردن فایل مناسب، نوشتن کد، اجرای تست، تحلیل خطا و اصلاح برنامه.
+        یک دستیار هوش مصنوعی ساده ممکن است فقط پیشنهاد کد بدهد.
+        اما Coding Agent می‌تواند بخشی از این زنجیره را خودش اجرا کند.
+      </p>
+
+      <p>
+        برای مثال، توسعه‌دهنده می‌گوید:
+        «در صفحه ثبت‌نام، امکان ورود با حساب Google اضافه کن و تست‌های مربوط به آن را هم بنویس.»
+        عامل باید ابتدا ساختار پروژه را بفهمد، فایل‌های مرتبط را شناسایی کند،
+        معماری احراز هویت را بررسی کند، تغییرات لازم را اعمال کند و سپس صحت پیاده‌سازی را بسنجد.
+      </p>
+
+      <p>
+        بنابراین تفاوت اصلی Coding Agent با تولیدکننده کد این است که Coding Agent
+        در یک چرخه اجرایی قرار دارد و می‌تواند نتیجه اقدامات خود را مشاهده کند.
+      </p>
+
+      <h3>1.2. تفاوت Code Completion، AI Coding Assistant و Coding Agent</h3>
+
+      <table>
+        <tr>
+          <th>نوع سیستم</th>
+          <th>قابلیت اصلی</th>
+          <th>سطح خودمختاری</th>
+        </tr>
+        <tr>
+          <td>Code Completion</td>
+          <td>تکمیل خط یا قطعه‌ای از کد</td>
+          <td>بسیار محدود</td>
+        </tr>
+        <tr>
+          <td>AI Coding Assistant</td>
+          <td>پاسخ به سؤال، توضیح کد و پیشنهاد تغییرات</td>
+          <td>محدود و وابسته به کاربر</td>
+        </tr>
+        <tr>
+          <td>AI Coding Agent</td>
+          <td>بررسی پروژه، تغییر فایل، اجرای ابزار و تست</td>
+          <td>بالاتر و هدف‌محور</td>
+        </tr>
+        <tr>
+          <td>Autonomous Software Engineering System</td>
+          <td>مدیریت یک فرایند گسترده توسعه نرم‌افزار</td>
+          <td>بالا، اما همچنان نیازمند محدودیت و نظارت</td>
+        </tr>
+      </table>
+
+      <h3>1.3. معماری داخلی یک AI Coding Agent</h3>
+
+      <p>
+        یک Coding Agent واقعی معمولاً از چند جزء تشکیل می‌شود. این اجزا ممکن است در محصولات مختلف
+        نام‌ها و پیاده‌سازی‌های متفاوتی داشته باشند، اما نقش‌های اصلی تقریباً مشابه‌اند.
+      </p>
+
+      <div class="diagram">
+        Developer Request
+        |
+        v
+        +----------------------+
+        | Task Understanding |
+        | Goal and Constraints |
+        +----------------------+
+        |
+        v
+        +----------------------+
+        | Repository Explorer |
+        | Files / Symbols |
+        | Dependencies |
+        +----------------------+
+        |
+        v
+        +----------------------+
+        | Planning and Reasoning|
+        +----------------------+
+        |
+        v
+        +----------------------+
+        | Tool Execution |
+        | Read / Edit / Shell |
+        | Test / Search |
+        +----------------------+
+        |
+        v
+        +----------------------+
+        | Validation |
+        | Tests / Lint / Build |
+        +----------------------+
+        |
+        v
+        +----------------------+
+        | Review and Summary |
+        +----------------------+
+      </div>
+
+      <h4>الف) Task Understanding</h4>
+      <p>
+        عامل باید درخواست کاربر را به یک هدف دقیق تبدیل کند.
+        عباراتی مانند «کد را بهتر کن» بیش از حد مبهم‌اند.
+        یک عامل خوب باید مشخص کند منظور از بهتر شدن چیست:
+        افزایش سرعت، کاهش پیچیدگی، رفع خطا، افزایش خوانایی یا بهبود امنیت؟
+      </p>
+
+      <h4>ب) Repository Exploration</h4>
+      <p>
+        عامل باید ساختار پروژه را بشناسد. این مرحله می‌تواند شامل بررسی موارد زیر باشد:
+      </p>
+      <ul>
+        <li>فایل‌ها و پوشه‌های پروژه</li>
+        <li>فایل‌های تنظیمات و وابستگی‌ها</li>
+        <li>نقاط ورود برنامه یا Entry Points</li>
+        <li>ماژول‌ها، کلاس‌ها و توابع مهم</li>
+        <li>الگوهای معماری و سبک کدنویسی پروژه</li>
+        <li>تست‌های موجود و قراردادهای رفتاری سیستم</li>
+      </ul>
+
+      <h4>ج) Planning</h4>
+      <p>
+        عامل باید قبل از تغییر کد، یک برنامه عملیاتی تهیه کند.
+        مثلاً برای اضافه کردن قابلیت ورود با Google ممکن است این مراحل را در نظر بگیرد:
+      </p>
+      <ol>
+        <li>بررسی سیستم فعلی احراز هویت</li>
+        <li>بررسی وابستگی‌های OAuth</li>
+        <li>تعریف endpoint جدید</li>
+        <li>ایجاد یا اصلاح سرویس احراز هویت</li>
+        <li>اضافه کردن رابط کاربری</li>
+        <li>نوشتن تست‌های واحد و یکپارچه</li>
+        <li>اجرای تست‌ها و بررسی خطاها</li>
+      </ol>
+
+      <h4>د) Tool Execution</h4>
+      <p>
+        عامل برای اجرای برنامه خود به ابزارهایی مانند ابزار خواندن فایل، ویرایش فایل،
+        جست‌وجوی کد، اجرای ترمینال، اجرای تست و مشاهده خروجی نیاز دارد.
+        در اینجا ابزارها صرفاً امکانات جانبی نیستند؛ آن‌ها رابط عامل با محیط توسعه‌اند.
+      </p>
+
+      <h4>هـ) Validation</h4>
+      <p>
+        مهم‌ترین اصل در Coding Agent این است که تولید کد پایان کار نیست.
+        عامل باید بررسی کند که کد تولیدشده واقعاً کار می‌کند یا نه.
+        اجرای تست، بررسی نوع داده‌ها، lint، build و بررسی تغییرات بخشی از این مرحله‌اند.
+      </p>
+
+      <h3>1.4. Context Engineering در Coding Agents</h3>
+
+      <p>
+        یکی از دشوارترین مسائل در توسعه نرم‌افزار با مدل‌های زبانی، مدیریت Context است.
+        یک پروژه ممکن است هزاران فایل و میلیون‌ها خط کد داشته باشد.
+        ارسال تمام پروژه به مدل نه عملی است و نه همیشه مفید.
+      </p>
+
+      <p>
+        بنابراین Coding Agent باید تصمیم بگیرد کدام اطلاعات برای کار فعلی مهم‌اند.
+        این فرایند را می‌توان نوعی Context Engineering دانست.
+      </p>
+
+      <ul>
+        <li><strong>Repository Context:</strong> ساختار و معماری کلی پروژه.</li>
+        <li><strong>Task Context:</strong> درخواست فعلی و معیارهای پذیرش.</li>
+        <li><strong>Code Context:</strong> فایل‌ها و توابع مرتبط با تغییر.</li>
+        <li><strong>Execution Context:</strong> خروجی تست‌ها، خطاها و وضعیت اجرا.</li>
+        <li><strong>Historical Context:</strong> تصمیمات و تغییرات قبلی مرتبط.</li>
+      </ul>
+
+      <div class="callout orange">
+        <strong>چالش مهم:</strong>
+        اگر عامل Context اشتباه یا ناقص دریافت کند، ممکن است کد ظاهراً درست ولی ناسازگار با معماری پروژه تولید کند.
+        به همین دلیل بازیابی دقیق اطلاعات از مخزن کد اهمیت زیادی دارد.
+      </div>
+
+      <h3>1.5. چرخه کاری یک Coding Agent</h3>
+
+      <pre><code>while not task_completed:
+
+    observe_project()
+    understand_current_state()
+
+    if context_is_insufficient:
+        inspect_more_files()
+
+    plan_next_action()
+
+    action = select_tool()
+
+    result = execute(action)
+
+    inspect_result(result)
+
+    if tests_fail:
+        diagnose_failure()
+        revise_plan()
+    else:
+        validate_changes()
+
+return final_summary</code></pre>
+
+      <p>
+        این کد یک نمایش مفهومی از چرخه عامل است و به یک SDK خاص وابسته نیست.
+        نکته مهم این است که عامل پس از هر اقدام، نتیجه را مشاهده می‌کند و بر اساس آن تصمیم بعدی را می‌گیرد.
+      </p>
+
+      <h3>1.6. نمونه کاربردهای واقعی</h3>
+      <ul>
+        <li>پیاده‌سازی یک Feature جدید در پروژه موجود</li>
+        <li>رفع Bug با بررسی Stack Trace و کد مرتبط</li>
+        <li>نوشتن Unit Test برای ماژول‌های موجود</li>
+        <li>Refactoring و کاهش کد تکراری</li>
+        <li>به‌روزرسانی وابستگی‌ها و اصلاح ناسازگاری‌ها</li>
+        <li>بررسی Pull Request و شناسایی مشکلات احتمالی</li>
+        <li>تولید مستندات فنی از روی کد</li>
+        <li>تبدیل یک Issue به تغییرات قابل بررسی در مخزن</li>
+      </ul>
+
+      <h3>1.7. چالش‌های AI Coding Agents</h3>
+      <ul>
+        <li>تغییر فایل‌های نامرتبط با مسئله</li>
+        <li>ساختن API یا کتابخانه‌ای که وجود ندارد</li>
+        <li>تولید کد ناسازگار با سبک و معماری پروژه</li>
+        <li>اصلاح یک خطا و ایجاد چند خطای جدید</li>
+        <li>نادیده گرفتن نیازمندی‌های غیرعملکردی</li>
+        <li>تولید تست‌هایی که فقط کد تولیدشده را تأیید می‌کنند</li>
+        <li>اجرای دستورات خطرناک در محیط توسعه</li>
+        <li>افشای Secretها یا اطلاعات محرمانه در Context</li>
+      </ul>
+
+      <div class="callout green">
+        <strong>جمع‌بندی فصل:</strong>
+        AI Coding Agent یک تولیدکننده کد ساده نیست؛ بلکه یک سیستم هدف‌محور برای تعامل با مخزن کد،
+        ابزارهای توسعه، محیط اجرا و فرایند اعتبارسنجی است.
+      </div>
+    </section>
+
+
+    <!-- CHAPTER 2 -->
+    <section class="chapter" id="ch2">
+      <h2>2. Autonomous Software Engineering</h2>
+
+      <p class="lead">
+        Autonomous Software Engineering به استفاده از سیستم‌های هوشمند برای مدیریت بخش قابل‌توجهی
+        از چرخه عمر توسعه نرم‌افزار گفته می‌شود؛ از فهم نیازمندی تا طراحی، پیاده‌سازی، تست و نگهداری.
+      </p>
+
+      <h3>2.1. مفهوم مهندسی نرم‌افزار خودمختار</h3>
+
+      <p>
+        در توسعه سنتی، انسان مسئول تصمیم‌گیری و اجرای تقریباً تمام مراحل است.
+        ابزارهای اتوماسیون می‌توانند بخشی از کارها را انجام دهند، اما معمولاً بر اساس
+        دستورالعمل‌های ثابت و از پیش تعریف‌شده عمل می‌کنند.
+      </p>
+
+      <p>
+        در Autonomous Software Engineering، عامل هوشمند می‌تواند با دریافت یک هدف سطح بالا،
+        وظایف لازم را شناسایی کند، ترتیب آن‌ها را مشخص کند، ابزارهای مناسب را انتخاب کند
+        و با توجه به نتایج، برنامه خود را تغییر دهد.
+      </p>
+
+      <p>
+        برای مثال، هدف می‌تواند این باشد:
+        «یک سرویس مدیریت سفارش بساز که کاربران بتوانند سفارش ایجاد کنند،
+        وضعیت آن را ببینند و پس از پرداخت، اعلان دریافت کنند.»
+      </p>
+
+      <p>
+        چنین درخواستی فقط یک تابع یا فایل را مشخص نمی‌کند؛ بلکه یک قابلیت نرم‌افزاری نسبتاً کامل است.
+        سیستم باید آن را به نیازمندی‌ها، اجزای معماری، APIها، مدل داده، تست‌ها و مراحل توسعه تبدیل کند.
+      </p>
+
+      <h3>2.2. تفاوت اتوماسیون سنتی با مهندسی خودمختار</h3>
+
+      <table>
+        <tr>
+          <th>ویژگی</th>
+          <th>Automation سنتی</th>
+          <th>Autonomous Engineering</th>
+        </tr>
+        <tr>
+          <td>منطق اجرا</td>
+          <td>قواعد و مراحل از پیش تعیین‌شده</td>
+          <td>برنامه‌ریزی و تصمیم‌گیری پویا</td>
+        </tr>
+        <tr>
+          <td>مدیریت خطا</td>
+          <td>معمولاً مسیرهای خطای ثابت</td>
+          <td>تحلیل نتیجه و انتخاب راهکار جایگزین</td>
+        </tr>
+        <tr>
+          <td>تغییر هدف</td>
+          <td>نیازمند اصلاح Workflow</td>
+          <td>امکان بازبرنامه‌ریزی در محدوده مجاز</td>
+        </tr>
+        <tr>
+          <td>تعامل با محیط</td>
+          <td>اغلب محدود به ورودی و خروجی مشخص</td>
+          <td>مشاهده محیط و اقدام تکرارشونده</td>
+        </tr>
+        <tr>
+          <td>محدودیت</td>
+          <td>محدودیت قواعد ثابت</td>
+          <td>محدودیت کیفیت مدل، Context و مجوزها</td>
+        </tr>
+      </table>
+
+      <h3>2.3. چرخه عمر توسعه نرم‌افزار خودمختار</h3>
+
+      <div class="diagram">
+        Business Goal
+        |
+        v
+        Requirements Analysis
+        |
+        v
+        Architecture Design
+        |
+        v
+        Implementation Planning
+        |
+        v
+        Code Generation
+        |
+        v
+        Automated Testing
+        |
+        v
+        Review and Approval
+        |
+        v
+        Deployment
+        |
+        v
+        Monitoring and Feedback
+        |
+        +------> New Improvement Cycle
+      </div>
+
+      <h4>مرحله اول: Requirements Analysis</h4>
+      <p>
+        سیستم باید درخواست تجاری را به نیازمندی‌های قابل پیاده‌سازی تبدیل کند.
+        در این مرحله ابهام‌ها، محدودیت‌ها، کاربران هدف و معیارهای پذیرش شناسایی می‌شوند.
+      </p>
+
+      <h4>مرحله دوم: Architecture Design</h4>
+      <p>
+        عامل می‌تواند معماری پیشنهادی ارائه کند؛ برای مثال، تشخیص دهد که پروژه به API،
+        پایگاه داده، سیستم احراز هویت، صف پیام و سرویس اعلان نیاز دارد.
+        اما انتخاب معماری باید با محدودیت‌های سازمان، امنیت و مقیاس‌پذیری هماهنگ باشد.
+      </p>
+
+      <h4>مرحله سوم: Implementation</h4>
+      <p>
+        عامل کد را تولید یا اصلاح می‌کند. بهتر است تغییرات به واحدهای کوچک،
+        قابل تست و قابل بازبینی تقسیم شوند.
+      </p>
+
+      <h4>مرحله چهارم: Verification</h4>
+      <p>
+        تست‌ها اجرا می‌شوند، خطاها تحلیل می‌شوند و عامل در صورت مجاز بودن،
+        اصلاحات جدید انجام می‌دهد.
+      </p>
+
+      <h4>مرحله پنجم: Deployment and Monitoring</h4>
+      <p>
+        در سیستم‌های پیشرفته، عامل ممکن است در فرایند انتشار و پایش نیز مشارکت کند.
+        با این حال، اقدامات حساس مانند انتشار به محیط Production باید
+        به مجوزها و سیاست‌های مشخص وابسته باشند.
+      </p>
+
+      <h3>2.4. سطوح خودمختاری</h3>
+
+      <table>
+        <tr>
+          <th>سطح</th>
+          <th>رفتار سیستم</th>
+          <th>نمونه</th>
+        </tr>
+        <tr>
+          <td>Level 0</td>
+          <td>فقط پیشنهاد و راهنمایی</td>
+          <td>توضیح نحوه اصلاح یک Bug</td>
+        </tr>
+        <tr>
+          <td>Level 1</td>
+          <td>تولید تغییرات با تأیید مستمر</td>
+          <td>پیشنهاد Patch برای هر فایل</td>
+        </tr>
+        <tr>
+          <td>Level 2</td>
+          <td>اجرای یک وظیفه محدود</td>
+          <td>اصلاح Bug و اجرای تست</td>
+        </tr>
+        <tr>
+          <td>Level 3</td>
+          <td>مدیریت چندمرحله‌ای یک Feature</td>
+          <td>پیاده‌سازی API و تست‌ها</td>
+        </tr>
+        <tr>
+          <td>Level 4</td>
+          <td>مدیریت یک جریان کاری گسترده با نظارت دوره‌ای</td>
+          <td>توسعه، تست و آماده‌سازی انتشار</td>
+        </tr>
+      </table>
+
+      <p>
+        این سطوح یک چارچوب آموزشی برای تحلیل میزان اختیار عامل هستند و استاندارد رسمی واحدی محسوب نمی‌شوند.
+        در عمل، میزان خودمختاری باید برای هر نوع عملیات جداگانه تعریف شود.
+      </p>
+
+      <h3>2.5. چرا Autonomous Engineering دشوار است؟</h3>
+      <p>
+        توسعه نرم‌افزار فقط تولید کد نیست. تصمیم‌های معماری، امنیت، تجربه کاربری،
+        سازگاری با سیستم‌های موجود و پیامدهای تجاری نیز اهمیت دارند.
+        یک عامل ممکن است کدی تولید کند که تست‌های ساده را پشت سر بگذارد،
+        اما در شرایط واقعی با مشکل مواجه شود.
+      </p>
+
+      <ul>
+        <li><strong>Ambiguous Requirements:</strong> نیازمندی‌های مبهم یا ناقص.</li>
+        <li><strong>Architectural Consistency:</strong> حفظ هماهنگی میان اجزای سیستم.</li>
+        <li><strong>Long-term Maintainability:</strong> جلوگیری از ایجاد بدهی فنی.</li>
+        <li><strong>Security:</strong> کنترل آسیب‌پذیری‌های کد و زنجیره وابستگی‌ها.</li>
+        <li><strong>Verification:</strong> اثبات اینکه خروجی واقعاً نیازمندی را برآورده می‌کند.</li>
+        <li><strong>Accountability:</strong> مشخص بودن مسئول تصمیم‌ها و تغییرات.</li>
+      </ul>
+
+      <div class="callout">
+        <strong>اصل مهندسی:</strong>
+        هرچه اختیار عامل بیشتر می‌شود، کیفیت محدودیت‌ها، ارزیابی‌ها، ثبت رویدادها و امکان بازگشت
+        به وضعیت قبلی نیز باید بیشتر شود.
+      </div>
+    </section>
+
+
+    <!-- CHAPTER 3 -->
+    <section class="chapter" id="ch3">
+      <h2>3. Computer Use Agents</h2>
+
+      <p class="lead">
+        Computer Use Agent عاملی است که به‌جای تعامل صرفاً از طریق API،
+        می‌تواند با رابط گرافیکی کامپیوتر مانند یک کاربر انسانی تعامل کند.
+      </p>
+
+      <h3>3.1. مفهوم Computer Use</h3>
+
+      <p>
+        بسیاری از نرم‌افزارها API عمومی ندارند یا دسترسی API آن‌ها محدود است.
+        با این حال، کاربران می‌توانند از طریق صفحه‌نمایش، ماوس و صفحه‌کلید با آن‌ها کار کنند.
+        Computer Use Agent تلاش می‌کند همین نوع تعامل را به شکل کنترل‌شده انجام دهد.
+      </p>
+
+      <p>
+        یک عامل ممکن است صفحه را مشاهده کند، دکمه‌ای را تشخیص دهد،
+        روی آن کلیک کند، متن وارد کند، پنجره جدیدی باز کند و نتیجه اقدام خود را بررسی کند.
+      </p>
+
+      <h3>3.2. اجزای اصلی</h3>
+
+      <div class="grid">
+        <div class="mini-card">
+          <h4>Perception</h4>
+          <p>درک وضعیت صفحه، متن‌ها، پنجره‌ها، آیکون‌ها و عناصر رابط کاربری.</p>
+        </div>
+        <div class="mini-card">
+          <h4>Reasoning</h4>
+          <p>تشخیص اینکه برای رسیدن به هدف، کدام اقدام باید انجام شود.</p>
+        </div>
+        <div class="mini-card">
+          <h4>Action Execution</h4>
+          <p>اجرای کلیک، تایپ، اسکرول، کلیدهای میان‌بر و تعاملات مجاز.</p>
+        </div>
+        <div class="mini-card">
+          <h4>State Verification</h4>
+          <p>بررسی اینکه آیا اقدام نتیجه مورد انتظار را ایجاد کرده است یا خیر.</p>
+        </div>
+      </div>
+
+      <h3>3.3. چرخه Observe – Decide – Act – Verify</h3>
+
+      <div class="diagram">
+        +------------------+
+        | Observe Screen |
+        +------------------+
+        |
+        v
+        +------------------+
+        | Understand State |
+        +------------------+
+        |
+        v
+        +------------------+
+        | Decide Action |
+        +------------------+
+        |
+        v
+        +------------------+
+        | Execute Action |
+        +------------------+
+        |
+        v
+        +------------------+
+        | Verify Result |
+        +------------------+
+        |
+        +------> Repeat if needed
+      </div>
+
+      <p>
+        این چرخه بسیار مهم است. اگر عامل پس از کلیک کردن فرض کند که عملیات موفق بوده،
+        ممکن است بر اساس یک وضعیت اشتباه به مراحل بعدی برود.
+        به همین دلیل مشاهده مجدد صفحه پس از اقدام ضروری است.
+      </p>
+
+      <h3>3.4. روش‌های درک رابط کاربری</h3>
+
+      <h4>الف) Screenshot-based Interaction</h4>
+      <p>
+        عامل از صفحه‌نمایش تصویر دریافت می‌کند و با استفاده از قابلیت‌های بینایی ماشین،
+        محل عناصر را تشخیص می‌دهد. سپس مختصات موردنظر را برای کلیک یا تایپ انتخاب می‌کند.
+      </p>
+
+      <p>
+        مزیت این روش آن است که تقریباً به ساختار داخلی برنامه وابسته نیست.
+        اما اگر اندازه پنجره، مقیاس صفحه، موقعیت عناصر یا ظاهر رابط تغییر کند،
+        مختصات قبلی ممکن است دیگر معتبر نباشند.
+      </p>
+
+      <h4>ب) Accessibility Tree</h4>
+      <p>
+        برخی محیط‌ها ساختار معنایی رابط کاربری را در اختیار سیستم قرار می‌دهند.
+        در این حالت عامل به‌جای تشخیص صرفاً تصویری، می‌تواند نام، نقش و وضعیت عناصر را بخواند.
+        برای مثال، به‌جای کلیک روی مختصات یک دکمه، دکمه‌ای با نام «Save» را پیدا کند.
+      </p>
+
+      <h4>ج) DOM-based Interaction</h4>
+      <p>
+        در محیط‌های مبتنی بر وب، ممکن است دسترسی به DOM وجود داشته باشد.
+        این روش از نظر معنایی غنی‌تر از مختصات خام است؛
+        اما همچنان باید در برابر تغییرات ساختار صفحه و محتوای غیرقابل اعتماد مقاوم باشد.
+      </p>
+
+      <table>
+        <tr>
+          <th>روش</th>
+          <th>مزیت</th>
+          <th>محدودیت</th>
+        </tr>
+        <tr>
+          <td>Screenshot</td>
+          <td>سازگاری با طیف گسترده‌ای از برنامه‌ها</td>
+          <td>حساسیت به تغییرات بصری و مختصات</td>
+        </tr>
+        <tr>
+          <td>Accessibility Tree</td>
+          <td>درک معنایی عناصر</td>
+          <td>وابسته به کیفیت پشتیبانی برنامه</td>
+        </tr>
+        <tr>
+          <td>DOM</td>
+          <td>دسترسی به ساختار وب</td>
+          <td>محدود به محیط‌های قابل دسترسی و قابل اعتماد</td>
+        </tr>
+      </table>
+
+      <h3>3.5. کاربردهای Computer Use Agents</h3>
+      <ul>
+        <li>کار با نرم‌افزارهای اداری و سازمانی</li>
+        <li>تکمیل فرم‌های چندمرحله‌ای</li>
+        <li>انتقال داده میان برنامه‌های مختلف</li>
+        <li>کار با نرم‌افزارهای قدیمی فاقد API مناسب</li>
+        <li>انجام عملیات تکراری در محیط دسکتاپ</li>
+        <li>کمک به تست رابط کاربری</li>
+        <li>تعامل با داشبوردهای مدیریتی</li>
+      </ul>
+
+      <h3>3.6. محدودیت‌ها و ریسک‌ها</h3>
+      <ul>
+        <li>تغییر ناگهانی رابط کاربری</li>
+        <li>اشتباه در تشخیص عناصر مشابه</li>
+        <li>از دست رفتن وضعیت در پنجره‌های متعدد</li>
+        <li>اجرای دوباره عملیات غیرقابل بازگشت</li>
+        <li>تعامل ناخواسته با محتوای مخرب روی صفحه</li>
+        <li>افشای اطلاعات در زمان مشاهده یا ثبت صفحه</li>
+      </ul>
+
+      <div class="callout red">
+        <strong>نکته امنیتی:</strong>
+        عامل نباید صرفاً به دلیل مشاهده یک دکمه، مجاز به فشردن آن باشد.
+        عملیات مالی، حذف داده، ارسال پیام، تغییر دسترسی و اقدامات حساس باید
+        سیاست مجوز و تأیید متناسب داشته باشند.
+      </div>
+
+      <h3>3.7. یک مثال مفهومی</h3>
+
+      <pre><code>goal = "Create a new project in the desktop application"
+
+screen = observe_screen()
+
+if not project_window_visible(screen):
+    open_project_application()
+
+screen = observe_screen()
+
+click("New Project")
+verify_dialog_opened()
+
+type_text("Customer Analytics")
+select_template("Standard")
+click("Create")
+
+screen = observe_screen()
+
+if project_created(screen):
+    report_success()
+else:
+    diagnose_current_state()</code></pre>
+
+      <p>
+        این مثال شبه‌کد است. نام توابع و شیوه اجرای عملیات به محیط و ابزار Computer Use وابسته است.
+      </p>
+    </section>
+
+
+    <!-- CHAPTER 4 -->
+    <section class="chapter" id="ch4">
+      <h2>4. Browser Automation Agents</h2>
+
+      <p class="lead">
+        Browser Automation Agent عاملی است که می‌تواند در محیط مرورگر وب حرکت کند،
+        صفحات را بخواند، فرم‌ها را تکمیل کند، اطلاعات را استخراج کند و جریان‌های کاری تحت وب را انجام دهد.
+      </p>
+
+      <h3>4.1. تفاوت Browser Automation با Computer Use</h3>
+
+      <p>
+        Browser Automation بر تعامل با وب‌سایت‌ها و برنامه‌های تحت وب تمرکز دارد.
+        Computer Use دامنه وسیع‌تری دارد و می‌تواند با نرم‌افزارهای دسکتاپ نیز تعامل کند.
+      </p>
+
+      <p>
+        Browser Agent ممکن است از DOM، Accessibility Tree یا APIهای مرورگر استفاده کند.
+        در مقابل، Computer Use Agent ممکن است صرفاً با مشاهده صفحه و کلیک روی مختصات کار کند.
+      </p>
+
+      <h3>4.2. معماری Browser Agent</h3>
+
+      <div class="diagram">
+        User Goal
+        |
+        v
+        Browser Agent
+        |
+        +---- Browser Controller
+        |
+        +---- Page Observer
+        |
+        +---- DOM / Accessibility Reader
+        |
+        +---- Navigation Manager
+        |
+        +---- Action Executor
+        |
+        +---- Session and Cookie Manager
+        |
+        +---- Verification Layer
+        |
+        v
+        Web Application
+      </div>
+
+      <h3>4.3. قابلیت‌های اصلی</h3>
+
+      <h4>Navigation</h4>
+      <p>
+        عامل باید بتواند بین صفحات حرکت کند، لینک‌ها را دنبال کند،
+        تب‌ها را مدیریت کند و مسیر رسیدن به هدف را تشخیص دهد.
+      </p>
+
+      <h4>Information Extraction</h4>
+      <p>
+        استخراج اطلاعات از صفحات وب می‌تواند شامل عنوان‌ها، قیمت‌ها، جدول‌ها،
+        وضعیت سفارش، داده‌های فرم یا محتوای یک صفحه باشد.
+        عامل باید میان اطلاعات قابل اعتماد، تبلیغات و محتوای نامرتبط تمایز قائل شود.
+      </p>
+
+      <h4>Form Interaction</h4>
+      <p>
+        پر کردن فرم فقط وارد کردن متن نیست.
+        عامل باید نوع فیلد، الزامی بودن آن، قالب داده و پیام‌های اعتبارسنجی را تشخیص دهد.
+      </p>
+
+      <h4>Session Management</h4>
+      <p>
+        برخی عملیات نیازمند ورود کاربر هستند. کوکی‌ها، نشست‌ها و Tokenها باید
+        به شکل امن مدیریت شوند و نباید در گزارش‌ها یا Context عمومی مدل افشا شوند.
+      </p>
+
+      <h3>4.4. ابزارهای متداول در Browser Automation</h3>
+
+      <p>
+        در اکوسیستم توسعه، ابزارهایی مانند Playwright، Selenium و Puppeteer
+        برای کنترل مرورگر استفاده می‌شوند.
+        این ابزارها به‌خودی‌خود Agent نیستند؛ بلکه می‌توانند لایه اجرای اقدامات یک Agent باشند.
+      </p>
+
+      <table>
+        <tr>
+          <th>ابزار</th>
+          <th>کاربرد معمول</th>
+          <th>نقش در سیستم Agentic</th>
+        </tr>
+        <tr>
+          <td>Playwright</td>
+          <td>کنترل مرورگر و تست وب</td>
+          <td>اجرای Navigation، کلیک و بررسی وضعیت</td>
+        </tr>
+        <tr>
+          <td>Selenium</td>
+          <td>اتوماسیون مرورگر</td>
+          <td>تعامل با صفحات و فرم‌ها</td>
+        </tr>
+        <tr>
+          <td>Puppeteer</td>
+          <td>کنترل Chrome و Chromium</td>
+          <td>اجرای عملیات مرورگر از طریق کد</td>
+        </tr>
+      </table>
+
+      <h3>4.5. Browser Agent در برابر Web Scraper</h3>
+
+      <p>
+        Web Scraper معمولاً داده را بر اساس قواعد مشخص استخراج می‌کند.
+        Browser Agent می‌تواند هدف را تفسیر کند و تصمیم بگیرد کدام صفحات،
+        فیلترها یا مراحل برای رسیدن به نتیجه لازم‌اند.
+      </p>
+
+      <p>
+        برای مثال، Scraper ممکن است قیمت تمام محصولات یک صفحه را استخراج کند.
+        اما Browser Agent می‌تواند هدفی مانند «سه محصول مناسب با بودجه مشخص پیدا کن
+        که با ویژگی‌های موردنظر من سازگار باشند» را دنبال کند.
+      </p>
+
+      <h3>4.6. نمونه جریان کاری</h3>
+
+      <ol>
+        <li>دریافت هدف: پیدا کردن یک سند در پرتال سازمانی.</li>
+        <li>باز کردن وب‌سایت و بررسی وضعیت ورود.</li>
+        <li>در صورت نیاز، درخواست ورود امن از کاربر.</li>
+        <li>جست‌وجوی سند با کلیدواژه‌های مناسب.</li>
+        <li>بررسی نتایج و انتخاب سند درست.</li>
+        <li>باز کردن سند و بررسی عنوان و تاریخ.</li>
+        <li>استخراج اطلاعات موردنیاز.</li>
+        <li>ارائه نتیجه همراه با منبع و وضعیت اطمینان.</li>
+      </ol>
+
+      <h3>4.7. چالش‌های امنیتی و پایداری</h3>
+      <ul>
+        <li>محتوای صفحه ممکن است حاوی Prompt Injection باشد.</li>
+        <li>صفحات ممکن است ساختار خود را تغییر دهند.</li>
+        <li>وب‌سایت ممکن است Rate Limit اعمال کند.</li>
+        <li>فرم‌ها ممکن است داده حساس دریافت کنند.</li>
+        <li>کلیک روی دکمه اشتباه ممکن است عملیات مالی یا حقوقی ایجاد کند.</li>
+        <li>عامل ممکن است اطلاعاتی را از یک کاربر به کاربر دیگر منتقل کند.</li>
+      </ul>
+
+      <div class="callout">
+        <strong>قاعده طراحی:</strong>
+        برای هر عملیات Browser Agent، مشخص کن آیا فقط خواندنی است،
+        داده‌ای را تغییر می‌دهد، اطلاعاتی را منتشر می‌کند یا تعهدی برای کاربر ایجاد می‌کند.
+        سطح کنترل باید متناسب با پیامد عملیات باشد.
+      </div>
+    </section>
+
+
+    <!-- CHAPTER 5 -->
+    <section class="chapter" id="ch5">
+      <h2>5. Deep Research Agents</h2>
+
+      <p class="lead">
+        Deep Research Agent عاملی است که برای پاسخ‌گویی به پرسش‌های پیچیده،
+        چندمرحله‌ای و نیازمند شواهد طراحی می‌شود.
+        این عامل صرفاً جست‌وجو نمی‌کند؛ بلکه سؤال را تحلیل، تحقیق را برنامه‌ریزی،
+        منابع را ارزیابی، اطلاعات را ترکیب و نتیجه را مستند می‌کند.
+      </p>
+
+      <h3>5.1. تفاوت Search و Deep Research</h3>
+
+      <p>
+        جست‌وجوی معمولی غالباً با پیدا کردن چند صفحه مرتبط به پایان می‌رسد.
+        اما تحقیق عمیق به یک فرایند منظم نیاز دارد.
+        برای مثال، پرسش «آیا استفاده از معماری Microservices برای یک سامانه جدید مناسب است؟»
+        ممکن است به بررسی هزینه عملیاتی، تیم توسعه، پیچیدگی دامنه، مقیاس‌پذیری،
+        قابلیت اطمینان و تجربه‌های صنعتی نیاز داشته باشد.
+      </p>
+
+      <table>
+        <tr>
+          <th>جست‌وجوی معمولی</th>
+          <th>تحقیق عمیق</th>
+        </tr>
+        <tr>
+          <td>پیدا کردن صفحات مرتبط</td>
+          <td>تبدیل پرسش به مجموعه‌ای از پرسش‌های فرعی</td>
+        </tr>
+        <tr>
+          <td>خواندن چند نتیجه</td>
+          <td>جمع‌آوری و ارزیابی شواهد متنوع</td>
+        </tr>
+        <tr>
+          <td>خلاصه‌سازی محتوا</td>
+          <td>مقایسه، ترکیب و تحلیل یافته‌ها</td>
+        </tr>
+        <tr>
+          <td>پاسخ سریع</td>
+          <td>گزارش ساختارمند با ارجاع و محدودیت‌ها</td>
+        </tr>
+      </table>
+
+      <h3>5.2. معماری Deep Research Agent</h3>
+
+      <div class="diagram">
+        Research Question
+        |
+        v
+        +----------------------+
+        | Query Decomposition |
+        +----------------------+
+        |
+        v
+        +----------------------+
+        | Research Planning |
+        +----------------------+
+        |
+        v
+        +----------------------+
+        | Search and Retrieval |
+        +----------------------+
+        |
+        v
+        +----------------------+
+        | Source Evaluation |
+        +----------------------+
+        |
+        v
+        +----------------------+
+        | Evidence Extraction |
+        +----------------------+
+        |
+        v
+        +----------------------+
+        | Synthesis and Compare|
+        +----------------------+
+        |
+        v
+        +----------------------+
+        | Citation Validation |
+        +----------------------+
+        |
+        v
+        Research Report
+      </div>
+
+      <h3>5.3. Query Decomposition</h3>
+
+      <p>
+        اولین مرحله تبدیل یک سؤال پیچیده به چند سؤال قابل تحقیق است.
+        فرض کنیم سؤال اصلی این باشد:
+      </p>
+
+      <div class="callout">
+        «بهترین معماری برای ساخت یک پلتفرم Agentic AI سازمانی چیست؟»
+      </div>
+
+      <p>عامل می‌تواند آن را به پرسش‌های زیر تقسیم کند:</p>
+
+      <ul>
+        <li>چه نوع معماری برای Orchestration مناسب است؟</li>
+        <li>چگونه باید Tool Execution مدیریت شود؟</li>
+        <li>چه راهکاری برای Memory و State Management وجود دارد؟</li>
+        <li>چگونه امنیت و مجوزها اعمال می‌شوند؟</li>
+        <li>چه روش‌هایی برای Monitoring و Evaluation مناسب‌اند؟</li>
+        <li>چه هزینه‌هایی در مقیاس بالا ایجاد می‌شود؟</li>
+      </ul>
+
+      <h3>5.4. Source Evaluation</h3>
+
+      <p>
+        یکی از مهم‌ترین قابلیت‌های Deep Research Agent ارزیابی کیفیت منابع است.
+        تعداد زیاد نتایج به معنی کیفیت بالای تحقیق نیست.
+        عامل باید به اعتبار، تاریخ، ارتباط، استقلال و کیفیت شواهد توجه کند.
+      </p>
+
+      <ul>
+        <li><strong>Authority:</strong> منبع چه میزان اعتبار تخصصی دارد؟</li>
+        <li><strong>Freshness:</strong> اطلاعات چه زمانی منتشر یا به‌روزرسانی شده‌اند؟</li>
+        <li><strong>Relevance:</strong> آیا منبع دقیقاً به سؤال پاسخ می‌دهد؟</li>
+        <li><strong>Evidence:</strong> آیا ادعا با داده یا سند پشتیبانی شده است؟</li>
+        <li><strong>Independence:</strong> آیا چند منبع مستقل همان نتیجه را تأیید می‌کنند؟</li>
+        <li><strong>Bias:</strong> آیا منبع انگیزه تجاری یا جانبداری مشخصی دارد؟</li>
+      </ul>
+
+      <h3>5.5. Evidence Extraction</h3>
+
+      <p>
+        به‌جای ذخیره صرفاً متن صفحات، بهتر است یافته‌ها به شکل واحدهای شواهدی ثبت شوند.
+        هر واحد شواهد می‌تواند شامل ادعا، منبع، بخش پشتیبان، تاریخ، نوع داده و سطح اطمینان باشد.
+      </p>
+
+      <pre><code>{
+  "claim": "The system supports asynchronous execution",
+  "source": "official_documentation",
+  "evidence": "Relevant section describing task execution",
+  "published_at": "2026-01-10",
+  "source_type": "official",
+  "confidence": "high"
+}</code></pre>
+
+      <p>
+        این JSON صرفاً نمونه‌ای از ساختار داده پیشنهادی است.
+        در سیستم واقعی باید URL دقیق، بخش سند و شناسه منبع نیز نگهداری شوند.
+      </p>
+
+      <h3>5.6. Synthesis</h3>
+
+      <p>
+        در مرحله ترکیب، عامل باید یافته‌ها را کنار هم قرار دهد.
+        این کار نباید به کنار هم گذاشتن خلاصه صفحات محدود شود.
+        باید اختلاف‌ها، توافق‌ها، شرایط اعتبار و محدودیت هر نتیجه مشخص شوند.
+      </p>
+
+      <p>
+        برای مثال، دو منبع ممکن است درباره مزایای Microservices نظرات متفاوتی داشته باشند.
+        به‌جای انتخاب تصادفی یکی از آن‌ها، عامل باید بررسی کند که آیا تفاوت نتیجه ناشی از
+        اندازه تیم، پیچیدگی دامنه یا میزان ترافیک سیستم است.
+      </p>
+
+      <h3>5.7. Citation Validation</h3>
+
+      <p>
+        در تحقیق حرفه‌ای، هر ادعای مهم باید به منبع قابل بررسی متصل باشد.
+        عامل باید مطمئن شود که منبع واقعاً ادعای موردنظر را پشتیبانی می‌کند.
+        صرفاً قرار دادن یک لینک کنار یک جمله کافی نیست.
+      </p>
+
+      <h3>5.8. کاربردهای Deep Research</h3>
+      <ul>
+        <li>تحلیل بازار و رقبا</li>
+        <li>تحقیق فناوری و مقایسه معماری‌ها</li>
+        <li>بررسی استانداردها و مستندات فنی</li>
+        <li>تحلیل سیاست‌ها و مقررات</li>
+        <li>آماده‌سازی گزارش‌های مدیریتی</li>
+        <li>بررسی مقالات علمی</li>
+        <li>جمع‌آوری شواهد برای تصمیم‌های محصول</li>
+      </ul>
+
+      <h3>5.9. محدودیت‌های Deep Research</h3>
+      <ul>
+        <li>منابع نامعتبر یا قدیمی</li>
+        <li>توهم در خلاصه‌سازی یا نسبت دادن ادعا به منبع</li>
+        <li>تکرار چند منبع که همگی از یک منبع اولیه کپی کرده‌اند</li>
+        <li>نادیده گرفتن شواهد مخالف</li>
+        <li>برداشت نادرست از داده‌های آماری</li>
+        <li>نتیجه‌گیری بیش از حد قطعی از شواهد محدود</li>
+      </ul>
+
+      <div class="callout green">
+        <strong>اصل طلایی تحقیق عمیق:</strong>
+        عامل باید بتواند نشان دهد هر نتیجه از کدام شواهد به دست آمده،
+        چه شواهد مخالفی وجود داشته و کدام بخش‌ها هنوز نامطمئن‌اند.
+      </div>
+    </section>
+
+
+    <!-- CHAPTER 6 -->
+    <section class="chapter" id="ch6">
+      <h2>6. Voice Agents</h2>
+
+      <p class="lead">
+        Voice Agent عاملی است که از طریق گفتار با انسان تعامل می‌کند.
+        این سیستم می‌تواند صدای کاربر را دریافت کند، گفتار را بفهمد،
+        تصمیم بگیرد، ابزار اجرا کند و پاسخ صوتی تولید کند.
+      </p>
+
+      <h3>6.1. معماری سنتی Voice Agent</h3>
+
+      <p>
+        در معماری کلاسیک، پردازش صوت معمولاً به چند مرحله جداگانه تقسیم می‌شود:
+      </p>
+
+      <div class="diagram">
+        User Speech
+        |
+        v
+        Microphone / Audio Input
+        |
+        v
+        Speech-to-Text (ASR)
+        |
+        v
+        Language Understanding / LLM
+        |
+        v
+        Agent Reasoning and Tools
+        |
+        v
+        Response Generation
+        |
+        v
+        Text-to-Speech (TTS)
+        |
+        v
+        Audio Output
+      </div>
+
+      <h3>6.2. اجزای اصلی</h3>
+
+      <h4>Automatic Speech Recognition (ASR)</h4>
+      <p>
+        ASR گفتار را به متن تبدیل می‌کند.
+        کیفیت این بخش به لهجه، نویز محیط، سرعت صحبت، کیفیت میکروفون و مدل تشخیص گفتار وابسته است.
+      </p>
+
+      <h4>Natural Language Understanding</h4>
+      <p>
+        متن تشخیص داده‌شده باید از نظر معنا تحلیل شود.
+        عامل باید قصد کاربر، موجودیت‌ها، محدودیت‌ها و اطلاعات موردنیاز را استخراج کند.
+      </p>
+
+      <h4>Dialogue Manager</h4>
+      <p>
+        این بخش مدیریت گفت‌وگو را بر عهده دارد:
+        اینکه چه چیزی قبلاً گفته شده، چه اطلاعاتی هنوز لازم است،
+        آیا باید سؤال تکمیلی پرسیده شود و چه زمانی مکالمه پایان یابد.
+      </p>
+
+      <h4>Text-to-Speech (TTS)</h4>
+      <p>
+        TTS متن پاسخ را به صدا تبدیل می‌کند.
+        کیفیت طبیعی صدا، مکث‌ها، آهنگ گفتار، تلفظ نام‌ها و سرعت پاسخ در تجربه کاربر تأثیر زیادی دارند.
+      </p>
+
+      <h3>6.3. معماری Speech-to-Speech</h3>
+
+      <p>
+        در سیستم‌های جدیدتر، امکان استفاده از معماری‌های مستقیم صوت‌به‌صوت نیز وجود دارد.
+        در این حالت، سیستم می‌تواند ورودی صوتی را دریافت کند و خروجی صوتی تولید کند
+        بدون اینکه الزاماً تمام مکالمه به یک متن میانی قابل مشاهده تبدیل شود.
+      </p>
+
+      <p>
+        این معماری می‌تواند تأخیر را کاهش دهد و بخشی از ویژگی‌های صوتی مانند لحن و مکث را بهتر حفظ کند.
+        با این حال، مشاهده‌پذیری، کنترل و ارزیابی آن ممکن است پیچیده‌تر باشد.
+      </p>
+
+      <h3>6.4. Latency در Voice Agents</h3>
+
+      <p>
+        در مکالمه صوتی، تأخیر اهمیت بسیار زیادی دارد.
+        اگر کاربر صحبت کند و چندین ثانیه برای دریافت پاسخ منتظر بماند،
+        تجربه مکالمه طبیعی از بین می‌رود.
+      </p>
+
+      <p>اجزای اصلی تأخیر عبارت‌اند از:</p>
+      <ul>
+        <li>زمان دریافت و انتقال صدا</li>
+        <li>زمان تشخیص گفتار</li>
+        <li>زمان تحلیل درخواست توسط مدل</li>
+        <li>زمان اجرای ابزارهای خارجی</li>
+        <li>زمان تولید صوت</li>
+        <li>زمان انتقال و پخش خروجی</li>
+      </ul>
+
+      <p>
+        برای کاهش تأخیر می‌توان از Streaming، پردازش هم‌زمان بخش‌های صوتی،
+        پاسخ‌های کوتاه اولیه، مدل‌های سریع‌تر و ابزارهای کم‌تأخیر استفاده کرد.
+      </p>
+
+      <h3>6.5. مدیریت مکالمه و نوبت‌گیری</h3>
+
+      <p>
+        Voice Agent باید تشخیص دهد که کاربر هنوز در حال صحبت است یا نوبت او تمام شده.
+        این مسئله با مفهومی به نام Turn-taking ارتباط دارد.
+      </p>
+
+      <p>
+        همچنین باید امکان Interrupt یا قطع کردن پاسخ وجود داشته باشد.
+        برای مثال، اگر عامل در حال صحبت باشد و کاربر بگوید «صبر کن، منظورم چیز دیگری بود»،
+        سیستم باید بتواند پاسخ جاری را متوقف کند و ورودی جدید را پردازش کند.
+      </p>
+
+      <h3>6.6. Voice Agent با قابلیت استفاده از ابزار</h3>
+
+      <p>
+        یک Voice Agent پیشرفته فقط به سؤال‌های گفتاری پاسخ نمی‌دهد؛
+        می‌تواند عملیات انجام دهد.
+        مثلاً کاربر بگوید:
+        «وضعیت آخرین سفارش من را بررسی کن.»
+      </p>
+
+      <p>
+        عامل باید درخواست را بفهمد، ابزار بررسی سفارش را انتخاب کند،
+        اطلاعات را از سیستم سفارش دریافت کند و نتیجه را به شکل صوتی توضیح دهد.
+      </p>
+
+      <pre><code>user_audio = capture_audio()
+
+transcript = recognize_speech(user_audio)
+
+intent = understand_request(transcript)
+
+if intent.requires_external_data:
+    result = call_authorized_tool(intent)
+
+response = generate_response(
+    user_request=transcript,
+    tool_result=result
+)
+
+stream_audio(synthesize_speech(response))</code></pre>
+
+      <h3>6.7. کاربردهای Voice Agents</h3>
+      <ul>
+        <li>پشتیبانی مشتریان</li>
+        <li>دستیار صوتی سازمانی</li>
+        <li>رزرو و مدیریت نوبت</li>
+        <li>پاسخ‌گویی به تماس‌های ورودی</li>
+        <li>کمک به اپراتورهای مرکز تماس</li>
+        <li>تعامل صوتی با سیستم‌های صنعتی</li>
+        <li>دستیارهای آموزشی و تمرین مکالمه</li>
+      </ul>
+
+      <h3>6.8. امنیت و حریم خصوصی</h3>
+      <ul>
+        <li>دریافت رضایت برای ضبط یا ذخیره مکالمه</li>
+        <li>محدود کردن دسترسی به داده‌های صوتی</li>
+        <li>رمزنگاری انتقال و ذخیره‌سازی</li>
+        <li>جلوگیری از افشای اطلاعات حساس در پاسخ صوتی</li>
+        <li>تشخیص مناسب هویت در عملیات حساس</li>
+        <li>ثبت دقیق اقداماتی که عامل از طرف کاربر انجام داده است</li>
+      </ul>
+
+      <div class="callout">
+        <strong>نکته مهم:</strong>
+        صدای طبیعی به معنی درک درست نیست.
+        Voice Agent باید علاوه بر کیفیت مکالمه، از نظر صحت پاسخ، اجرای درست ابزار،
+        کنترل دسترسی و مدیریت خطا نیز ارزیابی شود.
+      </div>
+    </section>
+
+
+    <!-- CHAPTER 7 -->
+    <section class="chapter" id="ch7">
+      <h2>7. Multimodal Agents</h2>
+
+      <p class="lead">
+        Multimodal Agent عاملی است که می‌تواند با چند نوع داده و ورودی مختلف مانند متن،
+        تصویر، صدا، ویدئو و داده‌های ساختاریافته کار کند.
+      </p>
+
+      <h3>7.1. مفهوم Multimodality</h3>
+
+      <p>
+        در سیستم‌های متنی، ورودی و خروجی اصلی زبان است.
+        اما در دنیای واقعی اطلاعات فقط در قالب متن وجود ندارد.
+        یک کاربر ممکن است تصویر یک نمودار را ارسال کند،
+        درباره آن سؤال بپرسد و بخواهد نتیجه در یک فایل ساختاریافته ذخیره شود.
+      </p>
+
+      <p>
+        سیستم چندوجهی باید بتواند اطلاعات هر رسانه را پردازش کند
+        و میان آن‌ها ارتباط معنایی برقرار سازد.
+      </p>
+
+      <h3>7.2. انواع Modalities</h3>
+
+      <table>
+        <tr>
+          <th>نوع داده</th>
+          <th>نمونه ورودی</th>
+          <th>کاربرد</th>
+        </tr>
+        <tr>
+          <td>Text</td>
+          <td>سؤال، دستور، سند</td>
+          <td>استدلال و تولید زبان</td>
+        </tr>
+        <tr>
+          <td>Image</td>
+          <td>عکس، نمودار، اسکرین‌شات</td>
+          <td>درک بصری و استخراج اطلاعات</td>
+        </tr>
+        <tr>
+          <td>Audio</td>
+          <td>گفتار، موسیقی، صدای محیط</td>
+          <td>تشخیص گفتار و تحلیل صوت</td>
+        </tr>
+        <tr>
+          <td>Video</td>
+          <td>کلیپ یا جریان ویدئویی</td>
+          <td>تحلیل رویدادها و تغییرات زمانی</td>
+        </tr>
+        <tr>
+          <td>Structured Data</td>
+          <td>JSON، CSV، جداول</td>
+          <td>تحلیل داده و اجرای عملیات دقیق</td>
+        </tr>
+      </table>
+
+      <h3>7.3. معماری یک Multimodal Agent</h3>
+
+      <div class="diagram">
+        Text -----------+
+        Image ----------|
+        Audio ----------|--> Multimodal Input Layer
+        Video ----------| |
+        Structured Data + v
+        Perception Models
+        |
+        v
+        Shared Context
+        |
+        v
+        Reasoning Engine
+        |
+        +---------+---------+
+        | |
+        v v
+        Tool Calls Response
+        | |
+        v v
+        External Apps Text / Audio /
+        Structured Output
+      </div>
+
+      <h3>7.4. Perception و Reasoning</h3>
+
+      <p>
+        Perception به معنی استخراج اطلاعات از ورودی است.
+        برای مثال، سیستم باید بتواند اشیای موجود در تصویر را تشخیص دهد،
+        متن داخل عکس را بخواند یا گفتار موجود در صوت را تحلیل کند.
+      </p>
+
+      <p>
+        Reasoning مرحله‌ای است که در آن اطلاعات استخراج‌شده برای پاسخ به هدف استفاده می‌شوند.
+        مثلاً سیستم پس از خواندن نمودار باید بتواند روند آن را توضیح دهد،
+        نه اینکه فقط متن برچسب‌های نمودار را بازگو کند.
+      </p>
+
+      <h3>7.5. Cross-modal Reasoning</h3>
+
+      <p>
+        یکی از قابلیت‌های مهم عامل‌های چندوجهی، استدلال بین رسانه‌هاست.
+        فرض کنیم کاربر یک ویدئو، یک فایل متنی و یک جدول ارسال کرده است.
+        عامل باید بتواند اطلاعات هر سه را در کنار هم بررسی کند.
+      </p>
+
+      <p>مثال:</p>
+      <ul>
+        <li>از ویدئو زمان وقوع یک رویداد را استخراج کند.</li>
+        <li>از سند متنی، دستورالعمل مرتبط را پیدا کند.</li>
+        <li>از جدول، مقدار عددی مربوط به همان زمان را بخواند.</li>
+        <li>سپس یک گزارش ترکیبی ارائه دهد.</li>
+      </ul>
+
+      <h3>7.6. مدیریت هم‌ترازی داده‌ها</h3>
+
+      <p>
+        در کاربردهای چندوجهی، اطلاعات باید به یکدیگر متصل شوند.
+        برای مثال، صوت و ویدئوی یک جلسه باید از نظر زمانی هم‌تراز باشند.
+        اگر زمان‌بندی اشتباه باشد، عامل ممکن است جمله‌ای را به شخص یا رویداد اشتباهی نسبت دهد.
+      </p>
+
+      <p>
+        همچنین در تحلیل اسناد اسکن‌شده، ترتیب صفحات، جایگاه جدول‌ها و ارتباط متن با تصویر اهمیت دارند.
+      </p>
+
+      <h3>7.7. کاربردهای Multimodal Agents</h3>
+      <ul>
+        <li>تحلیل تصاویر پزشکی با رعایت محدودیت‌های تخصصی و نظارتی</li>
+        <li>تحلیل ویدئوی آموزشی</li>
+        <li>خواندن اسناد و فرم‌های اسکن‌شده</li>
+        <li>تحلیل نمودارهای مالی و عملیاتی</li>
+        <li>کنترل کیفیت بصری در تولید</li>
+        <li>ربات‌های دارای دوربین و میکروفون</li>
+        <li>دستیارهای چندرسانه‌ای برای کاربران</li>
+      </ul>
+
+      <h3>7.8. چالش‌های Multimodal AI</h3>
+      <ul>
+        <li>هزینه پردازش تصویر، صوت و ویدئو</li>
+        <li>حجم بالای داده</li>
+        <li>تأخیر در پردازش رسانه‌های طولانی</li>
+        <li>خطای تشخیص و برداشت معنایی</li>
+        <li>مشکل هم‌ترازی زمانی و معنایی</li>
+        <li>ریسک‌های حریم خصوصی در تصاویر و صدا</li>
+        <li>دشواری ارزیابی خروجی‌های چندوجهی</li>
+      </ul>
+
+      <div class="callout green">
+        <strong>جمع‌بندی:</strong>
+        Multimodal Agent باید بتواند اطلاعات رسانه‌های مختلف را نه فقط جداگانه،
+        بلکه در ارتباط با یکدیگر درک و تحلیل کند.
+      </div>
+    </section>
+
+
+    <!-- CHAPTER 8 -->
+    <section class="chapter" id="ch8">
+      <h2>8. Long-running Agents</h2>
+
+      <p class="lead">
+        Long-running Agent عاملی است که برای انجام وظایفی طراحی می‌شود
+        که ممکن است چند دقیقه، چند ساعت، چند روز یا حتی بیشتر طول بکشند.
+      </p>
+
+      <h3>8.1. چرا به Long-running Agents نیاز داریم؟</h3>
+
+      <p>
+        بسیاری از وظایف واقعی با یک فراخوانی مدل تمام نمی‌شوند.
+        برای مثال، بررسی هزاران سند، اجرای یک پروژه تحقیقاتی،
+        پیگیری یک فرایند تأیید سازمانی یا مدیریت یک پروژه توسعه نرم‌افزار
+        ممکن است به تعاملات متعدد و انتظار برای رویدادهای خارجی نیاز داشته باشد.
+      </p>
+
+      <p>
+        در چنین مواردی نمی‌توان تمام وضعیت کار را فقط در Context یک درخواست مدل نگه داشت.
+        سیستم به State Persistence، زمان‌بندی، بازیابی پس از خطا و مدیریت اجرای مجدد نیاز دارد.
+      </p>
+
+      <h3>8.2. معماری اصلی</h3>
+
+      <div class="diagram">
+        User Goal
+        |
+        v
+        Agent Orchestrator
+        |
+        +---- Persistent State Store
+        |
+        +---- Task Queue
+        |
+        +---- Scheduler
+        |
+        +---- Tool Executor
+        |
+        +---- Checkpoint Manager
+        |
+        +---- Retry / Recovery Manager
+        |
+        +---- Monitoring
+        |
+        v
+        Task Completion
+      </div>
+
+      <h3>8.3. State Persistence</h3>
+
+      <p>
+        در عامل‌های کوتاه‌مدت، بخشی از وضعیت ممکن است در حافظه موقت فرایند قرار گیرد.
+        اما اگر فرایند متوقف شود، اطلاعات از دست می‌رود.
+        Long-running Agent باید وضعیت مهم خود را به شکل پایدار ذخیره کند.
+      </p>
+
+      <p>نمونه اطلاعاتی که باید ذخیره شوند:</p>
+      <ul>
+        <li>هدف اصلی و محدودیت‌های آن</li>
+        <li>وضعیت فعلی وظیفه</li>
+        <li>مراحل تکمیل‌شده</li>
+        <li>نتایج ابزارهای قبلی</li>
+        <li>شناسه درخواست‌های خارجی</li>
+        <li>زمان آخرین اجرا</li>
+        <li>تعداد تلاش‌های مجدد</li>
+        <li>نیازمندی‌های تأیید انسانی</li>
+      </ul>
+
+      <h3>8.4. Checkpointing</h3>
+
+      <p>
+        Checkpoint یعنی ذخیره یک وضعیت قابل بازیابی در طول اجرای کار.
+        فرض کنیم عامل در حال تحلیل ۱۰۰۰ سند است.
+        اگر پس از پردازش ۷۰۰ سند متوقف شود، نباید مجبور باشد همه ۷۰۰ سند را دوباره پردازش کند.
+      </p>
+
+      <p>
+        با ذخیره Checkpoint، سیستم می‌تواند از نقطه‌ای که آخرین بار با موفقیت ثبت شده ادامه دهد.
+      </p>
+
+      <h3>8.5. Retry و Recovery</h3>
+
+      <p>
+        در کارهای طولانی، خطا اجتناب‌ناپذیر است:
+        سرویس خارجی ممکن است در دسترس نباشد، اتصال شبکه قطع شود
+        یا یک ابزار پاسخ نامعتبر برگرداند.
+      </p>
+
+      <p>
+        سیستم باید میان خطاهای موقت و دائمی تفاوت بگذارد.
+        برای خطاهای موقت می‌توان از Retry با تأخیر افزایشی استفاده کرد.
+        اما تکرار بی‌قیدوشرط یک عملیات ممکن است باعث اجرای دوباره تراکنش شود.
+      </p>
+
+      <h3>8.6. Idempotency</h3>
+
+      <p>
+        Idempotency به این معناست که اجرای مجدد یک عملیات، در صورت رعایت قرارداد آن،
+        اثر تکراری ناخواسته ایجاد نکند.
+        این ویژگی برای عملیات مالی، ایجاد سفارش، ارسال پیام و تغییر وضعیت اهمیت زیادی دارد.
+      </p>
+
+      <pre><code>operation_id = create_stable_operation_id(task)
+
+result = execute_operation(
+    operation_id=operation_id,
+    payload=payload
+)
+
+save_checkpoint(
+    task_id=task.id,
+    last_completed_operation=operation_id,
+    result=result
+)</code></pre>
+
+      <h3>8.7. مدیریت زمان و انتظار</h3>
+
+      <p>
+        عامل ممکن است لازم باشد منتظر پاسخ یک سرویس خارجی یا تأیید انسان بماند.
+        بهتر است در چنین شرایطی سیستم به‌جای اشغال دائمی یک فرایند،
+        وضعیت کار را ذخیره کند و پس از دریافت رویداد مناسب دوباره ادامه دهد.
+      </p>
+
+      <h3>8.8. کاربردها</h3>
+      <ul>
+        <li>پروژه‌های تحقیقاتی طولانی</li>
+        <li>فرایندهای سازمانی چندمرحله‌ای</li>
+        <li>تحلیل حجم زیاد اسناد</li>
+        <li>مدیریت چرخه توسعه نرم‌افزار</li>
+        <li>پایش مداوم داده‌ها</li>
+        <li>هماهنگی میان چند عامل</li>
+        <li>اجرای Workflowهای نیازمند تأیید انسانی</li>
+      </ul>
+
+      <h3>8.9. چالش‌ها</h3>
+      <ul>
+        <li>حفظ State در طول زمان</li>
+        <li>تغییر نیازمندی در میانه اجرا</li>
+        <li>مدیریت عملیات تکراری</li>
+        <li>بازیابی از شکست‌های جزئی</li>
+        <li>کنترل هزینه مدل در اجرای طولانی</li>
+        <li>جلوگیری از ادامه کار بر اساس Context قدیمی</li>
+        <li>مدیریت زمان انقضای مجوزها و نشست‌ها</li>
+      </ul>
+
+      <div class="callout">
+        <strong>اصل مهم:</strong>
+        Long-running Agent باید مانند یک سیستم توزیع‌شده قابل اعتماد طراحی شود،
+        نه مانند یک گفت‌وگوی طولانی که فقط متن‌های قبلی را در حافظه نگه می‌دارد.
+      </div>
+    </section>
+
+
+    <!-- CHAPTER 9 -->
+    <section class="chapter" id="ch9">
+      <h2>9. Self-improving Agents</h2>
+
+      <p class="lead">
+        Self-improving Agent به سیستمی گفته می‌شود که از نتایج اجرا، بازخوردها و ارزیابی‌ها
+        برای بهبود عملکرد آینده استفاده می‌کند.
+      </p>
+
+      <h3>9.1. مفهوم بهبود خودکار</h3>
+
+      <p>
+        فرض کنیم یک عامل بارها وظیفه تحلیل درخواست‌های پشتیبانی را انجام می‌دهد.
+        در ابتدا ممکن است بعضی درخواست‌ها را اشتباه دسته‌بندی کند.
+        اگر سیستم بتواند خطاها را ثبت کند، الگوهای آن‌ها را تشخیص دهد
+        و دستورالعمل‌ها یا ابزارهای خود را اصلاح کند، عملکرد آینده ممکن است بهتر شود.
+      </p>
+
+      <p>
+        نکته مهم این است که Self-improvement الزاماً به معنی تغییر خودکار وزن‌های مدل نیست.
+        بهبود می‌تواند در سطح Prompt، حافظه، ابزار، Workflow، قواعد تصمیم‌گیری
+        یا حتی نسخه مدل اتفاق بیفتد.
+      </p>
+
+      <h3>9.2. سطوح مختلف Self-improvement</h3>
+
+      <table>
+        <tr>
+          <th>سطح</th>
+          <th>نوع بهبود</th>
+          <th>مثال</th>
+        </tr>
+        <tr>
+          <td>Level 1</td>
+          <td>اصلاح Context</td>
+          <td>ذخیره نکات مفید برای اجرای بعدی</td>
+        </tr>
+        <tr>
+          <td>Level 2</td>
+          <td>اصلاح Prompt</td>
+          <td>بهبود دستورالعمل عامل</td>
+        </tr>
+        <tr>
+          <td>Level 3</td>
+          <td>اصلاح Workflow</td>
+          <td>تغییر ترتیب مراحل اجرای کار</td>
+        </tr>
+        <tr>
+          <td>Level 4</td>
+          <td>اصلاح ابزارها و سیاست‌ها</td>
+          <td>اضافه کردن اعتبارسنجی جدید</td>
+        </tr>
+        <tr>
+          <td>Level 5</td>
+          <td>تطبیق مدل</td>
+          <td>Fine-tuning یا انتخاب مدل جدید</td>
+        </tr>
+      </table>
+
+      <h3>9.3. Feedback Loop</h3>
+
+      <div class="diagram">
+        Task Execution
+        |
+        v
+        Outcome Collection
+        |
+        v
+        Evaluation
+        |
+        v
+        Failure Analysis
+        |
+        v
+        Improvement Proposal
+        |
+        v
+        Controlled Validation
+        |
+        v
+        Approved Update
+        |
+        +------> Future Executions
+      </div>
+
+      <h3>9.4. انواع Feedback</h3>
+
+      <h4>Explicit Feedback</h4>
+      <p>
+        بازخورد مستقیم کاربر است؛ مانند امتیاز دادن، تأیید پاسخ یا گزارش اشتباه.
+      </p>
+
+      <h4>Implicit Feedback</h4>
+      <p>
+        بازخوردی است که از رفتار سیستم یا کاربر استنباط می‌شود؛
+        مانند اینکه کاربر پاسخ را اصلاح کند یا یک عملیات چند بار تکرار شود.
+        این نوع بازخورد ممکن است مبهم باشد و نباید بدون بررسی به‌عنوان حقیقت قطعی تلقی شود.
+      </p>
+
+      <h4>Execution Feedback</h4>
+      <p>
+        نتایج واقعی اجرای ابزارها و تست‌ها نیز می‌توانند بازخورد باشند.
+        مثلاً اگر کد تولیدشده تست را رد کند، سیستم شواهدی درباره ضعف راهکار در اختیار دارد.
+      </p>
+
+      <h3>9.5. Reflection</h3>
+
+      <p>
+        Reflection یعنی عامل عملکرد قبلی خود را بررسی کند و درباره نقاط قوت و ضعف آن نتیجه‌گیری کند.
+        برای مثال، پس از تکمیل یک وظیفه می‌تواند به این سؤال‌ها پاسخ دهد:
+      </p>
+
+      <ul>
+        <li>کدام مرحله بیشترین خطا را داشت؟</li>
+        <li>آیا ابزار مناسبی انتخاب شد؟</li>
+        <li>آیا Context کافی وجود داشت؟</li>
+        <li>آیا مسیر اجرای کار بیش از حد پیچیده بود؟</li>
+        <li>برای اجرای بعدی چه تغییری می‌تواند مفید باشد؟</li>
+      </ul>
+
+      <p>
+        Reflection به‌تنهایی تضمین‌کننده یادگیری نیست.
+        عامل ممکن است درباره عملکرد خود تحلیل نادرست ارائه دهد.
+        بنابراین پیشنهادهای حاصل از Reflection باید با معیارهای بیرونی اعتبارسنجی شوند.
+      </p>
+
+      <h3>9.6. Memory-based Improvement</h3>
+
+      <p>
+        یکی از ساده‌ترین روش‌های بهبود عامل، استفاده از حافظه است.
+        عامل می‌تواند تجربه‌های مفید را به شکل اطلاعات ساختاریافته ذخیره کند.
+      </p>
+
+      <p>برای مثال:</p>
+      <pre><code>{
+  "task_type": "generate_api_tests",
+  "lesson": "Include authorization failure cases",
+  "evidence": "Previous test suite missed an access-control bug",
+  "confidence": 0.91,
+  "scope": "projects_using_role_based_access"
+}</code></pre>
+
+      <p>
+        حافظه نباید به انبار نامحدود تجربه‌ها تبدیل شود.
+        اطلاعات قدیمی، نادرست یا وابسته به یک پروژه خاص ممکن است در پروژه دیگری مضر باشند.
+        حافظه باید تاریخ، منبع، دامنه اعتبار و امکان حذف یا اصلاح داشته باشد.
+      </p>
+
+      <h3>9.7. Self-improvement و Fine-tuning</h3>
+
+      <p>
+        در برخی سیستم‌ها، داده‌های جمع‌آوری‌شده می‌توانند برای Fine-tuning استفاده شوند.
+        اما این کار باید با انتخاب داده مناسب، حذف اطلاعات حساس،
+        بررسی کیفیت برچسب‌ها و ارزیابی قبل و بعد از آموزش انجام شود.
+      </p>
+
+      <p>
+        تغییر وزن‌های مدل در محیط Production به شکل خودکار و بدون ارزیابی
+        می‌تواند رفتار سیستم را غیرقابل پیش‌بینی کند.
+        به همین دلیل بهتر است چرخه آموزش و انتشار مدل از اجرای روزمره عامل جدا باشد.
+      </p>
+
+      <h3>9.8. خطرات Self-improvement</h3>
+      <ul>
+        <li>یادگیری از بازخورد اشتباه یا دستکاری‌شده</li>
+        <li>تقویت سوگیری‌های موجود</li>
+        <li>فراموشی توانایی‌های قبلی</li>
+        <li>تغییر ناخواسته رفتار سیستم</li>
+        <li>بهینه‌سازی یک معیار و آسیب به معیارهای دیگر</li>
+        <li>ذخیره اطلاعات محرمانه در حافظه بلندمدت</li>
+        <li>ایجاد چرخه‌های بازخورد ناپایدار</li>
+      </ul>
+
+      <div class="callout red">
+        <strong>اصل ایمنی:</strong>
+        عامل می‌تواند بهبود را پیشنهاد دهد؛ اما هر تغییری که روی رفتار،
+        مجوزها، ابزارها یا مدل Production اثر می‌گذارد باید از مسیر اعتبارسنجی و انتشار کنترل‌شده عبور کند.
+      </div>
+    </section>
+
+
+    <!-- CHAPTER 10 -->
+    <section class="chapter" id="ch10">
+      <h2>10. Agentic AI Design Patterns</h2>
+
+      <p class="lead">
+        Design Patternهای Agentic AI الگوهای تکرارشونده‌ای برای طراحی،
+        سازمان‌دهی و کنترل سیستم‌های مبتنی بر عامل هستند.
+        هدف آن‌ها حل مسائل معماری مانند تقسیم وظایف، مدیریت ابزارها،
+        کنترل جریان، اعتبارسنجی و همکاری چند عامل است.
+      </p>
+
+      <h3>10.1. چرا به Design Pattern نیاز داریم؟</h3>
+
+      <p>
+        طراحی یک Agent فقط انتخاب مدل و نوشتن Prompt نیست.
+        باید مشخص شود چه کسی تصمیم می‌گیرد، چه کسی ابزار اجرا می‌کند،
+        وضعیت کجا ذخیره می‌شود، خطا چگونه مدیریت می‌شود و چه زمانی انسان باید وارد فرایند شود.
+      </p>
+
+      <p>
+        Design Patternها به ما کمک می‌کنند به‌جای طراحی تصادفی،
+        از راهکارهای معماری قابل فهم و قابل تکرار استفاده کنیم.
+      </p>
+
+      <h3>10.2. Pattern اول: ReAct (Reasoning and Acting)</h3>
+
+      <p>
+        در الگوی ReAct، عامل میان تحلیل مسئله و انجام اقدام جابه‌جا می‌شود.
+        به‌جای اینکه فقط یک پاسخ نهایی تولید کند، اطلاعات لازم را از محیط دریافت می‌کند،
+        اقدام انجام می‌دهد و نتیجه را برای تصمیم بعدی به کار می‌گیرد.
+      </p>
+
+      <div class="diagram">
+        Goal
+        |
+        v
+        Reason
+        |
+        v
+        Choose Action
+        |
+        v
+        Observe Result
+        |
+        v
+        Reason Again
+        |
+        v
+        Final Response
+      </div>
+
+      <p>
+        این الگو برای کارهایی مناسب است که اطلاعات لازم از ابتدا در اختیار عامل نیست.
+        با این حال، باید تعداد گام‌ها، نوع ابزارها و شرایط توقف محدود شوند.
+      </p>
+
+      <h3>10.3. Pattern دوم: Tool Calling</h3>
+
+      <p>
+        در Tool Calling، مدل بر اساس درخواست تصمیم می‌گیرد از یک ابزار استفاده کند.
+        ابزار می‌تواند یک API، پایگاه داده، سیستم جست‌وجو یا عملیات داخلی باشد.
+      </p>
+
+      <pre><code>{
+  "tool": "get_order_status",
+  "arguments": {
+    "order_id": "ORD-1042"
+  }
+}</code></pre>
+
+      <p>
+        این مثال صرفاً یک ساختار مفهومی برای فراخوانی ابزار است.
+        سیستم اجرایی باید ورودی را اعتبارسنجی کند، مجوز را بررسی کند
+        و خروجی ابزار را به عامل برگرداند.
+      </p>
+
+      <h3>10.4. Pattern سوم: Planner–Executor</h3>
+
+      <p>
+        در این الگو، یک بخش مسئول برنامه‌ریزی است و بخش دیگر وظایف برنامه را اجرا می‌کند.
+        Planner هدف را به مراحل کوچک‌تر تبدیل می‌کند.
+        Executor هر مرحله را انجام می‌دهد و نتیجه را برمی‌گرداند.
+      </p>
+
+      <div class="diagram">
+        User Goal
+        |
+        v
+        +----------------+
+        | Planner Agent |
+        +----------------+
+        |
+        v
+        Task Plan
+        |
+        v
+        +----------------+
+        | Executor |
+        +----------------+
+        |
+        v
+        Execution Result
+        |
+        v
+        Planner Review
+        |
+        +----> Replan if needed
+      </div>
+
+      <p>
+        مزیت این الگو جداسازی تصمیم‌گیری سطح بالا از اجرای جزئیات است.
+        نقطه ضعف آن می‌تواند هزینه بیشتر، تأخیر و وابستگی به کیفیت برنامه‌ریزی باشد.
+      </p>
+
+      <h3>10.5. Pattern چهارم: Router</h3>
+
+      <p>
+        Router ابتدا نوع درخواست را تشخیص می‌دهد و سپس آن را به عامل یا ابزار مناسب می‌فرستد.
+        برای مثال، درخواست‌های مالی به عامل مالی، درخواست‌های برنامه‌نویسی به Coding Agent
+        و درخواست‌های تحقیقاتی به Research Agent هدایت می‌شوند.
+      </p>
+
+      <pre><code>request = classify(user_input)
+
+switch request.category:
+
+    case "coding":
+        return coding_agent.run(request)
+
+    case "research":
+        return research_agent.run(request)
+
+    case "data_analysis":
+        return analytics_agent.run(request)
+
+    default:
+        return general_agent.run(request)</code></pre>
+
+      <h3>10.6. Pattern پنجم: Supervisor</h3>
+
+      <p>
+        در معماری Supervisor، یک عامل مرکزی وظایف را میان چند عامل تخصصی توزیع می‌کند.
+        Supervisor مسئول انتخاب عامل، مدیریت وابستگی‌ها و ترکیب نتایج است.
+      </p>
+
+      <p>
+        برای مثال، در یک پروژه تولید گزارش:
+      </p>
+
+      <ul>
+        <li>Research Agent اطلاعات بیرونی را جمع‌آوری می‌کند.</li>
+        <li>Data Agent داده‌های داخلی را تحلیل می‌کند.</li>
+        <li>Writing Agent گزارش را می‌نویسد.</li>
+        <li>Reviewer Agent کیفیت و سازگاری گزارش را بررسی می‌کند.</li>
+        <li>Supervisor نتیجه نهایی را تجمیع می‌کند.</li>
+      </ul>
+
+      <h3>10.7. Pattern ششم: Sequential Pipeline</h3>
+
+      <p>
+        در Pipeline، خروجی هر مرحله به ورودی مرحله بعد تبدیل می‌شود.
+        این الگو زمانی مناسب است که ترتیب مراحل مشخص باشد.
+      </p>
+
+      <div class="diagram">
+        Input
+        |
+        v
+        Research
+        |
+        v
+        Analysis
+        |
+        v
+        Draft
+        |
+        v
+        Review
+        |
+        v
+        Final Output
+      </div>
+
+      <h3>10.8. Pattern هفتم: Parallel Agents</h3>
+
+      <p>
+        در این الگو چند عامل به‌صورت هم‌زمان روی بخش‌های مستقل یک مسئله کار می‌کنند.
+        سپس نتایج آن‌ها ترکیب می‌شود.
+      </p>
+
+      <p>
+        برای مثال، سه عامل می‌توانند یک موضوع را از دیدگاه امنیت،
+        عملکرد و هزینه بررسی کنند.
+      </p>
+
+      <p>
+        اجرای موازی می‌تواند زمان را کاهش دهد؛ اما هزینه، پیچیدگی هماهنگی
+        و احتمال اختلاف نتایج را افزایش می‌دهد.
+      </p>
+
+      <h3>10.9. Pattern هشتم: Critic–Reviewer</h3>
+
+      <p>
+        یک عامل خروجی تولید می‌کند و عامل دیگری آن را نقد یا اعتبارسنجی می‌کند.
+        Reviewer باید معیارهای مشخصی داشته باشد؛ مثلاً صحت، کامل بودن،
+        رعایت نیازمندی‌ها، امنیت و سازگاری.
+      </p>
+
+      <p>
+        صرفاً استفاده از دو مدل به معنی تضمین کیفیت نیست.
+        اگر هر دو مدل از یک فرض اشتباه پیروی کنند، ممکن است خروجی غلط یکدیگر را تأیید کنند.
+        تست‌های مستقل و شواهد بیرونی همچنان ضروری‌اند.
+      </p>
+
+      <h3>10.10. Pattern نهم: Human-in-the-Loop</h3>
+
+      <p>
+        در این الگو، انسان در نقاط حساس فرایند حضور دارد.
+        سیستم ممکن است بخش‌های کم‌ریسک را خودکار انجام دهد،
+        اما برای عملیات مهم تأیید بخواهد.
+      </p>
+
+      <p>نمونه نقاط تأیید:</p>
+      <ul>
+        <li>تأیید قبل از انتشار کد</li>
+        <li>تأیید قبل از پرداخت</li>
+        <li>تأیید قبل از حذف داده</li>
+        <li>تأیید قبل از ارسال پیام به مشتری</li>
+        <li>تأیید تغییر سیاست یا مجوزهای دسترسی</li>
+      </ul>
+
+      <h3>10.11. Pattern دهم: Blackboard</h3>
+
+      <p>
+        در الگوی Blackboard، چند عامل یا جزء سیستم روی یک فضای مشترک اطلاعاتی کار می‌کنند.
+        هر عامل می‌تواند بخشی از مسئله را تکمیل کند و نتیجه خود را در فضای مشترک قرار دهد.
+      </p>
+
+      <p>
+        این الگو برای مسائل پیچیده‌ای مفید است که حل آن‌ها به اطلاعات تولیدشده توسط چند تخصص نیاز دارد.
+        اما باید مشخص باشد چه کسی مجاز به تغییر هر بخش است و تعارض‌ها چگونه حل می‌شوند.
+      </p>
+
+      <h3>10.12. Pattern یازدهم: Reflection Loop</h3>
+
+      <p>
+        عامل خروجی خود را بررسی می‌کند، ضعف‌ها را پیدا می‌کند و نسخه اصلاح‌شده تولید می‌کند.
+        برای جلوگیری از تکرار بی‌پایان، باید تعداد دورها و معیار توقف مشخص باشند.
+      </p>
+
+      <h3>10.13. Pattern دوازدهم: Map-Reduce</h3>
+
+      <p>
+        مسئله به بخش‌های مستقل تقسیم می‌شود، هر بخش جداگانه پردازش می‌شود
+        و سپس نتایج با هم ترکیب می‌شوند.
+        این روش برای تحلیل مجموعه‌های بزرگ سند یا داده مناسب است.
+      </p>
+
+      <h3>10.14. مقایسه الگوها</h3>
+
+      <table>
+        <tr>
+          <th>Pattern</th>
+          <th>بهترین کاربرد</th>
+          <th>ریسک یا محدودیت</th>
+        </tr>
+        <tr>
+          <td>ReAct</td>
+          <td>تعامل پویا با محیط</td>
+          <td>تکرار زیاد و هزینه بالا</td>
+        </tr>
+        <tr>
+          <td>Planner–Executor</td>
+          <td>وظایف چندمرحله‌ای</td>
+          <td>برنامه‌ریزی اشتباه</td>
+        </tr>
+        <tr>
+          <td>Router</td>
+          <td>هدایت درخواست‌ها</td>
+          <td>طبقه‌بندی اشتباه</td>
+        </tr>
+        <tr>
+          <td>Supervisor</td>
+          <td>هماهنگی چند عامل</td>
+          <td>تبدیل شدن به گلوگاه</td>
+        </tr>
+        <tr>
+          <td>Pipeline</td>
+          <td>فرایندهای مرحله‌ای</td>
+          <td>انعطاف کمتر</td>
+        </tr>
+        <tr>
+          <td>Parallel Agents</td>
+          <td>تحلیل موازی</td>
+          <td>هزینه و تعارض خروجی</td>
+        </tr>
+        <tr>
+          <td>Critic–Reviewer</td>
+          <td>کنترل کیفیت</td>
+          <td>تأیید اشتباه مشترک</td>
+        </tr>
+        <tr>
+          <td>Human-in-the-Loop</td>
+          <td>عملیات حساس</td>
+          <td>نیاز به زمان انسان</td>
+        </tr>
+        <tr>
+          <td>Map-Reduce</td>
+          <td>داده‌های حجیم</td>
+          <td>دشواری تجمیع نتایج</td>
+        </tr>
+      </table>
+
+      <div class="callout green">
+        <strong>نکته طراحی:</strong>
+        هیچ Patternی برای تمام مسائل بهترین نیست.
+        یک سیستم Production ممکن است ترکیبی از Router، Planner–Executor،
+        Parallel Agents، Reviewer و Human-in-the-Loop باشد.
+      </div>
+    </section>
+
+
+    <!-- CHAPTER 11 -->
+    <section class="chapter" id="ch11">
+      <h2>11. Future of Agentic AI</h2>
+
+      <p class="lead">
+        آینده Agentic AI احتمالاً به سمت سیستم‌هایی حرکت می‌کند که
+        توانایی بیشتری در برنامه‌ریزی، استفاده از ابزار، تعامل با محیط،
+        همکاری میان عامل‌ها و مدیریت وظایف پیچیده دارند.
+        اما مسیر پیشرفت فقط افزایش هوش مدل‌ها نیست؛ قابلیت اعتماد، امنیت،
+        هزینه و کنترل نیز تعیین‌کننده‌اند.
+      </p>
+
+      <h3>11.1. حرکت از Chatbot به سیستم‌های اجرایی</h3>
+
+      <p>
+        Chatbot معمولاً در قالب مکالمه با کاربر تعامل دارد.
+        Agentic System می‌تواند مکالمه را به مجموعه‌ای از عملیات تبدیل کند.
+        برای مثال، به‌جای توضیح دادن نحوه تهیه گزارش،
+        داده‌ها را دریافت کند، تحلیل را انجام دهد، نمودار بسازد و گزارش آماده کند.
+      </p>
+
+      <p>
+        این تحول به معنی حذف رابط گفت‌وگویی نیست؛ بلکه مکالمه به یکی از راه‌های تعریف هدف
+        و کنترل سیستم تبدیل می‌شود.
+      </p>
+
+      <h3>11.2. افزایش همکاری میان عامل‌ها</h3>
+
+      <p>
+        با رشد سیستم‌های چندعاملی، احتمالاً نیاز به استانداردهای مشترک برای
+        شناسایی عامل‌ها، کشف قابلیت‌ها، ارسال وظایف و تبادل نتایج بیشتر خواهد شد.
+      </p>
+
+      <p>
+        در چنین معماری‌هایی، یک عامل ممکن است از عامل دیگری برای تحلیل داده،
+        جست‌وجوی اطلاعات، توسعه نرم‌افزار یا اجرای یک وظیفه تخصصی کمک بگیرد.
+      </p>
+
+      <p>
+        برای این همکاری، پروتکل‌هایی مانند Agent-to-Agent (A2A) اهمیت پیدا می‌کنند.
+        همچنین پروتکل‌هایی مانند Model Context Protocol (MCP) می‌توانند
+        دسترسی عامل به ابزارها و منابع را استانداردتر کنند.
+      </p>
+
+      <h3>11.3. عامل‌های دارای حافظه پیشرفته‌تر</h3>
+
+      <p>
+        یکی از مسیرهای مهم توسعه، بهبود حافظه عامل‌هاست.
+        سیستم‌ها به‌جای اتکا به Context یک مکالمه، می‌توانند اطلاعات مرتبط را
+        در حافظه کوتاه‌مدت، بلندمدت و حافظه مخصوص وظیفه نگهداری کنند.
+      </p>
+
+      <p>
+        چالش اصلی فقط ذخیره اطلاعات نیست؛ بلکه تشخیص این است که چه چیزی ارزش ذخیره دارد،
+        چه زمانی باید بازیابی شود و چگونه اطلاعات قدیمی یا اشتباه اصلاح شوند.
+      </p>
+
+      <h3>11.4. افزایش توانایی استفاده از کامپیوتر</h3>
+
+      <p>
+        Computer Use و Browser Automation می‌توانند دامنه کاربرد عامل‌ها را گسترش دهند.
+        عامل‌ها ممکن است در آینده بتوانند با طیف بیشتری از نرم‌افزارها،
+        رابط‌های کاربری و ابزارهای سازمانی تعامل کنند.
+      </p>
+
+      <p>
+        با این حال، قابلیت کنترل رابط کاربری باید همراه با تشخیص خطا،
+        محدودیت مجوز، تأیید عملیات حساس و ثبت رویدادها توسعه یابد.
+      </p>
+
+      <h3>11.5. عامل‌های چندوجهی و محیط‌محور</h3>
+
+      <p>
+        عامل‌های چندوجهی می‌توانند متن، تصویر، صوت و ویدئو را در کنار هم پردازش کنند.
+        این قابلیت در سیستم‌های رباتیک، دستیارهای محیطی، آموزش، صنعت و کنترل کیفیت اهمیت دارد.
+      </p>
+
+      <p>
+        در آینده ممکن است تعامل با عامل‌ها از صفحه چت فراتر رود:
+        کاربر صحبت کند، تصویر نشان دهد، یک محیط را به اشتراک بگذارد
+        و عامل بر اساس ترکیب این ورودی‌ها اقدام کند.
+      </p>
+
+      <h3>11.6. افزایش اهمیت Agent Governance</h3>
+
+      <p>
+        هرچه عامل‌ها اختیار بیشتری پیدا کنند، مدیریت آن‌ها نیز اهمیت بیشتری خواهد داشت.
+        سازمان‌ها باید بدانند هر عامل چه کاری می‌تواند انجام دهد،
+        به چه داده‌هایی دسترسی دارد، چه ابزارهایی را اجرا می‌کند
+        و چه کسی مسئول نتیجه اقدامات آن است.
+      </p>
+
+      <p>موضوعات کلیدی Governance عبارت‌اند از:</p>
+      <ul>
+        <li>هویت و احراز هویت عامل</li>
+        <li>مجوزهای دقیق و حداقلی</li>
+        <li>ثبت اقدامات و تصمیم‌ها</li>
+        <li>محدودیت‌های هزینه و زمان اجرا</li>
+        <li>سیاست‌های تأیید انسانی</li>
+        <li>مدیریت داده و حریم خصوصی</li>
+        <li>قابلیت توقف و لغو عملیات</li>
+        <li>بررسی و ممیزی رفتار عامل</li>
+      </ul>
+
+      <h3>11.7. اقتصاد عامل‌ها و Cost-aware Agents</h3>
+
+      <p>
+        در سیستم‌های Agentic، هزینه فقط هزینه یک درخواست مدل نیست.
+        ممکن است یک وظیفه شامل چندین فراخوانی مدل، جست‌وجو، اجرای ابزار،
+        پردازش فایل، تولید صوت یا تحلیل تصویر باشد.
+      </p>
+
+      <p>
+        بنابراین عامل‌های آینده باید نسبت به هزینه و زمان حساس‌تر باشند.
+        برای مثال، برای یک سؤال ساده از مدل کوچک‌تر استفاده کنند
+        و فقط در مسائل پیچیده به مدل قوی‌تر مراجعه کنند.
+      </p>
+
+      <p>
+        همچنین باید بدانند چه زمانی ادامه تحقیق یا اجرای ابزار دیگر ارزش افزوده کافی ندارد.
+      </p>
+
+      <h3>11.8. حرکت به سمت سیستم‌های قابل اعتماد</h3>
+
+      <p>
+        در کاربردهای واقعی، توانایی انجام کار بدون تضمین صحت کافی نیست.
+        یک سیستم قابل اعتماد باید خروجی خود را بررسی کند،
+        در صورت نبود شواهد مناسب عدم قطعیت را بیان کند
+        و برای عملیات حساس کنترل‌های مناسب داشته باشد.
+      </p>
+
+      <p>ویژگی‌های مهم یک Agent قابل اعتماد:</p>
+      <ul>
+        <li>قابلیت توضیح مسیر اجرای کار</li>
+        <li>ثبت منبع اطلاعات و نتیجه ابزارها</li>
+        <li>مدیریت خطا و بازیابی</li>
+        <li>کنترل دسترسی و مجوز</li>
+        <li>ارزیابی مستمر کیفیت</li>
+        <li>امکان مداخله و توقف انسانی</li>
+        <li>سازگاری با تغییر نسخه‌ها و ابزارها</li>
+      </ul>
+
+      <h3>11.9. محدودیت‌هایی که احتمالاً همچنان مهم خواهند بود</h3>
+
+      <p>
+        حتی با پیشرفت مدل‌ها، تعدادی از چالش‌ها از بین نمی‌روند:
+      </p>
+
+      <ul>
+        <li>ابهام در نیازمندی‌های انسانی</li>
+        <li>کمبود اطلاعات قابل اعتماد</li>
+        <li>پیامدهای پیش‌بینی‌نشده اقدامات</li>
+        <li>محدودیت منابع محاسباتی</li>
+        <li>تعارض میان اهداف و سیاست‌ها</li>
+        <li>امنیت در محیط‌های باز و غیرقابل اعتماد</li>
+        <li>مسئولیت‌پذیری در تصمیم‌های خودکار</li>
+      </ul>
+
+      <h3>11.10. یک سناریوی آینده‌نگرانه</h3>
+
+      <p>
+        تصور کن یک شرکت برای توسعه یک محصول جدید از یک سیستم Agentic استفاده می‌کند.
+        کاربر فقط هدف تجاری را تعریف می‌کند:
+        «یک پلتفرم مدیریت اشتراک برای مشتریان سازمانی بساز.»
+      </p>
+
+      <p>سیستم می‌تواند مجموعه‌ای از عامل‌های تخصصی داشته باشد:</p>
+
+      <ul>
+        <li><strong>Product Agent:</strong> تحلیل نیازمندی‌های محصول.</li>
+        <li><strong>Research Agent:</strong> بررسی بازار و محصولات مشابه.</li>
+        <li><strong>Architecture Agent:</strong> پیشنهاد معماری نرم‌افزار.</li>
+        <li><strong>Coding Agent:</strong> پیاده‌سازی بخش‌های نرم‌افزاری.</li>
+        <li><strong>Testing Agent:</strong> طراحی و اجرای تست‌ها.</li>
+        <li><strong>Security Agent:</strong> بررسی ریسک‌ها و کنترل‌های امنیتی.</li>
+        <li><strong>Deployment Agent:</strong> آماده‌سازی فرایند انتشار.</li>
+        <li><strong>Monitoring Agent:</strong> بررسی عملکرد پس از انتشار.</li>
+      </ul>
+
+      <p>
+        این عامل‌ها ممکن است از طریق پروتکل‌های استاندارد با یکدیگر ارتباط برقرار کنند،
+        به ابزارهای سازمانی متصل شوند و وضعیت کار را در یک سیستم هماهنگ‌کننده نگه دارند.
+        با این حال، تصمیم‌های مهم معماری، انتشار و تغییرات حساس همچنان باید
+        در چارچوب سیاست‌های سازمان و نظارت انسانی انجام شوند.
+      </p>
+
+      <div class="callout green">
+        <strong>جمع‌بندی نهایی:</strong>
+        آینده Agentic AI صرفاً ساخت مدل‌های بزرگ‌تر نیست.
+        بخش مهمی از پیشرفت در معماری عامل‌ها، همکاری میان آن‌ها،
+        حافظه، تعامل با محیط، استفاده از ابزار، ارزیابی،
+        امنیت و مدیریت چرخه عمر سیستم‌های هوشمند اتفاق خواهد افتاد.
+      </div>
+    </section>
+
+
+    <!-- FINAL SECTION -->
+    <section class="chapter" id="summary">
+      <h2>جمع‌بندی کل بخش Advanced Topics and Emerging Technologies</h2>
+
+      <p>
+        در این بخش یازده حوزه مهم از نسل جدید سیستم‌های هوشمند را بررسی کردیم.
+        هر حوزه بخشی از توانایی‌های Agentic AI را توسعه می‌دهد.
+        برای درک بهتر ارتباط این موضوعات، جدول زیر نقش هر یک را خلاصه می‌کند.
+      </p>
+
+      <table>
+        <tr>
+          <th>موضوع</th>
+          <th>مسئله اصلی</th>
+          <th>توانایی کلیدی</th>
+        </tr>
+        <tr>
+          <td>AI Coding Agents</td>
+          <td>توسعه و اصلاح کد</td>
+          <td>تعامل با مخزن کد و ابزارهای توسعه</td>
+        </tr>
+        <tr>
+          <td>Autonomous Software Engineering</td>
+          <td>مدیریت چرخه توسعه</td>
+          <td>تبدیل هدف نرم‌افزاری به فرایند اجرایی</td>
+        </tr>
+        <tr>
+          <td>Computer Use Agents</td>
+          <td>تعامل با نرم‌افزارهای گرافیکی</td>
+          <td>مشاهده و کنترل رابط کاربری</td>
+        </tr>
+        <tr>
+          <td>Browser Automation Agents</td>
+          <td>انجام وظایف وب</td>
+          <td>ناوبری، استخراج و تعامل با صفحات</td>
+        </tr>
+        <tr>
+          <td>Deep Research Agents</td>
+          <td>تحقیق پیچیده</td>
+          <td>جمع‌آوری و ترکیب شواهد</td>
+        </tr>
+        <tr>
+          <td>Voice Agents</td>
+          <td>تعامل گفتاری</td>
+          <td>درک و تولید گفتار</td>
+        </tr>
+        <tr>
+          <td>Multimodal Agents</td>
+          <td>کار با رسانه‌های مختلف</td>
+          <td>ترکیب متن، تصویر، صوت و ویدئو</td>
+        </tr>
+        <tr>
+          <td>Long-running Agents</td>
+          <td>وظایف طولانی‌مدت</td>
+          <td>حفظ وضعیت و بازیابی اجرا</td>
+        </tr>
+        <tr>
+          <td>Self-improving Agents</td>
+          <td>بهبود عملکرد در طول زمان</td>
+          <td>یادگیری از بازخورد و ارزیابی</td>
+        </tr>
+        <tr>
+          <td>Agentic AI Design Patterns</td>
+          <td>طراحی معماری عامل‌ها</td>
+          <td>الگوهای تکرارپذیر هماهنگی و کنترل</td>
+        </tr>
+        <tr>
+          <td>Future of Agentic AI</td>
+          <td>تکامل سیستم‌های هوشمند</td>
+          <td>خودمختاری، همکاری و تعامل گسترده‌تر</td>
+        </tr>
+      </table>
+
+      <h3>معماری یک سیستم Agentic پیشرفته</h3>
+
+      <div class="diagram">
+        User / Business Goal
+        |
+        v
+        +---------------------+
+        | Agent Orchestrator |
+        +---------------------+
+        |
+        +---------------+---------------+
+        | | |
+        v v v
+        Coding Agent Research Agent Voice Agent
+        | | |
+        v v v
+        Code Tools Search Tools Audio Tools
+        | | |
+        +---------------+---------------+
+        |
+        v
+        +---------------------+
+        | Shared State / |
+        | Memory / Knowledge |
+        +---------------------+
+        |
+        v
+        +---------------------+
+        | Evaluation and |
+        | Validation Layer |
+        +---------------------+
+        |
+        v
+        +---------------------+
+        | Security and |
+        | Human Approval |
+        +---------------------+
+        |
+        v
+        Final Outcome
+      </div>
+
+      <h3>مهارت‌هایی که برای تسلط بر این حوزه لازم است</h3>
+
+      <ul class="checklist">
+        <li>درک عمیق معماری LLM و Agentic Systems</li>
+        <li>توانایی طراحی Agent Workflow و Orchestration</li>
+        <li>مهارت کار با APIها و ابزارهای خارجی</li>
+        <li>درک MCP و پروتکل‌های ارتباطی عامل‌ها</li>
+        <li>تسلط بر Python یا TypeScript برای توسعه Agent</li>
+        <li>آشنایی با Browser Automation و Computer Use</li>
+        <li>درک State Management و حافظه بلندمدت</li>
+        <li>توانایی طراحی سیستم‌های چندعاملی</li>
+        <li>آشنایی با Evaluation و Observability</li>
+        <li>درک امنیت، مجوزها و Human-in-the-Loop</li>
+        <li>توانایی استقرار و نگهداری سیستم‌های Production</li>
+      </ul>
+
+      <h3>منابع رسمی برای مطالعه بیشتر</h3>
+
+      <ul>
+        <li>
+          <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener">
+            Model Context Protocol (MCP)
+          </a>
+          — استاندارد اتصال مدل‌ها و عامل‌ها به ابزارها و منابع.
+        </li>
+        <li>
+          <a href="https://a2a-protocol.org/" target="_blank" rel="noopener">
+            Agent2Agent Protocol
+          </a>
+          — استاندارد ارتباط و همکاری میان عامل‌های مستقل.
+        </li>
+        <li>
+          <a href="https://playwright.dev/" target="_blank" rel="noopener">
+            Playwright
+          </a>
+          — اتوماسیون مرورگر و تست برنامه‌های وب.
+        </li>
+        <li>
+          <a href="https://www.selenium.dev/documentation/" target="_blank" rel="noopener">
+            Selenium Documentation
+          </a>
+          — مستندات اتوماسیون مرورگر.
+        </li>
+        <li>
+          <a href="https://docs.langchain.com/" target="_blank" rel="noopener">
+            LangChain Documentation
+          </a>
+          — ابزارها و الگوهای توسعه برنامه‌های مبتنی بر LLM.
+        </li>
+        <li>
+          <a href="https://docs.langchain.com/oss/python/langgraph/overview" target="_blank" rel="noopener">
+            LangGraph
+          </a>
+          — طراحی جریان‌های کاری و عامل‌های دارای State.
+        </li>
+        <li>
+          <a href="https://openai.github.io/openai-agents-python/" target="_blank" rel="noopener">
+            OpenAI Agents SDK
+          </a>
+          — ابزارها و الگوهای ساخت سیستم‌های Agentic.
+        </li>
+        <li>
+          <a href="https://docs.crewai.com/" target="_blank" rel="noopener">
+            CrewAI Documentation
+          </a>
+          — ساخت و هماهنگی تیم‌های چندعاملی.
+        </li>
+      </ul>
+
+      <div class="callout">
+        <strong>نکته پایانی برای مطالعه:</strong>
+        برای یادگیری حرفه‌ای، صرفاً حفظ کردن نام ابزارها و Frameworkها کافی نیست.
+        باید بتوانی یک مسئله واقعی را تحلیل کنی، معماری عامل را طراحی کنی،
+        ابزارهای مناسب را انتخاب کنی، امنیت را در نظر بگیری،
+        رفتار سیستم را ارزیابی کنی و آن را در محیط واقعی پایدار نگه داری.
+      </div>
+
+    </section>
+
+  
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-nav">
+      <a href="index.html">نقشه راه</a>
+      <a href="11.html">فصل قبل</a>
+      <a href="#intro">فهرست مطالب</a>
+      <a href="#">بالای صفحه ↑</a>
+    </div>
+    Advanced Topics and Emerging Technologies · Chapter 12
+    <br>
+    <strong>M_Ai</strong>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      try { localStorage.setItem('m-ai-theme', theme); } catch (e) {}
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#10101e' : '#f5f5fb');
+    }
+    try {
+      const saved = localStorage.getItem('m-ai-theme');
+      if (saved === 'light' || saved === 'dark') setTheme(saved);
+    } catch (e) {}
+    themeToggle.addEventListener('click', () => {
+      setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      const el = document.getElementById('progress');
+      if (el) el.style.width = progress + '%';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,3444 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10101e">
+  <meta name="description" content="آموزش جامع Spec-Driven Development در عصر هوش مصنوعی">
+  <title>Spec-Driven Development (SDD) | فصل ۱۰ — M_Ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --purple: #9275f5;
+      --purple-strong: #7657e8;
+      --cyan: #51cbdc;
+      --green: #49c9a3;
+      --radius: 18px;
+      --transition: .28s ease;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #10101e;
+      --bg-secondary: #151529;
+      --surface: #1b1b32;
+      --surface-hover: #242440;
+      --surface-soft: rgba(255, 255, 255, .045);
+      --text: #f5f3ff;
+      --text-secondary: #c3c1d5;
+      --muted: #9695ae;
+      --border: rgba(255, 255, 255, .09);
+      --border-strong: rgba(255, 255, 255, .15);
+      --header-bg: rgba(16, 16, 30, .92);
+      --shadow: 0 18px 50px rgba(0, 0, 0, .24);
+      --callout-bg: rgba(146, 117, 245, .1);
+      --callout-border: rgba(146, 117, 245, .45);
+      --tip-bg: rgba(81, 203, 220, .08);
+      --tip-border: rgba(81, 203, 220, .4);
+      --warning-bg: rgba(217, 119, 6, .1);
+      --warning-border: rgba(217, 119, 6, .45);
+      --code-bg: #0c0c18;
+      --code-text: #b8f0d8;
+      --diagram-bg: rgba(146, 117, 245, .1);
+      --diagram-border: rgba(146, 117, 245, .28);
+      --table-head: rgba(146, 117, 245, .12);
+      --table-alt: rgba(255, 255, 255, .03);
+      --tag-bg: rgba(146, 117, 245, .15);
+      --tag-text: #c4b5fd;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .22), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .12), transparent 45%);
+      --progress-track: rgba(255, 255, 255, .08);
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f5fb;
+      --bg-secondary: #eeeefa;
+      --surface: #fff;
+      --surface-hover: #f7f5ff;
+      --surface-soft: rgba(102, 78, 190, .045);
+      --text: #202039;
+      --text-secondary: #55556f;
+      --muted: #77778f;
+      --border: rgba(40, 35, 90, .10);
+      --border-strong: rgba(40, 35, 90, .17);
+      --header-bg: rgba(255, 255, 255, .92);
+      --shadow: 0 18px 50px rgba(45, 35, 100, .09);
+      --callout-bg: #f5f3ff;
+      --callout-border: #6658e8;
+      --tip-bg: #f0fdfa;
+      --tip-border: #0d9488;
+      --warning-bg: #fffbeb;
+      --warning-border: #d97706;
+      --code-bg: #111827;
+      --code-text: #d1fae5;
+      --diagram-bg: #eef2ff;
+      --diagram-border: #c7d2fe;
+      --table-head: #f3f4f6;
+      --table-alt: #fafafa;
+      --tag-bg: #ede9fe;
+      --tag-text: #5b21b6;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .15), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .1), transparent 45%);
+      --progress-track: rgba(40, 35, 90, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+      transition: background .35s, color .35s;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--progress-track);
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      z-index: 200;
+    }
+    #progress {
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      transition: width .1s linear;
+    }
+
+    /* HEADER */
+    .site-header {
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--header-bg);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(146, 117, 245, .24);
+    }
+    .site-header::after {
+      content: "";
+      position: absolute;
+      bottom: -1px; right: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent 3%, rgba(81, 203, 220, .35) 25%, rgba(146, 117, 245, .85) 50%, rgba(81, 203, 220, .35) 75%, transparent 97%);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      direction: ltr;
+      flex-shrink: 0;
+    }
+    .brand-mark {
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #a58cff, #6848df);
+      box-shadow: 0 4px 18px rgba(118, 87, 232, .28), inset 0 1px 0 rgba(255,255,255,.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-mark::before {
+      content: "";
+      position: absolute; inset: 1px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 11px;
+    }
+    .brand-mark svg { width: 26px; height: 26px; position: relative; z-index: 1; }
+    .brand-name { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--text); }
+    .brand-name span { color: var(--purple); }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: 12px;
+      display: grid; place-items: center;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    .theme-toggle:hover { border-color: var(--purple); transform: rotate(12deg); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-icon-sun { display: none; }
+    html[data-theme="light"] .theme-icon-moon { display: none; }
+    html[data-theme="light"] .theme-icon-sun { display: block; }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 11px;
+      background: rgba(146, 117, 245, .12);
+      border: 1px solid rgba(146, 117, 245, .32);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .back-home:hover { background: var(--purple); color: #fff; }
+    .back-home svg { width: 15px; height: 15px; }
+
+    /* CHAPTER HERO */
+    .chapter-hero {
+      position: relative;
+      padding: 48px 20px 40px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .chapter-hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--hero-overlay);
+      pointer-events: none;
+    }
+    .chapter-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .chapter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(146, 117, 245, .35);
+      background: rgba(146, 117, 245, .1);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .8px;
+      direction: ltr;
+      margin-bottom: 16px;
+    }
+    .chapter-badge::before {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .chapter-hero h1 {
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 900;
+      line-height: 1.45;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .chapter-hero .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 2.1;
+      max-width: 720px;
+    }
+    .chapter-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .meta-chip {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .meta-chip strong {
+      color: var(--text);
+      font-size: 15px;
+      margin-left: 6px;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    /* LAYOUT */
+    .page-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static !important; order: -1; }
+    }
+
+    /* SIDEBAR TOC */
+    .sidebar {
+      position: sticky;
+      top: 88px;
+    }
+    .toc-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 18px 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.04);
+    }
+    .toc-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-title::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .toc-link {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      transition: .2s;
+      border: 1px solid transparent;
+    }
+    .toc-link:hover {
+      color: var(--text);
+      background: rgba(146, 117, 245, .08);
+      border-color: rgba(146, 117, 245, .2);
+      padding-right: 14px;
+    }
+    .toc-link-strong { color: var(--purple); font-weight: 800; }
+    .toc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+    .print-btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 11px;
+      border-radius: 12px;
+      background: linear-gradient(115deg, #a18aff, #7558e8);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .print-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* MAIN CONTENT SURFACE */
+    .content-area { min-width: 0; }
+
+    .section-card {
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      background: var(--surface) !important;
+      color: var(--text);
+    }
+    .section-number {
+      background: linear-gradient(135deg, #9275f5, #51cbdc) !important;
+      color: white !important;
+    }
+
+    /* Override common Tailwind color utilities for theme */
+    .content-area {
+      color: var(--text);
+    }
+    .content-area .text-slate-800,
+    .content-area .text-slate-700,
+    .content-area .text-slate-900 { color: var(--text) !important; }
+    .content-area .text-slate-500,
+    .content-area .text-slate-400,
+    .content-area .text-slate-600 { color: var(--muted) !important; }
+    .content-area .text-indigo-600,
+    .content-area .text-indigo-700,
+    .content-area .text-indigo-800 { color: var(--purple) !important; }
+    .content-area .bg-white { background: var(--surface) !important; }
+    .content-area .bg-slate-50,
+    .content-area .bg-slate-100,
+    .content-area .hover\:bg-slate-50:hover { background: var(--surface-soft) !important; }
+    .content-area .border,
+    .content-area .border-slate-200,
+    .content-area .border-slate-100 { border-color: var(--border) !important; }
+    .content-area .shadow-sm { box-shadow: 0 6px 24px rgba(0,0,0,.05) !important; }
+
+    .callout {
+      border-right: 4px solid var(--callout-border) !important;
+      background: var(--callout-bg) !important;
+      color: var(--text);
+    }
+    .tip {
+      border-right: 4px solid var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .warning {
+      border-right: 4px solid var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .code {
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .86rem;
+      border: 1px solid var(--border);
+    }
+    .ltr { direction: ltr; text-align: left; }
+    .diagram-box {
+      border: 1px solid var(--diagram-border) !important;
+      background: var(--diagram-bg) !important;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .arrow { color: var(--purple) !important; font-size: 1.5rem; font-weight: 800; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      background: var(--tag-bg) !important;
+      color: var(--tag-text) !important;
+      padding: 3px 10px;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+    .table-wrap { overflow-x: auto; border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td {
+      border: 1px solid var(--border) !important;
+      padding: 12px;
+      text-align: right;
+      vertical-align: top;
+      color: var(--text);
+    }
+    th { background: var(--table-head) !important; font-weight: 800; }
+    tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+    .content-area h2, .content-area h3, .content-area h4 {
+      color: var(--text);
+    }
+    .content-area p, .content-area li { color: var(--text-secondary); }
+    .content-area strong { color: var(--text); }
+
+    .content-area .bg-indigo-50,
+    .content-area .bg-teal-50 { background: var(--surface-soft) !important; }
+    .content-area .border-teal-300 { border-color: var(--diagram-border) !important; }
+    .content-area .text-teal-700 { color: var(--green) !important; }
+    .content-area .text-rose-700 { color: #f87171 !important; }
+    .content-area .text-amber-700 { color: #fbbf24 !important; }
+    .content-area .bg-indigo-700,
+    .content-area .hover\:bg-indigo-800:hover {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+    }
+    .content-area .text-indigo-900 { color: var(--text) !important; }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 2;
+    }
+    .site-footer strong {
+      color: var(--purple);
+      direction: ltr;
+      display: inline-block;
+      font-size: 15px;
+    }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .footer-nav a {
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      transition: .2s;
+    }
+    .footer-nav a:hover {
+      color: var(--purple);
+      border-color: rgba(146,117,245,.4);
+    }
+
+    @media print {
+      .site-header, .sidebar, .progress-bar, .no-print, .theme-toggle, .back-home { display: none !important; }
+      .page-layout { grid-template-columns: 1fr; }
+      .section-card { break-inside: avoid; }
+      body { background: white; color: black; }
+    }
+
+    @media (max-width: 640px) {
+      .chapter-hero { padding: 32px 16px 28px; }
+      .header-inner { padding: 0 14px; }
+      .back-home span.label { display: none; }
+      .page-layout { padding: 18px 14px 40px; }
+    }
+
+
+    .content-area .card,
+    .content-area section.chapter {
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 17px !important;
+      padding: 26px !important;
+      margin-bottom: 22px !important;
+      box-shadow: 0 3px 15px rgba(0,0,0,.04) !important;
+      color: var(--text);
+    }
+    .content-area h2 {
+      font-size: 1.5rem !important;
+      color: var(--text) !important;
+      margin: 0 0 18px !important;
+    }
+    .content-area h3 {
+      font-size: 1.15rem !important;
+      color: var(--purple) !important;
+      margin: 25px 0 10px !important;
+    }
+    .content-area h4 {
+      font-size: 1rem !important;
+      color: var(--text) !important;
+      margin: 20px 0 8px !important;
+    }
+    .content-area .lead { font-size: 1.05rem; color: var(--text-secondary) !important; }
+    .content-area .muted { color: var(--muted) !important; }
+    .content-area .callout {
+      border-right: 4px solid var(--callout-border);
+      background: var(--callout-bg);
+      padding: 15px 18px; border-radius: 10px; margin: 18px 0;
+    }
+    .content-area .warning {
+      border-color: var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .content-area .success {
+      border-color: var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .content-area .tip {
+      border-color: var(--cyan) !important;
+      background: rgba(81,203,220,.08) !important;
+    }
+    .content-area .tag {
+      display: inline-block;
+      background: rgba(146,117,245,.12) !important;
+      color: var(--purple) !important;
+      padding: 2px 10px; border-radius: 999px; font-size: .78rem; margin: 2px;
+    }
+    .content-area pre {
+      direction: ltr; text-align: left; overflow-x: auto; white-space: pre-wrap;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      padding: 18px; border-radius: 12px;
+      font: 13px/1.8 ui-monospace, Consolas, monospace;
+      margin: 14px 0 20px; border: 1px solid var(--border);
+    }
+    .content-area code {
+      direction: ltr; unicode-bidi: embed;
+      background: rgba(146,117,245,.12) !important;
+      color: var(--purple) !important;
+      padding: 2px 5px; border-radius: 4px;
+    }
+    .content-area pre code { background: transparent !important; color: inherit !important; padding: 0; }
+    .content-area .diagram {
+      direction: ltr; text-align: center; overflow-x: auto; padding: 18px;
+      background: var(--surface-soft);
+      border: 1px dashed var(--border);
+      border-radius: 12px; margin: 18px 0;
+    }
+    .content-area .node {
+      display: inline-block;
+      background: var(--surface);
+      border: 2px solid rgba(146,117,245,.4);
+      border-radius: 10px; padding: 10px 15px; margin: 5px;
+      color: var(--text); font-weight: 600; min-width: 110px;
+    }
+    .content-area .arrow { display: inline-block; color: var(--muted); font-size: 1.5rem; padding: 0 4px; }
+    .content-area .mini {
+      border: 1px solid var(--border); border-radius: 12px; padding: 15px;
+      background: var(--surface-soft);
+    }
+    .content-area .number {
+      display: inline-grid; place-items: center;
+      width: 31px; height: 31px; border-radius: 50%;
+      background: rgba(146,117,245,.15); color: var(--purple);
+      font-weight: 800; margin-left: 8px;
+    }
+    .content-area .checklist label {
+      display: block; padding: 7px 0; border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .content-area .quiz-question {
+      padding: 17px 0; border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .content-area .quiz-question label {
+      display: block; cursor: pointer; padding: 5px 9px; border-radius: 7px;
+    }
+    .content-area .quiz-question label:hover { background: var(--surface-soft); }
+    .content-area button {
+      font-family: inherit; border: 0; border-radius: 9px; cursor: pointer;
+      padding: 10px 17px;
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+      color: white; font-weight: 600;
+    }
+    .content-area button.secondary {
+      background: var(--surface-soft) !important;
+      color: var(--text) !important;
+      border: 1px solid var(--border);
+    }
+    .content-area .result {
+      margin-top: 16px; padding: 15px;
+      background: var(--callout-bg); border-radius: 10px; display: none;
+      color: var(--text);
+    }
+    .content-area th { background: var(--table-head) !important; color: var(--text) !important; }
+    .content-area td { border-color: var(--border) !important; color: var(--text-secondary); }
+    .content-area tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+  </style>
+</head>
+<body>
+  <div class="progress-bar no-print"><div id="progress"></div></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="M_Ai Home">
+        <div class="brand-name"><span>M_Ai</span></div>
+        <div class="brand-mark">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 29V10L15 22L20 15L25 22L35 10V29" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 15V8" stroke="#DDFBFF" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="20" cy="6" r="2.5" fill="#DDFBFF"/>
+          </svg>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="تغییر تم">
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>
+          </svg>
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>
+          </svg>
+        </button>
+        <a href="index.html" class="back-home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/>
+          </svg>
+          <span class="label">صفحه اصلی</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="chapter-hero">
+    <div class="chapter-hero-inner">
+      <div class="chapter-badge">CHAPTER 10 · SPEC-DRIVEN DEVELOPMENT</div>
+      <h1>Spec-Driven Development (SDD)</h1>
+      <p class="subtitle">
+        از تبدیل نیازهای کسب‌وکار به Specificationهای دقیق و قابل‌فهم برای AI،
+        تا طراحی معماری، تولید کد، تست خودکار، مدیریت تغییرات و توسعه چندعاملی.
+      </p>
+      <div class="chapter-meta">
+        <div class="meta-chip"><strong>15</strong> فصل تخصصی</div>
+        <div class="meta-chip"><strong>10</strong> از ۱۲ فصل</div>
+        <div class="meta-chip"><strong>SDD</strong></div>
+        <div class="meta-chip"><strong>10</strong> سؤال آزمون</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-layout">
+    <aside class="sidebar no-print">
+      <div class="toc-card">
+        <div class="toc-title">فهرست مطالب</div>
+        <nav class="toc-nav" id="toc">
+<a class="toc-link toc-link-strong" href="#intro">مقدمه و نقشه راه</a>
+<a class="toc-link" href="#s1">۱. معرفی SDD</a>
+<a class="toc-link" href="#s2">۲. SDD در برابر روش سنتی</a>
+<a class="toc-link" href="#s3">۳. توسعه SDD با کمک AI</a>
+<a class="toc-link" href="#s4">۴. نیازمندی تا مشخصات فنی</a>
+<a class="toc-link" href="#s5">۵. Specification قابل‌خواندن برای AI</a>
+<a class="toc-link" href="#s6">۶. طراحی معماری بر اساس Spec</a>
+<a class="toc-link" href="#s7">۷. تبدیل Spec به برنامه پیاده‌سازی</a>
+<a class="toc-link" href="#s8">۸. تولید کد از روی Spec</a>
+<a class="toc-link" href="#s9">۹. تولید و اعتبارسنجی تست</a>
+<a class="toc-link" href="#s10">۱۰. نسخه‌بندی و مدیریت تغییر</a>
+<a class="toc-link" href="#s11">۱۱. بازبینی انسانی و AI</a>
+<a class="toc-link" href="#s12">۱۲. Agentic SDD</a>
+<a class="toc-link" href="#s13">۱۳. توسعه چندعاملی</a>
+<a class="toc-link" href="#s14">۱۴. ابزارها و چارچوب‌ها</a>
+<div class="toc-divider"></div>
+<a class="toc-link" href="#s15">۱۵. پروژه عملی انتها‌به‌انتها</a>
+<a class="toc-link toc-link-strong" href="#decision">چارچوب تصمیم‌گیری</a>
+<a class="toc-link toc-link-strong" href="#checklist">چک‌لیست آمادگی تولید</a>
+<a class="toc-link toc-link-strong" href="#glossary">واژه‌نامه</a>
+<a class="toc-link toc-link-strong" href="#exercises">تمرین‌ها</a>
+<a class="toc-link toc-link-strong" href="#quiz">آزمون پایانی</a>
+<a class="toc-link toc-link-strong" href="#references">منابع</a>
+        </nav>
+        <button class="print-btn" type="button" onclick="window.print()">چاپ یا ذخیره PDF</button>
+      </div>
+    </aside>
+
+    <main class="content-area min-w-0">
+
+
+        <section id="intro" class="card">
+          <h2>مقدمه: چرا SDD در عصر AI اهمیت پیدا کرده است؟</h2>
+          <p class="lead">
+            ابزارهای هوش مصنوعی می‌توانند در چند دقیقه کدی تولید کنند که قبلاً ساعت‌ها یا روزها زمان می‌برد.
+            اما سرعت تولید کد الزاماً به معنای ساخت محصول درست نیست.
+            مسئله اصلی این است: آیا مدل دقیقاً می‌داند چه چیزی باید ساخته شود، چرا باید ساخته شود،
+            چه محدودیت‌هایی وجود دارد و چگونه باید صحت نتیجه را اثبات کند؟
+          </p>
+          <p>
+            در روش‌های Prompt-first معمولاً توسعه‌دهنده یک درخواست طبیعی به مدل می‌دهد،
+            مدل کد تولید می‌کند و سپس با مشاهده خطاها یا نتایج نامطلوب، درخواست‌های بعدی ارسال می‌شوند.
+            این روش برای کارهای کوچک و اکتشافی مفید است، اما در پروژه‌های بزرگ ممکن است باعث
+            پراکندگی تصمیم‌ها، ناسازگاری معماری، تکرار کد، فراموش‌شدن محدودیت‌ها و افزایش هزینه اصلاح شود.
+          </p>
+          <p>
+            SDD تلاش می‌کند این مشکل را با قراردادن یک Specification ساخت‌یافته در مرکز فرایند حل کند.
+            Specification مشخص می‌کند سیستم چه رفتاری باید داشته باشد، چه چیزهایی خارج از محدوده هستند،
+            چه شرایطی باید برقرار باشد و از چه راهی می‌توان نتیجه را آزمایش کرد.
+          </p>
+
+          <div class="callout success">
+            <strong>اصل کلیدی:</strong>
+            AI باید بر اساس یک هدف روشن، محدودیت‌های مشخص و معیارهای قابل‌سنجش کار کند؛
+            نه اینکه از یک Prompt مبهم، درباره کل محصول حدس بزند.
+          </div>
+
+          <h3>نقشه کلی چرخه SDD</h3>
+          <div class="diagram">
+            <div class="node">Business Intent</div><span class="arrow">→</span>
+            <div class="node">Requirements</div><span class="arrow">→</span>
+            <div class="node">Specification</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Architecture</div><span class="arrow">→</span>
+            <div class="node">Implementation Plan</div><span class="arrow">→</span>
+            <div class="node">Code & Tests</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Validation</div><span class="arrow">→</span>
+            <div class="node">Review</div><span class="arrow">→</span>
+            <div class="node">Release</div>
+          </div>
+
+          <h3>چه چیزی در این دوره یاد می‌گیریم؟</h3>
+          <ul>
+            <li>چگونه نیازهای مبهم کسب‌وکار را به الزامات دقیق تبدیل کنیم.</li>
+            <li>چگونه Specification بنویسیم که هم برای انسان و هم برای عامل هوش مصنوعی قابل‌فهم باشد.</li>
+            <li>چگونه معماری، API، مدل داده و برنامه پیاده‌سازی را از روی Spec طراحی کنیم.</li>
+            <li>چگونه تست‌ها را از الزامات استخراج کنیم و پوشش واقعی نیازمندی‌ها را بسنجیم.</li>
+            <li>چگونه تغییرات Specification را کنترل کنیم تا کد و مستندات از هم فاصله نگیرند.</li>
+            <li>چگونه چند Agent را با نقش‌های مختلف در یک فرایند توسعه نرم‌افزار هماهنگ کنیم.</li>
+          </ul>
+        </section>
+
+        <section id="s1" class="chapter">
+          <h2>۱. Introduction to Spec-Driven Development</h2>
+          <h3>۱.۱. تعریف SDD</h3>
+          <p>
+            <strong>Spec-Driven Development</strong> یا توسعه مبتنی بر مشخصات، رویکردی در مهندسی نرم‌افزار است
+            که در آن Specification یا مشخصات سیستم، مبنای اصلی تصمیم‌گیری و اجرای فعالیت‌های توسعه قرار می‌گیرد.
+            در این رویکرد، تیم قبل از پیاده‌سازی تلاش می‌کند رفتار مورد انتظار، قواعد کسب‌وکار،
+            محدودیت‌ها، سناریوهای اصلی، حالت‌های خطا و معیارهای پذیرش را شفاف کند.
+          </p>
+          <p>
+            سپس از این مشخصات برای تولید یا هدایت معماری، طراحی فنی، برنامه کار، کد، تست و ارزیابی استفاده می‌شود.
+            بنابراین Spec صرفاً یک فایل Word یا سندی برای تحویل به تیم نیست؛ یک Artifact زنده است
+            که در طول عمر محصول به‌روزرسانی می‌شود.
+          </p>
+
+          <h3>۱.۲. Specification دقیقاً چیست؟</h3>
+          <p>
+            Specification سند یا مجموعه‌ای از Artifactهاست که رفتار و ویژگی‌های مورد انتظار سیستم را توصیف می‌کند.
+            یک Spec خوب باید به اندازه کافی دقیق باشد تا دو نفر مستقل، برداشت‌های کاملاً متفاوتی از آن نداشته باشند.
+          </p>
+          <div class="grid2">
+            <div class="mini">
+              <h4>Functional Requirements</h4>
+              <p>سیستم چه قابلیت‌هایی دارد؟ چه ورودی‌هایی می‌گیرد و چه خروجی‌هایی تولید می‌کند؟</p>
+            </div>
+            <div class="mini">
+              <h4>Non-functional Requirements</h4>
+              <p>سیستم از نظر سرعت، امنیت، دسترس‌پذیری، مقیاس‌پذیری و نگهداشت چه شرایطی دارد؟</p>
+            </div>
+            <div class="mini">
+              <h4>Business Rules</h4>
+              <p>چه قوانین و محدودیت‌هایی از منطق کسب‌وکار باید رعایت شوند؟</p>
+            </div>
+            <div class="mini">
+              <h4>Acceptance Criteria</h4>
+              <p>چه شواهدی نشان می‌دهند که قابلیت با موفقیت پیاده‌سازی شده است؟</p>
+            </div>
+          </div>
+
+          <h3>۱.۳. تفاوت Spec با Prompt</h3>
+          <p>
+            Prompt معمولاً دستور یا درخواست یک‌باره برای مدل است. اما Specification باید ماندگار،
+            قابل‌نسخه‌بندی، قابل‌ارجاع، قابل‌بازبینی و قابل‌آزمایش باشد.
+            Prompt می‌تواند یکی از راه‌های تولید یا اصلاح Spec باشد؛ اما نباید تنها محل ذخیره تصمیم‌های پروژه باشد.
+          </p>
+          <table>
+            <tr>
+              <th>ویژگی</th>
+              <th>Prompt ساده</th>
+              <th>Specification</th>
+            </tr>
+            <tr>
+              <td>ماندگاری</td>
+              <td>ممکن است در تاریخچه گفتگو باقی بماند.</td>
+              <td>به‌عنوان Artifact پروژه نگهداری می‌شود.</td>
+            </tr>
+            <tr>
+              <td>ساختار</td>
+              <td>اغلب آزاد و غیرساخت‌یافته</td>
+              <td>دارای بخش‌ها و قالب مشخص</td>
+            </tr>
+            <tr>
+              <td>قابلیت بازبینی</td>
+              <td>وابسته به تاریخچه گفتگو</td>
+              <td>قابل Review و Approval رسمی</td>
+            </tr>
+            <tr>
+              <td>قابلیت تست</td>
+              <td>معمولاً غیرمستقیم</td>
+              <td>دارای Acceptance Criteria و ارتباط با تست</td>
+            </tr>
+            <tr>
+              <td>مدیریت تغییر</td>
+              <td>سخت و پراکنده</td>
+              <td>قابل Versioning و Change Tracking</td>
+            </tr>
+          </table>
+
+          <h3>۱.۴. چرا SDD برای توسعه AI-native مهم است؟</h3>
+          <ul>
+            <li><strong>کاهش ابهام:</strong> مدل مجبور نیست جزئیات مهم محصول را از خودش حدس بزند.</li>
+            <li><strong>حفظ Context:</strong> تصمیم‌های مهم در فایل‌های پروژه باقی می‌مانند، نه فقط در گفتگو.</li>
+            <li><strong>قابلیت انتقال:</strong> می‌توان از یک ابزار یا مدل به ابزار دیگری مهاجرت کرد، بدون اینکه تمام
+              منطق پروژه در یک مکالمه محصور شود.</li>
+            <li><strong>قابلیت ارزیابی:</strong> می‌توان خروجی AI را با معیارهایی که قبل از تولید کد تعریف شده‌اند
+              مقایسه کرد.</li>
+            <li><strong>کاهش Drift:</strong> فاصله گرفتن تدریجی کد، تست و مستندات از نیاز واقعی کمتر می‌شود.</li>
+          </ul>
+
+          <h3>۱.۵. مثال ساده</h3>
+          <p>فرض کنید می‌خواهیم قابلیت بازیابی رمز عبور را به یک سامانه اضافه کنیم.</p>
+          <div class="callout warning">
+            <strong>درخواست مبهم:</strong>
+            «یک صفحه فراموشی رمز عبور بساز.»
+          </div>
+          <p>این درخواست مشخص نمی‌کند:</p>
+          <ul>
+            <li>کاربر با ایمیل بازیابی می‌کند یا شماره تلفن؟</li>
+            <li>آیا باید وجود یا عدم وجود حساب کاربری افشا شود؟</li>
+            <li>لینک بازیابی چه مدت اعتبار دارد؟</li>
+            <li>آیا لینک یک‌بارمصرف است؟</li>
+            <li>محدودیت تعداد درخواست‌ها چیست؟</li>
+            <li>بعد از تغییر رمز چه اتفاقی برای نشست‌های قبلی می‌افتد؟</li>
+          </ul>
+          <p>یک Spec مناسب این ابهام‌ها را به قواعد قابل‌اجرا تبدیل می‌کند.</p>
+        </section>
+
+        <section id="s2" class="chapter">
+          <h2>۲. SDD vs Traditional Software Development</h2>
+          <h3>۲.۱. روش سنتی چگونه کار می‌کند؟</h3>
+          <p>
+            در روش سنتی، فرایند معمولاً با تحلیل نیازمندی‌ها شروع می‌شود، سپس طراحی انجام می‌گیرد،
+            توسعه‌دهندگان کد را می‌نویسند، تیم تست آن را ارزیابی می‌کند و در نهایت محصول منتشر می‌شود.
+            البته در روش‌های Agile این مراحل لزوماً خطی و یک‌باره نیستند و در Sprintهای تکرارشونده انجام می‌شوند.
+          </p>
+          <p>
+            نکته مهم این است که در بسیاری از تیم‌ها، مستندات اولیه بعد از شروع کدنویسی به‌روزرسانی نمی‌شوند.
+            در نتیجه، کد به‌تدریج به منبع واقعی شناخت سیستم تبدیل می‌شود و مستندات ممکن است قدیمی شوند.
+          </p>
+
+          <h3>۲.۲. تفاوت اصلی در مرکزیت Specification است</h3>
+          <table>
+            <tr>
+              <th>محور</th>
+              <th>روش سنتی رایج</th>
+              <th>SDD</th>
+            </tr>
+            <tr>
+              <td>Artifact محوری</td>
+              <td>کد، طراحی و مستندات متنوع</td>
+              <td>Specification و زنجیره Artifactهای مرتبط</td>
+            </tr>
+            <tr>
+              <td>نقش AI</td>
+              <td>کمک به وظایف منفرد مانند تکمیل کد</td>
+              <td>مشارکت در تحلیل، طراحی، برنامه‌ریزی، کدنویسی و تست</td>
+            </tr>
+            <tr>
+              <td>شروع پیاده‌سازی</td>
+              <td>ممکن است با اطلاعات ناقص شروع شود.</td>
+              <td>پس از رسیدن Spec به سطح قابل‌قبول</td>
+            </tr>
+            <tr>
+              <td>معیار پذیرش</td>
+              <td>گاهی در طول کار روشن می‌شود.</td>
+              <td>از ابتدا به نیازمندی متصل می‌شود.</td>
+            </tr>
+            <tr>
+              <td>تغییرات</td>
+              <td>ممکن است در کد اعمال و مستندات فراموش شوند.</td>
+              <td>ابتدا یا هم‌زمان در Spec ثبت و سپس منتشر می‌شوند.</td>
+            </tr>
+            <tr>
+              <td>تست</td>
+              <td>ممکن است بعد از پیاده‌سازی طراحی شود.</td>
+              <td>از Acceptance Criteria استخراج می‌شود.</td>
+            </tr>
+          </table>
+
+          <h3>۲.۳. آیا SDD جایگزین Agile است؟</h3>
+          <p>
+            خیر. SDD یک روش برای سازمان‌دهی جریان اطلاعات و Artifactهای مهندسی است و می‌تواند
+            در کنار Agile، Scrum، Kanban، DevOps و CI/CD استفاده شود.
+            یک تیم می‌تواند در هر Sprint، قابلیت جدیدی را با چرخه Specify → Plan → Implement → Validate توسعه دهد.
+          </p>
+          <h3>۲.۴. ارتباط با TDD، BDD و DDD</h3>
+          <table>
+            <tr>
+              <th>رویکرد</th>
+              <th>تمرکز اصلی</th>
+              <th>نسبت با SDD</th>
+            </tr>
+            <tr>
+              <td>TDD</td>
+              <td>توسعه با چرخه تست قرمز، کد سبز، Refactor</td>
+              <td>تست‌ها می‌توانند از Spec استخراج شوند و اجرای TDD را هدایت کنند.</td>
+            </tr>
+            <tr>
+              <td>BDD</td>
+              <td>تعریف رفتار سیستم با زبان قابل‌فهم برای کسب‌وکار</td>
+              <td>سناریوهای Given/When/Then می‌توانند بخشی از Spec باشند.</td>
+            </tr>
+            <tr>
+              <td>DDD</td>
+              <td>مدل‌سازی دامنه و منطق کسب‌وکار</td>
+              <td>مدل دامنه، Aggregateها و Bounded Contextها می‌توانند در طراحی مبتنی بر Spec استفاده شوند.</td>
+            </tr>
+            <tr>
+              <td>Contract-Driven</td>
+              <td>تعریف قرارداد میان سرویس‌ها یا مصرف‌کنندگان و ارائه‌دهندگان</td>
+              <td>قرارداد API می‌تواند یک Spec دقیق و قابل‌اعتبارسنجی باشد.</td>
+            </tr>
+          </table>
+
+          <div class="callout tip">
+            SDD قرار نیست همه اسناد را زیاد کند. هدف، ساختن حداقل مجموعه Artifactهایی است که ابهام را کم می‌کنند
+            و مسیر قابل‌ردیابی از نیاز تا تست و کد به وجود می‌آورند.
+          </div>
+        </section>
+
+        <section id="s3" class="chapter">
+          <h2>۳. AI-assisted Spec-Driven Development</h2>
+          <h3>۳.۱. نقش AI در چرخه SDD</h3>
+          <p>
+            در SDD مبتنی بر AI، مدل زبانی می‌تواند در تولید پیش‌نویس نیازمندی‌ها، کشف ابهام،
+            پیشنهاد سناریوهای مرزی، طراحی معماری، شکستن کارها به Taskهای کوچک، تولید کد و تست کمک کند.
+            اما مسئولیت تأیید صحت نیازمندی‌ها و تصمیم‌های پرریسک همچنان باید مشخص و قابل‌ردیابی باشد.
+          </p>
+          <div class="diagram">
+            <div class="node">Human / Product Owner</div><span class="arrow">→</span>
+            <div class="node">AI Analyst</div><span class="arrow">→</span>
+            <div class="node">Specification</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">AI Architect</div><span class="arrow">→</span>
+            <div class="node">AI Developer</div><span class="arrow">→</span>
+            <div class="node">AI Tester</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Human Review & Approval</div>
+          </div>
+
+          <h3>۳.۲. AI به‌عنوان تحلیلگر نیازمندی</h3>
+          <p>یک مدل می‌تواند از روی توضیح اولیه، موارد زیر را استخراج کند:</p>
+          <ul>
+            <li>ذی‌نفعان و نقش‌های کاربری</li>
+            <li>User Storyها و Use Caseها</li>
+            <li>قواعد کسب‌وکار</li>
+            <li>سناریوهای اصلی و جایگزین</li>
+            <li>حالت‌های خطا و Edge Caseها</li>
+            <li>ابهام‌ها و تناقض‌های احتمالی</li>
+            <li>نیازمندی‌های غیرعملکردی که باید از صاحب محصول پرسیده شوند</li>
+          </ul>
+          <p>
+            نکته مهم این است که مدل نباید فرض‌های خود را به‌عنوان واقعیت قطعی ثبت کند.
+            هر مورد باید به یکی از وضعیت‌های «تأییدشده»، «فرض موقت»، «نیازمند تصمیم» یا «نامشخص» متصل شود.
+          </p>
+
+          <h3>۳.۳. AI به‌عنوان بازبین Specification</h3>
+          <p>می‌توان از AI خواست Spec را از نظر کیفیت بررسی کند:</p>
+          <ul>
+            <li>آیا هر Requirement قابل‌آزمایش است؟</li>
+            <li>آیا عبارت‌هایی مانند «سریع»، «امن»، «مناسب» یا «کاربرپسند» بدون معیار آمده‌اند؟</li>
+            <li>آیا دو الزام با یکدیگر تناقض دارند؟</li>
+            <li>آیا برای هر نقش کاربری مجوزهای مشخص وجود دارد؟</li>
+            <li>آیا رفتار سیستم در خطاها تعریف شده است؟</li>
+            <li>آیا نیازمندی‌ها قابل‌ردیابی به تست هستند؟</li>
+          </ul>
+
+          <h3>۳.۴. Prompt مناسب برای تحلیل نیازمندی</h3>
+          <pre><code>You are a senior business analyst.
+
+Analyze the following product idea and produce a structured
+requirements draft.
+
+Do not invent business decisions.
+For every uncertain item:
+- label it as an assumption or open question
+- explain why it matters
+- suggest possible options
+
+Produce:
+1. Stakeholders
+2. User roles
+3. Functional requirements
+4. Non-functional requirements
+5. Business rules
+6. Main user journeys
+7. Alternative flows
+8. Failure scenarios
+9. Acceptance criteria
+10. Open questions
+
+Product idea:
+[Describe the product here]</code></pre>
+
+          <h3>۳.۵. محدودیت‌ها و ریسک‌های استفاده از AI</h3>
+          <ul>
+            <li><strong>Hallucination:</strong> ممکن است مدل یک قانون کسب‌وکار یا قابلیت را بدون منبع بسازد.</li>
+            <li><strong>Overconfidence:</strong> ممکن است Spec ناقص را کامل و بدون ابهام اعلام کند.</li>
+            <li><strong>Context loss:</strong> در پروژه‌های بزرگ ممکن است تصمیم‌های قدیمی را نادیده بگیرد.</li>
+            <li><strong>Inconsistent artifacts:</strong> ممکن است Spec، Plan و Test با یکدیگر هماهنگ نباشند.</li>
+            <li><strong>Automation bias:</strong> اعضای تیم ممکن است خروجی AI را بدون بررسی بپذیرند.</li>
+          </ul>
+          <div class="callout warning">
+            خروجی AI پیش‌نویس قابل‌بررسی است، نه حقیقت قطعی. برای نیازمندی‌های مالی، امنیتی،
+            حقوقی و عملیاتی باید مالک انسانی و شواهد معتبر وجود داشته باشد.
+          </div>
+        </section>
+
+        <section id="s4" class="chapter">
+          <h2>۴. Business Requirements to Technical Specifications</h2>
+          <h3>۴.۱. تفاوت Business Requirement و Technical Specification</h3>
+          <p>
+            Business Requirement توضیح می‌دهد سازمان چه نتیجه‌ای می‌خواهد و چرا.
+            Technical Specification مشخص می‌کند سیستم برای رسیدن به آن نتیجه باید چه رفتارها،
+            قراردادها و محدودیت‌های فنی داشته باشد.
+          </p>
+          <p>مثال:</p>
+          <div class="mini">
+            <h4>نیاز کسب‌وکار</h4>
+            «مشتری باید بتواند وضعیت سفارش خود را بدون تماس با پشتیبانی مشاهده کند.»
+          </div>
+          <div class="mini mt-3">
+            <h4>نیازمندی محصول</h4>
+            «کاربر واردشده باید بتواند فهرست سفارش‌های متعلق به حساب خود را مشاهده کند
+            و با انتخاب هر سفارش، آخرین وضعیت و تاریخچه تغییرات آن را ببیند.»
+          </div>
+          <div class="mini mt-3">
+            <h4>مشخصات فنی</h4>
+            «سرویس GET /api/v1/orders باید سفارش‌های متعلق به کاربر احراز هویت‌شده را برگرداند.
+            سرویس GET /api/v1/orders/{id}/tracking باید فقط در صورت مالکیت سفارش، تاریخچه وضعیت را ارائه کند.»
+          </div>
+
+          <h3>۴.۲. زنجیره تبدیل نیازمندی</h3>
+          <div class="diagram">
+            <div class="node">Business Goal</div><span class="arrow">→</span>
+            <div class="node">Business Requirement</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">User Story</div><span class="arrow">→</span>
+            <div class="node">Functional Requirement</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Technical Requirement</div><span class="arrow">→</span>
+            <div class="node">API / Data / Architecture</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Acceptance Tests</div>
+          </div>
+
+          <h3>۴.۳. روش استخراج نیازمندی‌ها</h3>
+          <ol>
+            <li><strong>شناخت مسئله:</strong> مسئله واقعی کسب‌وکار چیست؟ چرا باید حل شود؟</li>
+            <li><strong>شناسایی ذی‌نفعان:</strong> چه کسانی از سیستم استفاده می‌کنند یا تحت تأثیر آن هستند؟</li>
+            <li><strong>تعریف هدف:</strong> نتیجه مطلوب را به شکل قابل‌اندازه‌گیری بنویسید.</li>
+            <li><strong>شناسایی جریان‌ها:</strong> کاربر از کجا شروع می‌کند و به چه نتیجه‌ای می‌رسد؟</li>
+            <li><strong>کشف قواعد:</strong> چه محدودیت‌ها و قوانین دامنه‌ای وجود دارد؟</li>
+            <li><strong>تعریف استثناها:</strong> در صورت شکست هر مرحله چه اتفاقی می‌افتد؟</li>
+            <li><strong>تبدیل به معیار پذیرش:</strong> از چه راهی می‌توان رفتار صحیح را اثبات کرد؟</li>
+          </ol>
+
+          <h3>۴.۴. مثال کامل: سامانه رزرو نوبت</h3>
+          <table>
+            <tr>
+              <th>سطح</th>
+              <th>نمونه</th>
+            </tr>
+            <tr>
+              <td>Business Goal</td>
+              <td>کاهش تماس‌های تلفنی برای رزرو نوبت.</td>
+            </tr>
+            <tr>
+              <td>Business Requirement</td>
+              <td>مراجع بتواند زمان آزاد را مشاهده و رزرو کند.</td>
+            </tr>
+            <tr>
+              <td>User Story</td>
+              <td>به‌عنوان مراجع می‌خواهم زمان آزاد را انتخاب کنم تا بدون تماس نوبت بگیرم.</td>
+            </tr>
+            <tr>
+              <td>Functional Requirement</td>
+              <td>سیستم باید فقط بازه‌های آزاد و قابل‌رزرو را نمایش دهد.</td>
+            </tr>
+            <tr>
+              <td>Business Rule</td>
+              <td>هر بازه زمانی برای یک پزشک فقط یک رزرو فعال می‌پذیرد.</td>
+            </tr>
+            <tr>
+              <td>Technical Requirement</td>
+              <td>ثبت رزرو باید در تراکنش اتمیک و با کنترل هم‌زمانی انجام شود.</td>
+            </tr>
+            <tr>
+              <td>Acceptance Criterion</td>
+              <td>اگر دو کاربر هم‌زمان یک بازه را رزرو کنند، حداکثر یک رزرو موفق باشد.</td>
+            </tr>
+          </table>
+
+          <h3>۴.۵. نوشتن معیار پذیرش با Given / When / Then</h3>
+          <pre><code>Feature: Appointment Booking
+
+Scenario: A user books an available time slot
+  Given a doctor has an available slot at 10:00
+  And the user is authenticated
+  When the user confirms the appointment
+  Then the appointment is created
+  And the slot becomes unavailable
+
+Scenario: Two users try to book the same slot
+  Given a doctor has one available slot at 10:00
+  When two users submit a booking concurrently
+  Then only one booking succeeds
+  And the other user receives a conflict response
+
+Scenario: Booking an unavailable slot
+  Given the slot is already booked
+  When a user tries to book it
+  Then the system rejects the request
+  And no duplicate appointment is created</code></pre>
+
+          <h3>۴.۶. مدیریت ابهام و فرض‌ها</h3>
+          <p>
+            یکی از مهم‌ترین وظایف تحلیلگر، تشخیص مواردی است که هنوز تصمیم‌گیری نشده‌اند.
+            برای مثال، «کاربر می‌تواند رزرو خود را لغو کند» کافی نیست.
+            باید مشخص شود تا چه زمانی، با چه شرایطی، با چه هزینه‌ای و با چه پیامدی برای ظرفیت رزرو.
+          </p>
+          <p>پیشنهاد می‌شود برای هر ابهام این فیلدها را نگه دارید:</p>
+          <pre><code>question_id: Q-014
+topic: appointment_cancellation
+question: How late can a user cancel an appointment?
+status: open
+owner: product_owner
+impact: high
+options:
+  - cancel_anytime
+  - cancel_until_24_hours_before
+  - cancel_until_2_hours_before
+decision_due: 2026-11-10</code></pre>
+        </section>
+
+        <section id="s5" class="chapter">
+          <h2>۵. AI-readable Specifications</h2>
+          <h3>۵.۱. منظور از AI-readable چیست؟</h3>
+          <p>
+            یک Specification قابل‌خواندن برای AI باید طوری نوشته شود که مدل بتواند
+            هدف، محدوده، قواعد، روابط میان نیازمندی‌ها و معیارهای پذیرش را با حداقل ابهام استخراج کند.
+            این به معنی استفاده از زبان ماشینی پیچیده نیست؛ متن ساده و دقیق همراه با ساختار ثابت معمولاً بسیار مؤثر است.
+          </p>
+
+          <h3>۵.۲. ویژگی‌های Spec مناسب برای AI</h3>
+          <ul>
+            <li><strong>Atomic:</strong> هر Requirement تا حد ممکن یک رفتار یا قاعده مشخص را بیان کند.</li>
+            <li><strong>Unambiguous:</strong> عبارت‌های مبهم و چندپهلو حذف یا تعریف شوند.</li>
+            <li><strong>Testable:</strong> بتوان برای هر Requirement آزمون یا روش تأیید تعریف کرد.</li>
+            <li><strong>Traceable:</strong> هر الزام شناسه یکتا داشته باشد.</li>
+            <li><strong>Consistent:</strong> اصطلاحات در کل پروژه معنای یکسان داشته باشند.</li>
+            <li><strong>Scoped:</strong> مرز قابلیت و موارد خارج از محدوده روشن باشد.</li>
+            <li><strong>Versioned:</strong> تغییرات و تصمیم‌ها قابل‌ردیابی باشند.</li>
+          </ul>
+
+          <h3>۵.۳. ساختار پیشنهادی یک Specification</h3>
+          <pre><code># Feature Specification: Appointment Booking
+
+## Metadata
+- ID: FEAT-BOOKING-001
+- Version: 1.0
+- Status: Approved
+- Owner: Product Team
+- Last Updated: 2026-11-02
+
+## 1. Objective
+Allow authenticated users to book available appointment slots.
+
+## 2. Scope
+In scope:
+- View available slots
+- Create an appointment
+- View booking confirmation
+
+Out of scope:
+- Online payment
+- Video consultation
+- Insurance processing
+
+## 3. Actors
+- Patient
+- Doctor
+- Administrator
+
+## 4. Functional Requirements
+FR-001: The system shall list available slots.
+FR-002: The system shall create a booking for an available slot.
+FR-003: The system shall prevent duplicate active bookings.
+
+## 5. Business Rules
+BR-001: A slot can have at most one active booking.
+BR-002: Only authenticated users can create bookings.
+
+## 6. Non-functional Requirements
+NFR-001: Booking confirmation should complete within 2 seconds
+under the defined normal-load test profile.
+NFR-002: A user must not access another user's booking data.
+
+## 7. Acceptance Criteria
+AC-001: A valid booking returns a booking identifier.
+AC-002: Concurrent booking attempts cannot create duplicates.
+
+## 8. Error Handling
+- 401: User is not authenticated.
+- 403: User is not authorized.
+- 409: Slot is no longer available.
+- 422: Request violates business validation.
+
+## 9. Open Questions
+- Cancellation policy is not yet approved.</code></pre>
+
+          <h3>۵.۴. شناسه‌گذاری Requirementها</h3>
+          <p>
+            شناسه یکتا امکان ارجاع از Spec به طراحی، کد، تست و گزارش نقص را فراهم می‌کند.
+            برای مثال:
+          </p>
+          <ul>
+            <li><code>FR-001</code>: Functional Requirement</li>
+            <li><code>NFR-001</code>: Non-functional Requirement</li>
+            <li><code>BR-001</code>: Business Rule</li>
+            <li><code>AC-001</code>: Acceptance Criterion</li>
+            <li><code>SEC-001</code>: Security Requirement</li>
+            <li><code>API-001</code>: API Contract</li>
+            <li><code>DATA-001</code>: Data Requirement</li>
+          </ul>
+
+          <h3>۵.۵. استفاده از Markdown، YAML، JSON و OpenAPI</h3>
+          <table>
+            <tr>
+              <th>قالب</th>
+              <th>کاربرد مناسب</th>
+              <th>نکته</th>
+            </tr>
+            <tr>
+              <td>Markdown</td>
+              <td>توضیح هدف، محدوده، سناریو و تصمیم‌ها</td>
+              <td>برای خوانایی انسانی و AI مناسب است.</td>
+            </tr>
+            <tr>
+              <td>YAML</td>
+              <td>Metadata، تنظیمات و قواعد ساخت‌یافته</td>
+              <td>Indentation باید دقیق باشد.</td>
+            </tr>
+            <tr>
+              <td>JSON</td>
+              <td>قراردادهای ماشینی و تبادل داده</td>
+              <td>باید با Schema اعتبارسنجی شود.</td>
+            </tr>
+            <tr>
+              <td>OpenAPI</td>
+              <td>قرارداد APIهای HTTP</td>
+              <td>قابلیت تولید Client، Server Stub و تست دارد.</td>
+            </tr>
+            <tr>
+              <td>JSON Schema</td>
+              <td>تعریف شکل و محدودیت داده</td>
+              <td>برای اعتبارسنجی ورودی و خروجی مفید است.</td>
+            </tr>
+            <tr>
+              <td>Gherkin</td>
+              <td>سناریوهای رفتاری</td>
+              <td>برای ارتباط میان Product، QA و Engineering مناسب است.</td>
+            </tr>
+          </table>
+
+          <h3>۵.۶. نمونه JSON Schema برای یک Requirement</h3>
+          <pre><code>{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Requirement",
+  "type": "object",
+  "required": [
+    "id",
+    "statement",
+    "priority",
+    "status",
+    "acceptance_criteria"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^(FR|NFR|BR)-[0-9]{3}$"
+    },
+    "statement": {
+      "type": "string",
+      "minLength": 10
+    },
+    "priority": {
+      "enum": ["must", "should", "could", "wont"]
+    },
+    "status": {
+      "enum": ["draft", "review", "approved", "deprecated"]
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    }
+  }
+}</code></pre>
+
+          <h3>۵.۷. خطاهای رایج در نوشتن Spec برای AI</h3>
+          <ul>
+            <li>قرار دادن چند رفتار مستقل در یک Requirement بزرگ.</li>
+            <li>استفاده از واژه‌هایی مانند «سریع»، «بهینه» و «امن» بدون تعریف معیار.</li>
+            <li>نوشتن راه‌حل فنی به‌جای بیان مسئله، قبل از روشن‌شدن نیاز کسب‌وکار.</li>
+            <li>حذف سناریوهای منفی و حالت‌های خطا.</li>
+            <li>نداشتن مرز مشخص برای قابلیت‌هایی که خارج از Scope هستند.</li>
+            <li>قرار دادن تصمیم‌های تأییدنشده در کنار تصمیم‌های قطعی بدون برچسب‌گذاری.</li>
+          </ul>
+        </section>
+
+        <section id="s6" class="chapter">
+          <h2>۶. Specification-driven Architecture Design</h2>
+          <h3>۶.۱. چرا معماری باید از Spec تأثیر بگیرد؟</h3>
+          <p>
+            معماری نرم‌افزار باید راهی برای تحقق نیازمندی‌ها و محدودیت‌های سیستم فراهم کند.
+            اگر Specification به دسترس‌پذیری بالا، جداسازی داده مشتریان، پردازش بلادرنگ یا کنترل هم‌زمانی نیاز دارد،
+            این موارد باید در معماری منعکس شوند.
+          </p>
+          <p>
+            معماری نباید صرفاً بر اساس سلیقه یا محبوبیت یک فناوری انتخاب شود.
+            انتخاب باید به نیازمندی‌ها، محدودیت‌های تیم، هزینه عملیاتی، مهارت‌ها و ریسک‌ها پاسخ دهد.
+          </p>
+
+          <h3>۶.۲. تبدیل نیازمندی‌ها به تصمیم معماری</h3>
+          <table>
+            <tr>
+              <th>نیازمندی</th>
+              <th>پیامد معماری احتمالی</th>
+            </tr>
+            <tr>
+              <td>جلوگیری از رزرو تکراری</td>
+              <td>Transaction، Unique Constraint، کنترل هم‌زمانی</td>
+            </tr>
+            <tr>
+              <td>پردازش اعلان‌ها بدون تأخیر در پاسخ کاربر</td>
+              <td>Queue و Background Worker</td>
+            </tr>
+            <tr>
+              <td>تفکیک داده سازمان‌ها</td>
+              <td>Tenant Isolation، کنترل دسترسی در لایه داده</td>
+            </tr>
+            <tr>
+              <td>پشتیبانی از بار متغیر</td>
+              <td>Horizontal Scaling و Load Balancing</td>
+            </tr>
+            <tr>
+              <td>ردیابی عملیات</td>
+              <td>Structured Logging و Distributed Tracing</td>
+            </tr>
+            <tr>
+              <td>امکان تغییر Provider</td>
+              <td>Adapter، Interface و Dependency Inversion</td>
+            </tr>
+          </table>
+
+          <h3>۶.۳. Architecture Decision Record یا ADR</h3>
+          <p>
+            تصمیم معماری باید همراه با دلیل و پیامدهایش ثبت شود.
+            ADR کمک می‌کند اعضای تیم بدانند چرا یک انتخاب انجام شده و چه گزینه‌هایی کنار گذاشته شده‌اند.
+          </p>
+          <pre><code># ADR-004: Use a relational database for bookings
+
+## Status
+Accepted
+
+## Context
+The booking system must prevent duplicate reservations
+and maintain transactional consistency.
+
+## Decision
+Use PostgreSQL as the primary transactional database.
+
+## Alternatives
+- Document database
+- In-memory store
+- Relational database
+
+## Consequences
+Positive:
+- Strong transactional guarantees
+- Unique constraints
+- Mature indexing and reporting
+
+Trade-offs:
+- Requires database capacity planning
+- Schema migrations must be managed
+
+## Related Requirements
+- FR-002
+- BR-001
+- NFR-003</code></pre>
+
+          <h3>۶.۴. طراحی لایه‌های سیستم</h3>
+          <div class="diagram">
+            <div class="node">Web / Mobile UI</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">API Layer</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Application Services</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Domain Model</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Repositories / Infrastructure</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Database / Queue / External Services</div>
+          </div>
+          <p>
+            این فقط یک نمونه معماری لایه‌ای است. Specification می‌تواند به معماری Modular Monolith،
+            Microservices، Event-driven، Serverless یا ترکیبی منجر شود.
+            نباید پیش از بررسی نیازها، یک معماری را به همه پروژه‌ها تحمیل کرد.
+          </p>
+
+          <h3>۶.۵. طراحی API از روی Spec</h3>
+          <pre><code>openapi: 3.1.0
+info:
+  title: Appointment API
+  version: 1.0.0
+
+paths:
+  /appointments:
+    post:
+      summary: Create an appointment
+      operationId: createAppointment
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - slotId
+              properties:
+                slotId:
+                  type: string
+                  format: uuid
+      responses:
+        "201":
+          description: Appointment created
+        "401":
+          description: Authentication required
+        "409":
+          description: Slot is no longer available
+        "422":
+          description: Validation error
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT</code></pre>
+
+          <h3>۶.۶. Quality Attributeها</h3>
+          <p>
+            نیازمندی‌های غیرعملکردی باید به سناریوهای قابل‌سنجش تبدیل شوند.
+            مثلاً «سیستم باید سریع باشد» یک نیازمندی کافی نیست.
+            باید بار مورد انتظار، نوع درخواست، محیط تست، معیار صدک و آستانه مشخص شود.
+          </p>
+          <pre><code>Quality Attribute: Performance
+
+Stimulus:
+A user submits a booking request.
+
+Environment:
+Normal production-like load profile.
+
+Response:
+The system validates and creates the booking.
+
+Measure:
+- p95 latency <= 2 seconds
+- error rate < 0.5%
+- no duplicate active bookings
+
+Test Profile:
+- 300 concurrent virtual users
+- 15-minute steady-state period</code></pre>
+        </section>
+
+        <section id="s7" class="chapter">
+          <h2>۷. Specification to Implementation Plan</h2>
+          <h3>۷.۱. چرا نمی‌توان مستقیم از یک Spec بزرگ کد تولید کرد؟</h3>
+          <p>
+            Specification ممکن است شامل ده‌ها یا صدها Requirement باشد.
+            اگر از AI بخواهیم همه آن‌ها را یک‌باره پیاده‌سازی کند، کنترل وابستگی‌ها،
+            ترتیب اجرا، کیفیت خروجی و امکان بازبینی دشوار می‌شود.
+            راه درست، تبدیل Spec به مجموعه‌ای از Taskهای کوچک، قابل‌تست و قابل‌تحویل است.
+          </p>
+
+          <h3>۷.۲. ساختار یک Implementation Plan</h3>
+          <ol>
+            <li>شناسایی قابلیت‌ها و اجزای سیستم</li>
+            <li>شناسایی وابستگی‌های فنی و دامنه‌ای</li>
+            <li>تعیین ترتیب پیاده‌سازی</li>
+            <li>شکستن کارها به Taskهای مستقل</li>
+            <li>تعیین ورودی و خروجی هر Task</li>
+            <li>تعریف تست‌های مرتبط</li>
+            <li>تعیین معیار تکمیل</li>
+            <li>تخمین ریسک و پیچیدگی</li>
+          </ol>
+
+          <h3>۷.۳. نمونه Task Plan</h3>
+          <pre><code># Implementation Plan
+
+## Phase 1: Foundation
+- TASK-001: Initialize repository
+- TASK-002: Configure application settings
+- TASK-003: Set up database connection
+- TASK-004: Add migration infrastructure
+
+## Phase 2: Domain
+- TASK-005: Create Appointment entity
+- TASK-006: Implement availability rules
+- TASK-007: Add booking domain service
+
+## Phase 3: API
+- TASK-008: Implement appointment endpoint
+- TASK-009: Add authentication middleware
+- TASK-010: Add authorization checks
+
+## Phase 4: Validation
+- TASK-011: Add unit tests
+- TASK-012: Add integration tests
+- TASK-013: Add concurrency tests
+- TASK-014: Verify acceptance criteria
+
+## Dependencies
+TASK-005 depends on TASK-003
+TASK-006 depends on TASK-005
+TASK-007 depends on TASK-006
+TASK-008 depends on TASK-007</code></pre>
+
+          <h3>۷.۴. ویژگی Task مناسب برای AI</h3>
+          <table>
+            <tr>
+              <th>فیلد</th>
+              <th>توضیح</th>
+            </tr>
+            <tr>
+              <td>ID</td>
+              <td>شناسه یکتا مانند TASK-008</td>
+            </tr>
+            <tr>
+              <td>Objective</td>
+              <td>نتیجه دقیق مورد انتظار</td>
+            </tr>
+            <tr>
+              <td>Context</td>
+              <td>فایل‌ها، قراردادها و تصمیم‌های مرتبط</td>
+            </tr>
+            <tr>
+              <td>Dependencies</td>
+              <td>کارهایی که باید قبل از این Task تکمیل شوند</td>
+            </tr>
+            <tr>
+              <td>Constraints</td>
+              <td>محدودیت‌های فنی و معماری</td>
+            </tr>
+            <tr>
+              <td>Acceptance Criteria</td>
+              <td>شرایط تأیید تکمیل Task</td>
+            </tr>
+            <tr>
+              <td>Tests</td>
+              <td>تست‌هایی که باید اجرا شوند یا ایجاد شوند</td>
+            </tr>
+            <tr>
+              <td>Deliverables</td>
+              <td>فایل‌ها یا خروجی‌های مورد انتظار</td>
+            </tr>
+          </table>
+
+          <h3>۷.۵. Dependency Graph و ترتیب اجرا</h3>
+          <div class="diagram">
+            <div class="node">Database Setup</div><span class="arrow">→</span>
+            <div class="node">Domain Model</div><span class="arrow">→</span>
+            <div class="node">Booking Service</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">API Endpoint</div><span class="arrow">→</span>
+            <div class="node">Integration Tests</div>
+          </div>
+          <p>
+            Taskهایی که وابستگی ندارند ممکن است موازی اجرا شوند.
+            اما Taskهای دارای وابستگی باید پس از آماده‌شدن پیش‌نیازها شروع شوند.
+            این موضوع در توسعه چندعاملی اهمیت بیشتری پیدا می‌کند.
+          </p>
+
+          <h3>۷.۶. Definition of Done</h3>
+          <p>برای هر Task، Definition of Done باید روشن باشد. برای مثال:</p>
+          <ul>
+            <li>کد مطابق قرارداد و معماری تعریف‌شده است.</li>
+            <li>تست‌های واحد مرتبط اجرا شده‌اند.</li>
+            <li>تست‌های Integration مرتبط موفق هستند.</li>
+            <li>خطاها و ورودی‌های نامعتبر مدیریت می‌شوند.</li>
+            <li>تغییرات مستند شده‌اند.</li>
+            <li>Requirementهای مرتبط قابل‌ردیابی هستند.</li>
+            <li>بازبینی انسانی یا فرایند تأیید لازم انجام شده است.</li>
+          </ul>
+        </section>
+
+        <section id="s8" class="chapter">
+          <h2>۸. Code Generation from Specifications</h2>
+          <h3>۸.۱. تولید کد مبتنی بر Spec چگونه انجام می‌شود؟</h3>
+          <p>
+            پس از تأیید Specification و Implementation Plan، AI می‌تواند برای هر Task،
+            کد مربوطه را تولید کند. اما تولید کد باید در محدوده مشخصی انجام شود.
+            مدل باید بداند کدام Requirement را پیاده‌سازی می‌کند، چه فایل‌هایی را می‌تواند تغییر دهد،
+            از چه Interfaceهایی باید استفاده کند و چه تست‌هایی باید پاس شوند.
+          </p>
+
+          <h3>۸.۲. چرخه پیشنهادی تولید کد</h3>
+          <div class="diagram">
+            <div class="node">Select Task</div><span class="arrow">→</span>
+            <div class="node">Load Context</div><span class="arrow">→</span>
+            <div class="node">Generate Patch</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Run Tests</div><span class="arrow">→</span>
+            <div class="node">Review Diff</div><span class="arrow">→</span>
+            <div class="node">Accept / Revise</div>
+          </div>
+
+          <h3>۸.۳. Context لازم برای تولید کد</h3>
+          <p>به‌جای ارسال کل پروژه در هر Prompt، Context مرتبط را به‌صورت هدفمند فراهم کنید:</p>
+          <ul>
+            <li>Specification قابلیت</li>
+            <li>Task فعلی و معیارهای پذیرش</li>
+            <li>ADRهای مرتبط</li>
+            <li>API Contract یا Data Schema</li>
+            <li>کدهای مشابه و Interfaceهای موجود</li>
+            <li>قواعد سبک کدنویسی و استانداردهای پروژه</li>
+            <li>تست‌های موجود و محدودیت‌های امنیتی</li>
+          </ul>
+
+          <h3>۸.۴. نمونه دستور تولید کد</h3>
+          <pre><code>You are implementing TASK-008.
+
+Read these project artifacts:
+- specs/appointment-booking.md
+- architecture/adr-004-database.md
+- api/openapi.yaml
+- tasks/implementation-plan.md
+
+Implement only the appointment creation endpoint.
+
+Requirements:
+- Satisfy FR-002 and BR-001.
+- Enforce authentication and ownership rules.
+- Handle concurrent booking attempts safely.
+- Return the documented HTTP response codes.
+
+Constraints:
+- Follow the existing project architecture.
+- Do not introduce a new framework.
+- Do not modify unrelated modules.
+- Do not weaken existing security controls.
+
+Before finishing:
+1. Run relevant unit tests.
+2. Add missing tests.
+3. Report changed files.
+4. Map each implemented requirement to evidence.
+5. List unresolved risks.</code></pre>
+
+          <h3>۸.۵. تولید کد بدون تخریب معماری</h3>
+          <p>
+            یکی از ریسک‌های AI coding این است که برای حل یک مسئله محلی، راه‌حل جدیدی ایجاد کند
+            که با معماری موجود سازگار نیست. برای کاهش این ریسک:
+          </p>
+          <ul>
+            <li>قواعد معماری را در فایل‌های پایدار پروژه ثبت کنید.</li>
+            <li>برای هر ماژول مالکیت و مرز مشخص تعریف کنید.</li>
+            <li>تغییرات را در قالب Patch یا Pull Request بازبینی کنید.</li>
+            <li>تست‌های معماری و Lint را در CI اجرا کنید.</li>
+            <li>از Agent بخواهید فایل‌های خارج از محدوده را بدون اجازه تغییر ندهد.</li>
+            <li>قبل از Merge، سازگاری کد با Spec و قراردادهای عمومی بررسی شود.</li>
+          </ul>
+
+          <h3>۸.۶. تولید کد از روی Contract</h3>
+          <p>
+            بعضی Artifactها مانند OpenAPI، Protocol Buffers و JSON Schema می‌توانند
+            در تولید خودکار Client، Server Stub، Validator و Documentation استفاده شوند.
+            این کار خطای ناشی از تفسیر متفاوت قراردادها را کاهش می‌دهد.
+          </p>
+          <div class="callout">
+            <strong>نکته:</strong>
+            تولید خودکار کد از قرارداد به معنی تضمین صحت منطق کسب‌وکار نیست.
+            قرارداد می‌تواند ساختار ورودی و خروجی را مشخص کند، اما منطق واقعی همچنان باید پیاده‌سازی و تست شود.
+          </div>
+        </section>
+
+        <section id="s9" class="chapter">
+          <h2>۹. Test Generation and Validation</h2>
+          <h3>۹.۱. چرا تست باید از Specification استخراج شود؟</h3>
+          <p>
+            اگر تست‌ها فقط بر اساس کدی که AI تولید کرده نوشته شوند، ممکن است همان برداشت اشتباه
+            در کد و تست تکرار شود. بهتر است معیارهای آزمون از Requirementهای تأییدشده استخراج شوند.
+            در این حالت، تست نقش یک شاهد مستقل برای بررسی انطباق پیاده‌سازی با هدف را دارد.
+          </p>
+
+          <h3>۹.۲. انواع تست در SDD</h3>
+          <table>
+            <tr>
+              <th>نوع تست</th>
+              <th>هدف</th>
+              <th>مثال</th>
+            </tr>
+            <tr>
+              <td>Unit Test</td>
+              <td>اعتبارسنجی رفتار کوچک و مستقل</td>
+              <td>محاسبه قیمت نهایی رزرو</td>
+            </tr>
+            <tr>
+              <td>Integration Test</td>
+              <td>بررسی همکاری اجزای سیستم</td>
+              <td>ثبت رزرو در دیتابیس</td>
+            </tr>
+            <tr>
+              <td>API Test</td>
+              <td>بررسی قرارداد HTTP</td>
+              <td>کد پاسخ و شکل JSON</td>
+            </tr>
+            <tr>
+              <td>Acceptance Test</td>
+              <td>بررسی معیار پذیرش کاربر</td>
+              <td>رزرو موفق یک زمان آزاد</td>
+            </tr>
+            <tr>
+              <td>Security Test</td>
+              <td>بررسی کنترل دسترسی و تهدیدها</td>
+              <td>جلوگیری از مشاهده رزرو کاربر دیگر</td>
+            </tr>
+            <tr>
+              <td>Performance Test</td>
+              <td>سنجش رفتار زیر بار</td>
+              <td>Latency در بار هم‌زمان</td>
+            </tr>
+            <tr>
+              <td>Regression Test</td>
+              <td>اطمینان از حفظ رفتارهای قبلی</td>
+              <td>عدم شکستن لغو رزرو</td>
+            </tr>
+            <tr>
+              <td>Property-based Test</td>
+              <td>آزمون خواص عمومی با ورودی‌های متعدد</td>
+              <td>هر Slot حداکثر یک رزرو فعال دارد</td>
+            </tr>
+          </table>
+
+          <h3>۹.۳. نگاشت Requirement به تست</h3>
+          <pre><code>Requirement: BR-001
+Statement:
+A slot can have at most one active booking.
+
+Tests:
+- TEST-101: Booking an empty slot succeeds.
+- TEST-102: Booking an occupied slot fails.
+- TEST-103: Concurrent booking creates at most one record.
+- TEST-104: Cancelled booking releases the slot if policy allows.
+
+Evidence:
+- Unit test report
+- Integration test report
+- Concurrency test report</code></pre>
+
+          <h3>۹.۴. تولید تست با AI</h3>
+          <p>می‌توان از AI خواست برای هر Requirement موارد زیر را پیشنهاد دهد:</p>
+          <ul>
+            <li>Happy Path</li>
+            <li>Negative Path</li>
+            <li>Boundary Values</li>
+            <li>Concurrency Scenarios</li>
+            <li>Security Scenarios</li>
+            <li>Regression Scenarios</li>
+          </ul>
+          <pre><code>Generate tests for requirement BR-001.
+
+The tests must be derived from the requirement,
+not from assumptions about the current implementation.
+
+Include:
+1. Normal booking
+2. Already booked slot
+3. Concurrent requests
+4. Database conflict
+5. Retry behavior
+6. Cancellation and rebooking
+
+For each test provide:
+- Test ID
+- Preconditions
+- Input
+- Expected result
+- Requirement ID
+- Test type</code></pre>
+
+          <h3>۹.۵. تست‌های مبتنی بر Property</h3>
+          <p>
+            گاهی بهتر است به‌جای نوشتن تعداد زیادی مثال، یک خاصیت عمومی را تعریف کنیم.
+            برای مثال، در سامانه رزرو، خاصیت این است که تعداد رزروهای فعال برای هر Slot هرگز از یک بیشتر نشود.
+          </p>
+          <pre><code>Property:
+For every slot S:
+count(active_bookings where slot_id = S.id) <= 1
+
+Property:
+A user cannot read a booking
+unless the booking belongs to that user
+or the user has an authorized administrative role.</code></pre>
+
+          <h3>۹.۶. اعتبارسنجی Spec، نه فقط کد</h3>
+          <p>
+            قبل از پیاده‌سازی باید خود Specification نیز بررسی شود:
+          </p>
+          <ul>
+            <li>آیا Requirementها کامل و بدون تناقض هستند؟</li>
+            <li>آیا معیار پذیرش برای هر رفتار مهم وجود دارد؟</li>
+            <li>آیا تست‌ها واقعاً همان Requirement را می‌سنجند؟</li>
+            <li>آیا تست‌ها فقط پیاده‌سازی فعلی را تأیید می‌کنند یا رفتار مورد انتظار را؟</li>
+            <li>آیا تست منفی و امنیتی نیز وجود دارد؟</li>
+          </ul>
+
+          <h3>۹.۷. Traceability Matrix</h3>
+          <table>
+            <tr>
+              <th>Requirement</th>
+              <th>Design</th>
+              <th>Task</th>
+              <th>Test</th>
+              <th>Status</th>
+            </tr>
+            <tr>
+              <td>FR-001</td>
+              <td>API-001</td>
+              <td>TASK-006</td>
+              <td>TEST-001</td>
+              <td>Verified</td>
+            </tr>
+            <tr>
+              <td>FR-002</td>
+              <td>ADR-004</td>
+              <td>TASK-008</td>
+              <td>TEST-002</td>
+              <td>Verified</td>
+            </tr>
+            <tr>
+              <td>BR-001</td>
+              <td>DB Constraint</td>
+              <td>TASK-009</td>
+              <td>TEST-003</td>
+              <td>Pending</td>
+            </tr>
+            <tr>
+              <td>SEC-001</td>
+              <td>Auth Design</td>
+              <td>TASK-010</td>
+              <td>TEST-004</td>
+              <td>Not Started</td>
+            </tr>
+          </table>
+        </section>
+
+        <section id="s10" class="chapter">
+          <h2>۱۰. Specification Versioning and Change Management</h2>
+          <h3>۱۰.۱. چرا Spec باید نسخه‌بندی شود؟</h3>
+          <p>
+            نیازمندی‌های محصول ثابت نیستند. ممکن است سیاست کسب‌وکار تغییر کند، مشتریان قابلیت جدیدی بخواهند،
+            محدودیت قانونی جدیدی اعمال شود یا یک تصمیم معماری اصلاح شود.
+            اگر Spec تغییر کند اما کد، تست و مستندات به‌روزرسانی نشوند، سیستم به‌تدریج از هدف خود فاصله می‌گیرد.
+          </p>
+
+          <h3>۱۰.۲. Spec به‌عنوان Living Document</h3>
+          <p>
+            Living Specification سندی است که همراه محصول رشد می‌کند.
+            این سند باید وضعیت فعلی رفتار مورد انتظار را نشان دهد و تاریخچه تغییرات مهم آن قابل‌ردیابی باشد.
+            نگهداری Spec در Git امکان استفاده از Pull Request، Code Review، Diff و تاریخچه Commit را فراهم می‌کند.
+          </p>
+
+          <h3>۱۰.۳. پیشنهاد ساختار پوشه‌ها</h3>
+          <pre><code>project/
+├── constitution.md
+├── README.md
+├── specs/
+│   ├── product-overview.md
+│   ├── glossary.md
+│   ├── features/
+│   │   ├── appointment-booking.md
+│   │   ├── cancellation.md
+│   │   └── notifications.md
+│   └── requirements/
+│       ├── functional.yaml
+│       └── non-functional.yaml
+├── architecture/
+│   ├── system-design.md
+│   └── decisions/
+│       ├── ADR-001.md
+│       └── ADR-002.md
+├── contracts/
+│   ├── openapi.yaml
+│   └── schemas/
+├── plans/
+│   └── implementation-plan.md
+├── tasks/
+│   └── tasks.md
+├── tests/
+│   ├── acceptance/
+│   └── traceability.md
+└── src/</code></pre>
+
+          <h3>۱۰.۴. فرایند مدیریت تغییر</h3>
+          <ol>
+            <li>درخواست تغییر ثبت می‌شود.</li>
+            <li>دلیل تجاری و ذی‌نفع درخواست مشخص می‌شود.</li>
+            <li>Requirementهای متأثر شناسایی می‌شوند.</li>
+            <li>تأثیر بر معماری، API، داده، امنیت و تست تحلیل می‌شود.</li>
+            <li>Spec اصلاح و نسخه جدید ایجاد می‌شود.</li>
+            <li>تغییر توسط مالک محصول و افراد مسئول تأیید می‌شود.</li>
+            <li>Taskهای پیاده‌سازی و تست به‌روزرسانی می‌شوند.</li>
+            <li>کد تغییر می‌کند و تست‌های مرتبط اجرا می‌شوند.</li>
+            <li>انطباق نسخه جدید سیستم با Spec بررسی می‌شود.</li>
+          </ol>
+
+          <h3>۱۰.۵. نمونه Change Proposal</h3>
+          <pre><code># Change Proposal: Allow appointment cancellation
+
+## Change ID
+CHANGE-024
+
+## Motivation
+Users need to cancel appointments without contacting support.
+
+## Current Behavior
+Appointments cannot be cancelled by users.
+
+## Proposed Behavior
+Authenticated users can cancel their own appointments
+until the cancellation deadline.
+
+## Requirements Affected
+- FR-004
+- SEC-002
+- NFR-003
+
+## Open Decisions
+- Cancellation deadline
+- Refund policy
+- Notification behavior
+
+## Impact
+- API contract
+- Appointment state model
+- Notification service
+- Audit log
+- Acceptance tests
+
+## Approval
+Product Owner: Pending
+Engineering Lead: Pending</code></pre>
+
+          <h3>۱۰.۶. Versioning و Semantic Versioning</h3>
+          <p>
+            برای Specهای بزرگ می‌توان از نسخه‌گذاری معنایی استفاده کرد؛ البته سیاست نسخه‌گذاری باید
+            متناسب با ماهیت پروژه تعریف شود.
+          </p>
+          <ul>
+            <li><strong>Major:</strong> تغییر ناسازگار در قرارداد یا رفتار اصلی.</li>
+            <li><strong>Minor:</strong> اضافه‌شدن قابلیت سازگار با رفتار قبلی.</li>
+            <li><strong>Patch:</strong> اصلاح توضیح، رفع ابهام یا اصلاحی که قرارداد را تغییر نمی‌دهد.</li>
+          </ul>
+          <p>
+            هر تغییر نسخه باید مشخص کند کدام Requirementها اضافه، اصلاح یا منسوخ شده‌اند.
+            همچنین باید مشخص باشد کدام نسخه از Spec با کدام نسخه کد منتشرشده مطابقت دارد.
+          </p>
+
+          <h3>۱۰.۷. جلوگیری از Spec Drift</h3>
+          <ul>
+            <li>تغییر Requirement باید در Pull Request ثبت شود.</li>
+            <li>تست‌های مرتبط باید در همان تغییر به‌روزرسانی شوند.</li>
+            <li>در CI، قراردادها و Schemaها اعتبارسنجی شوند.</li>
+            <li>تغییرات API با نسخه‌های مصرف‌کنندگان بررسی شوند.</li>
+            <li>برای Requirementهای منسوخ، وضعیت Deprecation ثبت شود.</li>
+            <li>گزارش Coverage از Requirement تا تست و پیاده‌سازی تهیه شود.</li>
+          </ul>
+        </section>
+
+        <section id="s11" class="chapter">
+          <h2>۱۱. Human Review and AI-assisted Development</h2>
+          <h3>۱۱.۱. چرا بازبینی انسانی همچنان ضروری است؟</h3>
+          <p>
+            AI می‌تواند سرعت تحلیل و تولید را بالا ببرد، اما به‌تنهایی مالک نتیجه تجاری، ریسک امنیتی
+            یا پیامدهای انتشار نیست. مدل ممکن است کدی تولید کند که تست‌های موجود را پاس کند
+            اما Requirement اشتباه را پیاده‌سازی کرده باشد.
+            بنابراین فرایند SDD باید نقاط کنترل انسانی داشته باشد.
+          </p>
+
+          <h3>۱۱.۲. نقاط مناسب برای Human Review</h3>
+          <table>
+            <tr>
+              <th>مرحله</th>
+              <th>چه چیزی باید بازبینی شود؟</th>
+              <th>مسئول پیشنهادی</th>
+            </tr>
+            <tr>
+              <td>Requirements</td>
+              <td>درستی نیاز کسب‌وکار و Scope</td>
+              <td>Product Owner / Analyst</td>
+            </tr>
+            <tr>
+              <td>Specification</td>
+              <td>ابهام، کامل‌بودن، معیار پذیرش</td>
+              <td>Product + QA</td>
+            </tr>
+            <tr>
+              <td>Architecture</td>
+              <td>امنیت، مقیاس‌پذیری، هزینه و Trade-off</td>
+              <td>Architect / Tech Lead</td>
+            </tr>
+            <tr>
+              <td>Implementation Plan</td>
+              <td>ترتیب، وابستگی و ریسک Taskها</td>
+              <td>Tech Lead</td>
+            </tr>
+            <tr>
+              <td>Code</td>
+              <td>درستی، خوانایی، امنیت و نگهداشت</td>
+              <td>Engineer / Reviewer</td>
+            </tr>
+            <tr>
+              <td>Release</td>
+              <td>آمادگی عملیاتی و انطباق با معیارها</td>
+              <td>Release Owner</td>
+            </tr>
+          </table>
+
+          <h3>۱۱.۳. AI به‌عنوان Reviewer</h3>
+          <p>
+            می‌توان از یک مدل یا Agent مستقل خواست تغییرات را بررسی کند.
+            بهتر است این Agent فقط به توضیح نویسنده کد اعتماد نکند و Diff، Spec، تست‌ها و قراردادها را ببیند.
+          </p>
+          <pre><code>Review this pull request against the approved specification.
+
+Check:
+1. Requirement coverage
+2. Missing edge cases
+3. Authorization and data ownership
+4. Error handling
+5. Race conditions
+6. API compatibility
+7. Test quality
+8. Architectural consistency
+
+For every finding, provide:
+- Severity
+- File and location
+- Related requirement ID
+- Evidence
+- Suggested correction
+
+Do not approve based only on code style.
+Do not assume that passing tests proves full correctness.</code></pre>
+
+          <h3>۱۱.۴. چهار نوع بازبینی</h3>
+          <div class="grid2">
+            <div class="mini">
+              <h4>Correctness Review</h4>
+              آیا رفتار پیاده‌سازی‌شده با Spec مطابقت دارد؟
+            </div>
+            <div class="mini">
+              <h4>Security Review</h4>
+              آیا مسیرهای دسترسی، داده و ابزارها امن هستند؟
+            </div>
+            <div class="mini">
+              <h4>Architecture Review</h4>
+              آیا تغییر با مرزهای ماژول و تصمیم‌های معماری سازگار است؟
+            </div>
+            <div class="mini">
+              <h4>Maintainability Review</h4>
+              آیا کد قابل‌فهم، قابل‌آزمایش و قابل‌توسعه است؟
+            </div>
+          </div>
+
+          <h3>۱۱.۵. تقسیم مسئولیت انسان و AI</h3>
+          <p>
+            بهتر است AI برای کارهای پرتکرار و قابل‌ارزیابی به کار گرفته شود و انسان در تصمیم‌هایی
+            که نیازمند شناخت عمیق کسب‌وکار، پذیرش ریسک یا مسئولیت رسمی هستند نقش نهایی داشته باشد.
+          </p>
+          <div class="callout success">
+            مدل مناسب همکاری این نیست که «انسان همه‌چیز را انجام دهد» یا «AI همه‌چیز را انجام دهد».
+            مدل مناسب، تقسیم مسئولیت همراه با شواهد، مرز اختیار و نقاط تأیید روشن است.
+          </div>
+        </section>
+
+        <section id="s12" class="chapter">
+          <h2>۱۲. Agentic SDD</h2>
+          <h3>۱۲.۱. Agentic SDD چیست؟</h3>
+          <p>
+            در Agentic SDD، عامل‌های هوش مصنوعی فقط به یک Prompt پاسخ نمی‌دهند؛
+            آن‌ها می‌توانند در یک فرایند چندمرحله‌ای، Artifactهای پروژه را بخوانند،
+            تصمیم‌های محدود بگیرند، ابزارهای توسعه را اجرا کنند، فایل بسازند،
+            تست اجرا کنند و بر اساس نتیجه، مرحله بعدی را انتخاب کنند.
+          </p>
+          <p>
+            تفاوت مهم با استفاده ساده از Chatbot این است که Agent می‌تواند وضعیت کار را حفظ کند،
+            ابزارهای مشخصی در اختیار داشته باشد و بر اساس نتیجه عملیات، چرخه را ادامه دهد.
+          </p>
+
+          <h3>۱۲.۲. چرخه Agentic SDD</h3>
+          <div class="diagram">
+            <div class="node">Specify</div><span class="arrow">→</span>
+            <div class="node">Clarify</div><span class="arrow">→</span>
+            <div class="node">Plan</div><span class="arrow">→</span>
+            <div class="node">Tasks</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Implement</div><span class="arrow">→</span>
+            <div class="node">Test</div><span class="arrow">→</span>
+            <div class="node">Analyze</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Converge / Replan</div><span class="arrow">→</span>
+            <div class="node">Human Approval</div>
+          </div>
+
+          <h3>۱۲.۳. Agent چه قابلیت‌هایی لازم دارد؟</h3>
+          <ul>
+            <li><strong>Context Access:</strong> دسترسی به Spec، کد، تست و تصمیم‌های معماری.</li>
+            <li><strong>Tool Access:</strong> ابزار خواندن و نوشتن فایل، اجرای تست، Git و ابزارهای CI.</li>
+            <li><strong>Task State:</strong> وضعیت Taskها، وابستگی‌ها و نتیجه مراحل قبلی.</li>
+            <li><strong>Planning:</strong> توانایی شکستن هدف به فعالیت‌های کوچک.</li>
+            <li><strong>Verification:</strong> بررسی نتیجه با تست و معیار پذیرش.</li>
+            <li><strong>Bounded Autonomy:</strong> محدودیت بودجه، زمان، دسترسی و دامنه تغییر.</li>
+            <li><strong>Escalation:</strong> امکان درخواست تصمیم از انسان در شرایط مبهم یا پرریسک.</li>
+          </ul>
+
+          <h3>۱۲.۴. مثال یک Agent Loop</h3>
+          <pre><code>while not task.is_complete():
+
+    context = load_relevant_context(task)
+
+    action = agent.decide(
+        objective=task.objective,
+        context=context,
+        constraints=task.constraints
+    )
+
+    if action.requires_human_approval:
+        request_approval(action)
+        continue
+
+    result = execute_tool(action)
+
+    verification = verify_against_spec(
+        result=result,
+        acceptance_criteria=task.acceptance_criteria
+    )
+
+    record_trace(action, result, verification)
+
+    if verification.passed:
+        task.mark_complete()
+    else:
+        task.record_failure(verification.findings)
+
+    enforce_limits(
+        max_steps=20,
+        max_cost=2.00,
+        deadline=task.deadline
+    )</code></pre>
+          <p class="small muted">
+            این کد شبه‌کد آموزشی است؛ برای استفاده واقعی باید مدیریت خطا، مجوز ابزارها،
+            ذخیره پایدار وضعیت، محدودیت منابع و کنترل امنیتی به آن اضافه شود.
+          </p>
+
+          <h3>۱۲.۵. تفاوت Agentic Workflow و Agent آزاد</h3>
+          <table>
+            <tr>
+              <th>ویژگی</th>
+              <th>Workflow کنترل‌شده</th>
+              <th>Agent با اختیار بیشتر</th>
+            </tr>
+            <tr>
+              <td>ترتیب مراحل</td>
+              <td>از قبل مشخص است.</td>
+              <td>ممکن است بر اساس شرایط تغییر کند.</td>
+            </tr>
+            <tr>
+              <td>قابلیت پیش‌بینی</td>
+              <td>بالاتر</td>
+              <td>پایین‌تر</td>
+            </tr>
+            <tr>
+              <td>انعطاف</td>
+              <td>محدودتر</td>
+              <td>بیشتر</td>
+            </tr>
+            <tr>
+              <td>کنترل و ممیزی</td>
+              <td>معمولاً ساده‌تر</td>
+              <td>نیازمند Observability و Guardrail قوی‌تر</td>
+            </tr>
+            <tr>
+              <td>مناسب برای</td>
+              <td>فرایندهای تکراری و حساس</td>
+              <td>مسائل پویا و دارای عدم قطعیت</td>
+            </tr>
+          </table>
+
+          <h3>۱۲.۶. حلقه Convergence</h3>
+          <p>
+            یکی از ایده‌های مهم در Agentic SDD، بررسی مداوم فاصله بین Spec و پیاده‌سازی است.
+            Agent پس از اجرای Taskها، بررسی می‌کند آیا تمام Requirementها پوشش داده شده‌اند یا خیر.
+            اگر Requirementی ناقص باشد، Task اصلاحی تولید می‌شود و چرخه ادامه پیدا می‌کند.
+          </p>
+          <p>
+            Convergence به معنی اجرای نامحدود Agent نیست.
+            باید معیار توقف، حداکثر تعداد تلاش، بودجه، زمان و شرایط ارجاع به انسان مشخص باشند.
+          </p>
+        </section>
+
+        <section id="s13" class="chapter">
+          <h2>۱۳. Multi-Agent Software Development</h2>
+          <h3>۱۳.۱. چرا توسعه چندعاملی؟</h3>
+          <p>
+            در پروژه‌های پیچیده، می‌توان وظایف را میان Agentهای تخصصی تقسیم کرد.
+            برای مثال یک Agent مسئول تحلیل نیازمندی، یک Agent مسئول معماری،
+            یک Agent مسئول توسعه Backend و Agent دیگری مسئول تست باشد.
+            هر Agent باید وظیفه، ورودی، خروجی و سطح دسترسی مشخصی داشته باشد.
+          </p>
+
+          <h3>۱۳.۲. معماری Supervisor و Worker</h3>
+          <div class="diagram">
+            <div class="node">Supervisor Agent</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Requirements Agent</div>
+            <div class="node">Architecture Agent</div>
+            <div class="node">Developer Agent</div>
+            <div class="node">Test Agent</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Integrator / Verifier</div>
+          </div>
+          <p>
+            Supervisor کار را تقسیم می‌کند، وضعیت را دنبال می‌کند و خروجی‌ها را جمع‌آوری می‌کند.
+            Workerها روی وظایف محدود و تخصصی کار می‌کنند.
+            Supervisor نباید صرفاً به گزارش Worker اعتماد کند؛ خروجی باید با قرارداد و شواهد بررسی شود.
+          </p>
+
+          <h3>۱۳.۳. نقش‌های پیشنهادی Agentها</h3>
+          <table>
+            <tr>
+              <th>Agent</th>
+              <th>وظیفه</th>
+              <th>خروجی</th>
+            </tr>
+            <tr>
+              <td>Product Analyst</td>
+              <td>استخراج نیازمندی و پرسش از ابهام‌ها</td>
+              <td>Requirements Spec</td>
+            </tr>
+            <tr>
+              <td>Specification Reviewer</td>
+              <td>بررسی کیفیت و تناقض Spec</td>
+              <td>Review Findings</td>
+            </tr>
+            <tr>
+              <td>Architect</td>
+              <td>طراحی ساختار سیستم و قراردادها</td>
+              <td>Architecture Plan و ADR</td>
+            </tr>
+            <tr>
+              <td>Planner</td>
+              <td>تبدیل طراحی به Taskهای وابسته</td>
+              <td>Implementation Plan</td>
+            </tr>
+            <tr>
+              <td>Backend Developer</td>
+              <td>پیاده‌سازی API و منطق دامنه</td>
+              <td>Code Patch</td>
+            </tr>
+            <tr>
+              <td>Frontend Developer</td>
+              <td>پیاده‌سازی رابط کاربری</td>
+              <td>UI Code</td>
+            </tr>
+            <tr>
+              <td>QA Agent</td>
+              <td>تولید و اجرای تست</td>
+              <td>Test Report</td>
+            </tr>
+            <tr>
+              <td>Security Reviewer</td>
+              <td>بررسی دسترسی‌ها و تهدیدها</td>
+              <td>Security Findings</td>
+            </tr>
+            <tr>
+              <td>Integrator</td>
+              <td>بررسی سازگاری خروجی‌ها</td>
+              <td>Integration Result</td>
+            </tr>
+          </table>
+
+          <h3>۱۳.۴. قرارداد ارتباط بین Agentها</h3>
+          <p>
+            ارتباط بین Agentها نباید فقط به پیام‌های آزاد و طولانی متکی باشد.
+            بهتر است هر کار با یک Task Contract ساخت‌یافته منتقل شود.
+          </p>
+          <pre><code>{
+  "task_id": "TASK-008",
+  "assigned_to": "backend_developer",
+  "objective": "Implement appointment creation endpoint",
+  "related_requirements": ["FR-002", "BR-001"],
+  "inputs": [
+    "specs/appointment-booking.md",
+    "contracts/openapi.yaml"
+  ],
+  "constraints": [
+    "Do not change public API contract",
+    "Use existing repository pattern",
+    "Enforce user ownership"
+  ],
+  "deliverables": [
+    "API implementation",
+    "Unit tests",
+    "Integration tests"
+  ],
+  "acceptance_criteria": [
+    "Valid booking returns 201",
+    "Duplicate booking returns 409",
+    "Unauthorized request returns 401"
+  ],
+  "status": "assigned"
+}</code></pre>
+
+          <h3>۱۳.۵. اجرای موازی و مدیریت تعارض</h3>
+          <p>
+            موازی‌سازی فقط زمانی مفید است که Taskها وابستگی شدید یا مالکیت مشترک بر فایل‌های حساس نداشته باشند.
+            اگر دو Agent هم‌زمان یک فایل یا Interface را تغییر دهند، احتمال Conflict افزایش می‌یابد.
+          </p>
+          <p>برای کاهش تعارض:</p>
+          <ul>
+            <li>برای هر ماژول یک مالک یا Agent مسئول مشخص کنید.</li>
+            <li>Interfaceها را پیش از اجرای موازی تثبیت کنید.</li>
+            <li>تغییرات را در Branchهای جداگانه نگه دارید.</li>
+            <li>برای ادغام، Integration Agent یا Reviewer مستقل داشته باشید.</li>
+            <li>تست‌های Contract را قبل و بعد از ادغام اجرا کنید.</li>
+          </ul>
+
+          <h3>۱۳.۶. خطرات توسعه چندعاملی</h3>
+          <ul>
+            <li><strong>هماهنگی بیش از حد:</strong> هزینه پیام‌ها و همگام‌سازی از سود موازی‌سازی بیشتر شود.</li>
+            <li><strong>تعارض طراحی:</strong> Agentها تصمیم‌های ناسازگار بگیرند.</li>
+            <li><strong>تکرار کار:</strong> چند Agent یک مسئله را مستقل حل کنند.</li>
+            <li><strong>اعتماد زنجیره‌ای:</strong> خروجی اشتباه یک Agent مبنای کار چند Agent دیگر شود.</li>
+            <li><strong>افزایش هزینه:</strong> تعداد زیاد Agentها مصرف مدل و ابزار را افزایش دهد.</li>
+            <li><strong>مسئولیت مبهم:</strong> مشخص نباشد چه کسی باید نتیجه نهایی را تأیید کند.</li>
+          </ul>
+
+          <div class="callout warning">
+            چند Agent به‌معنای کیفیت بیشتر نیست. برای یک قابلیت ساده، یک Agent با Spec روشن
+            و تست مناسب معمولاً از معماری چندعاملی پیچیده بهتر است.
+          </div>
+        </section>
+
+        <section id="s14" class="chapter">
+          <h2>۱۴. SDD Tools and Frameworks</h2>
+          <p>
+            SDD یک فلسفه و فرایند مهندسی است؛ الزاماً به یک ابزار یا زبان برنامه‌نویسی وابسته نیست.
+            ابزارها کمک می‌کنند Artifactها ساخته، سازمان‌دهی، نسخه‌بندی، اعتبارسنجی و به گردش کار AI متصل شوند.
+            باید میان «چارچوبی که فرایند SDD را هدایت می‌کند» و «ابزاری که فقط بخشی از چرخه را انجام می‌دهد» تفاوت قائل
+            شد.
+          </p>
+
+          <h3>۱۴.۱. GitHub Spec Kit</h3>
+          <p>
+            <strong>GitHub Spec Kit</strong> یک Toolkit متن‌باز برای عملیاتی‌کردن فرایند Spec-Driven Development
+            در کنار Coding Agentها است. رویکرد شناخته‌شده آن بر تبدیل Intent به مجموعه‌ای از Artifactهای
+            متوالی مانند Specification، Plan، Tasks و Implementation تمرکز دارد.
+          </p>
+          <p>در گردش کار مستندشده Spec Kit، مراحل اصلی شامل این موارد هستند:</p>
+          <ol>
+            <li><strong>Constitution:</strong> تعریف اصول و قواعد بنیادین پروژه.</li>
+            <li><strong>Specify:</strong> توصیف قابلیت و رفتار مورد انتظار.</li>
+            <li><strong>Clarify:</strong> کشف و رفع ابهام‌ها.</li>
+            <li><strong>Plan:</strong> تعریف فناوری و طراحی پیاده‌سازی.</li>
+            <li><strong>Checklist:</strong> بررسی کیفیت و کامل‌بودن مشخصات.</li>
+            <li><strong>Tasks:</strong> شکستن طراحی به Taskهای اجرایی.</li>
+            <li><strong>Analyze:</strong> بررسی ناسازگاری میان Artifactها.</li>
+            <li><strong>Implement:</strong> اجرای Taskها.</li>
+            <li><strong>Converge:</strong> بررسی انطباق نتیجه با Spec و تکمیل شکاف‌ها.</li>
+          </ol>
+          <p>
+            نکته مهم این است که Spec Kit تلاش می‌کند فرایند را از ابزار خاص تولید کد مستقل نگه دارد
+            و برای Agentهای مختلف Integration فراهم کند.
+          </p>
+          <p><a href="https://github.com/github/spec-kit" target="_blank" rel="noopener">مخزن GitHub Spec Kit</a> |
+            <a href="https://github.github.com/spec-kit/" target="_blank" rel="noopener">مستندات رسمی</a>
+          </p>
+
+          <h3>۱۴.۲. OpenSpec</h3>
+          <p>
+            OpenSpec رویکردی برای سازمان‌دهی تغییرات مبتنی بر Specification در پروژه‌های نرم‌افزاری ارائه می‌دهد.
+            تمرکز آن به‌ویژه برای مدیریت تغییر در کدبیس‌های موجود مفید است؛ جایی که لازم است
+            دلیل تغییر، رفتار مورد انتظار، طراحی و Taskهای اجرایی به شکل Artifactهای جداگانه ثبت شوند.
+          </p>
+          <p>در الگوی پیش‌فرض Spec-driven آن، Artifactهای مهم عبارت‌اند از:</p>
+          <ul>
+            <li><code>proposal.md</code>: چرا تغییر لازم است؟</li>
+            <li><code>specs/</code>: چه رفتاری قرار است تغییر کند؟</li>
+            <li><code>design.md</code>: چگونه قرار است ساخته شود؟</li>
+            <li><code>tasks.md</code>: چه کارهایی باید انجام شوند؟</li>
+          </ul>
+          <p><a href="https://openspec.dev/" target="_blank" rel="noopener">وب‌سایت و مستندات OpenSpec</a></p>
+
+          <h3>۱۴.۳. Kiro</h3>
+          <p>
+            Kiro محیط توسعه‌ای مبتنی بر AI است که از مفهوم Specification برای تبدیل درخواست‌های
+            سطح بالا به مجموعه‌ای از اسناد ساخت‌یافته، طراحی و Taskهای پیاده‌سازی استفاده می‌کند.
+            قابلیت‌هایی مانند Steering Files به نگهداری قواعد و دانش پایدار پروژه کمک می‌کنند
+            و Agent Hooks می‌توانند بعضی فعالیت‌ها را در واکنش به رویدادهای محیط توسعه اجرا کنند.
+          </p>
+          <p>
+            Kiro بیشتر یک محیط توسعه AI-native با گردش کار Spec-based است؛
+            بنابراین باید آن را از یک قالب مستقل Spec یا یک استاندارد رسمی زبان مشخصات جدا دانست.
+          </p>
+          <p><a href="https://kiro.dev/" target="_blank" rel="noopener">وب‌سایت Kiro</a> |
+            <a href="https://aws.amazon.com/documentation-overview/kiro/" target="_blank" rel="noopener">مستندات
+              Kiro</a>
+          </p>
+
+          <h3>۱۴.۴. Tessl و الگوهای Spec-centric</h3>
+          <p>
+            Tessl و منابع مرتبط با آن، روی نگهداری Specificationهای طبیعی و نسخه‌بندی‌شده،
+            اتصال Spec به تست‌ها و استفاده از آن‌ها در جریان توسعه تمرکز دارند.
+            در این نوع رویکرد، Spec فقط برای شروع پروژه نوشته نمی‌شود؛ بلکه باید همراه با تغییرات کد و تست تکامل پیدا
+            کند.
+          </p>
+          <p><a href="https://tessl.io/" target="_blank" rel="noopener">وب‌سایت Tessl</a></p>
+
+          <h3>۱۴.۵. ابزارهای مکمل</h3>
+          <table>
+            <tr>
+              <th>دسته</th>
+              <th>نمونه ابزارها</th>
+              <th>نقش در SDD</th>
+            </tr>
+            <tr>
+              <td>Source Control</td>
+              <td>Git، GitHub، GitLab</td>
+              <td>نسخه‌بندی Spec، کد و تغییرات</td>
+            </tr>
+            <tr>
+              <td>AI Coding</td>
+              <td>GitHub Copilot، Claude Code، Codex، Gemini CLI</td>
+              <td>تحلیل، تولید و اصلاح Artifactها و کد</td>
+            </tr>
+            <tr>
+              <td>API Contract</td>
+              <td>OpenAPI، AsyncAPI، Protocol Buffers</td>
+              <td>تعریف قراردادهای ارتباطی</td>
+            </tr>
+            <tr>
+              <td>Schema Validation</td>
+              <td>JSON Schema، Zod، Pydantic</td>
+              <td>اعتبارسنجی داده و ساختار</td>
+            </tr>
+            <tr>
+              <td>Testing</td>
+              <td>pytest، JUnit، Playwright، Cypress</td>
+              <td>تأیید رفتار سیستم</td>
+            </tr>
+            <tr>
+              <td>CI/CD</td>
+              <td>GitHub Actions، GitLab CI، Jenkins</td>
+              <td>اجرای خودکار کنترل‌ها و تست‌ها</td>
+            </tr>
+            <tr>
+              <td>Documentation</td>
+              <td>Markdown، MkDocs، Docusaurus</td>
+              <td>انتشار و نگهداری مستندات</td>
+            </tr>
+            <tr>
+              <td>Architecture</td>
+              <td>Structurizr، Mermaid، PlantUML</td>
+              <td>مدل‌سازی و نمایش معماری</td>
+            </tr>
+          </table>
+
+          <h3>۱۴.۶. چگونه ابزار مناسب را انتخاب کنیم؟</h3>
+          <p>هنگام انتخاب ابزار، این پرسش‌ها را بررسی کنید:</p>
+          <ul>
+            <li>آیا ابزار با Coding Agent فعلی تیم سازگار است؟</li>
+            <li>آیا Artifactها در قالب فایل‌های قابل‌نسخه‌بندی نگهداری می‌شوند؟</li>
+            <li>آیا می‌توان فرایند را در CI اجرا کرد؟</li>
+            <li>آیا امکان بازبینی انسانی و Approval وجود دارد؟</li>
+            <li>آیا برای پروژه موجود و Brownfield مناسب است؟</li>
+            <li>آیا خروجی‌ها قابل‌انتقال به ابزار دیگر هستند؟</li>
+            <li>آیا امکان سفارشی‌سازی قالب‌ها و قواعد سازمانی وجود دارد؟</li>
+            <li>آیا داده و کد محرمانه با سیاست امنیتی سازمان سازگار هستند؟</li>
+          </ul>
+          <div class="callout tip">
+            به‌جای انتخاب ابزار بر اساس محبوبیت، یک قابلیت واقعی از پروژه را با دو ابزار آزمایش کنید.
+            زمان تحلیل، کیفیت Spec، تعداد اصلاحات، پوشش تست و هزینه را مقایسه کنید.
+          </div>
+        </section>
+
+        <section id="s15" class="chapter">
+          <h2>۱۵. End-to-End SDD Project Implementation</h2>
+          <h3>۱۵.۱. تعریف پروژه نمونه</h3>
+          <p>
+            در این پروژه، یک سامانه مدیریت درخواست پشتیبانی مشتری می‌سازیم.
+            کاربران می‌توانند درخواست ثبت کنند، وضعیت آن را مشاهده کنند و پاسخ پشتیبانی دریافت کنند.
+            کارشناس پشتیبانی می‌تواند درخواست‌ها را بررسی و وضعیت آن‌ها را تغییر دهد.
+          </p>
+
+          <h3>۱۵.۲. اهداف کسب‌وکار</h3>
+          <ul>
+            <li>کاهش تماس‌های تکراری مشتریان با تیم پشتیبانی.</li>
+            <li>افزایش قابلیت ردیابی درخواست‌ها.</li>
+            <li>کاهش زمان پاسخ‌گویی.</li>
+            <li>ایجاد گزارش از حجم و وضعیت درخواست‌ها.</li>
+          </ul>
+
+          <h3>۱۵.۳. دامنه نسخه اول</h3>
+          <div class="grid2">
+            <div class="mini">
+              <h4>In Scope</h4>
+              <ul>
+                <li>ثبت درخواست</li>
+                <li>مشاهده درخواست‌های خود</li>
+                <li>افزودن پاسخ</li>
+                <li>تغییر وضعیت</li>
+                <li>ثبت تاریخچه تغییرات</li>
+              </ul>
+            </div>
+            <div class="mini">
+              <h4>Out of Scope</h4>
+              <ul>
+                <li>پرداخت آنلاین</li>
+                <li>چت صوتی و تصویری</li>
+                <li>پشتیبانی چندزبانه پیشرفته</li>
+                <li>پاسخ خودکار AI در نسخه اول</li>
+                <li>یکپارچه‌سازی با CRM خارجی</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3>۱۵.۴. نقش‌های کاربری</h3>
+          <table>
+            <tr>
+              <th>Role</th>
+              <th>مجوزها</th>
+            </tr>
+            <tr>
+              <td>Customer</td>
+              <td>ثبت درخواست، مشاهده درخواست‌های خود، افزودن پاسخ به درخواست مجاز</td>
+            </tr>
+            <tr>
+              <td>Support Agent</td>
+              <td>مشاهده درخواست‌های تخصیص‌یافته، پاسخ‌گویی و تغییر وضعیت</td>
+            </tr>
+            <tr>
+              <td>Support Manager</td>
+              <td>مدیریت صف، تخصیص درخواست و مشاهده گزارش‌ها</td>
+            </tr>
+            <tr>
+              <td>Administrator</td>
+              <td>مدیریت کاربران و تنظیمات مجاز سامانه</td>
+            </tr>
+          </table>
+
+          <h3>۱۵.۵. Specification اولیه</h3>
+          <pre><code># Support Ticket System - Specification
+
+## Objective
+Build a support ticket system for customer service operations.
+
+## Actors
+- Customer
+- Support Agent
+- Support Manager
+- Administrator
+
+## Functional Requirements
+
+FR-001:
+An authenticated customer can create a support ticket.
+
+FR-002:
+A customer can view only tickets belonging to their account.
+
+FR-003:
+A support agent can view tickets assigned to them
+or tickets available in an authorized queue.
+
+FR-004:
+An authorized support agent can add a response to a ticket.
+
+FR-005:
+The system records every status transition.
+
+FR-006:
+A support manager can assign a ticket to an agent.
+
+## Business Rules
+
+BR-001:
+Every ticket has a unique identifier.
+
+BR-002:
+A customer cannot access another customer's ticket.
+
+BR-003:
+A closed ticket cannot receive a normal customer reply.
+Reopening requires an authorized transition.
+
+BR-004:
+Every status transition must be recorded with actor and timestamp.
+
+## Non-functional Requirements
+
+NFR-001:
+Ticket list API p95 latency <= 1 second
+under the agreed normal-load profile.
+
+NFR-002:
+All access to ticket data must be authorized.
+
+NFR-003:
+The system must retain an audit history of status changes.
+
+## Acceptance Criteria
+
+AC-001:
+A valid customer request creates a ticket.
+
+AC-002:
+A customer cannot read a ticket owned by another account.
+
+AC-003:
+Every status transition creates an audit record.
+
+AC-004:
+An unauthorized user receives an appropriate error response.
+
+## Open Questions
+- What is the ticket retention policy?
+- Can customers reopen closed tickets?
+- What are the support service-level targets?</code></pre>
+
+          <h3>۱۵.۶. Clarification و رفع ابهام</h3>
+          <p>قبل از طراحی باید پاسخ پرسش‌های باز مشخص شود. برای نمونه:</p>
+          <table>
+            <tr>
+              <th>پرسش</th>
+              <th>تصمیم نمونه</th>
+              <th>اثر</th>
+            </tr>
+            <tr>
+              <td>آیا مشتری می‌تواند درخواست بسته‌شده را باز کند؟</td>
+              <td>تا ۷ روز پس از بسته‌شدن، فقط یک بار</td>
+              <td>تغییر در State Machine و API</td>
+            </tr>
+            <tr>
+              <td>آیا پاسخ مشتری پس از بسته‌شدن مجاز است؟</td>
+              <td>خیر، مگر در فرایند Reopen</td>
+              <td>قواعد مجوز و تست</td>
+            </tr>
+            <tr>
+              <td>چه کسی می‌تواند درخواست را تخصیص دهد؟</td>
+              <td>Support Manager</td>
+              <td>RBAC</td>
+            </tr>
+            <tr>
+              <td>آیا تاریخچه قابل‌حذف است؟</td>
+              <td>خیر، فقط سیاست نگهداری داده اعمال می‌شود</td>
+              <td>Audit و Data Governance</td>
+            </tr>
+          </table>
+
+          <h3>۱۵.۷. طراحی وضعیت درخواست</h3>
+          <div class="diagram">
+            <div class="node">Open</div><span class="arrow">→</span>
+            <div class="node">Assigned</div><span class="arrow">→</span>
+            <div class="node">In Progress</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Waiting for Customer</div><span class="arrow">→</span>
+            <div class="node">Resolved</div><span class="arrow">→</span>
+            <div class="node">Closed</div>
+          </div>
+          <p>
+            این State Machine باید در Specification تعریف شود؛ زیرا صرفاً داشتن یک فیلد متنی
+            به نام <code>status</code> برای کنترل رفتار سیستم کافی نیست.
+            باید انتقال‌های مجاز، نقش مجاز و پیش‌شرط هر انتقال روشن باشند.
+          </p>
+
+          <h3>۱۵.۸. معماری پیشنهادی</h3>
+          <div class="diagram">
+            <div class="node">Customer Portal</div>
+            <div class="node">Support Dashboard</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">API Gateway / Backend API</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Identity & Access</div>
+            <div class="node">Ticket Service</div>
+            <div class="node">Audit Service</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">PostgreSQL</div>
+            <div class="node">Notification Queue</div>
+          </div>
+          <p>
+            برای نسخه اول، یک Modular Monolith می‌تواند انتخاب مناسبی باشد؛
+            زیرا پیچیدگی عملیاتی کمتری نسبت به Microservices دارد.
+            مرزهای ماژول‌ها باید از ابتدا مشخص باشند تا در صورت رشد واقعی سیستم،
+            جداسازی بعضی اجزا امکان‌پذیر باشد.
+          </p>
+
+          <h3>۱۵.۹. Task Plan</h3>
+          <pre><code>Phase 1 - Foundation
+TASK-001: Create repository and application skeleton
+TASK-002: Configure database and migrations
+TASK-003: Configure authentication
+
+Phase 2 - Domain
+TASK-004: Create Ticket entity
+TASK-005: Implement ticket state transitions
+TASK-006: Implement authorization policies
+TASK-007: Implement audit history
+
+Phase 3 - API
+TASK-008: Create ticket endpoint
+TASK-009: List customer tickets
+TASK-010: Get ticket details
+TASK-011: Add ticket response
+TASK-012: Assign ticket to support agent
+
+Phase 4 - Quality
+TASK-013: Unit tests
+TASK-014: API integration tests
+TASK-015: Authorization tests
+TASK-016: State transition tests
+TASK-017: Performance tests
+
+Phase 5 - Release
+TASK-018: Logging and monitoring
+TASK-019: Deployment configuration
+TASK-020: Production readiness review</code></pre>
+
+          <h3>۱۵.۱۰. نمونه ارتباط Requirement تا Test</h3>
+          <pre><code>FR-002:
+A customer can view only tickets belonging to their account.
+
+Implementation:
+TicketQueryService.get_customer_tickets(user_id)
+
+Tests:
+TEST-021:
+Customer A sees their own tickets.
+
+TEST-022:
+Customer A cannot retrieve Customer B's ticket by ID.
+
+TEST-023:
+Changing the ticket ID in the request does not bypass authorization.
+
+Evidence:
+- Unit test result
+- API integration test result
+- Authorization test result</code></pre>
+
+          <h3>۱۵.۱۱. استفاده از Agentها در پروژه</h3>
+          <table>
+            <tr>
+              <th>Agent</th>
+              <th>ورودی</th>
+              <th>خروجی</th>
+            </tr>
+            <tr>
+              <td>Analyst</td>
+              <td>ایده محصول و توضیح ذی‌نفعان</td>
+              <td>Specification و پرسش‌های باز</td>
+            </tr>
+            <tr>
+              <td>Architect</td>
+              <td>Spec تأییدشده</td>
+              <td>معماری، API و ADR</td>
+            </tr>
+            <tr>
+              <td>Planner</td>
+              <td>Spec و Architecture</td>
+              <td>Task Plan و Dependency Graph</td>
+            </tr>
+            <tr>
+              <td>Backend Agent</td>
+              <td>Taskهای Backend</td>
+              <td>کد و تست‌های مرتبط</td>
+            </tr>
+            <tr>
+              <td>Frontend Agent</td>
+              <td>قرارداد API و UI Spec</td>
+              <td>رابط کاربری</td>
+            </tr>
+            <tr>
+              <td>QA Agent</td>
+              <td>Acceptance Criteria</td>
+              <td>تست و گزارش پوشش</td>
+            </tr>
+            <tr>
+              <td>Security Agent</td>
+              <td>Threat Model و Spec</td>
+              <td>یافته‌های امنیتی</td>
+            </tr>
+            <tr>
+              <td>Supervisor</td>
+              <td>تمام Artifactها و وضعیت Taskها</td>
+              <td>هماهنگی، ادغام و گزارش نهایی</td>
+            </tr>
+          </table>
+
+          <h3>۱۵.۱۲. نمونه پیام بین Agentها</h3>
+          <pre><code>{
+  "message_id": "MSG-1008",
+  "correlation_id": "RUN-2026-001",
+  "from": "planner_agent",
+  "to": "backend_agent",
+  "type": "task_assignment",
+  "created_at": "2026-11-02T10:30:00Z",
+  "payload": {
+    "task_id": "TASK-008",
+    "objective": "Implement ticket creation endpoint",
+    "requirements": ["FR-001", "BR-001"],
+    "contract": "contracts/openapi.yaml",
+    "expected_output": [
+      "endpoint implementation",
+      "unit tests",
+      "integration tests"
+    ]
+  }
+}</code></pre>
+
+          <h3>۱۵.۱۳. اجرای اعتبارسنجی نهایی</h3>
+          <p>پیش از انتشار، باید این زنجیره بررسی شود:</p>
+          <div class="diagram">
+            <div class="node">Approved Spec</div><span class="arrow">→</span>
+            <div class="node">Architecture</div><span class="arrow">→</span>
+            <div class="node">Code</div><br>
+            <span class="arrow">↓</span><br>
+            <div class="node">Automated Tests</div><span class="arrow">→</span>
+            <div class="node">Security Review</div><span class="arrow">→</span>
+            <div class="node">Human Approval</div>
+          </div>
+
+          <h3>۱۵.۱۴. معیارهای موفقیت پروژه</h3>
+          <ul>
+            <li>تمام Requirementهای Must دارای وضعیت تأییدشده باشند.</li>
+            <li>تمام Acceptance Criteria مهم به تست یا شواهد معتبر متصل باشند.</li>
+            <li>هیچ نقص امنیتی بحرانی باز باقی نمانده باشد.</li>
+            <li>تست‌های Integration و Regression موفق باشند.</li>
+            <li>رفتارهای مجاز State Machine به‌درستی کنترل شوند.</li>
+            <li>تغییرات کد با Spec و قراردادها هم‌خوان باشند.</li>
+            <li>هزینه و زمان اجرای فرایند AI قابل‌اندازه‌گیری باشد.</li>
+          </ul>
+        </section>
+
+        <section id="decision" class="card">
+          <h2>چارچوب تصمیم‌گیری: چه زمانی SDD انتخاب مناسبی است؟</h2>
+          <table>
+            <tr>
+              <th>نوع پروژه</th>
+              <th>میزان نیاز به SDD</th>
+              <th>دلیل</th>
+            </tr>
+            <tr>
+              <td>اسکریپت کوچک و یک‌بارمصرف</td>
+              <td>کم</td>
+              <td>هزینه مستندسازی ممکن است بیشتر از منفعت آن باشد.</td>
+            </tr>
+            <tr>
+              <td>نمونه اولیه سریع</td>
+              <td>سبک</td>
+              <td>یک Spec کوتاه برای هدف، محدوده و محدودیت‌ها کافی است.</td>
+            </tr>
+            <tr>
+              <td>محصول SaaS متوسط</td>
+              <td>زیاد</td>
+              <td>نیازمندی‌ها، APIها و رفتارها باید قابل‌ردیابی باشند.</td>
+            </tr>
+            <tr>
+              <td>سامانه مالی یا حساس</td>
+              <td>بسیار زیاد</td>
+              <td>امنیت، ممیزی، کنترل تغییر و شواهد تست اهمیت بالایی دارند.</td>
+            </tr>
+            <tr>
+              <td>پروژه چندتیمی</td>
+              <td>زیاد</td>
+              <td>Spec قرارداد مشترک میان تیم‌ها ایجاد می‌کند.</td>
+            </tr>
+            <tr>
+              <td>پروژه مبتنی بر Agentها</td>
+              <td>زیاد</td>
+              <td>Agentها به Context و قراردادهای پایدار نیاز دارند.</td>
+            </tr>
+          </table>
+
+          <h3>چه زمانی Multi-Agent SDD لازم است؟</h3>
+          <p>
+            زمانی که کار واقعاً قابل‌تقسیم باشد، خروجی‌ها قرارداد روشن داشته باشند،
+            تخصص‌های متفاوت لازم باشد و موازی‌سازی نسبت به هزینه هماهنگی مزیت اندازه‌گیری‌شده ایجاد کند.
+            در غیر این صورت، یک Agent یا Workflow کنترل‌شده انتخاب ساده‌تر و قابل‌اعتماد‌تری است.
+          </p>
+
+          <h3>پیشنهاد مسیر پیاده‌سازی در یک تیم</h3>
+          <ol>
+            <li>ابتدا برای یک قابلیت کوچک Spec کوتاه بنویسید.</li>
+            <li>معیارهای پذیرش و تست را به آن متصل کنید.</li>
+            <li>از AI برای تولید Plan و Taskها استفاده کنید.</li>
+            <li>کد را در تغییرات کوچک و قابل‌بازبینی تولید کنید.</li>
+            <li>اعتبارسنجی Spec و تست را در CI قرار دهید.</li>
+            <li>پس از اثبات ارزش، فرایند را به قابلیت‌های بیشتر گسترش دهید.</li>
+            <li>در مرحله بعد، برای Taskهای مستقل از Agentهای تخصصی استفاده کنید.</li>
+          </ol>
+        </section>
+
+        <section id="checklist" class="card">
+          <h2>چک‌لیست آمادگی SDD برای محیط Production</h2>
+          <p class="muted">موارد زیر را برای پروژه خود بررسی کنید:</p>
+          <div class="checklist" id="readiness">
+            <label><input type="checkbox"> هدف تجاری و مسئله اصلی روشن است.</label>
+            <label><input type="checkbox"> ذی‌نفعان و نقش‌های کاربری مشخص شده‌اند.</label>
+            <label><input type="checkbox"> Scope و Out of Scope تعریف شده‌اند.</label>
+            <label><input type="checkbox"> Requirementها شناسه یکتا دارند.</label>
+            <label><input type="checkbox"> Requirementها قابل‌آزمایش هستند.</label>
+            <label><input type="checkbox"> فرض‌ها و پرسش‌های باز از تصمیم‌های قطعی جدا شده‌اند.</label>
+            <label><input type="checkbox"> قواعد کسب‌وکار مستند شده‌اند.</label>
+            <label><input type="checkbox"> نیازمندی‌های غیرعملکردی معیار قابل‌اندازه‌گیری دارند.</label>
+            <label><input type="checkbox"> Acceptance Criteria برای قابلیت‌های مهم وجود دارد.</label>
+            <label><input type="checkbox"> معماری به Requirementها قابل‌ردیابی است.</label>
+            <label><input type="checkbox"> API و Data Contractها اعتبارسنجی می‌شوند.</label>
+            <label><input type="checkbox"> Taskها کوچک و دارای وابستگی مشخص هستند.</label>
+            <label><input type="checkbox"> برای هر Task معیار Definition of Done وجود دارد.</label>
+            <label><input type="checkbox"> تست‌ها از Requirementها استخراج شده‌اند.</label>
+            <label><input type="checkbox"> تست‌های امنیتی و منفی وجود دارند.</label>
+            <label><input type="checkbox"> Spec و کد در Git نسخه‌بندی می‌شوند.</label>
+            <label><input type="checkbox"> تغییرات Spec از فرایند Review عبور می‌کنند.</label>
+            <label><input type="checkbox"> Agentها دسترسی محدود و متناسب با وظیفه دارند.</label>
+            <label><input type="checkbox"> عملیات پرریسک به تأیید انسانی نیاز دارند.</label>
+            <label><input type="checkbox"> لاگ، Trace، هزینه و خطاهای Agent قابل‌مشاهده‌اند.</label>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-3 items-center">
+            <button onclick="updateChecklist()">محاسبه میزان آمادگی</button>
+            <span id="checkResult" class="muted small"></span>
+          </div>
+        </section>
+
+        <section id="glossary" class="card">
+          <h2>واژه‌نامه تخصصی SDD</h2>
+          <table>
+            <tr>
+              <th>اصطلاح</th>
+              <th>تعریف</th>
+            </tr>
+            <tr>
+              <td>Specification</td>
+              <td>تعریف ساخت‌یافته رفتار، محدودیت‌ها و معیارهای مورد انتظار سیستم.</td>
+            </tr>
+            <tr>
+              <td>Requirement</td>
+              <td>نیاز یا الزام مشخصی که سیستم باید برآورده کند.</td>
+            </tr>
+            <tr>
+              <td>Functional Requirement</td>
+              <td>قابلیت یا رفتار مورد انتظار سیستم.</td>
+            </tr>
+            <tr>
+              <td>Non-functional Requirement</td>
+              <td>ویژگی کیفی مانند امنیت، سرعت و دسترس‌پذیری.</td>
+            </tr>
+            <tr>
+              <td>Acceptance Criteria</td>
+              <td>شرایطی که برای پذیرش یک قابلیت باید برقرار باشند.</td>
+            </tr>
+            <tr>
+              <td>Traceability</td>
+              <td>امکان دنبال‌کردن ارتباط نیازمندی با طراحی، کد و تست.</td>
+            </tr>
+            <tr>
+              <td>ADR</td>
+              <td>سند ثبت یک تصمیم معماری، زمینه، گزینه‌ها و پیامدها.</td>
+            </tr>
+            <tr>
+              <td>Implementation Plan</td>
+              <td>برنامه مرحله‌بندی‌شده برای تبدیل طراحی به کار اجرایی.</td>
+            </tr>
+            <tr>
+              <td>Task Decomposition</td>
+              <td>شکستن کار بزرگ به Taskهای کوچک و قابل‌مدیریت.</td>
+            </tr>
+            <tr>
+              <td>AI-readable Spec</td>
+              <td>مشخصاتی با ساختار و وضوح کافی برای استفاده قابل‌اعتماد توسط AI.</td>
+            </tr>
+            <tr>
+              <td>Spec Drift</td>
+              <td>فاصله گرفتن Spec از رفتار واقعی کد یا برعکس.</td>
+            </tr>
+            <tr>
+              <td>Living Specification</td>
+              <td>مشخصاتی که همراه محصول به‌روزرسانی و نگهداری می‌شود.</td>
+            </tr>
+            <tr>
+              <td>Agentic SDD</td>
+              <td>اجرای بخش‌هایی از چرخه SDD توسط Agentهای دارای ابزار و اختیار محدود.</td>
+            </tr>
+            <tr>
+              <td>Convergence</td>
+              <td>فرایند کاهش فاصله میان پیاده‌سازی و Spec تأییدشده.</td>
+            </tr>
+            <tr>
+              <td>Human-in-the-loop</td>
+              <td>حضور انسان در نقاط تصمیم‌گیری، تأیید یا کنترل فرایند AI.</td>
+            </tr>
+            <tr>
+              <td>Contract</td>
+              <td>تعریف ساخت‌یافته تعهدات و رفتار مورد انتظار میان اجزای سیستم.</td>
+            </tr>
+            <tr>
+              <td>Brownfield</td>
+              <td>پروژه یا کدبیس موجود که توسعه جدید روی آن انجام می‌شود.</td>
+            </tr>
+            <tr>
+              <td>Greenfield</td>
+              <td>پروژه‌ای که از ابتدا و بدون کدبیس قبلی ساخته می‌شود.</td>
+            </tr>
+            <tr>
+              <td>Guardrail</td>
+              <td>قید یا کنترل برای محدودکردن رفتار ناخواسته سیستم یا Agent.</td>
+            </tr>
+            <tr>
+              <td>Definition of Done</td>
+              <td>شرایطی که تکمیل واقعی یک Task را مشخص می‌کنند.</td>
+            </tr>
+          </table>
+        </section>
+
+        <section id="exercises" class="card">
+          <h2>تمرین‌های عملی</h2>
+
+          <h3>تمرین ۱: تبدیل ایده به Requirement</h3>
+          <p>
+            ایده‌ای مانند «ساخت یک سامانه مدیریت هزینه شخصی» انتخاب کنید.
+            حداقل ۵ Functional Requirement، سه Business Rule و سه Non-functional Requirement بنویسید.
+            برای هر Requirement یک Acceptance Criterion تعریف کنید.
+          </p>
+
+          <h3>تمرین ۲: کشف ابهام</h3>
+          <p>
+            این درخواست را تحلیل کنید: «کاربر بتواند حساب خود را حذف کند.»
+            حداقل ۱۰ پرسش مهم درباره احراز هویت، داده‌ها، تراکنش‌ها، نگهداری سوابق،
+            بازیابی حساب و پیامدهای حقوقی مطرح کنید.
+          </p>
+
+          <h3>تمرین ۳: نوشتن Spec قابل‌خواندن برای AI</h3>
+          <p>
+            برای قابلیت ورود کاربر، یک فایل Markdown با بخش‌های Objective،
+            Scope، Actors، Functional Requirements، Business Rules،
+            Error Handling و Acceptance Criteria بسازید.
+          </p>
+
+          <h3>تمرین ۴: طراحی معماری مبتنی بر Spec</h3>
+          <p>
+            برای یک سامانه فروش بلیت، سه معماری احتمالی را مقایسه کنید:
+            Modular Monolith، Microservices و Serverless.
+            تصمیم خود را با Requirementها و Trade-offها توجیه کنید.
+          </p>
+
+          <h3>تمرین ۵: ساخت Traceability Matrix</h3>
+          <p>
+            حداقل ۸ Requirement تعریف کنید و برای هر کدام یک Design Artifact،
+            یک Task و یک Test ID مشخص کنید. موارد بدون پوشش را پیدا کنید.
+          </p>
+
+          <h3>تمرین ۶: طراحی گردش کار Agentic SDD</h3>
+          <p>
+            یک Supervisor و سه Worker برای تحلیل، توسعه و تست طراحی کنید.
+            قرارداد Task، محدودیت ابزارها، خروجی‌ها و معیار ارزیابی هر Agent را بنویسید.
+          </p>
+
+          <h3>تمرین ۷: مدیریت تغییر</h3>
+          <p>
+            فرض کنید سیاست احراز هویت از رمز عبور ساده به احراز هویت چندمرحله‌ای تغییر می‌کند.
+            تمام Specها، APIها، تست‌ها، Taskها و تصمیم‌های معماری متأثر را شناسایی کنید.
+          </p>
+
+          <h3>تمرین ۸: ارزیابی کیفیت</h3>
+          <p>
+            دو روش تولید کد را مقایسه کنید: Prompt-first و Spec-driven.
+            برای یک قابلیت یکسان، زمان، تعداد اصلاحات، پوشش Acceptance Criteria،
+            تعداد نقص‌ها و هزینه مدل را ثبت کنید.
+          </p>
+        </section>
+
+        <section id="quiz" class="card">
+          <h2>آزمون پایانی</h2>
+          <p>برای هر سؤال یک گزینه انتخاب کنید و در پایان پاسخ‌ها را بررسی کنید.</p>
+          <form id="quizForm">
+
+            <div class="quiz-question">
+              <strong>۱. هدف اصلی SDD چیست؟</strong>
+              <label><input type="radio" name="q1" value="a"> تولید کد بیشتر در زمان کمتر، بدون نیاز به تحلیل</label>
+              <label><input type="radio" name="q1" value="b"> قرار دادن Specification ساخت‌یافته در مرکز چرخه
+                توسعه</label>
+              <label><input type="radio" name="q1" value="c"> حذف کامل تست نرم‌افزار</label>
+            </div>
+
+            <div class="quiz-question">
+              <strong>۲. مهم‌ترین تفاوت Prompt با Specification چیست؟</strong>
+              <label><input type="radio" name="q2" value="a"> Prompt همیشه دقیق‌تر است.</label>
+              <label><input type="radio" name="q2" value="b"> Specification ماندگار، ساخت‌یافته و قابل‌ردیابی
+                است.</label>
+              <label><input type="radio" name="q2" value="c"> هیچ تفاوتی ندارند.</label>
+            </div>
+
+            <div class="quiz-question">
+              <strong>۳. کدام مورد یک Acceptance Criterion مناسب‌تر است؟</strong>
+              <label><input type="radio" name="q3" value="a"> سیستم باید خیلی سریع باشد.</label>
+              <label><input type="radio" name="q3" value="b"> تجربه کاربری باید عالی باشد.</label>
+              <label><input type="radio" name="q3" value="c"> در بار تعریف‌شده، صدک ۹۵ پاسخ API حداکثر ۲ ثانیه
+                باشد.</label>
+            </div>
+
+            <div class="quiz-question">
+              <strong>۴. ADR برای چه کاری استفاده می‌شود؟</strong>
+              <label><input type="radio" name="q4" value="a"> ثبت تصمیم معماری و دلایل آن</label>
+              <label><input type="radio" name="q4" value="b"> ذخیره رمز عبور کاربران</label>
+              <label><input type="radio" name="q4" value="c"> اجرای تست‌های UI</label>
+            </div>
+
+            <div class="quiz-question">
+              <strong>۵. چرا تست‌ها باید به Requirement متصل باشند؟</strong>
+              <label><input type="radio" name="q5" value="a"> برای افزایش تعداد فایل‌های تست</label>
+              <label><input type="radio" name="q5" value="b"> برای اثبات رفتار مورد انتظار و ایجاد Traceability</label>
+              <label><input type="radio" name="q5" value="c"> برای جلوگیری از بازبینی انسانی</label>
+            </div>
+
+            <div class="quiz-question">
+              <strong>۶. Spec Drift به چه معناست؟</strong>
+              <label><input type="radio" name="q6" value="a"> افزایش سرعت اجرای تست</label>
+              <label><input type="radio" name="q6" value="b"> تغییر زبان برنامه‌نویسی</label>
+              <label><input type="radio" name="q6" value="c"> فاصله گرفتن Specification از کد یا رفتار واقعی
+                سیستم</label>
+            </div>
+
+            <div class="quiz-question">
+              <strong>۷. در Agentic SDD، Convergence چه هدفی دارد؟</strong>
+              <label><input type="radio" name="q7" value="a"> کاهش فاصله پیاده‌سازی با Spec تأییدشده</label>
+              <label><input type="radio" name="q7" value="b"> حذف تمام مستندات</label>
+              <label><input type="radio" name="q7" value="c"> افزایش تعداد Agentها</label>
+            </div>
+
+            <div class="quiz-question">
+              <strong>۸. چه زمانی Multi-Agent مناسب‌تر است؟</strong>
+              <label><input type="radio" name="q8" value="a"> برای هر پروژه، حتی یک اسکریپت ساده</label>
+              <label><input type="radio" name="q8" value="b"> وقتی وظایف مستقل و قابل‌تقسیم با قرارداد روشن وجود
+                دارند</label>
+              <label><input type="radio" name="q8" value="c"> وقتی نمی‌خواهیم تست بنویسیم</label>
+            </div>
+
+            <div class="quiz-question">
+              <strong>۹. کدام Artifact معمولاً دلیل و هدف یک تغییر را توضیح می‌دهد؟</strong>
+              <label><input type="radio" name="q9" value="a"> Proposal</label>
+              <label><input type="radio" name="q9" value="b"> Binary</label>
+              <label><input type="radio" name="q9" value="c"> Stack Trace</label>
+            </div>
+
+            <div class="quiz-question">
+              <strong>۱۰. کدام گزینه درباره AI صحیح‌تر است؟</strong>
+              <label><input type="radio" name="q10" value="a"> خروجی AI بدون تست قابل‌اعتماد است.</label>
+              <label><input type="radio" name="q10" value="b"> AI می‌تواند مسئولیت نهایی امنیت و انتشار را به‌تنهایی
+                بپذیرد.</label>
+              <label><input type="radio" name="q10" value="c"> خروجی AI باید با Spec، تست و بازبینی مناسب ارزیابی
+                شود.</label>
+            </div>
+
+            <button type="button" onclick="gradeQuiz()">بررسی پاسخ‌ها</button>
+            <button type="reset" class="secondary" onclick="resetQuiz()">پاک‌کردن پاسخ‌ها</button>
+          </form>
+          <div id="quizResult" class="result"></div>
+        </section>
+
+        <section id="references" class="card">
+          <h2>منابع و مطالعه بیشتر</h2>
+          <p>
+            برای مطالعه عملی SDD، مستندات ابزارها را در کنار اصول مهندسی نیازمندی،
+            طراحی معماری و تست نرم‌افزار دنبال کنید.
+            ابزارها و قابلیت‌هایشان ممکن است در طول زمان تغییر کنند؛ بنابراین برای جزئیات نصب،
+            فرمان‌ها و Integrationها همیشه مستندات رسمی نسخه جاری را بررسی کنید.
+          </p>
+          <ul>
+            <li>
+              <a href="https://github.github.com/spec-kit/concepts/sdd.html" target="_blank" rel="noopener">
+                GitHub Spec Kit — What is Spec-Driven Development?
+              </a>
+            </li>
+            <li>
+              <a href="https://github.github.com/spec-kit/quickstart" target="_blank" rel="noopener">
+                GitHub Spec Kit — Quickstart
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/github/spec-kit" target="_blank" rel="noopener">
+                GitHub Spec Kit — Source Repository
+              </a>
+            </li>
+            <li>
+              <a href="https://openspec.dev/docs/schemas/spec-driven" target="_blank" rel="noopener">
+                OpenSpec — Spec-driven Workflow
+              </a>
+            </li>
+            <li>
+              <a href="https://kiro.dev/" target="_blank" rel="noopener">
+                Kiro — AI Development Environment
+              </a>
+            </li>
+            <li>
+              <a href="https://tessl.io/" target="_blank" rel="noopener">
+                Tessl — Spec-centric Development
+              </a>
+            </li>
+            <li>
+              <a href="https://developer.microsoft.com/blog/spec-driven-development-ai-native-engineering/"
+                target="_blank" rel="noopener">
+                Microsoft — Spec-Driven Development: A Spec-First Approach to AI-Native Engineering
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        <section class="card">
+          <h2>جمع‌بندی نهایی</h2>
+          <p class="lead">
+            SDD به ما کمک می‌کند از تولید کد مبتنی بر حدس و Promptهای پراکنده،
+            به سمت توسعه‌ای ساخت‌یافته، قابل‌ردیابی و قابل‌اعتبارسنجی حرکت کنیم.
+          </p>
+          <p>
+            در این روش، نیازمندی‌ها به Specification تبدیل می‌شوند؛ Specification معماری و برنامه پیاده‌سازی
+            را هدایت می‌کند؛ Taskها به کد و تست تبدیل می‌شوند؛ و در پایان، نتیجه با همان مشخصاتی
+            که مبنای کار بوده‌اند مقایسه می‌شود.
+          </p>
+          <div class="callout success">
+            <strong>مهم‌ترین اصل برای شروع:</strong>
+            از یک قابلیت کوچک شروع کنید. ابتدا Spec را دقیق بنویسید،
+            سپس معیار پذیرش و تست را تعریف کنید، بعد از AI برای تولید Plan و کد کمک بگیرید
+            و در پایان نتیجه را با شواهد بررسی کنید.
+            وقتی این فرایند ارزش خود را نشان داد، آن را به Agentic SDD و توسعه چندعاملی گسترش دهید.
+          </div>
+          <p>
+            هدف نهایی SDD این نیست که اسناد بیشتری تولید کنیم؛ هدف این است که
+            فاصله میان آنچه کسب‌وکار می‌خواهد، آنچه تیم طراحی می‌کند، آنچه AI می‌سازد
+            و آنچه تست می‌کند، تا حد ممکن کاهش یابد.
+          </p>
+        </section>
+
+        
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-nav">
+      <a href="index.html">نقشه راه</a>
+      <a href="9.html">فصل قبل</a>
+      <a href="#intro">فهرست مطالب</a>
+      <a href="#">بالای صفحه ↑</a>
+    </div>
+    Spec-Driven Development · Chapter 10
+    <br>
+    <strong>M_Ai</strong>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      try { localStorage.setItem('m-ai-theme', theme); } catch (e) {}
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#10101e' : '#f5f5fb');
+    }
+    try {
+      const saved = localStorage.getItem('m-ai-theme');
+      if (saved === 'light' || saved === 'dark') setTheme(saved);
+    } catch (e) {}
+    themeToggle.addEventListener('click', () => {
+      setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      const el = document.getElementById('progress');
+      if (el) el.style.width = progress + '%';
+    });
+  </script>
+<script>
+
+    function updateChecklist() {
+      const items = [...document.querySelectorAll('#readiness input[type="checkbox"]')];
+      const checked = items.filter(x => x.checked).length;
+      const total = items.length;
+      const percent = Math.round((checked / total) * 100);
+      let message = '';
+
+      if (percent < 40) {
+        message = 'شروع اولیه: ابتدا نیازمندی‌ها، Scope و معیارهای پذیرش را تکمیل کنید.';
+      } else if (percent < 70) {
+        message = 'در حال شکل‌گیری: روی Traceability، تست و مدیریت تغییر تمرکز کنید.';
+      } else if (percent < 90) {
+        message = 'آمادگی خوب: موارد باقی‌مانده را پیش از انتشار بررسی کنید.';
+      } else {
+        message = 'آمادگی بالا: با این حال، ارزیابی واقعی و شواهد CI ضروری هستند.';
+      }
+
+      document.getElementById('checkResult').textContent =
+        `${checked} از ${total} مورد تکمیل شده (${percent}٪). ${message}`;
+    }
+
+    const answers = {
+      q1: 'b', q2: 'b', q3: 'c', q4: 'a', q5: 'b',
+      q6: 'c', q7: 'a', q8: 'b', q9: 'a', q10: 'c'
+    };
+
+    const explanations = {
+      q1: 'SDD مشخصات ساخت‌یافته را به مرکز چرخه توسعه تبدیل می‌کند.',
+      q2: 'Specification یک Artifact ماندگار و قابل‌ردیابی است.',
+      q3: 'معیار خوب باید قابل‌اندازه‌گیری و قابل‌آزمایش باشد.',
+      q4: 'ADR تصمیم معماری، زمینه، گزینه‌ها و پیامدهای آن را ثبت می‌کند.',
+      q5: 'اتصال تست به Requirement شواهد انطباق و Traceability ایجاد می‌کند.',
+      q6: 'Spec Drift یعنی فاصله گرفتن تدریجی Spec و پیاده‌سازی.',
+      q7: 'Convergence شکاف‌های میان سیستم ساخته‌شده و Spec را پیدا می‌کند.',
+      q8: 'Multi-Agent زمانی مفید است که تقسیم کار واقعی و قابل‌کنترل وجود داشته باشد.',
+      q9: 'Proposal دلیل و هدف تغییر را توضیح می‌دهد.',
+      q10: 'خروجی AI باید با تست، Spec و بازبینی ارزیابی شود.'
+    };
+
+    function gradeQuiz() {
+      let score = 0;
+      let answered = 0;
+      let details = '';
+
+      for (const [question, correct] of Object.entries(answers)) {
+        const selected = document.querySelector(`input[name="${question}"]:checked`);
+        if (selected) {
+          answered++;
+          if (selected.value === correct) score++;
+        }
+      }
+
+      for (const [question, correct] of Object.entries(answers)) {
+        const selected = document.querySelector(`input[name="${question}"]:checked`);
+        const status = selected && selected.value === correct ? 'درست' : 'نیازمند مرور';
+        details += `<p><strong>${question.toUpperCase()} — ${status}:</strong> ${explanations[question]}</p>`;
+      }
+
+      const result = document.getElementById('quizResult');
+      result.style.display = 'block';
+      result.innerHTML =
+        `<h3>نتیجه: ${score} از 10</h3>
+       <p>به ${answered} سؤال از ۱۰ سؤال پاسخ داده‌اید.</p>
+       ${details}`;
+      result.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+    }
+
+    function resetQuiz() {
+      const result = document.getElementById('quizResult');
+      result.style.display = 'none';
+      result.innerHTML = '';
+    }
+  
+</script>
+</body>
+</html>

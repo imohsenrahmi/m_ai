@@ -1,0 +1,3279 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10101e">
+  <meta name="description" content="آموزش جامع MCP و Agent Communication — Model Context Protocol و A2A">
+  <title>MCP & Agent Communication | فصل ۹ — M_Ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --purple: #9275f5;
+      --purple-strong: #7657e8;
+      --cyan: #51cbdc;
+      --green: #49c9a3;
+      --radius: 18px;
+      --transition: .28s ease;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #10101e;
+      --bg-secondary: #151529;
+      --surface: #1b1b32;
+      --surface-hover: #242440;
+      --surface-soft: rgba(255, 255, 255, .045);
+      --text: #f5f3ff;
+      --text-secondary: #c3c1d5;
+      --muted: #9695ae;
+      --border: rgba(255, 255, 255, .09);
+      --border-strong: rgba(255, 255, 255, .15);
+      --header-bg: rgba(16, 16, 30, .92);
+      --shadow: 0 18px 50px rgba(0, 0, 0, .24);
+      --callout-bg: rgba(146, 117, 245, .1);
+      --callout-border: rgba(146, 117, 245, .45);
+      --tip-bg: rgba(81, 203, 220, .08);
+      --tip-border: rgba(81, 203, 220, .4);
+      --warning-bg: rgba(217, 119, 6, .1);
+      --warning-border: rgba(217, 119, 6, .45);
+      --code-bg: #0c0c18;
+      --code-text: #b8f0d8;
+      --diagram-bg: rgba(146, 117, 245, .1);
+      --diagram-border: rgba(146, 117, 245, .28);
+      --table-head: rgba(146, 117, 245, .12);
+      --table-alt: rgba(255, 255, 255, .03);
+      --tag-bg: rgba(146, 117, 245, .15);
+      --tag-text: #c4b5fd;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .22), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .12), transparent 45%);
+      --progress-track: rgba(255, 255, 255, .08);
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f5fb;
+      --bg-secondary: #eeeefa;
+      --surface: #fff;
+      --surface-hover: #f7f5ff;
+      --surface-soft: rgba(102, 78, 190, .045);
+      --text: #202039;
+      --text-secondary: #55556f;
+      --muted: #77778f;
+      --border: rgba(40, 35, 90, .10);
+      --border-strong: rgba(40, 35, 90, .17);
+      --header-bg: rgba(255, 255, 255, .92);
+      --shadow: 0 18px 50px rgba(45, 35, 100, .09);
+      --callout-bg: #f5f3ff;
+      --callout-border: #6658e8;
+      --tip-bg: #f0fdfa;
+      --tip-border: #0d9488;
+      --warning-bg: #fffbeb;
+      --warning-border: #d97706;
+      --code-bg: #111827;
+      --code-text: #d1fae5;
+      --diagram-bg: #eef2ff;
+      --diagram-border: #c7d2fe;
+      --table-head: #f3f4f6;
+      --table-alt: #fafafa;
+      --tag-bg: #ede9fe;
+      --tag-text: #5b21b6;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .15), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .1), transparent 45%);
+      --progress-track: rgba(40, 35, 90, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+      transition: background .35s, color .35s;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--progress-track);
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      z-index: 200;
+    }
+    #progress {
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      transition: width .1s linear;
+    }
+
+    /* HEADER */
+    .site-header {
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--header-bg);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(146, 117, 245, .24);
+    }
+    .site-header::after {
+      content: "";
+      position: absolute;
+      bottom: -1px; right: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent 3%, rgba(81, 203, 220, .35) 25%, rgba(146, 117, 245, .85) 50%, rgba(81, 203, 220, .35) 75%, transparent 97%);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      direction: ltr;
+      flex-shrink: 0;
+    }
+    .brand-mark {
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #a58cff, #6848df);
+      box-shadow: 0 4px 18px rgba(118, 87, 232, .28), inset 0 1px 0 rgba(255,255,255,.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-mark::before {
+      content: "";
+      position: absolute; inset: 1px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 11px;
+    }
+    .brand-mark svg { width: 26px; height: 26px; position: relative; z-index: 1; }
+    .brand-name { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--text); }
+    .brand-name span { color: var(--purple); }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: 12px;
+      display: grid; place-items: center;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    .theme-toggle:hover { border-color: var(--purple); transform: rotate(12deg); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-icon-sun { display: none; }
+    html[data-theme="light"] .theme-icon-moon { display: none; }
+    html[data-theme="light"] .theme-icon-sun { display: block; }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 11px;
+      background: rgba(146, 117, 245, .12);
+      border: 1px solid rgba(146, 117, 245, .32);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .back-home:hover { background: var(--purple); color: #fff; }
+    .back-home svg { width: 15px; height: 15px; }
+
+    /* CHAPTER HERO */
+    .chapter-hero {
+      position: relative;
+      padding: 48px 20px 40px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .chapter-hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--hero-overlay);
+      pointer-events: none;
+    }
+    .chapter-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .chapter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(146, 117, 245, .35);
+      background: rgba(146, 117, 245, .1);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .8px;
+      direction: ltr;
+      margin-bottom: 16px;
+    }
+    .chapter-badge::before {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .chapter-hero h1 {
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 900;
+      line-height: 1.45;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .chapter-hero .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 2.1;
+      max-width: 720px;
+    }
+    .chapter-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .meta-chip {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .meta-chip strong {
+      color: var(--text);
+      font-size: 15px;
+      margin-left: 6px;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    /* LAYOUT */
+    .page-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static !important; order: -1; }
+    }
+
+    /* SIDEBAR TOC */
+    .sidebar {
+      position: sticky;
+      top: 88px;
+    }
+    .toc-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 18px 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.04);
+    }
+    .toc-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-title::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .toc-link {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      transition: .2s;
+      border: 1px solid transparent;
+    }
+    .toc-link:hover {
+      color: var(--text);
+      background: rgba(146, 117, 245, .08);
+      border-color: rgba(146, 117, 245, .2);
+      padding-right: 14px;
+    }
+    .toc-link-strong { color: var(--purple); font-weight: 800; }
+    .toc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+    .print-btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 11px;
+      border-radius: 12px;
+      background: linear-gradient(115deg, #a18aff, #7558e8);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .print-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* MAIN CONTENT SURFACE */
+    .content-area { min-width: 0; }
+
+    .section-card {
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      background: var(--surface) !important;
+      color: var(--text);
+    }
+    .section-number {
+      background: linear-gradient(135deg, #9275f5, #51cbdc) !important;
+      color: white !important;
+    }
+
+    /* Override common Tailwind color utilities for theme */
+    .content-area {
+      color: var(--text);
+    }
+    .content-area .text-slate-800,
+    .content-area .text-slate-700,
+    .content-area .text-slate-900 { color: var(--text) !important; }
+    .content-area .text-slate-500,
+    .content-area .text-slate-400,
+    .content-area .text-slate-600 { color: var(--muted) !important; }
+    .content-area .text-indigo-600,
+    .content-area .text-indigo-700,
+    .content-area .text-indigo-800 { color: var(--purple) !important; }
+    .content-area .bg-white { background: var(--surface) !important; }
+    .content-area .bg-slate-50,
+    .content-area .bg-slate-100,
+    .content-area .hover\:bg-slate-50:hover { background: var(--surface-soft) !important; }
+    .content-area .border,
+    .content-area .border-slate-200,
+    .content-area .border-slate-100 { border-color: var(--border) !important; }
+    .content-area .shadow-sm { box-shadow: 0 6px 24px rgba(0,0,0,.05) !important; }
+
+    .callout {
+      border-right: 4px solid var(--callout-border) !important;
+      background: var(--callout-bg) !important;
+      color: var(--text);
+    }
+    .tip {
+      border-right: 4px solid var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .warning {
+      border-right: 4px solid var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .code {
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .86rem;
+      border: 1px solid var(--border);
+    }
+    .ltr { direction: ltr; text-align: left; }
+    .diagram-box {
+      border: 1px solid var(--diagram-border) !important;
+      background: var(--diagram-bg) !important;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .arrow { color: var(--purple) !important; font-size: 1.5rem; font-weight: 800; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      background: var(--tag-bg) !important;
+      color: var(--tag-text) !important;
+      padding: 3px 10px;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+    .table-wrap { overflow-x: auto; border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td {
+      border: 1px solid var(--border) !important;
+      padding: 12px;
+      text-align: right;
+      vertical-align: top;
+      color: var(--text);
+    }
+    th { background: var(--table-head) !important; font-weight: 800; }
+    tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+    .content-area h2, .content-area h3, .content-area h4 {
+      color: var(--text);
+    }
+    .content-area p, .content-area li { color: var(--text-secondary); }
+    .content-area strong { color: var(--text); }
+
+    .content-area .bg-indigo-50,
+    .content-area .bg-teal-50 { background: var(--surface-soft) !important; }
+    .content-area .border-teal-300 { border-color: var(--diagram-border) !important; }
+    .content-area .text-teal-700 { color: var(--green) !important; }
+    .content-area .text-rose-700 { color: #f87171 !important; }
+    .content-area .text-amber-700 { color: #fbbf24 !important; }
+    .content-area .bg-indigo-700,
+    .content-area .hover\:bg-indigo-800:hover {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+    }
+    .content-area .text-indigo-900 { color: var(--text) !important; }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 2;
+    }
+    .site-footer strong {
+      color: var(--purple);
+      direction: ltr;
+      display: inline-block;
+      font-size: 15px;
+    }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .footer-nav a {
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      transition: .2s;
+    }
+    .footer-nav a:hover {
+      color: var(--purple);
+      border-color: rgba(146,117,245,.4);
+    }
+
+    @media print {
+      .site-header, .sidebar, .progress-bar, .no-print, .theme-toggle, .back-home { display: none !important; }
+      .page-layout { grid-template-columns: 1fr; }
+      .section-card { break-inside: avoid; }
+      body { background: white; color: black; }
+    }
+
+    @media (max-width: 640px) {
+      .chapter-hero { padding: 32px 16px 28px; }
+      .header-inner { padding: 0 14px; }
+      .back-home span.label { display: none; }
+      .page-layout { padding: 18px 14px 40px; }
+    }
+
+
+    .content-area section,
+    .content-area .panel {
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 16px !important;
+      padding: 27px !important;
+      margin-bottom: 22px !important;
+      box-shadow: 0 5px 18px rgba(0,0,0,.04) !important;
+      color: var(--text);
+    }
+    .content-area h2 {
+      font-size: 1.4rem !important;
+      color: var(--text) !important;
+      margin-top: 0 !important;
+      padding-bottom: 12px !important;
+      border-bottom: 2px solid var(--border) !important;
+    }
+    .content-area h3 {
+      font-size: 1.1rem !important;
+      color: var(--purple) !important;
+      margin-top: 27px !important;
+    }
+    .content-area h4 {
+      font-size: 1rem !important;
+      color: var(--text) !important;
+      margin-top: 20px !important;
+    }
+    .content-area .lead {
+      font-size: 1.05rem; color: var(--text-secondary) !important; font-weight: 500;
+    }
+    .content-area .callout {
+      padding: 15px 18px;
+      border-right: 4px solid var(--callout-border);
+      background: var(--callout-bg);
+      border-radius: 9px; margin: 18px 0;
+    }
+    .content-area .warning {
+      background: var(--warning-bg) !important;
+      border-right-color: var(--warning-border) !important;
+    }
+    .content-area .success {
+      background: var(--tip-bg) !important;
+      border-right-color: var(--tip-border) !important;
+    }
+    .content-area .purple {
+      background: rgba(146,117,245,.1) !important;
+      border-right-color: var(--purple) !important;
+    }
+    .content-area pre {
+      direction: ltr; text-align: left; white-space: pre-wrap;
+      overflow-x: auto;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      padding: 19px; border-radius: 12px;
+      font-size: 13px; line-height: 1.7;
+      border: 1px solid var(--border);
+    }
+    .content-area p code, .content-area li code, .content-area td code {
+      background: rgba(146,117,245,.12) !important;
+      color: var(--purple) !important;
+      padding: 2px 5px; border-radius: 5px; font-size: .9em;
+    }
+    .content-area .diagram {
+      background: var(--surface-soft);
+      border: 1px dashed var(--border);
+      border-radius: 12px; padding: 18px; text-align: center;
+      margin: 20px 0; overflow-x: auto;
+    }
+    .content-area .node {
+      display: inline-block;
+      background: var(--surface);
+      border: 2px solid rgba(146,117,245,.4);
+      border-radius: 10px; padding: 10px 15px; margin: 6px;
+      min-width: 125px; font-weight: 600; color: var(--text);
+    }
+    .content-area .node.server { border-color: rgba(73,201,163,.5); }
+    .content-area .node.agent { border-color: rgba(146,117,245,.5); }
+    .content-area .arrow { color: var(--muted); font-size: 22px; }
+    .content-area .mini-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 15px;
+    }
+    .content-area .badge {
+      display: inline-block;
+      background: rgba(146,117,245,.15) !important;
+      color: var(--purple) !important;
+      border-radius: 20px; padding: 2px 9px; font-size: 12px; font-weight: 600;
+    }
+    .content-area .muted { color: var(--muted) !important; }
+    .content-area .quiz-question {
+      padding: 15px; border: 1px solid var(--border);
+      border-radius: 10px; margin: 13px 0; color: var(--text-secondary);
+    }
+    .content-area .quiz-question label { display: block; padding: 4px; cursor: pointer; }
+    .content-area button {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+      color: white; border: 0; border-radius: 9px;
+      padding: 10px 18px; font-family: inherit; font-size: 14px;
+      cursor: pointer; margin: 5px; font-weight: 700;
+    }
+    .content-area button.secondary {
+      background: var(--surface-soft) !important;
+      color: var(--text) !important;
+      border: 1px solid var(--border);
+    }
+    .content-area #quiz-result {
+      margin-top: 15px; padding: 15px; border-radius: 10px;
+      background: var(--callout-bg); display: none; color: var(--text);
+    }
+    .content-area th { background: var(--table-head) !important; color: var(--text) !important; }
+    .content-area td { border-color: var(--border) !important; color: var(--text-secondary); }
+    .content-area tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+  </style>
+</head>
+<body>
+  <div class="progress-bar no-print"><div id="progress"></div></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="M_Ai Home">
+        <div class="brand-name"><span>M_Ai</span></div>
+        <div class="brand-mark">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 29V10L15 22L20 15L25 22L35 10V29" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 15V8" stroke="#DDFBFF" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="20" cy="6" r="2.5" fill="#DDFBFF"/>
+          </svg>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="تغییر تم">
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>
+          </svg>
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>
+          </svg>
+        </button>
+        <a href="index.html" class="back-home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/>
+          </svg>
+          <span class="label">صفحه اصلی</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="chapter-hero">
+    <div class="chapter-hero-inner">
+      <div class="chapter-badge">CHAPTER 09 · MCP & AGENT COMMUNICATION</div>
+      <h1>Model Context Protocol (MCP) & Agent Communication</h1>
+      <p class="subtitle">
+        از اتصال Agent به ابزارها و داده‌ها تا ارتباط استاندارد بین Agentهای مستقل،
+        طراحی Server، امنیت، توسعه و معماری سیستم‌های چندعاملی.
+      </p>
+      <div class="chapter-meta">
+        <div class="meta-chip"><strong>11</strong> سرفصل اصلی</div>
+        <div class="meta-chip"><strong>09</strong> از ۱۲ فصل</div>
+        <div class="meta-chip"><strong>MCP</strong> + A2A</div>
+        <div class="meta-chip"><strong>11</strong> سؤال آزمون</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-layout">
+    <aside class="sidebar no-print">
+      <div class="toc-card">
+        <div class="toc-title">فهرست مطالب</div>
+        <nav class="toc-nav" id="toc">
+<a class="toc-link toc-link-strong" href="#intro">مقدمه و مفاهیم پایه</a>
+<a class="toc-link" href="#s1">۱. Introduction to MCP</a>
+<a class="toc-link" href="#s2">۲. MCP Architecture</a>
+<a class="toc-link" href="#s3">۳. MCP Client and Server</a>
+<a class="toc-link" href="#s4">۴. MCP Tools</a>
+<a class="toc-link" href="#s5">۵. MCP Resources</a>
+<a class="toc-link" href="#s6">۶. MCP Prompts</a>
+<a class="toc-link" href="#s7">۷. MCP Transport Mechanisms</a>
+<a class="toc-link" href="#s8">۸. MCP Server Development</a>
+<a class="toc-link" href="#s9">۹. MCP Security</a>
+<a class="toc-link" href="#s10">۱۰. Agent-to-Agent (A2A)</a>
+<div class="toc-divider"></div>
+<a class="toc-link" href="#s11">۱۱. Agent Interoperability</a>
+<a class="toc-link toc-link-strong" href="#comparison">مقایسه MCP و A2A</a>
+<a class="toc-link toc-link-strong" href="#project">پروژه عملی</a>
+<a class="toc-link toc-link-strong" href="#checklist">چک‌لیست Production</a>
+<a class="toc-link toc-link-strong" href="#glossary">واژه‌نامه</a>
+<a class="toc-link toc-link-strong" href="#quiz">آزمون پایانی</a>
+        </nav>
+        <button class="print-btn" type="button" onclick="window.print()">چاپ یا ذخیره PDF</button>
+      </div>
+    </aside>
+
+    <main class="content-area min-w-0">
+
+      <section id="intro">
+        <h2>مقدمه: چرا به MCP و Agent Communication نیاز داریم؟</h2>
+
+        <p class="lead">
+          یک مدل زبانی به‌تنهایی فقط بر اساس اطلاعاتی که در اختیارش قرار گرفته پاسخ تولید می‌کند.
+          اما یک Agent کاربردی باید بتواند اطلاعات تازه دریافت کند، ابزار اجرا کند،
+          به سرویس‌های سازمانی وصل شود و در صورت نیاز با Agentهای دیگر همکاری کند.
+        </p>
+
+        تصور کنید یک Agent هوشمند برای مدیریت کسب‌وکار ساخته‌ایم. این Agent باید بتواند:
+        <ul>
+          <li>از پایگاه داده اطلاعات مشتری را بخواند.</li>
+          <li>در یک سامانه‌ی CRM جست‌وجو کند.</li>
+          <li>فاکتور ایجاد کند.</li>
+          <li>از یک Agent مالی درباره‌ی وضعیت پرداخت سؤال کند.</li>
+          <li>از یک Agent حقوقی بخواهد قرارداد را بررسی کند.</li>
+          <li>نتیجه‌ی چند منبع را جمع‌بندی و به کاربر ارائه کند.</li>
+        </ul>
+
+        اگر برای هر ابزار و هر Agent یک روش اختصاصی اتصال بسازیم، معماری به‌سرعت پیچیده می‌شود.
+        MCP و A2A برای استاندارد کردن بخش‌هایی از این ارتباط طراحی شده‌اند.
+
+        <div class="grid">
+          <div class="mini-card">
+            <h4>MCP</h4>
+            <p>استانداردی برای اتصال برنامه‌های AI به ابزارها، منابع داده و قابلیت‌های خارجی.</p>
+            <span class="badge">Agent ↔ Tools / Data</span>
+          </div>
+          <div class="mini-card">
+            <h4>A2A</h4>
+            <p>استانداردی برای کشف، درخواست کار، پیگیری و تبادل خروجی بین Agentهای مستقل.</p>
+            <span class="badge">Agent ↔ Agent</span>
+          </div>
+        </div>
+
+        <h3>قبل از شروع: پروتکل دقیقاً چیست؟</h3>
+        <p>
+          پروتکل مجموعه‌ای از قواعد مشترک است که مشخص می‌کند دو سیستم چگونه با یکدیگر ارتباط
+          برقرار کنند. این قواعد می‌توانند ساختار پیام، روش شناسایی طرف مقابل، قالب درخواست،
+          قالب پاسخ، خطاها، احراز هویت و نحوه‌ی انتقال داده را تعریف کنند.
+        </p>
+
+        <p>برای مثال، وقتی یک کلاینت می‌خواهد یک ابزار MCP را اجرا کند، باید مشخص باشد:</p>
+        <ol>
+          <li>نام ابزار چیست؟</li>
+          <li>چه ورودی‌هایی نیاز دارد؟</li>
+          <li>ساختار ورودی چگونه اعتبارسنجی می‌شود؟</li>
+          <li>درخواست با چه متدی ارسال می‌شود؟</li>
+          <li>پاسخ موفق یا خطا چه ساختاری دارد؟</li>
+        </ol>
+
+        <div class="callout">
+          <strong>نکته‌ی مهم:</strong>
+          MCP خودش یک مدل زبانی، Agent Framework یا موتور تصمیم‌گیری نیست.
+          MCP استاندارد تبادل context و قابلیت‌ها میان برنامه‌ی AI و Server است.
+          اینکه مدل چه زمانی از ابزار استفاده کند و چطور نتیجه را تحلیل کند، به Host،
+          Agent Runtime و مدل بستگی دارد.
+        </div>
+      </section>
+
+      <section id="s1">
+        <h2>۱. Introduction to MCP</h2>
+
+        <h3>۱.۱. MCP چیست؟</h3>
+        <p>
+          <strong>Model Context Protocol</strong> یک پروتکل باز است که ارتباط بین برنامه‌های
+          هوش مصنوعی و سیستم‌های خارجی را استاندارد می‌کند. این سیستم‌های خارجی می‌توانند
+          پایگاه داده، فایل‌ها، APIها، سرویس‌های سازمانی، ابزارهای توسعه، سامانه‌های مانیتورینگ
+          یا منابع اطلاعاتی باشند.
+        </p>
+
+        <p>
+          ایده‌ی اصلی این است که به‌جای نوشتن یک Integration اختصاصی برای هر مدل و هر ابزار،
+          یک قرارداد ارتباطی مشترک داشته باشیم. در این صورت یک MCP Server می‌تواند توسط
+          Hostهای سازگار مختلف استفاده شود.
+        </p>
+
+        <h3>۱.۲. مشکل قبل از MCP</h3>
+        <p>
+          فرض کنید سه برنامه‌ی AI داریم و هر سه باید به پنج سرویس سازمانی متصل شوند.
+          اگر هر اتصال به‌صورت اختصاصی پیاده‌سازی شود، تعداد Integrationها می‌تواند زیاد شود.
+        </p>
+
+        <pre><code>AI App A ───── Custom CRM Integration
+AI App A ───── Custom Database Integration
+
+AI App B ───── Custom CRM Integration
+AI App B ───── Custom Database Integration
+
+AI App C ───── Custom CRM Integration
+AI App C ───── Custom Database Integration</code></pre>
+
+        <p>
+          این معماری باعث تکرار کد، تفاوت در ساختار ورودی و خروجی، دشواری نگهداری،
+          افزایش هزینه‌ی تست و وابستگی بیشتر به پیاده‌سازی هر برنامه می‌شود.
+        </p>
+
+        <h3>۱.۳. راه‌حل مبتنی بر MCP</h3>
+
+        <pre><code>                 MCP Host A
+                     |
+                 MCP Client
+                     |
+             +-------+-------+
+             |               |
+          MCP Server      MCP Server
+             |               |
+          CRM API         Database
+
+                 MCP Host B
+                     |
+                 MCP Client
+                     |
+             +-------+-------+
+             |               |
+          MCP Server      MCP Server
+             |               |
+          CRM API         Database</code></pre>
+
+        <p>
+          در این معماری، Serverها قابلیت‌ها را با قرارداد مشترک ارائه می‌کنند.
+          هر Host سازگار می‌تواند Client مناسب بسازد و به Server متصل شود.
+        </p>
+
+        <h3>۱.۴. MCP چه چیزهایی را استاندارد می‌کند؟</h3>
+        <ul>
+          <li>ساختار پیام‌ها و درخواست‌ها.</li>
+          <li>کشف قابلیت‌های Server.</li>
+          <li>تعریف Toolها و Schema ورودی آن‌ها.</li>
+          <li>تعریف Resourceها برای ارائه‌ی داده و context.</li>
+          <li>تعریف Promptهای قابل استفاده‌ی مجدد.</li>
+          <li>انتقال پیام‌ها از طریق Transportهای استاندارد.</li>
+          <li>الگوهای Notification، پیشرفت عملیات و قابلیت‌های تکمیلی.</li>
+          <li>چارچوب‌های احراز هویت برای ارتباطات HTTP.</li>
+        </ul>
+
+        <h3>۱.۵. MCP چه چیزی را استاندارد نمی‌کند؟</h3>
+        <ul>
+          <li>مدل زبانی مورد استفاده را تعیین نمی‌کند.</li>
+          <li>معماری داخلی Agent را تعیین نمی‌کند.</li>
+          <li>نحوه‌ی استدلال مدل را تعیین نمی‌کند.</li>
+          <li>الزام نمی‌کند که Agent حتماً چندعاملی باشد.</li>
+          <li>به‌تنهایی تضمین نمی‌کند که خروجی یک ابزار درست یا امن است.</li>
+          <li>جایگزین سیستم Authorization و سیاست‌های امنیتی سازمان نیست.</li>
+        </ul>
+
+        <h3>۱.۶. یک مثال واقعی</h3>
+        <p>
+          کاربر می‌گوید: «وضعیت سفارش شماره ۱۲۳۴ را بررسی کن.»
+          مدل تشخیص می‌دهد برای پاسخ به اطلاعات سفارش نیاز دارد.
+          MCP Host ابزارهای در دسترس را می‌شناسد و درخواست اجرای ابزار را به MCP Server می‌فرستد.
+          Server از طریق API داخلی سفارش را می‌خواند و نتیجه را برمی‌گرداند.
+        </p>
+
+        <pre><code>Agent:
+  User asks about order 1234
+
+Host:
+  Discovers available MCP tools
+
+Model:
+  Selects get_order_status
+
+MCP Client:
+  Sends tools/call request
+
+MCP Server:
+  Calls internal Order API
+
+MCP Client:
+  Receives result
+
+Model:
+  Explains the order status to the user</code></pre>
+
+        <div class="callout success">
+          مزیت اصلی MCP این است که توسعه‌دهنده‌ی ابزار می‌تواند قابلیت را یک‌بار
+          با یک قرارداد استاندارد ارائه کند و برنامه‌های مختلف، در صورت سازگاری،
+          از همان قابلیت استفاده کنند.
+        </div>
+      </section>
+
+      <section id="s2">
+        <h2>۲. MCP Architecture</h2>
+
+        <h3>۲.۱. معماری کلی MCP</h3>
+        <p>
+          معماری اصلی MCP بر سه نقش بنا شده است:
+        </p>
+
+        <div class="diagram">
+          <div class="node agent">MCP Host<br><small>AI Application</small></div>
+          <div class="arrow">↓</div>
+          <div class="node">MCP Client</div>
+          <div class="arrow">↓ JSON-RPC over Transport</div>
+          <div class="node server">MCP Server</div>
+          <div class="arrow">↓</div>
+          <div class="node">External Systems<br><small>Database / API / Files</small></div>
+        </div>
+
+        <h3>۲.۲. MCP Host</h3>
+        <p>
+          Host برنامه‌ی اصلی هوش مصنوعی است؛ یعنی محیطی که مدل، رابط کاربر، منطق Agent،
+          مدیریت context و اتصال به MCP Clientها در آن قرار می‌گیرند.
+        </p>
+
+        <p>وظایف متداول Host:</p>
+        <ul>
+          <li>مدیریت ارتباط با مدل زبانی.</li>
+          <li>ایجاد و مدیریت MCP Clientها.</li>
+          <li>اتصال به چند MCP Server.</li>
+          <li>مدیریت مجوزهای اتصال و تأیید کاربر.</li>
+          <li>انتخاب قابلیت‌های قابل ارائه به مدل.</li>
+          <li>ترکیب نتایج چند Server در context مدل.</li>
+          <li>کنترل سیاست‌های اجرای ابزارها.</li>
+          <li>مدیریت چرخه‌ی عمر اتصال‌ها و خطاها.</li>
+        </ul>
+
+        <p>
+          مثال Host می‌تواند یک IDE هوشمند، دستیار سازمانی، برنامه‌ی دسکتاپ AI
+          یا یک Backend اختصاصی برای Agent باشد.
+        </p>
+
+        <h3>۲.۳. MCP Client</h3>
+        <p>
+          Client بخشی از Host است که با یک MCP Server ارتباط برقرار می‌کند.
+          در معماری رایج، هر Client به یک Server مشخص متصل می‌شود.
+          اگر Host به پنج Server نیاز داشته باشد، معمولاً پنج Client مستقل مدیریت می‌کند.
+        </p>
+
+        <p>مسئولیت‌های Client شامل موارد زیر است:</p>
+        <ul>
+          <li>برقراری اتصال با Server.</li>
+          <li>ارسال پیام‌های پروتکل.</li>
+          <li>کشف قابلیت‌ها و دریافت فهرست ابزارها.</li>
+          <li>ارسال درخواست اجرای Tool.</li>
+          <li>خواندن Resource و دریافت Prompt.</li>
+          <li>مدیریت پاسخ‌ها، خطاها و Notificationها.</li>
+          <li>رعایت نسخه و قابلیت‌های توافق‌شده.</li>
+        </ul>
+
+        <h3>۲.۴. MCP Server</h3>
+        <p>
+          Server قابلیت‌ها را در اختیار Client قرار می‌دهد. Server ممکن است روی همان ماشین
+          Host اجرا شود یا روی یک ماشین و سرویس راه دور قرار داشته باشد.
+        </p>
+
+        <p>یک Server می‌تواند این موارد را ارائه کند:</p>
+        <ul>
+          <li><strong>Tools:</strong> عملیات قابل فراخوانی.</li>
+          <li><strong>Resources:</strong> اطلاعات و منابع قابل خواندن.</li>
+          <li><strong>Prompts:</strong> قالب‌های تعاملی و دستورالعمل‌های آماده.</li>
+        </ul>
+
+        <h3>۲.۵. لایه‌های MCP</h3>
+        <p>به‌صورت مفهومی دو لایه‌ی مهم وجود دارد:</p>
+
+        <div class="grid">
+          <div class="mini-card">
+            <h4>Data Layer</h4>
+            <p>تعریف معنای پیام‌ها، درخواست‌ها، پاسخ‌ها، قابلیت‌ها و Primitiveها.</p>
+            <p>پایه‌ی تبادل پیام در MCP، JSON-RPC 2.0 است.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Transport Layer</h4>
+            <p>مشخص می‌کند پیام‌ها چگونه بین Client و Server منتقل شوند؛ مانند STDIO یا Streamable HTTP.</p>
+          </div>
+        </div>
+
+        <h3>۲.۶. JSON-RPC 2.0 چیست؟</h3>
+        <p>
+          JSON-RPC یک قالب سبک برای فراخوانی متد از راه دور است.
+          در آن یک طرف درخواست متدی را ارسال می‌کند و طرف دیگر پاسخ متناظر را برمی‌گرداند.
+        </p>
+
+        <pre><code>{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/list",
+  "params": {}
+}</code></pre>
+
+        <p>نمونه‌ی پاسخ:</p>
+
+        <pre><code>{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "tools": [
+      {
+        "name": "get_order_status",
+        "description": "Get an order status"
+      }
+    ]
+  }
+}</code></pre>
+
+        <p>
+          فیلد <code>id</code> برای تطبیق پاسخ با درخواست استفاده می‌شود.
+          در Notification معمولاً پاسخ مستقلی انتظار نمی‌رود.
+          در طراحی واقعی باید خطاها نیز با ساختار مناسب مدیریت شوند.
+        </p>
+
+        <h3>۲.۷. Capability Negotiation</h3>
+        <p>
+          Client و Server باید بدانند طرف مقابل چه قابلیت‌هایی را پشتیبانی می‌کند.
+          این موضوع مانع آن می‌شود که یک طرف عملیاتی را درخواست کند که طرف دیگر قادر به انجام آن نیست.
+        </p>
+
+        <p>برای مثال:</p>
+        <ul>
+          <li>Server ممکن است Tool ارائه کند، اما Resource نداشته باشد.</li>
+          <li>Server ممکن است Subscription برای Resource را پشتیبانی کند.</li>
+          <li>Client ممکن است امکان دریافت درخواست Elicitation را داشته باشد.</li>
+        </ul>
+
+        <div class="callout warning">
+          نسخه‌ی پروتکل و SDK اهمیت دارد. MCP در نسخه‌های مختلف تغییر کرده است.
+          برای نمونه، مستندات جدید در مسیر تکامل پروتکل، مدل stateless و روش کشف
+          <code>server/discover</code> را معرفی کرده‌اند؛ در حالی که پیاده‌سازی‌های
+          نسخه‌های قدیمی‌تر از چرخه‌ی <code>initialize</code> استفاده می‌کنند.
+          بنابراین نمونه‌کدهای نسخه‌های مختلف را بدون بررسی سازگاری با هم ترکیب نکنید.
+        </div>
+      </section>
+
+      <section id="s3">
+        <h2>۳. MCP Client and Server</h2>
+
+        <h3>۳.۱. تفاوت Client و Server</h3>
+
+        <table>
+          <tr>
+            <th>موضوع</th>
+            <th>MCP Client</th>
+            <th>MCP Server</th>
+          </tr>
+          <tr>
+            <td>نقش</td>
+            <td>مصرف‌کننده‌ی قابلیت‌ها</td>
+            <td>ارائه‌دهنده‌ی قابلیت‌ها</td>
+          </tr>
+          <tr>
+            <td>Tool Discovery</td>
+            <td>فهرست ابزارها را دریافت می‌کند</td>
+            <td>فهرست ابزارها را ارائه می‌کند</td>
+          </tr>
+          <tr>
+            <td>Tool Call</td>
+            <td>درخواست اجرای ابزار می‌فرستد</td>
+            <td>عملیات را اجرا یا به سیستم دیگر واگذار می‌کند</td>
+          </tr>
+          <tr>
+            <td>Resource</td>
+            <td>درخواست خواندن می‌دهد</td>
+            <td>محتوا را ارائه می‌کند</td>
+          </tr>
+          <tr>
+            <td>Prompt</td>
+            <td>قالب را دریافت می‌کند</td>
+            <td>قالب را تعریف و عرضه می‌کند</td>
+          </tr>
+        </table>
+
+        <h3>۳.۲. چرخه‌ی تعامل</h3>
+        <p>در یک پیاده‌سازی معمولی، روند کلی چنین است:</p>
+
+        <ol>
+          <li>Host یک MCP Client می‌سازد.</li>
+          <li>Client از طریق Transport به Server وصل می‌شود.</li>
+          <li>قابلیت‌ها و نسخه‌ی قابل پشتیبانی مشخص می‌شوند.</li>
+          <li>Client قابلیت‌های Server را کشف می‌کند.</li>
+          <li>Host قابلیت‌های مجاز را به Agent یا مدل ارائه می‌کند.</li>
+          <li>مدل یا منطق برنامه تصمیم می‌گیرد از کدام قابلیت استفاده کند.</li>
+          <li>Client درخواست مربوط را ارسال می‌کند.</li>
+          <li>Server درخواست را اعتبارسنجی و اجرا می‌کند.</li>
+          <li>نتیجه به Client و سپس Host برمی‌گردد.</li>
+        </ol>
+
+        <h3>۳.۳. چرا Host را نباید با Client اشتباه بگیریم؟</h3>
+        <p>
+          Host کل برنامه‌ی AI است، اما Client فقط جزء ارتباطی آن با یک Server است.
+          Host ممکن است چند Client، یک یا چند مدل، حافظه، سیاست امنیتی، UI و Agent Runtime
+          داشته باشد.
+        </p>
+
+        <pre><code>AI Host
+|
++-- LLM Runtime
+|
++-- Agent Orchestrator
+|
++-- Permission Manager
+|
++-- MCP Client: CRM
+|      |
+|      +-- CRM MCP Server
+|
++-- MCP Client: Files
+|      |
+|      +-- Files MCP Server
+|
++-- MCP Client: Analytics
+       |
+       +-- Analytics MCP Server</code></pre>
+
+        <h3>۳.۴. جداسازی مسئولیت‌ها</h3>
+        <p>
+          یک اصل معماری مهم این است که Server نباید بی‌دلیل به کل مکالمه‌ی کاربر،
+          حافظه‌ی Agent یا اطلاعات سایر Serverها دسترسی داشته باشد.
+          Host باید فقط context ضروری را در اختیار هر Server قرار دهد.
+        </p>
+
+        <div class="callout success">
+          هر MCP Server را مانند یک سرویس مستقل با مسئولیت مشخص طراحی کنید.
+          Server مدیریت قابلیت‌های خودش را بر عهده دارد؛ Host مدیریت تجربه‌ی AI،
+          سیاست‌ها و هماهنگی کلی را انجام می‌دهد.
+        </div>
+      </section>
+
+      <section id="s4">
+        <h2>۴. MCP Tools</h2>
+
+        <h3>۴.۱. Tool چیست؟</h3>
+        <p>
+          Tool یک عملیات قابل اجراست که MCP Server آن را در اختیار Client قرار می‌دهد.
+          مدل می‌تواند با توجه به درخواست کاربر و توضیحات Tool تشخیص دهد چه زمانی باید آن را فراخوانی کند.
+        </p>
+
+        <p>نمونه‌هایی از Tool:</p>
+        <ul>
+          <li>جست‌وجوی مشتری در CRM.</li>
+          <li>خواندن وضعیت سفارش.</li>
+          <li>اجرای Query محدود روی دیتابیس.</li>
+          <li>ساخت تیکت پشتیبانی.</li>
+          <li>ارسال درخواست بازپرداخت.</li>
+          <li>محاسبه‌ی مالیات یا هزینه.</li>
+          <li>اجرای تست نرم‌افزار.</li>
+        </ul>
+
+        <h3>۴.۲. اجزای یک Tool</h3>
+        <p>یک Tool معمولاً این اطلاعات را دارد:</p>
+        <ul>
+          <li><strong>Name:</strong> شناسه‌ی یکتای Tool در Server.</li>
+          <li><strong>Description:</strong> توضیح روشن درباره‌ی عملکرد و کاربرد.</li>
+          <li><strong>Input Schema:</strong> ساختار ورودی و نوع داده‌ها.</li>
+          <li><strong>Handler:</strong> تابع یا منطق اجرای واقعی.</li>
+          <li><strong>Output:</strong> نتیجه‌ی قابل بازگرداندن.</li>
+          <li><strong>Error Behavior:</strong> رفتار در شرایط خطا.</li>
+        </ul>
+
+        <h3>۴.۳. مثال تعریف Tool</h3>
+        <pre><code>{
+  "name": "get_order_status",
+  "description": "Retrieve the current status of an order",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "order_id": {
+        "type": "string",
+        "description": "Unique order identifier"
+      }
+    },
+    "required": ["order_id"],
+    "additionalProperties": false
+  }
+}</code></pre>
+
+        <p>
+          در این مثال، مدل باید یک شناسه‌ی سفارش ارسال کند.
+          اگر ورودی ناقص یا نامعتبر باشد، Server باید آن را رد کند.
+        </p>
+
+        <h3>۴.۴. فراخوانی Tool</h3>
+        <p>در سطح مفهومی، درخواست اجرای Tool با متد <code>tools/call</code> انجام می‌شود:</p>
+
+        <pre><code>{
+  "jsonrpc": "2.0",
+  "id": 42,
+  "method": "tools/call",
+  "params": {
+    "name": "get_order_status",
+    "arguments": {
+      "order_id": "ORD-1234"
+    }
+  }
+}</code></pre>
+
+        <p>پاسخ نمونه:</p>
+
+        <pre><code>{
+  "jsonrpc": "2.0",
+  "id": 42,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Order ORD-1234 is currently shipped."
+      }
+    ],
+    "isError": false
+  }
+}</code></pre>
+
+        <h3>۴.۵. Tool با Resource چه تفاوتی دارد؟</h3>
+        <p>
+          Tool برای اجرای یک عملیات است؛ Resource برای ارائه‌ی محتوا یا داده.
+          البته یک Tool می‌تواند داده برگرداند، اما هدف و مدل استفاده‌ی این دو متفاوت است.
+        </p>
+
+        <table>
+          <tr>
+            <th>Tool</th>
+            <th>Resource</th>
+          </tr>
+          <tr>
+            <td>عملیات را اجرا می‌کند.</td>
+            <td>محتوا را در اختیار Client می‌گذارد.</td>
+          </tr>
+          <tr>
+            <td>می‌تواند تغییردهنده‌ی وضعیت باشد.</td>
+            <td>معمولاً برای خواندن داده استفاده می‌شود.</td>
+          </tr>
+          <tr>
+            <td>با <code>tools/call</code> اجرا می‌شود.</td>
+            <td>با <code>resources/read</code> خوانده می‌شود.</td>
+          </tr>
+          <tr>
+            <td>مثال: ثبت سفارش.</td>
+            <td>مثال: مستندات محصول.</td>
+          </tr>
+        </table>
+
+        <h3>۴.۶. طراحی درست Toolها</h3>
+        <p>یک Tool خوب باید:</p>
+        <ul>
+          <li>یک مسئولیت روشن داشته باشد.</li>
+          <li>نامی قابل فهم و مشخص داشته باشد.</li>
+          <li>ورودی‌های دقیق و محدود بگیرد.</li>
+          <li>از ورودی‌های اضافی و مبهم جلوگیری کند.</li>
+          <li>خروجی ساختاریافته و قابل تفسیر تولید کند.</li>
+          <li>خطاها را به‌صورت قابل مدیریت گزارش کند.</li>
+          <li>برای عملیات حساس، مجوز و تأیید مناسب داشته باشد.</li>
+        </ul>
+
+        <h3>۴.۷. طراحی بد در مقابل طراحی خوب</h3>
+
+        <pre><code># Poor design:
+execute_everything(input_text)
+
+# Better design:
+get_customer(customer_id)
+get_order_status(order_id)
+calculate_refund(order_id)
+request_refund(order_id, reason)</code></pre>
+
+        <p>
+          Tool بسیار بزرگ با ورودی مبهم باعث می‌شود مدل اختیار بیش از حد داشته باشد،
+          خطاها دشوارتر تشخیص داده شوند و کنترل امنیتی سخت‌تر شود.
+        </p>
+
+        <h3>۴.۸. Toolهای Read و Write</h3>
+        <p>
+          Toolهای خواندنی و تغییردهنده‌ی وضعیت را از نظر امنیتی جدا کنید.
+          خواندن وضعیت سفارش با اجرای بازپرداخت یکسان نیست.
+        </p>
+
+        <div class="callout warning">
+          اجرای Tool به معنی مجاز بودن عملیات نیست.
+          مدل ممکن است درخواست نامناسبی انتخاب کند؛ Server باید خودش مجوز،
+          مالکیت داده، اعتبار ورودی و محدودیت عملیات را بررسی کند.
+        </div>
+      </section>
+
+      <section id="s5">
+        <h2>۵. MCP Resources</h2>
+
+        <h3>۵.۱. Resource چیست؟</h3>
+        <p>
+          Resource روشی برای ارائه‌ی داده و context به برنامه‌ی AI است.
+          Resource معمولاً با یک URI شناسایی می‌شود و می‌تواند به فایل، سند،
+          رکورد پایگاه داده، محتوای داخلی یا داده‌ی یک سرویس اشاره کند.
+        </p>
+
+        <p>نمونه‌های Resource:</p>
+        <ul>
+          <li>مستندات داخلی سازمان.</li>
+          <li>Schema پایگاه داده.</li>
+          <li>مشخصات محصول.</li>
+          <li>گزارش وضعیت سیستم.</li>
+          <li>محتوای یک فایل مشخص.</li>
+          <li>داده‌ی مرجع یا راهنمای فنی.</li>
+        </ul>
+
+        <h3>۵.۲. URI در Resource</h3>
+        <p>
+          URI شناسه‌ای برای دسترسی به Resource است. لازم نیست حتماً یک URL عمومی وب باشد.
+          می‌تواند یک شناسه‌ی منطقی و اختصاصی باشد.
+        </p>
+
+        <pre><code>file:///workspace/README.md
+postgres://analytics/schema
+company://policies/refund
+docs://products/catalog</code></pre>
+
+        <p>
+          URIهای بالا صرفاً مثال هستند؛ قرارداد واقعی URI را Server تعریف می‌کند.
+        </p>
+
+        <h3>۵.۳. Resource List و Read</h3>
+        <p>
+          Client می‌تواند فهرست Resourceهای قابل دسترس را دریافت کند و سپس محتوای موردنیاز
+          را بخواند. در Resourceهای پویا ممکن است Template نیز وجود داشته باشد.
+        </p>
+
+        <pre><code>{
+  "jsonrpc": "2.0",
+  "id": 7,
+  "method": "resources/list",
+  "params": {}
+}</code></pre>
+
+        <p>نمونه‌ی درخواست خواندن:</p>
+
+        <pre><code>{
+  "jsonrpc": "2.0",
+  "id": 8,
+  "method": "resources/read",
+  "params": {
+    "uri": "company://policies/refund"
+  }
+}</code></pre>
+
+        <h3>۵.۴. Resource Template</h3>
+        <p>
+          گاهی Resourceها ثابت نیستند. مثلاً برای هر مشتری یک Resource جدا وجود دارد.
+          در این شرایط Template می‌تواند الگوی URI را مشخص کند.
+        </p>
+
+        <pre><code>customer://{customer_id}/profile
+orders://{order_id}/details
+documents://{document_id}</code></pre>
+
+        <p>
+          Template کمک می‌کند Client بداند چه الگوهایی از Resource قابل دسترسی هستند.
+          با این حال، مجوز دسترسی به هر شناسه باید در Server بررسی شود.
+        </p>
+
+        <h3>۵.۵. Resource و RAG</h3>
+        <p>
+          MCP و RAG رقیب یکدیگر نیستند. RAG یک الگوی بازیابی اطلاعات برای بهبود پاسخ مدل است؛
+          MCP یک پروتکل ارتباطی برای ارائه‌ی قابلیت‌ها و منابع به برنامه‌ی AI است.
+        </p>
+
+        <div class="diagram">
+          <div class="node">User Question</div>
+          <div class="arrow">↓</div>
+          <div class="node agent">AI Host</div>
+          <div class="arrow">↓</div>
+          <div class="node server">MCP Resource Server</div>
+          <div class="arrow">↓</div>
+          <div class="node">Search / Vector DB / Documents</div>
+          <div class="arrow">↓</div>
+          <div class="node agent">Retrieved Context</div>
+        </div>
+
+        <p>
+          یک MCP Server می‌تواند Resourceهایی از اسناد یا نتایج یک سیستم بازیابی ارائه کند.
+          Host می‌تواند این داده را به مدل بدهد تا پاسخ مستند تولید شود.
+          خود MCP الزاماً Vector Search یا الگوریتم RAG را تعریف نمی‌کند.
+        </p>
+
+        <h3>۵.۶. Subscription و تغییر Resource</h3>
+        <p>
+          برخی پیاده‌سازی‌ها قابلیت Subscription و Notification برای تغییر Resource را پشتیبانی می‌کنند.
+          در این حالت Client می‌تواند از تغییر محتوای مورد علاقه‌ی خود مطلع شود.
+        </p>
+
+        <p>موارد استفاده:</p>
+        <ul>
+          <li>تغییر مستندات یک پروژه.</li>
+          <li>به‌روزرسانی وضعیت یک منبع داده.</li>
+          <li>تغییر یک فایل یا تنظیمات.</li>
+        </ul>
+
+        <div class="callout">
+          Resource را برای داده‌ای طراحی کنید که Host باید آن را بخواند و در context خود قرار دهد.
+          اگر نیاز به اجرای یک عملیات یا تغییر وضعیت دارید، معمولاً Tool انتخاب مناسب‌تری است.
+        </div>
+      </section>
+
+      <section id="s6">
+        <h2>۶. MCP Prompts</h2>
+
+        <h3>۶.۱. Prompt چیست؟</h3>
+        <p>
+          Prompt در MCP یک قالب آماده و قابل استفاده‌ی مجدد برای هدایت تعامل با مدل است.
+          Server می‌تواند Promptهایی با نام، توضیح و پارامترهای ورودی ارائه کند.
+          Client می‌تواند Prompt مناسب را دریافت و در جریان تعامل با مدل استفاده کند.
+        </p>
+
+        <p>مثال‌هایی از Prompt:</p>
+        <ul>
+          <li>بررسی امنیتی کد.</li>
+          <li>تحلیل یک قرارداد.</li>
+          <li>خلاصه‌سازی گزارش مالی.</li>
+          <li>تولید گزارش incident.</li>
+          <li>بررسی کیفیت یک پاسخ پشتیبانی.</li>
+        </ul>
+
+        <h3>۶.۲. ساختار Prompt</h3>
+        <p>یک Prompt معمولاً شامل موارد زیر است:</p>
+        <ul>
+          <li>نام یکتا.</li>
+          <li>توضیح کاربرد.</li>
+          <li>پارامترهای موردنیاز.</li>
+          <li>محتوای Prompt یا پیام‌های قالب‌بندی‌شده.</li>
+        </ul>
+
+        <pre><code>{
+  "name": "review_contract",
+  "description": "Review a contract for key risks",
+  "arguments": [
+    {
+      "name": "contract_text",
+      "description": "Contract content",
+      "required": true
+    },
+    {
+      "name": "jurisdiction",
+      "description": "Applicable jurisdiction",
+      "required": false
+    }
+  ]
+}</code></pre>
+
+        <h3>۶.۳. دریافت Prompt</h3>
+        <p>درخواست مفهومی دریافت Prompt:</p>
+
+        <pre><code>{
+  "jsonrpc": "2.0",
+  "id": 10,
+  "method": "prompts/get",
+  "params": {
+    "name": "review_contract",
+    "arguments": {
+      "contract_text": "Example contract...",
+      "jurisdiction": "Germany"
+    }
+  }
+}</code></pre>
+
+        <h3>۶.۴. تفاوت Prompt با Tool و Resource</h3>
+
+        <table>
+          <tr>
+            <th>Primitive</th>
+            <th>هدف</th>
+            <th>مثال</th>
+          </tr>
+          <tr>
+            <td>Tool</td>
+            <td>اجرای عملیات</td>
+            <td>ایجاد تیکت</td>
+          </tr>
+          <tr>
+            <td>Resource</td>
+            <td>ارائه‌ی داده</td>
+            <td>متن سیاست بازپرداخت</td>
+          </tr>
+          <tr>
+            <td>Prompt</td>
+            <td>قالب تعامل و هدایت مدل</td>
+            <td>قالب تحلیل درخواست بازپرداخت</td>
+          </tr>
+        </table>
+
+        <h3>۶.۵. مثال ترکیبی</h3>
+        <p>
+          فرض کنید Agent باید یک قرارداد را تحلیل کند:
+        </p>
+
+        <ol>
+          <li>از Resource، متن سیاست‌های حقوقی شرکت را دریافت می‌کند.</li>
+          <li>از Prompt آماده‌ی <code>review_contract</code> برای ساختاردهی تحلیل استفاده می‌کند.</li>
+          <li>در صورت نیاز، Tool مربوط به بررسی وضعیت قرارداد را فراخوانی می‌کند.</li>
+          <li>خروجی را با منابع و محدودیت‌های مشخص جمع‌بندی می‌کند.</li>
+        </ol>
+
+        <div class="callout warning">
+          Prompt یک مکانیزم امنیتی نیست. نباید فرض کنیم چون یک دستورالعمل در Prompt نوشته شده،
+          مدل یا Tool در همه‌ی شرایط آن را رعایت خواهد کرد. کنترل دسترسی و اعتبارسنجی باید
+          در لایه‌های اجرایی و Server انجام شوند.
+        </div>
+      </section>
+
+      <section id="s7">
+        <h2>۷. MCP Transport Mechanisms</h2>
+
+        <h3>۷.۱. Transport چیست؟</h3>
+        <p>
+          Transport مشخص می‌کند پیام‌های MCP از چه کانالی و با چه روش انتقالی بین Client و Server
+          جابه‌جا شوند. معنای پیام‌های MCP مستقل از Transport است؛ یعنی یک Tool Call می‌تواند
+          از طریق Transportهای مختلف منتقل شود.
+        </p>
+
+        <h3>۷.۲. STDIO Transport</h3>
+        <p>
+          در STDIO، Client یک Process محلی را اجرا می‌کند و از ورودی و خروجی استاندارد آن
+          برای تبادل پیام استفاده می‌کند.
+        </p>
+
+        <pre><code>AI Host
+  |
+  +-- Starts local MCP Server process
+          |
+          +-- stdin  : Client -> Server
+          |
+          +-- stdout : Server -> Client</code></pre>
+
+        <p><strong>موارد استفاده:</strong></p>
+        <ul>
+          <li>ابزارهای محلی توسعه.</li>
+          <li>دسترسی به فایل‌های همان ماشین.</li>
+          <li>اتصال به ابزارهای خط فرمان.</li>
+          <li>محیط‌های دسکتاپ و IDE.</li>
+        </ul>
+
+        <p><strong>مزایا:</strong></p>
+        <ul>
+          <li>ساده برای راه‌اندازی محلی.</li>
+          <li>بدون نیاز به باز کردن پورت شبکه.</li>
+          <li>ارتباط مستقیم بین Processها.</li>
+          <li>مناسب برای ابزارهای محلی و توسعه.</li>
+        </ul>
+
+        <p><strong>محدودیت‌ها:</strong></p>
+        <ul>
+          <li>برای سرویس‌دهی به تعداد زیادی Client از راه دور طراحی اصلی مناسبی نیست.</li>
+          <li>مدیریت Process و محیط اجرا اهمیت دارد.</li>
+          <li>خروجی استاندارد باید برای پیام‌های پروتکل محفوظ بماند.</li>
+        </ul>
+
+        <div class="callout warning">
+          در Server مبتنی بر STDIO، پیام‌های عادی مانند Debug Print را روی stdout چاپ نکنید؛
+          چون ممکن است جریان پیام‌های پروتکل را خراب کنند. برای لاگ از stderr یا سیستم Logging مناسب استفاده کنید.
+        </div>
+
+        <h3>۷.۳. Streamable HTTP</h3>
+        <p>
+          Streamable HTTP برای ارتباط شبکه‌ای و Serverهای راه دور استفاده می‌شود.
+          پیام‌ها از طریق HTTP ارسال می‌شوند و در صورت نیاز امکان دریافت پاسخ‌های جریانی
+          با Server-Sent Events نیز وجود دارد.
+        </p>
+
+        <pre><code>AI Host / MCP Client
+       |
+       | HTTP POST
+       v
+  MCP HTTP Endpoint
+       |
+       +---- JSON Response
+       |
+       +---- Optional SSE Stream</code></pre>
+
+        <p><strong>مزایا:</strong></p>
+        <ul>
+          <li>مناسب برای Serverهای راه دور.</li>
+          <li>قابل استفاده در معماری سرویس‌گرا.</li>
+          <li>سازگار با زیرساخت‌های HTTP.</li>
+          <li>امکان استفاده از مکانیزم‌های احراز هویت و کنترل شبکه.</li>
+          <li>پشتیبانی از الگوهای پاسخ جریانی در صورت پیاده‌سازی.</li>
+        </ul>
+
+        <p><strong>چالش‌ها:</strong></p>
+        <ul>
+          <li>مدیریت Authentication و Authorization.</li>
+          <li>مدیریت Timeout و قطع ارتباط.</li>
+          <li>کنترل تعداد درخواست‌ها و Rate Limit.</li>
+          <li>امنیت Endpoint و شبکه.</li>
+          <li>مدیریت Streaming و منابع اتصال.</li>
+        </ul>
+
+        <h3>۷.۴. SSE چیست؟</h3>
+        <p>
+          Server-Sent Events یک روش انتقال رویداد از Server به Client روی یک اتصال HTTP است.
+          این روش برای ارسال تدریجی رویدادها مناسب است.
+          SSE با WebSocket یکسان نیست؛ در SSE جریان اصلی رویداد از Server به Client است.
+        </p>
+
+        <h3>۷.۵. مقایسه‌ی Transportها</h3>
+        <table>
+          <tr>
+            <th>ویژگی</th>
+            <th>STDIO</th>
+            <th>Streamable HTTP</th>
+          </tr>
+          <tr>
+            <td>محل اجرا</td>
+            <td>معمولاً Process محلی</td>
+            <td>محلی یا راه دور از طریق HTTP</td>
+          </tr>
+          <tr>
+            <td>شبکه</td>
+            <td>نیاز به شبکه ندارد</td>
+            <td>از شبکه استفاده می‌کند</td>
+          </tr>
+          <tr>
+            <td>استقرار سازمانی</td>
+            <td>برای ابزار محلی مناسب‌تر</td>
+            <td>برای سرویس‌های راه دور مناسب‌تر</td>
+          </tr>
+          <tr>
+            <td>احراز هویت شبکه‌ای</td>
+            <td>معمولاً در سطح Process و محیط محلی</td>
+            <td>قابل استفاده با سازوکارهای HTTP و OAuth</td>
+          </tr>
+          <tr>
+            <td>Streaming</td>
+            <td>بر اساس جریان استاندارد Process</td>
+            <td>امکان SSE در چارچوب Transport</td>
+          </tr>
+        </table>
+
+        <h3>۷.۶. انتخاب Transport مناسب</h3>
+        <ul>
+          <li>ابزار محلی برای IDE: معمولاً STDIO.</li>
+          <li>Server سازمانی مشترک: معمولاً Streamable HTTP.</li>
+          <li>سرویس راه دور با چند مصرف‌کننده: HTTP گزینه‌ی طبیعی‌تری است.</li>
+          <li>محیط محدود و محلی: STDIO ممکن است ساده‌تر باشد.</li>
+        </ul>
+
+        <div class="callout">
+          Transport را بر اساس مدل استقرار، مرز امنیتی، مقیاس‌پذیری و نیازهای عملیاتی انتخاب کنید؛
+          نه صرفاً بر اساس اینکه کدام نمونه‌کد کوتاه‌تر است.
+        </div>
+      </section>
+
+      <section id="s8">
+        <h2>۸. MCP Server Development</h2>
+
+        <h3>۸.۱. اصول توسعه‌ی یک MCP Server</h3>
+        <p>
+          توسعه‌ی MCP Server یعنی ساخت سرویسی که قابلیت‌های مشخصی را از طریق MCP در اختیار
+          Client قرار دهد. یک Server خوب باید کوچک، قابل تست، امن و دارای قرارداد روشن باشد.
+        </p>
+
+        <p>پیش از کدنویسی این پرسش‌ها را پاسخ دهید:</p>
+        <ol>
+          <li>Server دقیقاً چه مسئولیتی دارد؟</li>
+          <li>چه Toolهایی ارائه می‌کند؟</li>
+          <li>چه Resourceهایی در دسترس‌اند؟</li>
+          <li>آیا Promptهای تکرارپذیر لازم است؟</li>
+          <li>چه هویت و مجوزی برای دسترسی نیاز است؟</li>
+          <li>آیا Server محلی است یا راه دور؟</li>
+          <li>چه محدودیت‌هایی برای ورودی، خروجی و نرخ درخواست وجود دارد؟</li>
+        </ol>
+
+        <h3>۸.۲. نصب SDK پایتون</h3>
+        <p>
+          SDK رسمی پایتون برای ساخت Client و Server قابل استفاده است.
+          در مستندات فعلی SDK، شاخه‌ی نسخه‌ی ۲ به‌عنوان خط پایدار جدید معرفی شده است.
+          نسخه‌ی SDK و نسخه‌ی پروتکل را هنگام شروع پروژه بررسی کنید.
+        </p>
+
+        <pre><code>uv add "mcp[cli]"
+
+# Or
+pip install "mcp[cli]"</code></pre>
+
+        <h3>۸.۳. ساخت یک Server ساده با Python</h3>
+        <p>
+          مثال زیر یک الگوی آموزشی برای تعریف یک Tool است.
+          API دقیق SDK ممکن است با نسخه‌های مختلف تفاوت داشته باشد؛
+          در پروژه‌ی واقعی آن را با مستندات نسخه‌ی نصب‌شده تطبیق دهید.
+        </p>
+
+        <pre><code>from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("Order Service")
+
+ORDERS = {
+    "ORD-1001": {
+        "status": "shipped",
+        "total": 120.50
+    },
+    "ORD-1002": {
+        "status": "processing",
+        "total": 75.00
+    }
+}
+
+@mcp.tool()
+def get_order_status(order_id: str) -> dict:
+    """
+    Retrieve the current status of an order.
+    """
+    if order_id not in ORDERS:
+        raise ValueError("Order not found")
+
+    return {
+        "order_id": order_id,
+        **ORDERS[order_id]
+    }
+
+if __name__ == "__main__":
+    mcp.run()</code></pre>
+
+        <h3>۸.۴. Server چه کاری انجام می‌دهد؟</h3>
+        <ol>
+          <li>یک Server با نام مشخص ایجاد می‌کند.</li>
+          <li>یک Tool به نام <code>get_order_status</code> ثبت می‌کند.</li>
+          <li>ورودی Tool را دریافت می‌کند.</li>
+          <li>داده‌ی سفارش را از منبع نمونه می‌خواند.</li>
+          <li>در صورت نبود سفارش، خطا می‌دهد.</li>
+          <li>در صورت موفقیت، نتیجه را برمی‌گرداند.</li>
+        </ol>
+
+        <h3>۸.۵. اضافه کردن Resource</h3>
+        <p>
+          فرض کنید می‌خواهیم سیاست بازپرداخت را نیز در اختیار Host قرار دهیم.
+          می‌توانیم یک Resource برای آن تعریف کنیم.
+        </p>
+
+        <pre><code>REFUND_POLICY = """
+Customers may request a refund
+within the applicable return window.
+All refund requests must be checked
+against the order status and policy.
+"""
+
+@mcp.resource("company://policies/refund")
+def refund_policy() -> str:
+    return REFUND_POLICY</code></pre>
+
+        <h3>۸.۶. اضافه کردن Prompt</h3>
+        <p>
+          برای مثال می‌توانیم یک Prompt برای تحلیل درخواست بازپرداخت تعریف کنیم.
+          شکل دقیق API ثبت Prompt به نسخه‌ی SDK وابسته است.
+        </p>
+
+        <pre><code># Conceptual prompt definition
+
+Prompt:
+  name: analyze_refund_request
+  arguments:
+    - order_id
+    - customer_reason
+
+  template:
+    1. Check the order status.
+    2. Read the refund policy.
+    3. Identify missing information.
+    4. Explain eligibility.
+    5. Do not execute a refund without authorization.</code></pre>
+
+        <h3>۸.۷. ساختار پیشنهادی پروژه</h3>
+
+        <pre><code>order-mcp-server/
+|
++-- src/
+|   +-- server.py
+|   +-- tools/
+|   |   +-- orders.py
+|   |   +-- refunds.py
+|   |
+|   +-- resources/
+|   |   +-- policies.py
+|   |
+|   +-- prompts/
+|   |   +-- support.py
+|   |
+|   +-- services/
+|   |   +-- order_service.py
+|   |   +-- refund_service.py
+|   |
+|   +-- security/
+|   |   +-- permissions.py
+|   |
+|   +-- schemas/
+|       +-- order.py
+|
++-- tests/
++-- pyproject.toml
++-- README.md</code></pre>
+
+        <h3>۸.۸. چرا نباید منطق کسب‌وکار را داخل Tool دفن کنیم؟</h3>
+        <p>
+          بهتر است Tool نقش Adapter یا Interface داشته باشد و منطق کسب‌وکار در Serviceهای
+          مستقل قرار گیرد. در این صورت همان منطق می‌تواند از API، برنامه‌ی وب یا Jobهای دیگر
+          نیز استفاده شود.
+        </p>
+
+        <pre><code>@mcp.tool()
+def get_order_status(order_id: str):
+    return order_service.get_status(order_id)</code></pre>
+
+        <h3>۸.۹. تست MCP Server</h3>
+        <p>تست‌ها باید چند سطح داشته باشند:</p>
+        <ul>
+          <li>تست واحد منطق Tool.</li>
+          <li>تست اعتبارسنجی ورودی.</li>
+          <li>تست مجوز دسترسی.</li>
+          <li>تست پاسخ موفق و خطا.</li>
+          <li>تست اتصال Client به Server.</li>
+          <li>تست قطع اتصال و Timeout.</li>
+          <li>تست رفتار در ورودی‌های مخرب.</li>
+        </ul>
+
+        <h3>۸.۱۰. MCP Inspector</h3>
+        <p>
+          برای توسعه و عیب‌یابی، ابزار MCP Inspector می‌تواند در بررسی قابلیت‌های Server،
+          مشاهده‌ی Toolها و آزمایش فراخوانی‌ها کمک کند. این ابزار به‌ویژه زمانی مفید است
+          که بخواهید مطمئن شوید تعریف Tool و رفتار واقعی آن با هم سازگارند.
+        </p>
+      </section>
+
+      <section id="s9">
+        <h2>۹. MCP Security</h2>
+
+        <p class="lead">
+          امنیت در MCP بسیار مهم است؛ زیرا Agent می‌تواند از طریق Toolها به داده‌ها و عملیات واقعی
+          دسترسی پیدا کند. یک اشتباه در طراحی Server ممکن است به نشت اطلاعات، تغییر غیرمجاز داده
+          یا اجرای عملیات خطرناک منجر شود.
+        </p>
+
+        <h3>۹.۱. اصل اول: مدل زبانی مرجع امنیتی نیست</h3>
+        <p>
+          مدل ممکن است تصمیم اشتباه بگیرد، Prompt Injection را دنبال کند یا Tool نامناسبی انتخاب کند.
+          بنابراین نباید امنیت را صرفاً به Prompt سیستم یا دستورالعمل مدل واگذار کرد.
+        </p>
+
+        <h3>۹.۲. تهدیدهای اصلی</h3>
+
+        <div class="mini-card">
+          <h4>۱. Prompt Injection</h4>
+          <p>
+            محتوای یک فایل، وب‌سایت یا سند ممکن است شامل دستورهایی باشد که تلاش می‌کنند
+            رفتار Agent را تغییر دهند؛ مثلاً از آن بخواهند اطلاعات محرمانه را ارسال کند.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h4>۲. Excessive Tool Permissions</h4>
+          <p>
+            اگر Server دسترسی بیش از حد داشته باشد، یک Tool ظاهراً ساده ممکن است امکان
+            خواندن یا تغییر داده‌های حساس را فراهم کند.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h4>۳. Confused Deputy</h4>
+          <p>
+            Agent یا Server ممکن است از اعتبارنامه یا مجوزی استفاده کند که متعلق به کاربر
+            یا درخواست فعلی نیست و ناخواسته به داده‌ی دیگری دسترسی پیدا کند.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h4>۴. Data Exfiltration</h4>
+          <p>
+            اطلاعات حساس ممکن است از طریق خروجی Tool، لاگ‌ها، درخواست شبکه یا پاسخ مدل
+            به مقصد غیرمجاز منتقل شوند.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h4>۵. SSRF و دسترسی شبکه‌ای ناخواسته</h4>
+          <p>
+            اگر Tool یک URL دلخواه از ورودی مدل بگیرد و آن را باز کند، ممکن است به منابع داخلی
+            یا سرویس‌هایی دسترسی پیدا کند که نباید در دسترس باشند.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h4>۶. Cross-Tenant Data Leakage</h4>
+          <p>
+            در سیستم چندمستاجری، ضعف در کنترل Tenant ID یا فیلتر مجوز می‌تواند اطلاعات
+            یک مشتری را به مشتری دیگر نشان دهد.
+          </p>
+        </div>
+
+        <h3>۹.۳. Authentication و Authorization</h3>
+        <p>
+          این دو مفهوم را با هم اشتباه نگیرید:
+        </p>
+
+        <table>
+          <tr>
+            <th>Authentication</th>
+            <th>Authorization</th>
+          </tr>
+          <tr>
+            <td>چه کسی هستی؟</td>
+            <td>اجازه داری چه کاری انجام دهی؟</td>
+          </tr>
+          <tr>
+            <td>اعتبارسنجی هویت</td>
+            <td>بررسی سطح دسترسی</td>
+          </tr>
+          <tr>
+            <td>مثال: اعتبارسنجی OAuth Token</td>
+            <td>مثال: اجازه‌ی مشاهده‌ی سفارش‌های همان مشتری</td>
+          </tr>
+        </table>
+
+        <h3>۹.۴. OAuth و ارتباط HTTP</h3>
+        <p>
+          در ارتباطات راه دور، از سازوکارهای استاندارد احراز هویت و Authorization استفاده کنید.
+          MCP برای HTTP-based authorization چارچوبی مبتنی بر استانداردهای OAuth دارد.
+          توکن‌ها باید از نظر مخاطب، صادرکننده، انقضا و Scope بررسی شوند.
+        </p>
+
+        <p>نکات مهم:</p>
+        <ul>
+          <li>از توکن‌های کوتاه‌عمر استفاده کنید.</li>
+          <li>Scopeها را به حداقل نیاز محدود کنید.</li>
+          <li>توکن را در Prompt یا متن خروجی مدل قرار ندهید.</li>
+          <li>اعتبار توکن را در Server بررسی کنید.</li>
+          <li>توکن یک سرویس را بدون طراحی درست به سرویس دیگر منتقل نکنید.</li>
+        </ul>
+
+        <h3>۹.۵. Least Privilege</h3>
+        <p>
+          هر Server و Tool باید حداقل مجوز لازم را داشته باشد.
+          اگر یک Tool فقط باید وضعیت سفارش را بخواند، نباید مجوز حذف سفارش نیز داشته باشد.
+        </p>
+
+        <pre><code># Bad permission model:
+order_service: full_access
+
+# Better permission model:
+get_order_status:
+  permissions:
+    - orders:read
+
+request_refund:
+  permissions:
+    - refunds:request
+
+approve_refund:
+  permissions:
+    - refunds:approve
+  approval_required: true</code></pre>
+
+        <h3>۹.۶. اعتبارسنجی ورودی</h3>
+        <p>
+          Schema به‌تنهایی کافی نیست. Server باید ورودی را از نظر قواعد کسب‌وکار و مجوز نیز بررسی کند.
+        </p>
+
+        <pre><code>def request_refund(order_id, amount, user):
+    validate_order_id(order_id)
+    validate_amount(amount)
+
+    order = load_order(order_id)
+
+    if order.customer_id != user.customer_id:
+        raise PermissionError("Access denied")
+
+    if amount > order.refundable_amount:
+        raise ValueError("Amount exceeds refundable balance")
+
+    return create_refund_request(order, amount)</code></pre>
+
+        <h3>۹.۷. تأیید انسانی برای عملیات حساس</h3>
+        <p>
+          عملیات برگشت‌ناپذیر یا پرریسک باید با کنترل اضافه انجام شوند.
+          مثال: انتقال پول، حذف داده، ارسال ایمیل انبوه، انتشار عمومی یا تغییر سطح دسترسی.
+        </p>
+
+        <p>یک الگوی مناسب:</p>
+        <ol>
+          <li>Agent عملیات پیشنهادی را آماده می‌کند.</li>
+          <li>سیستم اثر عملیات را نشان می‌دهد.</li>
+          <li>کاربر مجاز آن را تأیید می‌کند.</li>
+          <li>Server مجوز را دوباره بررسی می‌کند.</li>
+          <li>عملیات اجرا و ثبت می‌شود.</li>
+        </ol>
+
+        <h3>۹.۸. کنترل دسترسی به Resourceها</h3>
+        <p>
+          مخفی کردن Resource از فهرست، جایگزین کنترل دسترسی نیست.
+          حتی اگر Client URI را بداند، Server باید هنگام خواندن Resource مجوز را بررسی کند.
+        </p>
+
+        <h3>۹.۹. دفاع چندلایه</h3>
+        <pre><code>Security Layers
+
+1. Identity verification
+2. Authorization and scopes
+3. Tool allowlists
+4. Input schema validation
+5. Business rule validation
+6. Resource-level access control
+7. Network egress restrictions
+8. Sandboxing
+9. Human approval for high-impact actions
+10. Audit logging and monitoring</code></pre>
+
+        <div class="callout warning">
+          اصل مهم: «دستور نده که سیستم امن باشد؛ سیستم را طوری طراحی کن که حتی اگر مدل اشتباه کرد،
+          عملیات غیرمجاز انجام نشود.»
+        </div>
+      </section>
+
+      <section id="s10">
+        <h2>۱۰. Agent-to-Agent (A2A) Protocol</h2>
+
+        <h3>۱۰.۱. A2A چیست؟</h3>
+        <p>
+          Agent2Agent یا A2A یک استاندارد باز برای ارتباط و همکاری بین Agentهای مستقل است.
+          این Agentها ممکن است با زبان‌های برنامه‌نویسی، Frameworkها، مدل‌ها و ارائه‌دهندگان
+          متفاوت ساخته شده باشند.
+        </p>
+
+        <p>
+          A2A تلاش می‌کند یک زبان مشترک برای کشف قابلیت‌ها، شروع Task، تبادل پیام،
+          پیگیری پیشرفت و دریافت خروجی ایجاد کند.
+        </p>
+
+        <h3>۱۰.۲. چرا A2A لازم است؟</h3>
+        <p>
+          فرض کنید یک سازمان سه Agent مستقل دارد:
+        </p>
+
+        <div class="diagram">
+          <div class="node agent">Research Agent</div>
+          <div class="node agent">Finance Agent</div>
+          <div class="node agent">Legal Agent</div>
+          <div class="arrow">↕</div>
+          <div class="node">A2A Protocol</div>
+          <div class="arrow">↕</div>
+          <div class="node agent">Main Orchestrator Agent</div>
+        </div>
+
+        <p>
+          Orchestrator می‌خواهد از Agent مالی تحلیل هزینه و از Agent حقوقی تحلیل ریسک بگیرد.
+          لازم نیست به حافظه، ابزارهای داخلی یا منطق خصوصی آن‌ها دسترسی پیدا کند.
+          کافی است درخواست استانداردی ارسال کند و نتیجه‌ی تعریف‌شده‌ای دریافت کند.
+        </p>
+
+        <h3>۱۰.۳. تفاوت A2A با فراخوانی تابع</h3>
+        <p>
+          فراخوانی تابع معمولاً یک عملیات مشخص را در همان برنامه یا سرویس اجرا می‌کند.
+          اما A2A برای تعامل با یک Agent مستقل طراحی شده است؛ Agentی که ممکن است
+          کار را در چند مرحله انجام دهد، سؤال تکمیلی بپرسد یا خروجی را بعداً تحویل دهد.
+        </p>
+
+        <table>
+          <tr>
+            <th>Function Call</th>
+            <th>A2A</th>
+          </tr>
+          <tr>
+            <td>فراخوانی یک تابع مشخص</td>
+            <td>تعامل با یک Agent مستقل</td>
+          </tr>
+          <tr>
+            <td>معمولاً خروجی مستقیم</td>
+            <td>ممکن است Task طولانی‌مدت باشد</td>
+          </tr>
+          <tr>
+            <td>قرارداد تابع</td>
+            <td>قرارداد Agent، Task و Message</td>
+          </tr>
+          <tr>
+            <td>عموماً در محدوده‌ی سرویس یا برنامه</td>
+            <td>مناسب همکاری بین سیستم‌های مستقل</td>
+          </tr>
+        </table>
+
+        <h3>۱۰.۴. مفاهیم اصلی A2A</h3>
+
+        <h4>Agent Card</h4>
+        <p>
+          Agent Card سندی است که هویت Agent، آدرس Endpoint، قابلیت‌ها،
+          مهارت‌ها و الزامات امنیتی آن را توصیف می‌کند.
+          Client از طریق این سند می‌تواند تشخیص دهد Agent موردنظر برای کار مناسب است یا نه.
+        </p>
+
+        <pre><code>{
+  "name": "Finance Analysis Agent",
+  "description": "Analyzes financial reports and expenses",
+  "url": "https://finance.example.com/a2a",
+  "version": "1.0.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false
+  },
+  "skills": [
+    {
+      "id": "expense-analysis",
+      "name": "Expense Analysis",
+      "description": "Analyze company expenses"
+    },
+    {
+      "id": "budget-review",
+      "name": "Budget Review",
+      "description": "Review budget performance"
+    }
+  ]
+}</code></pre>
+
+        <p class="muted">
+          این نمونه صرفاً نمایشی و خلاصه‌شده است؛ ساختار دقیق Agent Card را باید با نسخه‌ی
+          مشخصات A2A مورد استفاده تطبیق داد.
+        </p>
+
+        <h4>Task</h4>
+        <p>
+          Task واحد اصلی کار در A2A است. هر Task شناسه‌ی مشخصی دارد و می‌تواند وضعیت اجرای
+          خود را در طول زمان تغییر دهد.
+        </p>
+
+        <p>نمونه‌ی وضعیت‌های مفهومی:</p>
+        <ul>
+          <li>Submitted: درخواست ثبت شده است.</li>
+          <li>Working: Agent در حال انجام کار است.</li>
+          <li>Input Required: برای ادامه به اطلاعات بیشتری نیاز دارد.</li>
+          <li>Completed: کار با موفقیت تمام شده است.</li>
+          <li>Failed: کار با خطا مواجه شده است.</li>
+          <li>Canceled: کار لغو شده است.</li>
+        </ul>
+
+        <p>
+          وضعیت‌های دقیق و ساختارهای رسمی را باید در نسخه‌ی مشخصات A2A بررسی کرد.
+        </p>
+
+        <h4>Message</h4>
+        <p>
+          Message یک نوبت ارتباطی بین Client و Agent است. پیام می‌تواند درخواست اولیه،
+          سؤال تکمیلی، اطلاعات جدید یا به‌روزرسانی وضعیت باشد.
+        </p>
+
+        <h4>Part</h4>
+        <p>
+          Part کوچک‌ترین واحد محتوایی داخل Message یا Artifact است.
+          می‌تواند متن، فایل یا داده‌ی ساختاریافته باشد.
+        </p>
+
+        <h4>Artifact</h4>
+        <p>
+          Artifact خروجی ملموس Task است؛ مانند گزارش، فایل، تصویر یا داده‌ی ساختاریافته.
+          در طراحی A2A، پیام و Artifact مفاهیم متفاوتی دارند:
+          Message برای ارتباط است و Artifact برای تحویل نتیجه.
+        </p>
+
+        <h3>۱۰.۵. جریان کلی A2A</h3>
+
+        <pre><code>1. Agent Discovery
+   Client discovers the remote Agent Card
+
+2. Capability Inspection
+   Client checks skills and capabilities
+
+3. Authentication
+   Client obtains required credentials
+
+4. Send Message
+   Client submits a task request
+
+5. Task Processing
+   Remote Agent performs the task
+
+6. Status Updates
+   Client receives progress or checks task status
+
+7. Artifact Delivery
+   Agent returns the result
+
+8. Completion
+   Client consumes the artifact</code></pre>
+
+        <h3>۱۰.۶. ارتباط هم‌زمان و غیرهم‌زمان</h3>
+        <p>
+          بعضی درخواست‌ها سریع تمام می‌شوند؛ بعضی ممکن است چند دقیقه یا بیشتر زمان ببرند.
+          A2A برای الگوهای مختلف پیگیری کار طراحی شده است.
+        </p>
+
+        <table>
+          <tr>
+            <th>روش</th>
+            <th>شرح</th>
+            <th>مناسب برای</th>
+          </tr>
+          <tr>
+            <td>Request / Response</td>
+            <td>درخواست و پاسخ مستقیم</td>
+            <td>کارهای کوتاه و سریع</td>
+          </tr>
+          <tr>
+            <td>Polling</td>
+            <td>Client در فواصل مشخص وضعیت Task را بررسی می‌کند</td>
+            <td>کارهای طولانی با نیاز به پیاده‌سازی ساده</td>
+          </tr>
+          <tr>
+            <td>Streaming</td>
+            <td>رویدادها و پیشرفت به‌صورت جریانی دریافت می‌شوند</td>
+            <td>نمایش زنده‌ی پیشرفت</td>
+          </tr>
+          <tr>
+            <td>Push Notification</td>
+            <td>Server تغییر مهم را به Webhook اعلام می‌کند</td>
+            <td>کارهای طولانی یا Clientهای غیرمتصل</td>
+          </tr>
+        </table>
+
+        <h3>۱۰.۷. مثال درخواست A2A</h3>
+        <p>
+          فرض کنید Agent اصلی از Agent مالی می‌خواهد هزینه‌های سه‌ماهه را تحلیل کند.
+        </p>
+
+        <pre><code>{
+  "jsonrpc": "2.0",
+  "id": "req-100",
+  "method": "SendMessage",
+  "params": {
+    "message": {
+      "role": "user",
+      "parts": [
+        {
+          "kind": "text",
+          "text": "Analyze Q3 expenses and identify major cost increases."
+        }
+      ]
+    }
+  }
+}</code></pre>
+
+        <p>
+          ساختار دقیق RPC و نام‌گذاری متدها ممکن است با Binding و نسخه‌ی A2A متفاوت باشد.
+          مثال بالا برای فهم الگوی درخواست است، نه تضمین یک پیاده‌سازی خاص.
+        </p>
+
+        <h3>۱۰.۸. چرا Task از Message مهم‌تر است؟</h3>
+        <p>
+          در یک سیستم ساده ممکن است ارسال پیام و دریافت پاسخ کافی باشد.
+          اما Agentهای واقعی می‌توانند کارهایی انجام دهند که چند مرحله دارند.
+          Task به Client امکان می‌دهد کار را دنبال کند، وضعیت را بررسی کند،
+          اطلاعات تکمیلی بفرستد یا نتیجه‌ی نهایی را دریافت کند.
+        </p>
+
+        <h3>۱۰.۹. Agent Card و Discovery</h3>
+        <p>
+          در یک اکوسیستم چندعاملی، Client باید بداند کدام Agent چه مهارتی دارد.
+          Agent Card این اطلاعات را به شکلی قابل کشف و قابل تفسیر ارائه می‌کند.
+        </p>
+
+        <p>یک فرآیند انتخاب Agent می‌تواند چنین باشد:</p>
+        <ol>
+          <li>دریافت Agent Card.</li>
+          <li>خواندن توضیح و فهرست Skillها.</li>
+          <li>بررسی قابلیت‌های Streaming یا Push.</li>
+          <li>بررسی روش احراز هویت.</li>
+          <li>انتخاب Agent مناسب بر اساس نوع Task.</li>
+          <li>ارسال درخواست و مدیریت چرخه‌ی Task.</li>
+        </ol>
+
+        <h3>۱۰.۱۰. امنیت A2A</h3>
+        <ul>
+          <li>Agent Card را از منبع قابل اعتماد دریافت کنید.</li>
+          <li>Endpoint و هویت Agent را بررسی کنید.</li>
+          <li>برای ارتباط HTTP از TLS استفاده کنید.</li>
+          <li>توکن‌ها را به‌صورت امن مدیریت کنید.</li>
+          <li>مجوز Taskها را محدود کنید.</li>
+          <li>محتوای Agent خارجی را داده‌ی قابل اعتماد فرض نکنید.</li>
+          <li>برای Webhookها اعتبارسنجی و محدودیت شبکه اعمال کنید.</li>
+          <li>خروجی Agent را پیش از استفاده در عملیات حساس اعتبارسنجی کنید.</li>
+        </ul>
+
+        <div class="callout">
+          A2A به معنی اعتماد کامل به Agent مقابل نیست. پروتکل، قالب تعامل را استاندارد می‌کند؛
+          اما اعتبار پاسخ، کیفیت تحلیل، مجوزها و امنیت اجرای عملیات همچنان باید در سطح سیستم بررسی شوند.
+        </div>
+      </section>
+
+      <section id="s11">
+        <h2>۱۱. Agent Interoperability</h2>
+
+        <h3>۱۱.۱. Interoperability چیست؟</h3>
+        <p>
+          Interoperability یا قابلیت همکاری به این معناست که سیستم‌های مستقل بتوانند
+          بدون نیاز به یکسان بودن زبان برنامه‌نویسی، Framework، مدل زبانی یا زیرساخت داخلی،
+          با یکدیگر کار کنند.
+        </p>
+
+        <p>
+          فرض کنید یک Agent با Python و LangGraph ساخته شده، Agent دوم با TypeScript،
+          Agent سوم با یک Framework اختصاصی و Agent چهارم توسط یک شرکت دیگر ارائه می‌شود.
+          اگر همه‌ی آن‌ها قرارداد مشترک ارتباطی را پشتیبانی کنند، امکان همکاری بین آن‌ها فراهم می‌شود.
+        </p>
+
+        <h3>۱۱.۲. چرا Interoperability مهم است؟</h3>
+        <ul>
+          <li>کاهش وابستگی به یک Framework.</li>
+          <li>امکان استفاده از Agentهای تخصصی شرکت‌های مختلف.</li>
+          <li>جایگزینی تدریجی اجزای سیستم.</li>
+          <li>استفاده‌ی مجدد از قابلیت‌های سازمانی.</li>
+          <li>تقسیم مسئولیت میان تیم‌ها و سرویس‌ها.</li>
+          <li>امکان توسعه‌ی اکوسیستم Agentها.</li>
+        </ul>
+
+        <h3>۱۱.۳. تفاوت Interoperability فنی و معنایی</h3>
+        <p>
+          صرفاً اینکه دو سیستم بتوانند JSON ردوبدل کنند، به معنی همکاری کامل نیست.
+        </p>
+
+        <div class="grid">
+          <div class="mini-card">
+            <h4>Technical Interoperability</h4>
+            <p>آیا دو سیستم می‌توانند پیام را منتقل و ساختار آن را parse کنند؟</p>
+          </div>
+          <div class="mini-card">
+            <h4>Semantic Interoperability</h4>
+            <p>آیا دو سیستم از معنای داده، واحدها، شناسه‌ها و قواعد کسب‌وکار برداشت یکسانی دارند؟</p>
+          </div>
+        </div>
+
+        <p>
+          برای مثال، یک Agent مبلغی را به یورو و Agent دیگر همان فیلد را به دلار تفسیر کند،
+          ارتباط از نظر فنی موفق است ولی از نظر معنایی شکست خورده است.
+        </p>
+
+        <h3>۱۱.۴. قراردادهای داده</h3>
+        <p>
+          برای همکاری قابل اعتماد، ساختار داده باید روشن باشد:
+        </p>
+        <ul>
+          <li>نام فیلدها.</li>
+          <li>نوع داده.</li>
+          <li>واحد اندازه‌گیری.</li>
+          <li>منطقه‌ی زمانی.</li>
+          <li>شناسه‌ی یکتا.</li>
+          <li>نسخه‌ی Schema.</li>
+          <li>قواعد اعتبارسنجی.</li>
+          <li>معنای مقادیر Null و Missing.</li>
+        </ul>
+
+        <h3>۱۱.۵. Versioning</h3>
+        <p>
+          پروتکل‌ها و قراردادها تغییر می‌کنند. اگر یک Agent فیلدی را حذف کند یا معنای آن را
+          عوض کند، مصرف‌کنندگان قدیمی ممکن است خراب شوند.
+        </p>
+
+        <p>راهکارها:</p>
+        <ul>
+          <li>نسخه‌گذاری API و Schema.</li>
+          <li>تغییرات سازگار تا حد امکان.</li>
+          <li>مستندسازی Breaking Changes.</li>
+          <li>تست سازگاری Client و Server.</li>
+          <li>تعیین دوره‌ی پشتیبانی از نسخه‌های قبلی.</li>
+        </ul>
+
+        <h3>۱۱.۶. مدیریت هویت و اعتماد بین Agentها</h3>
+        <p>
+          در سیستم‌های چندسازمانی، صرف دانستن URL یک Agent کافی نیست.
+          باید مشخص شود Agent متعلق به چه سازمانی است، چه هویتی دارد،
+          چه Scopeهایی دارد و چه داده‌ای مجاز است دریافت کند.
+        </p>
+
+        <h3>۱۱.۷. Observability در همکاری چند Agent</h3>
+        <p>
+          برای بررسی یک درخواست باید بتوان زنجیره‌ی تعامل را دنبال کرد:
+        </p>
+
+        <pre><code>Root Request: R-100
+
+  Orchestrator Agent
+      |
+      +-- A2A Task: T-201
+      |      |
+      |      +-- Finance Agent
+      |             |
+      |             +-- MCP Tool: query_expenses
+      |
+      +-- A2A Task: T-202
+             |
+             +-- Legal Agent
+                    |
+                    +-- MCP Resource: contract_policy
+
+Final Aggregation
+      |
+      +-- Response to User</code></pre>
+
+        <p>
+          شناسه‌های مشترک مانند Correlation ID و Trace ID کمک می‌کنند درخواست اصلی
+          و فعالیت‌های فرعی را در لاگ‌ها و Traceها به هم مرتبط کنید.
+        </p>
+
+        <h3>۱۱.۸. خطاهای متداول Interoperability</h3>
+        <ul>
+          <li>تفاوت در نسخه‌ی پروتکل.</li>
+          <li>تفاوت در Schema ورودی و خروجی.</li>
+          <li>تفاوت در معنای داده‌ها.</li>
+          <li>ناسازگاری در Authentication.</li>
+          <li>تفاوت در مدل مدیریت Task.</li>
+          <li>عدم پشتیبانی از Streaming یا قابلیت‌های اختیاری.</li>
+          <li>اعتماد بیش از حد به خروجی Agent مقابل.</li>
+          <li>نداشتن قرارداد برای خطا و Timeout.</li>
+        </ul>
+
+        <h3>۱۱.۹. اصول طراحی Agentهای قابل همکاری</h3>
+        <ol>
+          <li>قابلیت‌های خود را دقیق توصیف کنید.</li>
+          <li>ورودی و خروجی ساختاریافته داشته باشید.</li>
+          <li>از Schemaهای نسخه‌گذاری‌شده استفاده کنید.</li>
+          <li>خطاها را قابل تشخیص برگردانید.</li>
+          <li>وضعیت Taskهای طولانی را مدیریت کنید.</li>
+          <li>هویت و مجوز را مستقل از متن Prompt بررسی کنید.</li>
+          <li>منبع و سطح اطمینان داده را حفظ کنید.</li>
+          <li>از قابلیت‌های اختیاری فقط در صورت توافق استفاده کنید.</li>
+        </ol>
+      </section>
+
+      <section id="comparison">
+        <h2>۱۲. مقایسه‌ی MCP و A2A</h2>
+
+        <p class="lead">
+          مهم‌ترین تفاوت این دو استاندارد در نوع طرف مقابل و سطح تعامل است.
+        </p>
+
+        <table>
+          <tr>
+            <th>ویژگی</th>
+            <th>MCP</th>
+            <th>A2A</th>
+          </tr>
+          <tr>
+            <td>مسئله‌ی اصلی</td>
+            <td>اتصال AI به ابزار و داده</td>
+            <td>ارتباط Agent با Agent</td>
+          </tr>
+          <tr>
+            <td>طرف مقابل</td>
+            <td>MCP Server</td>
+            <td>Agent مستقل</td>
+          </tr>
+          <tr>
+            <td>واحد تعامل</td>
+            <td>Tool، Resource، Prompt</td>
+            <td>Message، Task، Artifact</td>
+          </tr>
+          <tr>
+            <td>کشف قابلیت</td>
+            <td>فهرست قابلیت‌های Server</td>
+            <td>Agent Card و Skillها</td>
+          </tr>
+          <tr>
+            <td>هدف معمول</td>
+            <td>فراخوانی ابزار و دریافت context</td>
+            <td>واگذاری و پیگیری کار</td>
+          </tr>
+          <tr>
+            <td>استقلال طرف مقابل</td>
+            <td>Server قابلیت ارائه می‌کند</td>
+            <td>Agent منطق و چرخه‌ی کاری مستقل دارد</td>
+          </tr>
+          <tr>
+            <td>خروجی</td>
+            <td>نتیجه‌ی Tool یا محتوای Resource</td>
+            <td>Message یا Artifact مرتبط با Task</td>
+          </tr>
+        </table>
+
+        <h3>۱۲.۱. آیا MCP و A2A جایگزین یکدیگرند؟</h3>
+        <p><strong>خیر؛ معمولاً مکمل یکدیگر هستند.</strong></p>
+
+        <pre><code>                  User
+                   |
+                   v
+           Main Orchestrator
+                   |
+          +--------+--------+
+          |                 |
+          v                 v
+    Research Agent     Finance Agent
+          |                 |
+       A2A Task           A2A Task
+          |                 |
+          v                 v
+    Research Result     Finance Result
+          |                 |
+          +--------+--------+
+                   |
+              Aggregation
+                   |
+               Final Answer
+
+Each Agent can use MCP internally:
+
+Research Agent
+   |
+   +-- MCP Client -> Search MCP Server
+   |
+   +-- MCP Client -> Documents MCP Server
+
+Finance Agent
+   |
+   +-- MCP Client -> Finance Data MCP Server</code></pre>
+
+        <h3>۱۲.۲. مثال سازمانی</h3>
+        <p>
+          فرض کنید کاربر می‌خواهد گزارشی درباره‌ی عملکرد مالی و ریسک قراردادی یک پروژه دریافت کند.
+        </p>
+        <ol>
+          <li>Agent اصلی درخواست را دریافت می‌کند.</li>
+          <li>از طریق A2A از Agent مالی تحلیل هزینه می‌خواهد.</li>
+          <li>از طریق A2A از Agent حقوقی تحلیل قرارداد می‌خواهد.</li>
+          <li>Agent مالی از MCP برای خواندن داده‌های مالی استفاده می‌کند.</li>
+          <li>Agent حقوقی از MCP برای خواندن اسناد و سیاست‌ها استفاده می‌کند.</li>
+          <li>هر دو Agent خروجی خود را به شکل Artifact تحویل می‌دهند.</li>
+          <li>Agent اصلی نتایج را اعتبارسنجی و ترکیب می‌کند.</li>
+          <li>گزارش نهایی به کاربر ارائه می‌شود.</li>
+        </ol>
+
+        <div class="callout success">
+          الگوی ذهنی پیشنهادی:
+          MCP را برای «اتصال به قابلیت‌ها و داده‌ها» و A2A را برای
+          «درخواست و مدیریت کار از Agentهای مستقل» در نظر بگیرید.
+        </div>
+      </section>
+
+      <section id="project">
+        <h2>۱۳. پروژه‌ی عملی جامع: سیستم پشتیبانی هوشمند با MCP و A2A</h2>
+
+        <h3>۱۳.۱. تعریف مسئله</h3>
+        <p>
+          می‌خواهیم سیستمی بسازیم که درخواست‌های پشتیبانی مشتریان را بررسی کند.
+          سیستم باید وضعیت سفارش را بخواند، سیاست بازپرداخت را بررسی کند،
+          در صورت نیاز تحلیل مالی بگیرد و نتیجه‌ی قابل فهم ارائه کند.
+        </p>
+
+        <h3>۱۳.۲. معماری پیشنهادی</h3>
+
+        <pre><code>Customer
+   |
+   v
+Support Host / Orchestrator
+   |
+   +-- MCP Client
+   |      |
+   |      +-- Order MCP Server
+   |      |      +-- get_order_status
+   |      |
+   |      +-- Policy MCP Server
+   |             +-- refund_policy Resource
+   |
+   +-- A2A Client
+          |
+          +-- Finance Agent
+          |      +-- Expense / Refund Analysis
+          |
+          +-- Human Review Agent
+                 +-- High-risk Review
+
+   |
+   v
+Validation and Response Composer
+   |
+   v
+Customer Response</code></pre>
+
+        <h3>۱۳.۳. مسئولیت اجزا</h3>
+        <table>
+          <tr>
+            <th>جزء</th>
+            <th>مسئولیت</th>
+          </tr>
+          <tr>
+            <td>Support Host</td>
+            <td>مدیریت مکالمه، تصمیم‌گیری و هماهنگی</td>
+          </tr>
+          <tr>
+            <td>Order MCP Server</td>
+            <td>ارائه‌ی Toolهای مرتبط با سفارش</td>
+          </tr>
+          <tr>
+            <td>Policy MCP Server</td>
+            <td>ارائه‌ی Resourceهای سیاستی</td>
+          </tr>
+          <tr>
+            <td>Finance Agent</td>
+            <td>تحلیل مالی از طریق A2A</td>
+          </tr>
+          <tr>
+            <td>Human Review</td>
+            <td>بررسی موارد حساس و پرریسک</td>
+          </tr>
+          <tr>
+            <td>Response Composer</td>
+            <td>ساخت پاسخ نهایی و قابل فهم</td>
+          </tr>
+        </table>
+
+        <h3>۱۳.۴. نمونه‌ی قرارداد Task داخلی</h3>
+
+        <pre><code>{
+  "task_id": "support-2026-001",
+  "customer_id": "C-100",
+  "order_id": "ORD-1234",
+  "objective": "Evaluate refund eligibility",
+  "constraints": {
+    "do_not_execute_refund": true,
+    "require_policy_check": true,
+    "require_human_approval_for_payment": true
+  },
+  "requested_outputs": [
+    "order_status",
+    "policy_eligibility",
+    "financial_analysis",
+    "recommendation"
+  ],
+  "deadline": "2026-11-02T12:00:00Z"
+}</code></pre>
+
+        <h3>۱۳.۵. جریان اجرا</h3>
+        <ol>
+          <li>درخواست مشتری دریافت می‌شود.</li>
+          <li>Host شناسه‌ی سفارش را استخراج و اعتبارسنجی می‌کند.</li>
+          <li>از MCP Tool برای دریافت وضعیت سفارش استفاده می‌کند.</li>
+          <li>از MCP Resource سیاست بازپرداخت را می‌خواند.</li>
+          <li>اگر تحلیل مالی لازم باشد، از طریق A2A یک Task ایجاد می‌کند.</li>
+          <li>نتیجه‌ی Agent مالی دریافت و بررسی می‌شود.</li>
+          <li>اگر عملیات حساس باشد، برای تأیید انسانی متوقف می‌شود.</li>
+          <li>پاسخ نهایی با ذکر محدودیت‌ها به مشتری ارائه می‌شود.</li>
+        </ol>
+
+        <h3>۱۳.۶. شبه‌کد Orchestrator</h3>
+        <p>
+          قطعه‌کد زیر منطق معماری را نشان می‌دهد و یک پیاده‌سازی کامل و قابل اجرای مستقیم نیست.
+          جزئیات SDK، احراز هویت و ساختار دقیق RPC باید با ابزار انتخابی تطبیق داده شوند.
+        </p>
+
+        <pre><code>async def handle_support_request(request):
+
+    # 1. Validate the request
+    customer = authenticate_customer(request)
+    order_id = validate_order_reference(request.order_id)
+
+    # 2. Read order information through MCP
+    order = await mcp.call_tool(
+        server="orders",
+        tool="get_order_status",
+        arguments={"order_id": order_id}
+    )
+
+    # 3. Read policy through MCP Resource
+    policy = await mcp.read_resource(
+        server="policies",
+        uri="company://policies/refund"
+    )
+
+    # 4. Evaluate basic eligibility
+    preliminary = evaluate_policy(order, policy)
+
+    # 5. Delegate complex financial analysis via A2A
+    if preliminary.requires_finance_review:
+
+        task = await a2a.send_message(
+            agent="finance-agent",
+            message={
+                "order_id": order_id,
+                "objective": "Analyze refund implications"
+            }
+        )
+
+        finance_result = await a2a.wait_for_task(task.id)
+
+    else:
+        finance_result = None
+
+    # 6. Validate the results
+    result = verify_evidence(
+        order=order,
+        policy=policy,
+        finance=finance_result
+    )
+
+    # 7. Human approval for high-impact actions
+    if result.requires_approval:
+        return await request_human_approval(result)
+
+    # 8. Compose a response
+    return compose_customer_response(result)</code></pre>
+
+        <h3>۱۳.۷. نمونه‌ی پیام بین Agentها</h3>
+
+        <pre><code>{
+  "correlation_id": "support-2026-001",
+  "from": "support-agent",
+  "to": "finance-agent",
+  "objective": "Analyze refund implications",
+  "input": {
+    "order_id": "ORD-1234",
+    "refund_amount": 120.50,
+    "currency": "EUR"
+  },
+  "constraints": {
+    "read_only": true,
+    "do_not_execute_payment": true
+  },
+  "expected_output": {
+    "risk_level": "string",
+    "financial_impact": "number",
+    "recommendation": "string",
+    "evidence": "array"
+  }
+}</code></pre>
+
+        <h3>۱۳.۸. Observability پروژه</h3>
+        <p>برای هر درخواست، این داده‌ها را ثبت کنید:</p>
+        <ul>
+          <li>شناسه‌ی درخواست اصلی.</li>
+          <li>شناسه‌ی Taskهای A2A.</li>
+          <li>نام MCP Server و Tool فراخوانی‌شده.</li>
+          <li>زمان شروع و پایان هر عملیات.</li>
+          <li>نسخه‌ی Schema و Agent.</li>
+          <li>نتیجه‌ی موفق یا خطا.</li>
+          <li>هزینه و تعداد فراخوانی‌ها.</li>
+          <li>تصمیم‌های تأیید انسانی.</li>
+        </ul>
+
+        <h3>۱۳.۹. تست‌های لازم</h3>
+        <ul>
+          <li>سفارش وجود ندارد.</li>
+          <li>کاربر مالک سفارش نیست.</li>
+          <li>سیاست بازپرداخت در دسترس نیست.</li>
+          <li>Agent مالی پاسخ نمی‌دهد.</li>
+          <li>Agent مالی خروجی نامعتبر می‌دهد.</li>
+          <li>مبلغ بازپرداخت از حد مجاز بیشتر است.</li>
+          <li>درخواست نیاز به تأیید انسانی دارد.</li>
+          <li>یک Tool دوبار اجرا می‌شود.</li>
+          <li>پاسخ Agent حاوی محتوای مخرب یا دستور غیرمجاز است.</li>
+        </ul>
+
+        <div class="callout success">
+          هدف پروژه صرفاً وصل کردن دو پروتکل نیست.
+          هدف ساخت سیستمی است که مرز مسئولیت، قرارداد، مجوز، پیگیری Task،
+          کنترل خطا و قابلیت مشاهده‌ی روشن داشته باشد.
+        </div>
+      </section>
+
+      <section id="checklist">
+        <h2>۱۴. چک‌لیست آمادگی برای Production</h2>
+
+        <h3>معماری و قراردادها</h3>
+        <ul>
+          <li>☐ مسئولیت هر MCP Server مشخص است.</li>
+          <li>☐ Toolها و Resourceها نام‌گذاری و مستند شده‌اند.</li>
+          <li>☐ Schema ورودی و خروجی اعتبارسنجی می‌شود.</li>
+          <li>☐ نسخه‌ی MCP و A2A مشخص و کنترل می‌شود.</li>
+          <li>☐ قابلیت‌های اختیاری قبل از استفاده بررسی می‌شوند.</li>
+        </ul>
+
+        <h3>امنیت</h3>
+        <ul>
+          <li>☐ Authentication برای ارتباطات راه دور فعال است.</li>
+          <li>☐ Authorization در سطح Tool و Resource بررسی می‌شود.</li>
+          <li>☐ دسترسی‌ها بر اساس Least Privilege تعریف شده‌اند.</li>
+          <li>☐ ورودی‌های خارجی و محتوای Resource قابل اعتماد فرض نمی‌شوند.</li>
+          <li>☐ عملیات حساس نیازمند تأیید مناسب هستند.</li>
+          <li>☐ Secretها در کد و Prompt قرار نگرفته‌اند.</li>
+          <li>☐ محدودیت شبکه و دسترسی خروجی اعمال شده است.</li>
+        </ul>
+
+        <h3>عملیات و پایداری</h3>
+        <ul>
+          <li>☐ Timeout و Retry مشخص است.</li>
+          <li>☐ درخواست‌های تکراری کنترل می‌شوند.</li>
+          <li>☐ Taskهای طولانی قابل پیگیری هستند.</li>
+          <li>☐ خطاها ساختار مشخص دارند.</li>
+          <li>☐ لاگ، Metric و Trace وجود دارد.</li>
+          <li>☐ داده‌های حساس از لاگ‌ها حذف یا Mask می‌شوند.</li>
+          <li>☐ تست سازگاری Client و Server انجام شده است.</li>
+          <li>☐ برای شکست Agent خارجی مسیر جایگزین تعریف شده است.</li>
+        </ul>
+
+        <h3>کیفیت و ارزیابی</h3>
+        <ul>
+          <li>☐ Tool Selection Accuracy اندازه‌گیری می‌شود.</li>
+          <li>☐ موفقیت واقعی Taskها اندازه‌گیری می‌شود.</li>
+          <li>☐ خروجی Agentهای خارجی اعتبارسنجی می‌شود.</li>
+          <li>☐ تست‌های امنیتی و Adversarial اجرا شده‌اند.</li>
+          <li>☐ تغییر نسخه‌ها با Regression Test بررسی می‌شود.</li>
+        </ul>
+      </section>
+
+      <section id="glossary">
+        <h2>۱۵. واژه‌نامه‌ی تخصصی</h2>
+
+        <table>
+          <tr>
+            <th>اصطلاح</th>
+            <th>معنی</th>
+          </tr>
+          <tr>
+            <td>MCP</td>
+            <td>پروتکل استاندارد اتصال برنامه‌های AI به قابلیت‌ها و منابع بیرونی.</td>
+          </tr>
+          <tr>
+            <td>Host</td>
+            <td>برنامه‌ی اصلی AI که Clientها و تعامل با مدل را مدیریت می‌کند.</td>
+          </tr>
+          <tr>
+            <td>Client</td>
+            <td>جزء ارتباطی Host با یک MCP Server.</td>
+          </tr>
+          <tr>
+            <td>Server</td>
+            <td>سرویسی که قابلیت‌های MCP را ارائه می‌کند.</td>
+          </tr>
+          <tr>
+            <td>Tool</td>
+            <td>عملیات قابل فراخوانی از طریق MCP.</td>
+          </tr>
+          <tr>
+            <td>Resource</td>
+            <td>منبع داده یا محتوایی که Client می‌تواند بخواند.</td>
+          </tr>
+          <tr>
+            <td>Prompt</td>
+            <td>قالب تعامل قابل استفاده‌ی مجدد.</td>
+          </tr>
+          <tr>
+            <td>Transport</td>
+            <td>روش انتقال پیام بین Client و Server.</td>
+          </tr>
+          <tr>
+            <td>STDIO</td>
+            <td>ارتباط بین Processها از طریق ورودی و خروجی استاندارد.</td>
+          </tr>
+          <tr>
+            <td>Streamable HTTP</td>
+            <td>روش انتقال MCP بر بستر HTTP با امکان پاسخ جریانی.</td>
+          </tr>
+          <tr>
+            <td>JSON-RPC</td>
+            <td>قالب سبک درخواست و پاسخ مبتنی بر JSON.</td>
+          </tr>
+          <tr>
+            <td>Capability</td>
+            <td>قابلیتی که یک طرف ارتباط پشتیبانی می‌کند.</td>
+          </tr>
+          <tr>
+            <td>A2A</td>
+            <td>پروتکل ارتباط و همکاری بین Agentهای مستقل.</td>
+          </tr>
+          <tr>
+            <td>Agent Card</td>
+            <td>سند توصیف هویت، مهارت‌ها و قابلیت‌های Agent.</td>
+          </tr>
+          <tr>
+            <td>Task</td>
+            <td>واحد کار قابل پیگیری در A2A.</td>
+          </tr>
+          <tr>
+            <td>Message</td>
+            <td>یک نوبت ارتباطی بین Client و Agent.</td>
+          </tr>
+          <tr>
+            <td>Part</td>
+            <td>بخش محتوایی داخل Message یا Artifact.</td>
+          </tr>
+          <tr>
+            <td>Artifact</td>
+            <td>خروجی ملموس تولیدشده توسط Agent.</td>
+          </tr>
+          <tr>
+            <td>Polling</td>
+            <td>بررسی دوره‌ای وضعیت یک Task.</td>
+          </tr>
+          <tr>
+            <td>Streaming</td>
+            <td>دریافت تدریجی رویدادها یا داده‌ها.</td>
+          </tr>
+          <tr>
+            <td>Webhook</td>
+            <td>Endpointی که برای دریافت رویدادهای ورودی استفاده می‌شود.</td>
+          </tr>
+          <tr>
+            <td>Interoperability</td>
+            <td>قابلیت همکاری سیستم‌های مستقل با قرارداد مشترک.</td>
+          </tr>
+          <tr>
+            <td>Least Privilege</td>
+            <td>دادن حداقل مجوز لازم برای انجام کار.</td>
+          </tr>
+          <tr>
+            <td>Prompt Injection</td>
+            <td>تلاش محتوای ورودی برای تغییر یا دور زدن دستورالعمل‌های Agent.</td>
+          </tr>
+          <tr>
+            <td>Correlation ID</td>
+            <td>شناسه‌ی مشترک برای ارتباط دادن عملیات مرتبط.</td>
+          </tr>
+        </table>
+      </section>
+
+      <section id="quiz">
+        <h2>۱۶. آزمون پایانی</h2>
+        <p>به پرسش‌ها پاسخ دهید و در پایان نتیجه را مشاهده کنید.</p>
+
+        <form id="quiz-form">
+
+          <div class="quiz-question">
+            <strong>۱. هدف اصلی MCP چیست؟</strong>
+            <label><input type="radio" name="q1" value="a"> ساخت مدل زبانی</label>
+            <label><input type="radio" name="q1" value="b"> استاندارد کردن ارتباط برنامه‌ی AI با ابزارها و منابع</label>
+            <label><input type="radio" name="q1" value="c"> آموزش مدل با داده‌ی جدید</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۲. MCP Host چه نقشی دارد؟</strong>
+            <label><input type="radio" name="q2" value="a"> فقط دیتابیس است</label>
+            <label><input type="radio" name="q2" value="b"> فقط یک Tool است</label>
+            <label><input type="radio" name="q2" value="c"> برنامه‌ی اصلی AI و هماهنگ‌کننده‌ی Clientها</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۳. کدام Primitive برای اجرای عملیات مناسب است؟</strong>
+            <label><input type="radio" name="q3" value="a"> Tool</label>
+            <label><input type="radio" name="q3" value="b"> Resource</label>
+            <label><input type="radio" name="q3" value="c"> Prompt</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۴. Resource معمولاً برای چه استفاده می‌شود؟</strong>
+            <label><input type="radio" name="q4" value="a"> اجرای پرداخت</label>
+            <label><input type="radio" name="q4" value="b"> ارائه‌ی داده و context</label>
+            <label><input type="radio" name="q4" value="c"> انتخاب مدل زبانی</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۵. Prompt در MCP چه کاربردی دارد؟</strong>
+            <label><input type="radio" name="q5" value="a"> ذخیره‌ی فایل باینری</label>
+            <label><input type="radio" name="q5" value="b"> اجرای مستقیم تراکنش مالی</label>
+            <label><input type="radio" name="q5" value="c"> ارائه‌ی قالب تعاملی قابل استفاده‌ی مجدد</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۶. کدام Transport برای Process محلی مناسب است؟</strong>
+            <label><input type="radio" name="q6" value="a"> STDIO</label>
+            <label><input type="radio" name="q6" value="b"> SMTP</label>
+            <label><input type="radio" name="q6" value="c"> FTP</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۷. A2A بیشتر برای چه کاری طراحی شده است؟</strong>
+            <label><input type="radio" name="q7" value="a"> اجرای SQL در دیتابیس</label>
+            <label><input type="radio" name="q7" value="b"> ارتباط و همکاری بین Agentهای مستقل</label>
+            <label><input type="radio" name="q7" value="c"> تعریف فونت برنامه</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۸. Agent Card چه اطلاعاتی می‌دهد؟</strong>
+            <label><input type="radio" name="q8" value="a"> فقط متن مکالمه</label>
+            <label><input type="radio" name="q8" value="b"> فقط تاریخچه‌ی Taskها</label>
+            <label><input type="radio" name="q8" value="c"> هویت، Endpoint، قابلیت‌ها و مهارت‌های Agent</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۹. Artifact در A2A چیست؟</strong>
+            <label><input type="radio" name="q9" value="a"> خروجی ملموس تولیدشده توسط Agent</label>
+            <label><input type="radio" name="q9" value="b"> رمز عبور Agent</label>
+            <label><input type="radio" name="q9" value="c"> روش انتقال شبکه</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۱۰. آیا MCP به‌تنهایی امنیت عملیات را تضمین می‌کند؟</strong>
+            <label><input type="radio" name="q10" value="a"> بله، همیشه</label>
+            <label><input type="radio" name="q10" value="b"> خیر؛ Server و Host باید کنترل‌های امنیتی واقعی داشته
+              باشند</label>
+            <label><input type="radio" name="q10" value="c"> فقط در حالت STDIO</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۱۱. کدام گزینه تفاوت اصلی MCP و A2A را بهتر توضیح می‌دهد؟</strong>
+            <label><input type="radio" name="q11" value="a"> هر دو فقط برای اتصال به دیتابیس هستند</label>
+            <label><input type="radio" name="q11" value="b"> MCP فقط برای آموزش مدل است</label>
+            <label><input type="radio" name="q11" value="c"> MCP برای Agent-to-Tool و A2A برای Agent-to-Agent
+              است</label>
+          </div>
+
+          <button type="button" onclick="gradeQuiz()">بررسی پاسخ‌ها</button>
+          <button type="reset" class="secondary"
+            onclick="document.getElementById('quiz-result').style.display='none'">شروع مجدد</button>
+        </form>
+
+        <div id="quiz-result"></div>
+      </section>
+
+      <section>
+        <h2>۱۷. تمرین‌های عملی برای تسلط بیشتر</h2>
+
+        <h3>تمرین ۱: طراحی MCP Server</h3>
+        <p>
+          یک Server برای مدیریت کتابخانه طراحی کنید. حداقل سه Tool برای جست‌وجو،
+          امانت دادن و بازگرداندن کتاب تعریف کنید. مشخص کنید کدام عملیات نیازمند مجوز است.
+        </p>
+
+        <h3>تمرین ۲: Resource Design</h3>
+        <p>
+          برای یک سازمان، Resourceهایی برای سیاست مرخصی، راهنمای منابع انسانی و Schema
+          پایگاه داده تعریف کنید. URI و سطح دسترسی هرکدام را مشخص کنید.
+        </p>
+
+        <h3>تمرین ۳: Prompt Design</h3>
+        <p>
+          یک Prompt استاندارد برای تحلیل گزارش خطای نرم‌افزار بسازید.
+          ورودی‌ها، خروجی مورد انتظار و محدودیت‌های آن را تعریف کنید.
+        </p>
+
+        <h3>تمرین ۴: انتخاب Transport</h3>
+        <p>
+          سه سناریو طراحی کنید: ابزار محلی IDE، Server سازمانی و سرویس عمومی راه دور.
+          برای هرکدام Transport مناسب را انتخاب و دلیل آن را توضیح دهید.
+        </p>
+
+        <h3>تمرین ۵: طراحی Agent Card</h3>
+        <p>
+          برای یک Agent متخصص تحلیل داده، Agent Card طراحی کنید.
+          نام، توضیح، Endpoint، Skillها، قابلیت‌های Streaming و روش احراز هویت را مشخص کنید.
+        </p>
+
+        <h3>تمرین ۶: A2A Task Lifecycle</h3>
+        <p>
+          یک Task طولانی برای تولید گزارش طراحی کنید. مشخص کنید Client چگونه Task را ایجاد،
+          وضعیت را پیگیری، اطلاعات تکمیلی ارسال و Artifact نهایی را دریافت می‌کند.
+        </p>
+
+        <h3>تمرین ۷: امنیت</h3>
+        <p>
+          سناریویی طراحی کنید که یک سند حاوی Prompt Injection به Agent داده می‌شود.
+          نشان دهید چگونه مرز داده‌ی غیرقابل اعتماد، کنترل Tool و تأیید انسانی مانع عملیات غیرمجاز می‌شوند.
+        </p>
+      </section>
+
+      <section>
+        <h2>۱۸. جمع‌بندی نهایی و مسیر یادگیری</h2>
+
+        <p>
+          برای تسلط بر MCP و Agent Communication باید سه سطح را یاد بگیرید:
+        </p>
+
+        <div class="grid">
+          <div class="mini-card">
+            <h4>سطح اول: Protocol Fundamentals</h4>
+            <p>درک Host، Client، Server، Tool، Resource، Prompt، JSON-RPC و Transport.</p>
+          </div>
+          <div class="mini-card">
+            <h4>سطح دوم: Implementation</h4>
+            <p>ساخت Server، اتصال Client، طراحی Schema، تست و مدیریت خطا.</p>
+          </div>
+          <div class="mini-card">
+            <h4>سطح سوم: Production Architecture</h4>
+            <p>امنیت، چندمستاجری، Observability، A2A، مدیریت Task و Interoperability.</p>
+          </div>
+          <div class="mini-card">
+            <h4>سطح چهارم: Ecosystem Design</h4>
+            <p>ساخت اکوسیستم Agentهای مستقل که با قراردادهای مشترک با هم همکاری می‌کنند.</p>
+          </div>
+        </div>
+
+        <h3>ترتیب پیشنهادی یادگیری</h3>
+        <ol>
+          <li>یک MCP Server ساده بسازید.</li>
+          <li>یک Tool و یک Resource به آن اضافه کنید.</li>
+          <li>با یک Client واقعی به Server وصل شوید.</li>
+          <li>ورودی و خروجی‌ها را Schema-based کنید.</li>
+          <li>Authentication و Authorization را اضافه کنید.</li>
+          <li>یک Agent مستقل بسازید که MCP را مصرف کند.</li>
+          <li>Agent دوم را با A2A در دسترس قرار دهید.</li>
+          <li>Taskهای طولانی و Streaming را پیاده‌سازی کنید.</li>
+          <li>Tracing، Logging و تست‌های امنیتی را اضافه کنید.</li>
+        </ol>
+
+        <div class="callout success">
+          توصیه‌ی مهندسی:
+          از یک MCP Server کوچک و یک Agent ساده شروع کنید.
+          سپس A2A را فقط زمانی اضافه کنید که واقعاً به استقلال، مالکیت جداگانه،
+          همکاری بین سیستم‌ها یا واگذاری Task به Agentهای مستقل نیاز دارید.
+          پیچیدگی بیشتر لزوماً به معنی معماری بهتر نیست.
+        </div>
+      </section>
+
+      <section>
+        <h2>۱۹. منابع رسمی برای مطالعه‌ی عمیق‌تر</h2>
+        <p>
+          برای توسعه‌ی واقعی، همیشه نسخه‌ی مشخصات و SDK مورد استفاده‌ی خود را بررسی کنید.
+          به‌خصوص در MCP باید به تفاوت نسخه‌های پروتکل و نسخه‌های SDK توجه داشته باشید.
+        </p>
+
+        <ul>
+          <li>
+            <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener">
+              وب‌سایت و مستندات رسمی Model Context Protocol
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/modelcontextprotocol/modelcontextprotocol" target="_blank" rel="noopener">
+              مخزن رسمی Specification و مستندات MCP
+            </a>
+          </li>
+          <li>
+            <a href="https://py.sdk.modelcontextprotocol.io/" target="_blank" rel="noopener">
+              MCP Python SDK
+            </a>
+          </li>
+          <li>
+            <a href="https://ts.sdk.modelcontextprotocol.io/v2/" target="_blank" rel="noopener">
+              MCP TypeScript SDK v2
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener">
+              MCP Inspector
+            </a>
+          </li>
+          <li>
+            <a href="https://a2a-protocol.org/" target="_blank" rel="noopener">
+              مستندات رسمی Agent2Agent Protocol
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/a2aproject/A2A" target="_blank" rel="noopener">
+              مخزن رسمی A2A
+            </a>
+          </li>
+        </ul>
+
+        <p class="muted">
+          نکته‌ی نسخه: مستندات MCP و SDKها در حال توسعه‌اند. قبل از شروع پیاده‌سازی،
+          نسخه‌ی پروتکل، نسخه‌ی SDK و قابلیت‌های واقعاً پشتیبانی‌شده را بررسی کنید.
+          نمونه‌های این جزوه برای آموزش مفاهیم هستند و جایگزین مرجع API نسخه‌ی انتخابی نیستند.
+        </p>
+      </section>
+
+      
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-nav">
+      <a href="index.html">نقشه راه</a>
+      <a href="8.html">فصل قبل</a>
+      <a href="#intro">فهرست مطالب</a>
+      <a href="#">بالای صفحه ↑</a>
+    </div>
+    MCP & Agent Communication · Chapter 09
+    <br>
+    <strong>M_Ai</strong>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      try { localStorage.setItem('m-ai-theme', theme); } catch (e) {}
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#10101e' : '#f5f5fb');
+    }
+    try {
+      const saved = localStorage.getItem('m-ai-theme');
+      if (saved === 'light' || saved === 'dark') setTheme(saved);
+    } catch (e) {}
+    themeToggle.addEventListener('click', () => {
+      setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      const el = document.getElementById('progress');
+      if (el) el.style.width = progress + '%';
+    });
+  </script>
+<script>
+
+    function gradeQuiz() {
+      const answers = {
+        q1: "b",
+        q2: "c",
+        q3: "a",
+        q4: "b",
+        q5: "c",
+        q6: "a",
+        q7: "b",
+        q8: "c",
+        q9: "a",
+        q10: "b",
+        q11: "c"
+      };
+
+      const explanations = {
+        q1: "MCP ارتباط استاندارد برنامه‌ی AI با ابزارها و منابع را فراهم می‌کند.",
+        q2: "Host برنامه‌ی اصلی است و Clientهای MCP را مدیریت می‌کند.",
+        q3: "Tool برای اجرای عملیات قابل فراخوانی استفاده می‌شود.",
+        q4: "Resource برای ارائه‌ی داده و context به Client است.",
+        q5: "Prompt قالبی قابل استفاده‌ی مجدد برای تعامل با مدل است.",
+        q6: "STDIO برای ارتباط بین Processهای محلی مناسب است.",
+        q7: "A2A برای ارتباط و همکاری Agentهای مستقل طراحی شده است.",
+        q8: "Agent Card هویت، Endpoint، قابلیت‌ها و مهارت‌ها را معرفی می‌کند.",
+        q9: "Artifact خروجی ملموس Task است.",
+        q10: "امنیت باید با کنترل‌های واقعی در Host و Server اعمال شود.",
+        q11: "MCP ارتباط Agent با ابزار و A2A ارتباط Agent با Agent را هدف می‌گیرد."
+      };
+
+      let score = 0;
+      let answered = 0;
+      let feedback = "";
+
+      Object.keys(answers).forEach((key, index) => {
+        const selected = document.querySelector(
+          'input[name="' + key + '"]:checked'
+        );
+
+        if (selected) {
+          answered++;
+          if (selected.value === answers[key]) {
+            score++;
+            feedback += "<p>سؤال " + (index + 1) +
+              ": <strong>درست</strong> — " + explanations[key] + "</p>";
+          } else {
+            feedback += "<p>سؤال " + (index + 1) +
+              ": <strong>نادرست</strong> — " + explanations[key] + "</p>";
+          }
+        } else {
+          feedback += "<p>سؤال " + (index + 1) +
+            ": <strong>بدون پاسخ</strong> — " + explanations[key] + "</p>";
+        }
+      });
+
+      const total = Object.keys(answers).length;
+      const percentage = Math.round((score / total) * 100);
+
+      let level = "";
+      if (percentage >= 90) level = "عالی؛ مفاهیم اصلی را بسیار خوب درک کرده‌اید.";
+      else if (percentage >= 75) level = "خوب؛ چند مفهوم را دوباره مرور کنید.";
+      else if (percentage >= 50) level = "متوسط؛ فصل‌های مربوط به پاسخ‌های اشتباه را مرور کنید.";
+      else level = "نیاز به مرور؛ پیشنهاد می‌شود از معماری MCP شروع کنید.";
+
+      const result = document.getElementById("quiz-result");
+      result.style.display = "block";
+      result.innerHTML =
+        "<h3>نتیجه‌ی آزمون</h3>" +
+        "<strong>امتیاز: " + score + " از " + total +
+        " (" + percentage + "%)</strong>" +
+        "<p>تعداد پاسخ داده‌شده: " + answered + " از " + total + "</p>" +
+        "<p>" + level + "</p>" +
+        "<hr>" + feedback;
+
+      result.scrollIntoView({behavior: "smooth", block: "start"});
+    }
+  
+</script>
+</body>
+</html>

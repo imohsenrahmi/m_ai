@@ -1,0 +1,3209 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10101e">
+  <meta name="description" content="Advanced AI Engineering & Production — LLMOps، Deployment، Security و Agentic Systems">
+  <title>Advanced AI Engineering & Production | فصل ۱۱ — M_Ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --purple: #9275f5;
+      --purple-strong: #7657e8;
+      --cyan: #51cbdc;
+      --green: #49c9a3;
+      --radius: 18px;
+      --transition: .28s ease;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #10101e;
+      --bg-secondary: #151529;
+      --surface: #1b1b32;
+      --surface-hover: #242440;
+      --surface-soft: rgba(255, 255, 255, .045);
+      --text: #f5f3ff;
+      --text-secondary: #c3c1d5;
+      --muted: #9695ae;
+      --border: rgba(255, 255, 255, .09);
+      --border-strong: rgba(255, 255, 255, .15);
+      --header-bg: rgba(16, 16, 30, .92);
+      --shadow: 0 18px 50px rgba(0, 0, 0, .24);
+      --callout-bg: rgba(146, 117, 245, .1);
+      --callout-border: rgba(146, 117, 245, .45);
+      --tip-bg: rgba(81, 203, 220, .08);
+      --tip-border: rgba(81, 203, 220, .4);
+      --warning-bg: rgba(217, 119, 6, .1);
+      --warning-border: rgba(217, 119, 6, .45);
+      --code-bg: #0c0c18;
+      --code-text: #b8f0d8;
+      --diagram-bg: rgba(146, 117, 245, .1);
+      --diagram-border: rgba(146, 117, 245, .28);
+      --table-head: rgba(146, 117, 245, .12);
+      --table-alt: rgba(255, 255, 255, .03);
+      --tag-bg: rgba(146, 117, 245, .15);
+      --tag-text: #c4b5fd;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .22), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .12), transparent 45%);
+      --progress-track: rgba(255, 255, 255, .08);
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f5fb;
+      --bg-secondary: #eeeefa;
+      --surface: #fff;
+      --surface-hover: #f7f5ff;
+      --surface-soft: rgba(102, 78, 190, .045);
+      --text: #202039;
+      --text-secondary: #55556f;
+      --muted: #77778f;
+      --border: rgba(40, 35, 90, .10);
+      --border-strong: rgba(40, 35, 90, .17);
+      --header-bg: rgba(255, 255, 255, .92);
+      --shadow: 0 18px 50px rgba(45, 35, 100, .09);
+      --callout-bg: #f5f3ff;
+      --callout-border: #6658e8;
+      --tip-bg: #f0fdfa;
+      --tip-border: #0d9488;
+      --warning-bg: #fffbeb;
+      --warning-border: #d97706;
+      --code-bg: #111827;
+      --code-text: #d1fae5;
+      --diagram-bg: #eef2ff;
+      --diagram-border: #c7d2fe;
+      --table-head: #f3f4f6;
+      --table-alt: #fafafa;
+      --tag-bg: #ede9fe;
+      --tag-text: #5b21b6;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .15), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .1), transparent 45%);
+      --progress-track: rgba(40, 35, 90, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+      transition: background .35s, color .35s;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--progress-track);
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      z-index: 200;
+    }
+    #progress {
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      transition: width .1s linear;
+    }
+
+    /* HEADER */
+    .site-header {
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--header-bg);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(146, 117, 245, .24);
+    }
+    .site-header::after {
+      content: "";
+      position: absolute;
+      bottom: -1px; right: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent 3%, rgba(81, 203, 220, .35) 25%, rgba(146, 117, 245, .85) 50%, rgba(81, 203, 220, .35) 75%, transparent 97%);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      direction: ltr;
+      flex-shrink: 0;
+    }
+    .brand-mark {
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #a58cff, #6848df);
+      box-shadow: 0 4px 18px rgba(118, 87, 232, .28), inset 0 1px 0 rgba(255,255,255,.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-mark::before {
+      content: "";
+      position: absolute; inset: 1px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 11px;
+    }
+    .brand-mark svg { width: 26px; height: 26px; position: relative; z-index: 1; }
+    .brand-name { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--text); }
+    .brand-name span { color: var(--purple); }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: 12px;
+      display: grid; place-items: center;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    .theme-toggle:hover { border-color: var(--purple); transform: rotate(12deg); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-icon-sun { display: none; }
+    html[data-theme="light"] .theme-icon-moon { display: none; }
+    html[data-theme="light"] .theme-icon-sun { display: block; }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 11px;
+      background: rgba(146, 117, 245, .12);
+      border: 1px solid rgba(146, 117, 245, .32);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .back-home:hover { background: var(--purple); color: #fff; }
+    .back-home svg { width: 15px; height: 15px; }
+
+    /* CHAPTER HERO */
+    .chapter-hero {
+      position: relative;
+      padding: 48px 20px 40px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .chapter-hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--hero-overlay);
+      pointer-events: none;
+    }
+    .chapter-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .chapter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(146, 117, 245, .35);
+      background: rgba(146, 117, 245, .1);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .8px;
+      direction: ltr;
+      margin-bottom: 16px;
+    }
+    .chapter-badge::before {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .chapter-hero h1 {
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 900;
+      line-height: 1.45;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .chapter-hero .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 2.1;
+      max-width: 720px;
+    }
+    .chapter-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .meta-chip {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .meta-chip strong {
+      color: var(--text);
+      font-size: 15px;
+      margin-left: 6px;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    /* LAYOUT */
+    .page-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static !important; order: -1; }
+    }
+
+    /* SIDEBAR TOC */
+    .sidebar {
+      position: sticky;
+      top: 88px;
+    }
+    .toc-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 18px 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.04);
+    }
+    .toc-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-title::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .toc-link {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      transition: .2s;
+      border: 1px solid transparent;
+    }
+    .toc-link:hover {
+      color: var(--text);
+      background: rgba(146, 117, 245, .08);
+      border-color: rgba(146, 117, 245, .2);
+      padding-right: 14px;
+    }
+    .toc-link-strong { color: var(--purple); font-weight: 800; }
+    .toc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+    .print-btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 11px;
+      border-radius: 12px;
+      background: linear-gradient(115deg, #a18aff, #7558e8);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .print-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* MAIN CONTENT SURFACE */
+    .content-area { min-width: 0; }
+
+    .section-card {
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      background: var(--surface) !important;
+      color: var(--text);
+    }
+    .section-number {
+      background: linear-gradient(135deg, #9275f5, #51cbdc) !important;
+      color: white !important;
+    }
+
+    /* Override common Tailwind color utilities for theme */
+    .content-area {
+      color: var(--text);
+    }
+    .content-area .text-slate-800,
+    .content-area .text-slate-700,
+    .content-area .text-slate-900 { color: var(--text) !important; }
+    .content-area .text-slate-500,
+    .content-area .text-slate-400,
+    .content-area .text-slate-600 { color: var(--muted) !important; }
+    .content-area .text-indigo-600,
+    .content-area .text-indigo-700,
+    .content-area .text-indigo-800 { color: var(--purple) !important; }
+    .content-area .bg-white { background: var(--surface) !important; }
+    .content-area .bg-slate-50,
+    .content-area .bg-slate-100,
+    .content-area .hover\:bg-slate-50:hover { background: var(--surface-soft) !important; }
+    .content-area .border,
+    .content-area .border-slate-200,
+    .content-area .border-slate-100 { border-color: var(--border) !important; }
+    .content-area .shadow-sm { box-shadow: 0 6px 24px rgba(0,0,0,.05) !important; }
+
+    .callout {
+      border-right: 4px solid var(--callout-border) !important;
+      background: var(--callout-bg) !important;
+      color: var(--text);
+    }
+    .tip {
+      border-right: 4px solid var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .warning {
+      border-right: 4px solid var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .code {
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .86rem;
+      border: 1px solid var(--border);
+    }
+    .ltr { direction: ltr; text-align: left; }
+    .diagram-box {
+      border: 1px solid var(--diagram-border) !important;
+      background: var(--diagram-bg) !important;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .arrow { color: var(--purple) !important; font-size: 1.5rem; font-weight: 800; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      background: var(--tag-bg) !important;
+      color: var(--tag-text) !important;
+      padding: 3px 10px;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+    .table-wrap { overflow-x: auto; border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td {
+      border: 1px solid var(--border) !important;
+      padding: 12px;
+      text-align: right;
+      vertical-align: top;
+      color: var(--text);
+    }
+    th { background: var(--table-head) !important; font-weight: 800; }
+    tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+    .content-area h2, .content-area h3, .content-area h4 {
+      color: var(--text);
+    }
+    .content-area p, .content-area li { color: var(--text-secondary); }
+    .content-area strong { color: var(--text); }
+
+    .content-area .bg-indigo-50,
+    .content-area .bg-teal-50 { background: var(--surface-soft) !important; }
+    .content-area .border-teal-300 { border-color: var(--diagram-border) !important; }
+    .content-area .text-teal-700 { color: var(--green) !important; }
+    .content-area .text-rose-700 { color: #f87171 !important; }
+    .content-area .text-amber-700 { color: #fbbf24 !important; }
+    .content-area .bg-indigo-700,
+    .content-area .hover\:bg-indigo-800:hover {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+    }
+    .content-area .text-indigo-900 { color: var(--text) !important; }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 2;
+    }
+    .site-footer strong {
+      color: var(--purple);
+      direction: ltr;
+      display: inline-block;
+      font-size: 15px;
+    }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .footer-nav a {
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      transition: .2s;
+    }
+    .footer-nav a:hover {
+      color: var(--purple);
+      border-color: rgba(146,117,245,.4);
+    }
+
+    @media print {
+      .site-header, .sidebar, .progress-bar, .no-print, .theme-toggle, .back-home { display: none !important; }
+      .page-layout { grid-template-columns: 1fr; }
+      .section-card { break-inside: avoid; }
+      body { background: white; color: black; }
+    }
+
+    @media (max-width: 640px) {
+      .chapter-hero { padding: 32px 16px 28px; }
+      .header-inner { padding: 0 14px; }
+      .back-home span.label { display: none; }
+      .page-layout { padding: 18px 14px 40px; }
+    }
+
+
+    .content-area .intro-card,
+    .content-area .toc,
+    .content-area .chapter,
+    .content-area .summary-card,
+    .content-area .project-card {
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 16px !important;
+      box-shadow: 0 5px 18px rgba(0,0,0,.04) !important;
+      color: var(--text);
+      padding: 28px !important;
+      margin: 22px 0 !important;
+    }
+    .content-area .chapter h2,
+    .content-area .summary-card h2,
+    .content-area .project-card h2 {
+      font-size: 1.4rem !important;
+      color: var(--text) !important;
+      border-bottom: 2px solid var(--border) !important;
+      padding-bottom: 13px !important;
+      margin: 0 0 24px !important;
+    }
+    .content-area h3 {
+      font-size: 1.1rem !important;
+      color: var(--purple) !important;
+      margin: 28px 0 10px !important;
+    }
+    .content-area h4 {
+      font-size: 1rem !important;
+      color: var(--cyan) !important;
+      margin: 22px 0 8px !important;
+    }
+    .content-area .callout {
+      border-right: 4px solid var(--callout-border);
+      background: var(--callout-bg);
+      border-radius: 9px; padding: 15px 18px; margin: 20px 0;
+    }
+    .content-area .callout.success {
+      border-color: var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .content-area .callout.warning {
+      border-color: var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .content-area .callout.danger {
+      border-color: #b42335 !important;
+      background: rgba(180,35,53,.1) !important;
+    }
+    .content-area .diagram {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px; margin: 20px 0;
+      text-align: center; direction: ltr;
+      font-family: monospace; white-space: pre-wrap;
+      line-height: 1.8; color: var(--text-secondary); overflow-x: auto;
+    }
+    .content-area pre {
+      direction: ltr; text-align: left;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      padding: 20px; border-radius: 12px; overflow-x: auto;
+      line-height: 1.65; font-size: 13px; white-space: pre-wrap;
+      border: 1px solid var(--border);
+    }
+    .content-area :not(pre) > code {
+      background: rgba(146,117,245,.12) !important;
+      color: var(--purple) !important;
+      border-radius: 5px; padding: 2px 6px; font-size: .9em;
+    }
+    .content-area .tag {
+      display: inline-block;
+      background: rgba(146,117,245,.12) !important;
+      color: var(--purple) !important;
+      border-radius: 6px; padding: 2px 9px; margin: 2px; font-size: 12px;
+    }
+    .content-area .mini-card {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: 11px; padding: 17px;
+    }
+    .content-area .formula {
+      direction: ltr; text-align: center;
+      background: rgba(146,117,245,.08);
+      color: var(--text);
+      padding: 15px; border-radius: 9px;
+      font-family: monospace; margin: 18px 0; overflow-wrap: anywhere;
+    }
+    .content-area .checklist li {
+      list-style: "☐  "; padding-right: 5px;
+    }
+    .content-area th { background: var(--table-head) !important; color: var(--text) !important; }
+    .content-area td { border-color: var(--border) !important; color: var(--text-secondary); }
+    .content-area tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+  </style>
+</head>
+<body>
+  <div class="progress-bar no-print"><div id="progress"></div></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="M_Ai Home">
+        <div class="brand-name"><span>M_Ai</span></div>
+        <div class="brand-mark">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 29V10L15 22L20 15L25 22L35 10V29" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 15V8" stroke="#DDFBFF" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="20" cy="6" r="2.5" fill="#DDFBFF"/>
+          </svg>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="تغییر تم">
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>
+          </svg>
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>
+          </svg>
+        </button>
+        <a href="index.html" class="back-home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/>
+          </svg>
+          <span class="label">صفحه اصلی</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="chapter-hero">
+    <div class="chapter-hero-inner">
+      <div class="chapter-badge">CHAPTER 11 · ADVANCED AI ENGINEERING & PRODUCTION</div>
+      <h1>Advanced AI Engineering & Production</h1>
+      <p class="subtitle">
+        راهنمای جامع طراحی، توسعه، ارزیابی، استقرار، مقیاس‌پذیری و مدیریت سیستم‌های هوش مصنوعی
+        در محیط واقعی و سازمانی
+      </p>
+      <div class="chapter-meta">
+        <div class="meta-chip"><strong>13</strong> فصل تخصصی</div>
+        <div class="meta-chip"><strong>11</strong> از ۱۲ فصل</div>
+        <div class="meta-chip"><strong>LLMOps</strong></div>
+        <div class="meta-chip"><strong>Production</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-layout">
+    <aside class="sidebar no-print">
+      <div class="toc-card">
+        <div class="toc-title">فهرست مطالب</div>
+        <nav class="toc-nav" id="toc">
+<a class="toc-link toc-link-strong" href="#intro">مقدمه</a>
+<a class="toc-link" href="#fine-tuning">1. Fine-tuning and Model Adaptation</a>
+<a class="toc-link" href="#selection">2. Model Selection and Model Routing</a>
+<a class="toc-link" href="#gateway">3. AI Gateway Architecture</a>
+<a class="toc-link" href="#patterns">4. AI Design Patterns</a>
+<a class="toc-link" href="#evaluation">5. LLM Evaluation</a>
+<a class="toc-link" href="#testing">6. AI Testing Strategies</a>
+<a class="toc-link" href="#llmops">7. LLMOps and MLOps</a>
+<a class="toc-link" href="#deployment">8. AI Deployment</a>
+<a class="toc-link" href="#scaling">9. Scaling AI Applications</a>
+<a class="toc-link" href="#observability">10. Monitoring and Observability</a>
+<a class="toc-link" href="#security">11. AI Security and Privacy</a>
+<a class="toc-link" href="#cost">12. Cost Optimization</a>
+<a class="toc-link" href="#agents">13. Production-ready Agentic Systems</a>
+<div class="toc-divider"></div>
+<a class="toc-link toc-link-strong" href="#project">پروژه عملی</a>
+<a class="toc-link toc-link-strong" href="#summary">جمع‌بندی</a>
+        </nav>
+        <button class="print-btn" type="button" onclick="window.print()">چاپ یا ذخیره PDF</button>
+      </div>
+    </aside>
+
+    <main class="content-area min-w-0">
+
+
+    <section class="intro-card" id="intro">
+      <h2>مقدمه: از AI Prototype تا Production AI</h2>
+      <p>
+        ساخت یک برنامه ساده با استفاده از یک مدل زبانی بزرگ، معمولاً کار دشواری نیست.
+        می‌توان با چند خط کد به یک API متصل شد، یک Prompt فرستاد و پاسخ دریافت کرد.
+        اما این موضوع به‌معنای ساخت یک محصول هوش مصنوعی آماده استفاده در محیط واقعی نیست.
+      </p>
+      <p>
+        در دنیای واقعی، سیستم باید در برابر خطاهای شبکه، افزایش تعداد کاربران، تغییر رفتار مدل،
+        داده‌های ناقص، حملات امنیتی، درخواست‌های غیرمنتظره، محدودیت بودجه و نیازهای جدید کسب‌وکار
+        مقاوم باشد. همچنین باید بتوانیم کیفیت آن را اندازه‌گیری کنیم، هزینه آن را کنترل کنیم،
+        نسخه‌های مختلفش را مدیریت کنیم و در صورت بروز مشکل، علت را پیدا کنیم.
+      </p>
+      <p>
+        اینجاست که مفهوم <strong>Advanced AI Engineering</strong> مطرح می‌شود.
+        مهندسی پیشرفته هوش مصنوعی فقط به انتخاب یک مدل قوی‌تر یا نوشتن Prompt بهتر محدود نیست؛
+        بلکه مجموعه‌ای از اصول معماری نرم‌افزار، مهندسی داده، مهندسی مدل، امنیت، زیرساخت،
+        ارزیابی، عملیات و مدیریت چرخه عمر سیستم است.
+      </p>
+      <div class="callout">
+        <strong>هدف نهایی:</strong>
+        تبدیل قابلیت‌های هوش مصنوعی به یک سرویس قابل اتکا که بتواند در مقیاس واقعی،
+        با کیفیت قابل اندازه‌گیری و هزینه کنترل‌شده، ارزش تجاری ایجاد کند.
+      </div>
+    </section>
+
+    <!-- CHAPTER 1 -->
+    <section class="chapter" id="fine-tuning">
+      <h2>1. Fine-tuning and Model Adaptation</h2>
+
+      <h3>۱.۱. مفهوم Model Adaptation چیست؟</h3>
+      <p>
+        مدل‌های پایه یا Foundation Models روی حجم بزرگی از داده‌ها آموزش دیده‌اند و توانایی‌های
+        عمومی زیادی دارند. این مدل‌ها می‌توانند متن تولید کنند، کد بنویسند، سؤال پاسخ دهند،
+        اطلاعات را خلاصه کنند و در بسیاری از مسائل استدلال کنند.
+      </p>
+      <p>
+        بااین‌حال، یک مدل عمومی لزوماً برای نیازهای خاص یک سازمان مناسب نیست.
+        ممکن است سازمان به مدل نیاز داشته باشد که اصطلاحات تخصصی صنعت را بشناسد،
+        خروجی را دقیقاً در قالب مشخصی تولید کند، سبک ارتباطی خاصی داشته باشد یا در یک وظیفه
+        محدود عملکرد پایدارتری ارائه دهد.
+      </p>
+      <p>
+        Model Adaptation به مجموعه روش‌هایی گفته می‌شود که رفتار یا عملکرد مدل را برای یک
+        مسئله مشخص تنظیم می‌کنند. Fine-tuning یکی از این روش‌هاست، اما تنها روش نیست.
+      </p>
+
+      <h3>۱.۲. تفاوت Prompt Engineering، RAG و Fine-tuning</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>روش</th>
+            <th>چه چیزی را تغییر می‌دهد؟</th>
+            <th>کاربرد اصلی</th>
+            <th>محدودیت</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Prompt Engineering</td>
+            <td>دستور و زمینه‌ای که به مدل داده می‌شود</td>
+            <td>تغییر شیوه پاسخ‌گویی و هدایت رفتار</td>
+            <td>وابسته به محدودیت Context Window و پایبندی مدل</td>
+          </tr>
+          <tr>
+            <td>RAG</td>
+            <td>اطلاعاتی که هنگام پاسخ در اختیار مدل قرار می‌گیرد</td>
+            <td>استفاده از دانش سازمانی و اطلاعات به‌روز</td>
+            <td>کیفیت بازیابی و کیفیت اسناد اهمیت زیادی دارد</td>
+          </tr>
+          <tr>
+            <td>Fine-tuning</td>
+            <td>پارامترهای مدل یا بخشی از آن‌ها</td>
+            <td>یادگیری الگوهای رفتاری و وظایف تخصصی</td>
+            <td>نیازمند داده مناسب، آموزش و ارزیابی دقیق</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        برای مثال، فرض کنیم یک شرکت حقوقی می‌خواهد دستیار هوشمندی بسازد.
+        اگر هدف دستیار پاسخ‌گویی با استفاده از آخرین نسخه قراردادها و قوانین باشد،
+        RAG احتمالاً انتخاب مناسبی است. اگر هدف تولید متن با ساختار و سبک ثابت حقوقی باشد،
+        Fine-tuning می‌تواند مفید باشد. اگر فقط لازم باشد مدل در پاسخ‌ها از قالب خاصی استفاده کند،
+        شاید Prompt Engineering کافی باشد.
+      </p>
+
+      <div class="callout warning">
+        Fine-tuning را نباید به‌عنوان راه‌حل پیش‌فرض برای هر مشکل مدل در نظر گرفت.
+        بسیاری از مشکلاتی که ظاهراً به کمبود دانش مدل مربوط هستند، در واقع از بازیابی نامناسب،
+        Prompt ضعیف، داده بی‌کیفیت یا طراحی نادرست سیستم ناشی می‌شوند.
+      </div>
+
+      <h3>۱.۳. انواع Fine-tuning</h3>
+
+      <h4>Supervised Fine-tuning (SFT)</h4>
+      <p>
+        در این روش، مدل با نمونه‌هایی از ورودی و خروجی مطلوب آموزش داده می‌شود.
+        هر نمونه نشان می‌دهد که برای یک ورودی مشخص، پاسخ مناسب چه شکلی دارد.
+      </p>
+      <p>برای نمونه، مجموعه داده ممکن است چنین ساختاری داشته باشد:</p>
+      <pre><code>{
+  "instruction": "این پیام مشتری را دسته‌بندی کن.",
+  "input": "سفارش من هنوز به دستم نرسیده است.",
+  "output": {
+    "category": "delivery_issue",
+    "priority": "medium"
+  }
+}</code></pre>
+      <p>
+        مدل با دیدن نمونه‌های متعدد، یاد می‌گیرد که برای ورودی‌های مشابه چه نوع خروجی‌ای تولید کند.
+        کیفیت داده‌های آموزشی، تنوع مثال‌ها، سازگاری برچسب‌ها و نمایندگی سناریوهای واقعی
+        در نتیجه نهایی تأثیر مستقیم دارند.
+      </p>
+
+      <h4>Parameter-Efficient Fine-tuning (PEFT)</h4>
+      <p>
+        آموزش همه پارامترهای یک مدل بزرگ ممکن است به منابع محاسباتی قابل‌توجهی نیاز داشته باشد.
+        روش‌های PEFT تلاش می‌کنند با تغییر تعداد محدودتری از پارامترها یا اضافه کردن پارامترهای
+        کوچک قابل‌آموزش، مدل را برای وظیفه موردنظر سازگار کنند.
+      </p>
+      <ul>
+        <li><strong>LoRA:</strong> به‌جای تغییر مستقیم تمام وزن‌های مدل، به‌روزرسانی‌های کم‌رتبه‌ای را یاد می‌گیرد.</li>
+        <li><strong>QLoRA:</strong> از کوانتیزه‌سازی برای کاهش مصرف حافظه در کنار روش LoRA استفاده می‌کند.</li>
+        <li><strong>Adapters:</strong> لایه‌ها یا ماژول‌های کوچکی به مدل اضافه می‌شوند و همان بخش‌ها آموزش می‌بینند.
+        </li>
+      </ul>
+
+      <h4>Instruction Tuning</h4>
+      <p>
+        هدف Instruction Tuning بهبود توانایی مدل در دنبال‌کردن دستورهاست.
+        داده‌ها معمولاً شامل دستورهای متنوع، ورودی‌های اختیاری و پاسخ‌های مورد انتظار هستند.
+        این روش می‌تواند مدل را برای انجام وظایف تعریف‌شده و پیروی از فرمت خروجی آماده‌تر کند.
+      </p>
+
+      <h4>Preference Optimization و روش‌های مبتنی بر بازخورد</h4>
+      <p>
+        در برخی روش‌ها، به‌جای ارائه تنها یک پاسخ صحیح، ترجیحات میان چند پاسخ به مدل آموزش داده می‌شود.
+        برای مثال مشخص می‌شود پاسخ A از پاسخ B بهتر است، چون دقیق‌تر، مفیدتر یا ایمن‌تر است.
+      </p>
+      <p>
+        روش‌هایی مانند RLHF و DPO در این حوزه شناخته‌شده‌اند. انتخاب روش به نوع هدف،
+        داده در دسترس، زیرساخت و هزینه آموزش بستگی دارد.
+      </p>
+
+      <h3>۱.۴. آماده‌سازی Dataset برای Fine-tuning</h3>
+      <p>
+        یکی از مهم‌ترین مراحل، آماده‌سازی داده است. مدل به‌طور خودکار نمی‌تواند کیفیت پایین
+        داده آموزشی را جبران کند. داده‌های متناقض، پاسخ‌های اشتباه، اطلاعات حساس و مثال‌های
+        تکراری می‌توانند مدل را به رفتار نامطلوب سوق دهند.
+      </p>
+      <ul>
+        <li>حذف نمونه‌های تکراری و خراب</li>
+        <li>بررسی صحت پاسخ‌های مرجع</li>
+        <li>حذف یا ناشناس‌سازی اطلاعات محرمانه و شخصی</li>
+        <li>توازن میان انواع سناریوها</li>
+        <li>ثبت منشأ و مجوز استفاده از داده‌ها</li>
+        <li>تفکیک داده‌های Train، Validation و Test</li>
+        <li>جلوگیری از نشت اطلاعات میان مجموعه‌های آموزشی و آزمون</li>
+      </ul>
+
+      <h3>۱.۵. ارزیابی مدل Fine-tuned</h3>
+      <p>
+        پس از آموزش، نباید صرفاً با مشاهده چند پاسخ خوب نتیجه بگیریم که مدل موفق بوده است.
+        باید آن را با مدل پایه و نسخه‌های دیگر مقایسه کنیم.
+      </p>
+      <p>شاخص‌های ارزیابی می‌توانند شامل این موارد باشند:</p>
+      <ul>
+        <li>Accuracy و F1 برای وظایف طبقه‌بندی</li>
+        <li>Exact Match برای خروجی‌هایی که تطابق دقیق مهم است</li>
+        <li>اعتبار JSON یا ساختار خروجی</li>
+        <li>کیفیت پاسخ در ارزیابی انسانی</li>
+        <li>نرخ پاسخ‌های نادرست یا ساختگی</li>
+        <li>Latency، هزینه و مصرف حافظه</li>
+        <li>عملکرد روی داده‌های خارج از مجموعه آموزش</li>
+      </ul>
+
+      <h3>۱.۶. چه زمانی Fine-tuning انتخاب مناسبی است؟</h3>
+      <div class="grid">
+        <div class="mini-card">
+          <h4>موارد مناسب</h4>
+          <ul>
+            <li>طبقه‌بندی تخصصی و پرتکرار</li>
+            <li>تولید خروجی با قالب رفتاری ثابت</li>
+            <li>تطبیق لحن و سبک پاسخ‌گویی</li>
+            <li>یادگیری الگوهای تخصصی از مثال‌های معتبر</li>
+            <li>کاهش وابستگی به Promptهای طولانی</li>
+          </ul>
+        </div>
+        <div class="mini-card">
+          <h4>مواردی که باید با احتیاط بررسی شوند</h4>
+          <ul>
+            <li>نیاز به اطلاعاتی که مرتب تغییر می‌کنند</li>
+            <li>نبود داده آموزشی باکیفیت</li>
+            <li>مشکل اصلی در بازیابی اطلاعات</li>
+            <li>تعداد کم درخواست‌ها و نبود توجیه اقتصادی</li>
+            <li>نیاز به تضمین صحت بدون سیستم ارزیابی</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>۱.۷. چرخه عملی Model Adaptation</h3>
+      <div class="diagram">Define the task
+        ↓
+        Build a baseline with an existing model
+        ↓
+        Collect representative examples
+        ↓
+        Clean and validate the dataset
+        ↓
+        Choose adaptation method
+        ↓
+        Train / tune the model
+        ↓
+        Evaluate against baseline
+        ↓
+        Security and regression testing
+        ↓
+        Controlled deployment
+        ↓
+        Monitor real-world performance
+        ↓
+        Collect feedback and improve</div>
+
+      <p>
+        نکته کلیدی این است که Fine-tuning یک فعالیت یک‌باره نیست. مدل پس از استقرار نیز باید
+        از نظر کیفیت، تغییر توزیع داده‌ها، هزینه و رفتارهای ناخواسته بررسی شود.
+      </p>
+    </section>
+
+    <!-- CHAPTER 2 -->
+    <section class="chapter" id="selection">
+      <h2>2. Model Selection and Model Routing</h2>
+
+      <h3>۲.۱. چرا انتخاب مدل اهمیت دارد؟</h3>
+      <p>
+        در معماری یک سیستم AI، انتخاب مدل یکی از تصمیم‌های بنیادی است.
+        مدل‌های مختلف از نظر توانایی استدلال، سرعت پاسخ‌گویی، هزینه، ظرفیت Context،
+        پشتیبانی از تصویر و صوت، قابلیت فراخوانی ابزارها، محدودیت نرخ و سیاست‌های داده
+        با یکدیگر تفاوت دارند.
+      </p>
+      <p>
+        انتخاب مدلی که برای همه درخواست‌ها استفاده شود، همیشه تصمیم بهینه‌ای نیست.
+        ممکن است یک مدل قدرتمند برای درخواست‌های پیچیده ضروری باشد، اما استفاده از همان مدل
+        برای دسته‌بندی ساده یا استخراج چند فیلد، هزینه غیرضروری ایجاد کند.
+      </p>
+
+      <h3>۲.۲. معیارهای انتخاب مدل</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>معیار</th>
+            <th>سؤال اصلی</th>
+            <th>اهمیت در Production</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Quality</td>
+            <td>آیا مدل مسئله را درست حل می‌کند؟</td>
+            <td>کیفیت محصول و رضایت کاربر</td>
+          </tr>
+          <tr>
+            <td>Latency</td>
+            <td>چه مدت تا دریافت پاسخ زمان می‌برد؟</td>
+            <td>تجربه کاربری و SLA</td>
+          </tr>
+          <tr>
+            <td>Cost</td>
+            <td>هزینه ورودی و خروجی چقدر است؟</td>
+            <td>حاشیه سود و بودجه</td>
+          </tr>
+          <tr>
+            <td>Context Window</td>
+            <td>چه مقدار ورودی را می‌تواند پردازش کند؟</td>
+            <td>اسناد طولانی و Agentها</td>
+          </tr>
+          <tr>
+            <td>Reliability</td>
+            <td>رفتار مدل تا چه حد پایدار است؟</td>
+            <td>پیش‌بینی‌پذیری سرویس</td>
+          </tr>
+          <tr>
+            <td>Tool Calling</td>
+            <td>آیا می‌تواند ابزارها را درست فراخوانی کند؟</td>
+            <td>سیستم‌های Agentic</td>
+          </tr>
+          <tr>
+            <td>Privacy</td>
+            <td>داده چگونه پردازش و نگهداری می‌شود؟</td>
+            <td>الزامات امنیتی و قانونی</td>
+          </tr>
+          <tr>
+            <td>Availability</td>
+            <td>آیا سرویس در منطقه و زمان موردنیاز در دسترس است؟</td>
+            <td>تداوم سرویس</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>۲.۳. Model Routing چیست؟</h3>
+      <p>
+        Model Routing به معنای انتخاب مدل مناسب برای هر درخواست بر اساس ویژگی‌های درخواست،
+        سیاست‌های سیستم و محدودیت‌های عملیاتی است.
+      </p>
+      <p>
+        در یک سیستم ساده، همه درخواست‌ها به یک مدل ارسال می‌شوند. در یک سیستم دارای Router،
+        ابتدا درخواست تحلیل می‌شود و سپس به مدل یا مسیر پردازشی مناسب هدایت می‌شود.
+      </p>
+
+      <div class="diagram"> Incoming Request
+        |
+        v
+        Request Analyzer
+        |
+        +-----------+-----------+
+        | | |
+        v v v
+        Simple Complex Multimodal
+        Request Reasoning Request
+        | | |
+        v v v
+        Small LLM Strong LLM Vision Model
+        | | |
+        +-----------+-----------+
+        |
+        v
+        Output Validator
+        |
+        v
+        User Response</div>
+
+      <h3>۲.۴. انواع Model Router</h3>
+
+      <h4>Rule-based Routing</h4>
+      <p>
+        تصمیم‌گیری با قواعد مشخص انجام می‌شود. مثلاً اگر درخواست فقط شامل استخراج فیلدهای
+        ساده باشد، از مدل کم‌هزینه استفاده می‌کنیم؛ اگر درخواست نیازمند تحلیل چندمرحله‌ای باشد،
+        آن را به مدل قوی‌تر می‌فرستیم.
+      </p>
+      <pre><code>if request.task_type == "classification":
+    model = "small-model"
+
+elif request.requires_complex_reasoning:
+    model = "reasoning-model"
+
+elif request.contains_images:
+    model = "vision-model"
+
+else:
+    model = "general-purpose-model"</code></pre>
+
+      <h4>Classifier-based Routing</h4>
+      <p>
+        یک طبقه‌بند، نوع درخواست را تشخیص می‌دهد. این طبقه‌بند می‌تواند یک مدل کوچک،
+        یک مدل زبانی یا ترکیبی از قواعد و مدل‌ها باشد.
+      </p>
+
+      <h4>Quality-aware Routing</h4>
+      <p>
+        Router علاوه بر نوع وظیفه، سطح کیفیت موردنیاز را نیز در نظر می‌گیرد.
+        مثلاً برای یک پاسخ ساده، مدل ارزان کافی است؛ اما برای تصمیمی که خطای آن هزینه بالایی دارد،
+        مسیر دقیق‌تر با اعتبارسنجی بیشتر انتخاب می‌شود.
+      </p>
+
+      <h4>Latency-aware Routing</h4>
+      <p>
+        در این روش، سرعت پاسخ‌گویی اهمیت زیادی دارد. اگر یک مدل کند باشد یا ظرفیت آن پر شده باشد،
+        درخواست می‌تواند به مدل جایگزین هدایت شود.
+      </p>
+
+      <h4>Fallback Routing</h4>
+      <p>
+        اگر مدل اصلی خطا دهد، از دسترس خارج شود یا در زمان تعیین‌شده پاسخ ندهد،
+        سیستم می‌تواند به مدل جایگزین منتقل شود. البته Fallback نباید به‌صورت کورکورانه
+        انجام شود؛ مدل جایگزین باید برای همان نوع وظیفه قابل قبول باشد.
+      </p>
+
+      <h3>۲.۵. نمونه معماری Router</h3>
+      <pre><code>async def route_request(request):
+    task = classify_task(request)
+
+    if task == "simple":
+        selected_model = "fast-model"
+
+    elif task == "reasoning":
+        selected_model = "reasoning-model"
+
+    elif task == "vision":
+        selected_model = "vision-model"
+
+    else:
+        selected_model = "general-model"
+
+    try:
+        response = await call_model(
+            selected_model,
+            request
+        )
+
+        return validate_response(response)
+
+    except TemporaryModelError:
+        fallback = choose_compatible_fallback(
+            task,
+            selected_model
+        )
+
+        return await call_model(fallback, request)</code></pre>
+
+      <h3>۲.۶. خطرهای Model Routing</h3>
+      <ul>
+        <li><strong>Misclassification:</strong> درخواست به مدل نامناسب فرستاده می‌شود.</li>
+        <li><strong>Quality inconsistency:</strong> کاربران برای درخواست‌های مشابه پاسخ‌های متفاوت می‌گیرند.</li>
+        <li><strong>Routing overhead:</strong> تحلیل درخواست ممکن است زمان و هزینه اضافه کند.</li>
+        <li><strong>Provider dependency:</strong> وابستگی بیش‌ازحد به یک ارائه‌دهنده می‌تواند ریسک عملیاتی ایجاد کند.
+        </li>
+        <li><strong>Silent degradation:</strong> سیستم در زمان اختلال به مدل ضعیف‌تر منتقل می‌شود، اما این تغییر ثبت
+          نمی‌شود.</li>
+      </ul>
+
+      <div class="callout success">
+        یک Router حرفه‌ای باید علاوه بر انتخاب مدل، دلیل انتخاب، نسخه سیاست Routing،
+        زمان پاسخ، هزینه، نتیجه اعتبارسنجی و استفاده از مسیر جایگزین را ثبت کند.
+      </div>
+    </section>
+
+    <!-- CHAPTER 3 -->
+    <section class="chapter" id="gateway">
+      <h2>3. AI Gateway Architecture</h2>
+
+      <h3>۳.۱. AI Gateway چیست؟</h3>
+      <p>
+        وقتی یک سازمان چند مدل، چند ارائه‌دهنده و چند برنامه هوش مصنوعی دارد،
+        اتصال مستقیم هر برنامه به API هر مدل می‌تواند به معماری پیچیده و غیرقابل‌کنترلی منجر شود.
+      </p>
+      <p>
+        AI Gateway یک لایه واسط مرکزی میان برنامه‌ها و سرویس‌های مدل است.
+        این لایه درخواست‌ها را دریافت می‌کند، سیاست‌های امنیتی را اعمال می‌کند،
+        مدل مناسب را انتخاب می‌کند، محدودیت‌ها را کنترل می‌کند و نتیجه را به برنامه بازمی‌گرداند.
+      </p>
+
+      <div class="diagram">Applications / Agents / Internal Services
+        |
+        v
+        +----------------+
+        | AI Gateway |
+        +----------------+
+        | Authentication|
+        | Authorization |
+        | Rate Limiting |
+        | Model Routing |
+        | Prompt Policies|
+        | Cache |
+        | Budget Control |
+        | Logging |
+        +----------------+
+        |
+        +---------+---------+
+        | | |
+        v v v
+        Provider A Provider B Local Models
+        | | |
+        +---------+---------+
+        |
+        v
+        Response Handling</div>
+
+      <h3>۳.۲. وظایف اصلی Gateway</h3>
+
+      <h4>Authentication و Authorization</h4>
+      <p>
+        Gateway باید تشخیص دهد درخواست از کدام کاربر، سرویس یا Agent آمده است و آیا اجازه
+        استفاده از مدل یا قابلیت مشخص را دارد یا خیر.
+      </p>
+
+      <h4>Centralized Model Access</h4>
+      <p>
+        به‌جای آنکه هر سرویس کلید API جداگانه و تنظیمات مستقل داشته باشد،
+        برنامه‌ها از یک نقطه کنترل‌شده به مدل‌ها دسترسی پیدا می‌کنند.
+      </p>
+
+      <h4>Rate Limiting و Quota</h4>
+      <p>
+        Gateway می‌تواند تعداد درخواست‌ها، تعداد توکن‌ها یا هزینه مصرف‌شده را برای هر کاربر،
+        تیم یا سرویس محدود کند.
+      </p>
+
+      <h4>Model Routing</h4>
+      <p>
+        Gateway می‌تواند بر اساس سیاست سازمان، درخواست را به مدل مناسب هدایت کند.
+        این تصمیم ممکن است با توجه به هزینه، تأخیر، نوع وظیفه یا دسترس‌پذیری مدل انجام شود.
+      </p>
+
+      <h4>Retries و Timeout</h4>
+      <p>
+        Gateway باید برای درخواست‌های ناموفق سیاست مشخصی داشته باشد.
+        Timeout، Retry، Backoff و Circuit Breaker از جمله سازوکارهای مهم هستند.
+      </p>
+
+      <h4>Observability</h4>
+      <p>
+        Gateway محل مناسبی برای ثبت اطلاعات عملیاتی درخواست‌هاست:
+        مدل استفاده‌شده، زمان پاسخ، تعداد توکن‌ها، هزینه تخمینی، خطا و وضعیت درخواست.
+      </p>
+
+      <h3>۳.۳. اجزای معماری Gateway</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>جزء</th>
+            <th>وظیفه</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>API Layer</td>
+            <td>دریافت درخواست و مدیریت قرارداد ورودی و خروجی</td>
+          </tr>
+          <tr>
+            <td>Identity Layer</td>
+            <td>شناسایی کاربر، سرویس یا Agent</td>
+          </tr>
+          <tr>
+            <td>Policy Engine</td>
+            <td>اعمال سیاست‌های امنیتی، دسترسی و بودجه</td>
+          </tr>
+          <tr>
+            <td>Router</td>
+            <td>انتخاب مدل یا Provider</td>
+          </tr>
+          <tr>
+            <td>Provider Adapters</td>
+            <td>تبدیل درخواست داخلی به فرمت ارائه‌دهندگان مختلف</td>
+          </tr>
+          <tr>
+            <td>Cache</td>
+            <td>ذخیره پاسخ‌های قابل استفاده مجدد</td>
+          </tr>
+          <tr>
+            <td>Usage Meter</td>
+            <td>محاسبه و ثبت مصرف و هزینه</td>
+          </tr>
+          <tr>
+            <td>Telemetry</td>
+            <td>ارسال Log، Metric و Trace</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>۳.۴. چرا Abstraction مهم است؟</h3>
+      <p>
+        هر Provider ممکن است ساختار API، نام پارامترها، روش Streaming، قالب خطا و قابلیت‌های
+        متفاوتی داشته باشد. Gateway می‌تواند یک قرارداد داخلی مشترک ایجاد کند تا برنامه‌ها
+        به جزئیات هر Provider وابسته نباشند.
+      </p>
+      <p>
+        بااین‌حال، Abstraction نباید تفاوت‌های واقعی مدل‌ها را پنهان کند.
+        برای مثال، همه مدل‌ها قابلیت Tool Calling، خروجی JSON، تصویر یا Context یکسان ندارند.
+        Gateway باید قابلیت‌های هر مدل را به‌شکل صریح نگهداری کند.
+      </p>
+
+      <h3>۳.۵. ملاحظات طراحی Gateway</h3>
+      <ul>
+        <li>Gateway نباید به نقطه شکست واحد بدون افزونگی تبدیل شود.</li>
+        <li>مسیرهای Streaming باید بدون Buffering غیرضروری طراحی شوند.</li>
+        <li>کلیدهای API نباید به کلاینت‌های نهایی ارسال شوند.</li>
+        <li>لاگ‌ها نباید به‌طور پیش‌فرض شامل متن محرمانه Prompt و پاسخ باشند.</li>
+        <li>سیاست‌های محدودیت مصرف باید قابل تنظیم و قابل ممیزی باشند.</li>
+        <li>تغییر مدل نباید باعث شکستن قرارداد API برنامه‌های وابسته شود.</li>
+      </ul>
+    </section>
+
+    <!-- CHAPTER 4 -->
+    <section class="chapter" id="patterns">
+      <h2>4. AI Design Patterns</h2>
+
+      <h3>۴.۱. Design Pattern در سیستم‌های AI</h3>
+      <p>
+        Design Pattern یک الگوی تکرارشونده برای حل یک مسئله معماری یا طراحی است.
+        در سیستم‌های AI، برخی مسائل مانند کنترل خروجی مدل، مدیریت خطا، بازیابی اطلاعات،
+        اجرای ابزارها و کنترل گردش کار بارها تکرار می‌شوند.
+      </p>
+      <p>
+        استفاده از الگوهای طراحی باعث می‌شود سیستم‌ها ساختار قابل فهم‌تری داشته باشند،
+        رفتار آن‌ها قابل آزمایش باشد و توسعه‌دهندگان بتوانند از راه‌حل‌های اثبات‌شده استفاده کنند.
+      </p>
+
+      <h3>۴.۲. الگوی Retrieval-Augmented Generation</h3>
+      <p>
+        در RAG، به‌جای تکیه کامل بر دانش پارامتری مدل، ابتدا اطلاعات مرتبط از یک منبع خارجی
+        بازیابی می‌شود و سپس به مدل داده می‌شود تا پاسخ را با اتکا به آن اطلاعات تولید کند.
+      </p>
+      <div class="diagram">User Question
+        ↓
+        Query Processing
+        ↓
+        Retriever
+        ↓
+        Relevant Documents
+        ↓
+        Context Construction
+        ↓
+        LLM
+        ↓
+        Answer + Sources</div>
+      <p>
+        RAG برای پاسخ‌گویی بر اساس اسناد داخلی، دانش سازمانی، راهنماها، مستندات فنی
+        و اطلاعاتی که مرتب به‌روزرسانی می‌شوند مناسب است.
+      </p>
+      <p>
+        کیفیت RAG تنها به مدل زبانی وابسته نیست. Chunking، Embedding، Metadata Filtering،
+        Retrieval، Reranking و Context Construction نیز اهمیت دارند.
+      </p>
+
+      <h3>۴.۳. الگوی Tool Calling</h3>
+      <p>
+        مدل به‌جای آنکه صرفاً پاسخ متنی تولید کند، یک ابزار را انتخاب و ورودی موردنیاز آن را
+        پیشنهاد می‌کند. برنامه میزبان ابزار را اجرا می‌کند و نتیجه را دوباره در اختیار مدل می‌گذارد.
+      </p>
+      <div class="diagram">User Request
+        ↓
+        LLM decides a tool is needed
+        ↓
+        Tool call with structured arguments
+        ↓
+        Application validates the call
+        ↓
+        Tool execution
+        ↓
+        Tool result
+        ↓
+        LLM produces final answer</div>
+      <p>
+        نکته مهم این است که مدل معمولاً خود ابزار را اجرا نمی‌کند؛ برنامه میزبان مسئول
+        کنترل دسترسی، اعتبارسنجی ورودی و اجرای واقعی است.
+      </p>
+
+      <h3>۴.۴. الگوی Planner-Executor</h3>
+      <p>
+        در این الگو، یک بخش برنامه‌ریزی، مسئله را به مراحل کوچک‌تر تقسیم می‌کند و بخش اجرا
+        آن مراحل را انجام می‌دهد.
+      </p>
+      <ul>
+        <li>Planner هدف را تحلیل می‌کند.</li>
+        <li>برنامه یا فهرست وظایف را تولید می‌کند.</li>
+        <li>Executor وظایف را اجرا می‌کند.</li>
+        <li>نتیجه هر مرحله بررسی می‌شود.</li>
+        <li>در صورت نیاز، برنامه اصلاح می‌شود.</li>
+      </ul>
+      <p>
+        این الگو برای کارهایی که چند مرحله وابسته دارند مناسب است؛ اما اگر مسئله ساده باشد،
+        استفاده از Planner ممکن است پیچیدگی و هزینه غیرضروری ایجاد کند.
+      </p>
+
+      <h3>۴.۵. الگوی Guardrails</h3>
+      <p>
+        Guardrails مجموعه کنترل‌هایی هستند که ورودی، فرایند و خروجی سیستم را بررسی می‌کنند.
+        این کنترل‌ها می‌توانند شامل اعتبارسنجی ساختار، بررسی سیاست‌های محتوا، محدودیت ابزار،
+        تشخیص داده حساس و کنترل خروجی باشند.
+      </p>
+      <div class="diagram">Input
+        ↓
+        Input Validation
+        ↓
+        Safety / Policy Checks
+        ↓
+        Model or Agent
+        ↓
+        Output Validation
+        ↓
+        Sensitive Data Checks
+        ↓
+        Final Response</div>
+
+      <h3>۴.۶. الگوی Human-in-the-Loop</h3>
+      <p>
+        در این الگو، بعضی تصمیم‌ها یا اقدامات مهم پیش از اجرا به تأیید انسان نیاز دارند.
+        برای مثال، Agent می‌تواند یک ایمیل را آماده کند، اما ارسال آن نیازمند تأیید کاربر باشد.
+      </p>
+      <p>
+        این الگو در عملیات مالی، حذف داده، تغییر تنظیمات حساس، انتشار محتوا و عملیات غیرقابل بازگشت
+        اهمیت زیادی دارد.
+      </p>
+
+      <h3>۴.۷. الگوی Structured Output</h3>
+      <p>
+        در این الگو، سیستم به‌جای پذیرش متن آزاد، از مدل می‌خواهد خروجی را در قالب ساختاریافته
+        تولید کند. JSON یکی از قالب‌های متداول است.
+      </p>
+      <pre><code>{
+  "sentiment": "negative",
+  "category": "billing",
+  "priority": "high",
+  "requires_human_review": true
+}</code></pre>
+      <p>
+        خروجی ساختاریافته برای اتصال مدل به APIها، پایگاه داده‌ها و گردش کارهای نرم‌افزاری مفید است.
+        بااین‌حال، معتبر بودن JSON به‌معنای درست بودن معنایی آن نیست؛ باید قواعد دامنه نیز بررسی شوند.
+      </p>
+
+      <h3>۴.۸. الگوی Retry و Fallback</h3>
+      <p>
+        سیستم‌های AI ممکن است با خطای موقت Provider، Timeout، پاسخ ناقص یا خروجی نامعتبر مواجه شوند.
+        Retry برای تلاش مجدد و Fallback برای انتقال کنترل به مسیر جایگزین استفاده می‌شود.
+      </p>
+      <p>
+        Retry باید محدود، زمان‌بندی‌شده و متناسب با نوع خطا باشد. تکرار یک درخواست ناموفق
+        بدون محدودیت می‌تواند هزینه را افزایش دهد یا عملیات جانبی را چند بار اجرا کند.
+      </p>
+
+      <h3>۴.۹. الگوی Cache</h3>
+      <p>
+        Cache می‌تواند پاسخ یا بخشی از محاسبات تکراری را ذخیره کند.
+        در سیستم‌های LLM، Semantic Cache تلاش می‌کند درخواست‌هایی با معنای مشابه را شناسایی کند،
+        حتی اگر متن آن‌ها دقیقاً یکسان نباشد.
+      </p>
+      <p>
+        استفاده از Cache باید با توجه به تازگی داده، مجوز کاربر، نسخه Prompt و نسخه مدل انجام شود.
+        پاسخ یک کاربر نباید به کاربر دیگری که مجوز متفاوتی دارد نشت کند.
+      </p>
+
+      <h3>۴.۱۰. الگوی Circuit Breaker</h3>
+      <p>
+        اگر یک Provider یا سرویس وابسته مرتب خطا دهد، Circuit Breaker موقتاً ارسال درخواست‌های جدید
+        به آن را متوقف می‌کند تا از فشار بیشتر و زنجیره‌ای شدن خطاها جلوگیری شود.
+      </p>
+      <ul>
+        <li><strong>Closed:</strong> درخواست‌ها عبور می‌کنند.</li>
+        <li><strong>Open:</strong> درخواست‌ها به سرویس معیوب ارسال نمی‌شوند.</li>
+        <li><strong>Half-open:</strong> چند درخواست آزمایشی برای بررسی بازیابی سرویس ارسال می‌شود.</li>
+      </ul>
+
+      <h3>۴.۱۱. انتخاب Pattern مناسب</h3>
+      <p>
+        الگوها نباید صرفاً به‌دلیل محبوب بودن وارد معماری شوند.
+        برای هر الگو باید مسئله‌ای مشخص وجود داشته باشد که استفاده از آن را توجیه کند.
+        پیچیدگی معماری، هزینه اجرا، قابلیت تست و ریسک عملیاتی باید در تصمیم لحاظ شوند.
+      </p>
+    </section>
+
+    <!-- CHAPTER 5 -->
+    <section class="chapter" id="evaluation">
+      <h2>5. LLM Evaluation</h2>
+
+      <h3>۵.۱. چرا ارزیابی LLM دشوار است؟</h3>
+      <p>
+        در نرم‌افزارهای سنتی، برای ورودی مشخص اغلب می‌توان خروجی دقیق و قطعی تعریف کرد.
+        اما مدل‌های زبانی ممکن است برای یک سؤال چند پاسخ متفاوت و درعین‌حال قابل قبول تولید کنند.
+        همچنین پاسخ ممکن است از نظر نگارشی خوب باشد، اما از نظر factual accuracy اشتباه باشد.
+      </p>
+      <p>
+        بنابراین ارزیابی LLM باید چندبعدی باشد و فقط به یک معیار مانند شباهت متنی یا رضایت کاربر
+        محدود نشود.
+      </p>
+
+      <h3>۵.۲. ابعاد اصلی ارزیابی</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>بُعد</th>
+            <th>توضیح</th>
+            <th>نمونه معیار</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Correctness</td>
+            <td>درستی محتوای پاسخ</td>
+            <td>Expert review، factual checks</td>
+          </tr>
+          <tr>
+            <td>Relevance</td>
+            <td>ارتباط پاسخ با سؤال</td>
+            <td>Relevance score</td>
+          </tr>
+          <tr>
+            <td>Completeness</td>
+            <td>پوشش بخش‌های ضروری</td>
+            <td>Coverage checklist</td>
+          </tr>
+          <tr>
+            <td>Groundedness</td>
+            <td>اتکا به منابع ارائه‌شده</td>
+            <td>Groundedness score</td>
+          </tr>
+          <tr>
+            <td>Safety</td>
+            <td>رعایت سیاست‌های ایمنی</td>
+            <td>Violation rate</td>
+          </tr>
+          <tr>
+            <td>Format</td>
+            <td>رعایت ساختار خروجی</td>
+            <td>Schema validity</td>
+          </tr>
+          <tr>
+            <td>Latency</td>
+            <td>سرعت پاسخ</td>
+            <td>p50، p95، p99</td>
+          </tr>
+          <tr>
+            <td>Cost</td>
+            <td>هزینه تولید پاسخ</td>
+            <td>Cost per request</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>۵.۳. Golden Dataset</h3>
+      <p>
+        Golden Dataset مجموعه‌ای از نمونه‌های آزمون با پاسخ مرجع یا معیارهای ارزیابی تعریف‌شده است.
+        این مجموعه باید نماینده کاربرد واقعی سیستم باشد.
+      </p>
+      <p>
+        برای یک دستیار پشتیبانی مشتری، نمونه‌ها باید شامل درخواست‌های ساده، شکایت‌ها،
+        پرسش‌های چندمرحله‌ای، ورودی‌های ناقص، درخواست‌های خارج از حوزه و تلاش برای سوءاستفاده باشند.
+      </p>
+      <p>
+        بهتر است Golden Dataset نسخه‌بندی شود و نمونه‌های جدید از خطاهای مشاهده‌شده در Production
+        به آن اضافه شوند.
+      </p>
+
+      <h3>۵.۴. روش‌های ارزیابی</h3>
+
+      <h4>Human Evaluation</h4>
+      <p>
+        ارزیاب انسانی پاسخ‌ها را با توجه به معیارهای مشخص بررسی می‌کند.
+        این روش برای ارزیابی کیفیت معنایی، کاربردپذیری، صحت تخصصی و ایمنی بسیار مهم است.
+      </p>
+
+      <h4>Automated Metrics</h4>
+      <p>
+        معیارهای خودکار می‌توانند ساختار، شباهت، طبقه‌بندی، صحت محاسباتی یا وجود عبارت‌های مشخص
+        را بررسی کنند. این معیارها سریع و قابل تکرار هستند، اما همیشه کیفیت واقعی پاسخ را نشان نمی‌دهند.
+      </p>
+
+      <h4>LLM-as-a-Judge</h4>
+      <p>
+        در این روش، یک مدل دیگر پاسخ تولیدشده را بر اساس Rubric ارزیابی می‌کند.
+        این روش برای ارزیابی در مقیاس بزرگ مفید است، اما خود داور نیز ممکن است اشتباه کند،
+        به پاسخ‌های طولانی‌تر امتیاز بیشتری بدهد یا نسبت به سبک خاصی سوگیری داشته باشد.
+      </p>
+
+      <div class="callout warning">
+        LLM-as-a-Judge نباید تنها معیار پذیرش محصول باشد. در کاربردهای حساس،
+        نمونه‌ای از نتایج باید به‌صورت مستقل توسط انسان بررسی شود.
+      </div>
+
+      <h3>۵.۵. ارزیابی RAG</h3>
+      <p>
+        در سیستم RAG باید بخش بازیابی و بخش تولید پاسخ جداگانه ارزیابی شوند.
+        ممکن است مدل پاسخ ضعیفی تولید کند، چون سند مناسب بازیابی نشده است؛
+        یا سند مناسب بازیابی شده باشد، اما مدل آن را اشتباه تفسیر کند.
+      </p>
+      <ul>
+        <li><strong>Retrieval Recall:</strong> آیا اسناد مرتبط در نتایج بازیابی حضور دارند؟</li>
+        <li><strong>Precision:</strong> چه نسبتی از اسناد بازیابی‌شده واقعاً مرتبط هستند؟</li>
+        <li><strong>Ranking Quality:</strong> آیا اسناد مهم‌تر در رتبه‌های بالاتر قرار گرفته‌اند؟</li>
+        <li><strong>Faithfulness:</strong> آیا پاسخ با محتوای منابع سازگار است؟</li>
+        <li><strong>Answer Relevance:</strong> آیا پاسخ واقعاً سؤال کاربر را جواب می‌دهد؟</li>
+        <li><strong>Citation Quality:</strong> آیا ارجاع‌ها از ادعاهای پاسخ پشتیبانی می‌کنند؟</li>
+      </ul>
+
+      <h3>۵.۶. ارزیابی Agentها</h3>
+      <p>
+        ارزیابی Agent پیچیده‌تر از ارزیابی یک پاسخ متنی است؛ زیرا Agent ممکن است چندین ابزار
+        فراخوانی کند، برنامه‌ریزی انجام دهد، وضعیت نگهداری کند و در چند مرحله به هدف برسد.
+      </p>
+      <p>معیارهای مهم عبارت‌اند از:</p>
+      <ul>
+        <li>Task Success Rate: درصد وظایفی که به نتیجه مطلوب می‌رسند.</li>
+        <li>Tool Selection Accuracy: انتخاب ابزار درست.</li>
+        <li>Tool Argument Accuracy: درستی پارامترهای ابزار.</li>
+        <li>Step Efficiency: تعداد مراحل و فراخوانی‌های غیرضروری.</li>
+        <li>Recovery Rate: توانایی بازیابی پس از خطا.</li>
+        <li>Policy Compliance: رعایت مجوزها و سیاست‌ها.</li>
+        <li>Human Escalation Quality: تشخیص زمان مناسب برای ارجاع به انسان.</li>
+      </ul>
+
+      <h3>۵.۷. Regression Evaluation</h3>
+      <p>
+        هر تغییر در Prompt، مدل، ابزار، Retriever یا معماری ممکن است رفتار سیستم را تغییر دهد.
+        Regression Evaluation بررسی می‌کند که آیا نسخه جدید باعث افت عملکرد در سناریوهای قبلی شده است یا خیر.
+      </p>
+      <p>
+        قبل از انتشار نسخه جدید باید مجموعه آزمون ثابت اجرا شود و نتایج آن با نسخه قبلی مقایسه شود.
+      </p>
+
+      <h3>۵.۸. Evaluation Pipeline</h3>
+      <div class="diagram">Dataset Version
+        ↓
+        Run Model / Agent
+        ↓
+        Collect Outputs and Traces
+        ↓
+        Automated Evaluation
+        ↓
+        Human Review (sampled / critical cases)
+        ↓
+        Compare with Baseline
+        ↓
+        Pass / Fail Gates
+        ↓
+        Release Decision</div>
+    </section>
+
+    <!-- CHAPTER 6 -->
+    <section class="chapter" id="testing">
+      <h2>6. AI Testing Strategies</h2>
+
+      <h3>۶.۱. تفاوت AI Testing با تست نرم‌افزار سنتی</h3>
+      <p>
+        در نرم‌افزار سنتی، رفتار تابع‌ها و سرویس‌ها معمولاً با ورودی و خروجی‌های نسبتاً مشخص
+        قابل آزمایش است. در سیستم‌های AI، خروجی مدل ممکن است غیرقطعی باشد و کیفیت آن
+        به Prompt، Context، مدل، تنظیمات Sampling و داده وابسته باشد.
+      </p>
+      <p>
+        به همین دلیل، تست AI باید علاوه بر تست کد، رفتار مدل و کل زنجیره تصمیم‌گیری را نیز بررسی کند.
+      </p>
+
+      <h3>۶.۲. Unit Testing</h3>
+      <p>
+        Unit Test اجزای کوچک و مستقل سیستم را آزمایش می‌کند.
+        برای نمونه، تابع ساخت Prompt، اعتبارسنجی JSON، محاسبه هزینه، انتخاب مدل و تبدیل داده
+        باید بدون نیاز به فراخوانی واقعی مدل تست شوند.
+      </p>
+      <pre><code>def test_validate_priority():
+    result = validate_ticket({
+        "priority": "high",
+        "category": "billing"
+    })
+
+    assert result.is_valid is True</code></pre>
+
+      <h3>۶.۳. Integration Testing</h3>
+      <p>
+        Integration Test تعامل اجزای مختلف را بررسی می‌کند.
+        برای مثال، ارتباط میان برنامه، AI Gateway، Provider، پایگاه داده، Retriever و سرویس ابزارها.
+      </p>
+      <p>
+        در این سطح باید خطاهای شبکه، Timeout، پاسخ ناقص، محدودیت نرخ و ناسازگاری قراردادها
+        نیز آزمایش شوند.
+      </p>
+
+      <h3>۶.۴. End-to-End Testing</h3>
+      <p>
+        تست End-to-End یک سناریوی کامل را از ورودی کاربر تا نتیجه نهایی بررسی می‌کند.
+        در یک Agent پشتیبانی مشتری، می‌توان بررسی کرد که آیا سیستم درخواست را تشخیص می‌دهد،
+        اطلاعات سفارش را بازیابی می‌کند، سیاست را رعایت می‌کند و پاسخ مناسب ارائه می‌دهد.
+      </p>
+
+      <h3>۶.۵. Prompt Testing</h3>
+      <p>
+        Prompt بخشی از منطق سیستم است و باید مانند کد، نسخه‌بندی و آزمایش شود.
+        تغییر کوچک در Prompt ممکن است رفتار مدل را در مجموعه بزرگی از سناریوها تغییر دهد.
+      </p>
+      <ul>
+        <li>آزمون دستورهای عادی</li>
+        <li>آزمون ورودی مبهم</li>
+        <li>آزمون ورودی متناقض</li>
+        <li>آزمون تلاش برای نادیده گرفتن دستورهای سیستم</li>
+        <li>آزمون رعایت قالب خروجی</li>
+        <li>آزمون درخواست‌های خارج از حوزه</li>
+      </ul>
+
+      <h3>۶.۶. Adversarial Testing و Red Teaming</h3>
+      <p>
+        در Adversarial Testing، سیستم عمداً با ورودی‌های دشوار، خصمانه یا فریبنده آزمایش می‌شود.
+        هدف شناسایی ضعف‌هایی است که در استفاده عادی آشکار نمی‌شوند.
+      </p>
+      <p>نمونه سناریوها:</p>
+      <ul>
+        <li>تلاش برای افشای System Prompt</li>
+        <li>درخواست دسترسی به داده کاربر دیگر</li>
+        <li>تزریق دستور مخرب داخل یک سند بازیابی‌شده</li>
+        <li>درخواست اجرای ابزار با پارامتر نامعتبر</li>
+        <li>تلاش برای دور زدن محدودیت‌های مالی یا عملیاتی</li>
+        <li>ارائه متن طولانی برای ایجاد اختلال در پردازش</li>
+      </ul>
+
+      <h3>۶.۷. Load Testing و Stress Testing</h3>
+      <p>
+        Load Testing بررسی می‌کند سیستم در حجم کاری مورد انتظار چه رفتاری دارد.
+        Stress Testing سیستم را به فراتر از ظرفیت عادی می‌رساند تا نقطه شکست و رفتار آن هنگام
+        فشار زیاد مشخص شود.
+      </p>
+      <p>
+        در سیستم‌های AI باید علاوه بر تعداد درخواست‌ها، تعداد توکن‌ها، طول Context،
+        Streaming، تعداد فراخوانی ابزارها و مدت اجرای Agent نیز در نظر گرفته شوند.
+      </p>
+
+      <h3>۶.۸. Chaos Testing</h3>
+      <p>
+        Chaos Testing خرابی‌های کنترل‌شده ایجاد می‌کند تا مشخص شود سیستم چگونه به اختلال واکنش نشان می‌دهد.
+        برای مثال می‌توان دسترسی به یک Provider را موقتاً قطع کرد، تأخیر شبکه را افزایش داد
+        یا یک سرویس وابسته را از دسترس خارج کرد.
+      </p>
+
+      <h3>۶.۹. تست‌های ضروری برای AI در Production</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>نوع تست</th>
+            <th>هدف</th>
+            <th>مثال</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Unit</td>
+            <td>صحت اجزای منفرد</td>
+            <td>اعتبارسنجی Schema</td>
+          </tr>
+          <tr>
+            <td>Integration</td>
+            <td>صحت تعامل سرویس‌ها</td>
+            <td>اتصال Gateway به Provider</td>
+          </tr>
+          <tr>
+            <td>End-to-End</td>
+            <td>صحت سناریوی کامل</td>
+            <td>رسیدگی کامل به تیکت</td>
+          </tr>
+          <tr>
+            <td>Regression</td>
+            <td>جلوگیری از افت کیفیت</td>
+            <td>مقایسه پاسخ نسخه جدید و قبلی</td>
+          </tr>
+          <tr>
+            <td>Adversarial</td>
+            <td>شناسایی ضعف‌های امنیتی</td>
+            <td>Prompt Injection</td>
+          </tr>
+          <tr>
+            <td>Load</td>
+            <td>بررسی ظرفیت</td>
+            <td>هزار درخواست هم‌زمان</td>
+          </tr>
+          <tr>
+            <td>Chaos</td>
+            <td>بررسی تحمل خطا</td>
+            <td>قطع موقت Provider</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- CHAPTER 7 -->
+    <section class="chapter" id="llmops">
+      <h2>7. LLMOps and MLOps</h2>
+
+      <h3>۷.۱. MLOps چیست؟</h3>
+      <p>
+        MLOps مجموعه‌ای از اصول و فرایندها برای مدیریت چرخه عمر سیستم‌های یادگیری ماشین است.
+        این چرخه از آماده‌سازی داده و آموزش مدل آغاز می‌شود و تا ارزیابی، انتشار، مانیتورینگ
+        و به‌روزرسانی ادامه پیدا می‌کند.
+      </p>
+      <p>
+        هدف MLOps این است که توسعه و عملیات مدل‌های یادگیری ماشین قابل تکرار، قابل ردیابی،
+        قابل اتوماسیون و قابل اعتماد باشد.
+      </p>
+
+      <h3>۷.۲. LLMOps چیست؟</h3>
+      <p>
+        LLMOps بر مدیریت عملیاتی برنامه‌هایی تمرکز دارد که از مدل‌های زبانی بزرگ استفاده می‌کنند.
+        این حوزه بخشی از مفاهیم MLOps را به ارزیابی Prompt، مدیریت نسخه مدل،
+        مدیریت Context، RAG، Tool Calling، Agentها، مصرف توکن و کنترل رفتار مدل گسترش می‌دهد.
+      </p>
+
+      <h3>۷.۳. تفاوت MLOps و LLMOps</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>موضوع</th>
+            <th>MLOps</th>
+            <th>LLMOps</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>مدل</td>
+            <td>مدل‌های ML و DL</td>
+            <td>LLM و مدل‌های مولد</td>
+          </tr>
+          <tr>
+            <td>داده</td>
+            <td>داده‌های آموزشی و ویژگی‌ها</td>
+            <td>Prompt، Context، اسناد و داده‌های مکالمه</td>
+          </tr>
+          <tr>
+            <td>ارزیابی</td>
+            <td>Accuracy، F1، RMSE و غیره</td>
+            <td>Correctness، Groundedness، Safety و کیفیت پاسخ</td>
+          </tr>
+          <tr>
+            <td>استقرار</td>
+            <td>Model Serving و Endpoint</td>
+            <td>Model API، Gateway، RAG و Agent Runtime</td>
+          </tr>
+          <tr>
+            <td>مانیتورینگ</td>
+            <td>Drift، Latency، Throughput</td>
+            <td>Token Usage، کیفیت پاسخ، Tool Failure و Cost</td>
+          </tr>
+          <tr>
+            <td>نسخه‌بندی</td>
+            <td>Model، Data، Feature</td>
+            <td>Model، Prompt، Tools، Knowledge و Workflow</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>۷.۴. چرخه عمر LLMOps</h3>
+      <div class="diagram">Use Case Definition
+        ↓
+        Data and Knowledge Preparation
+        ↓
+        Model / Prompt / RAG Development
+        ↓
+        Evaluation and Testing
+        ↓
+        CI/CD Pipeline
+        ↓
+        Deployment
+        ↓
+        Monitoring and Observability
+        ↓
+        Feedback and Incident Analysis
+        ↓
+        Continuous Improvement</div>
+
+      <h3>۷.۵. Versioning</h3>
+      <p>
+        در یک سیستم LLM، نسخه مدل تنها چیزی نیست که باید ثبت شود.
+        نسخه Prompt، داده‌های ارزیابی، ابزارها، تنظیمات Sampling، Retriever،
+        Embedding Model و سیاست‌های امنیتی نیز باید مشخص باشند.
+      </p>
+      <p>
+        اگر یک پاسخ اشتباه در Production تولید شود، باید بتوانیم بفهمیم دقیقاً کدام نسخه
+        مدل و Prompt، با چه Context و چه ابزارهایی در تولید آن نقش داشته‌اند.
+      </p>
+
+      <h3>۷.۶. CI/CD برای سیستم‌های AI</h3>
+      <p>
+        Continuous Integration و Continuous Delivery در سیستم‌های AI باید علاوه بر تست نرم‌افزار،
+        ارزیابی رفتار مدل و کنترل‌های ایمنی را نیز شامل شوند.
+      </p>
+      <div class="diagram">Developer Change
+        ↓
+        Code and Prompt Validation
+        ↓
+        Unit / Integration Tests
+        ↓
+        LLM Evaluation Suite
+        ↓
+        Security Checks
+        ↓
+        Build and Package
+        ↓
+        Staging Deployment
+        ↓
+        Smoke Tests
+        ↓
+        Canary / Gradual Release
+        ↓
+        Production</div>
+
+      <h3>۷.۷. Model Registry و Artifact Management</h3>
+      <p>
+        Model Registry برای ثبت و مدیریت نسخه‌های مدل و اطلاعات مرتبط با آن‌ها استفاده می‌شود.
+        در پروژه‌های AI، مدیریت Artifact می‌تواند شامل وزن مدل، فایل Tokenizer، تنظیمات آموزش،
+        متادیتای Dataset، نتایج ارزیابی و گزارش‌های انتشار باشد.
+      </p>
+
+      <h3>۷.۸. Data و Model Drift</h3>
+      <p>
+        Data Drift زمانی رخ می‌دهد که توزیع داده‌های ورودی در Production با داده‌های قبلی تفاوت کند.
+        Concept Drift زمانی رخ می‌دهد که رابطه میان ورودی و خروجی مطلوب تغییر کند.
+      </p>
+      <p>
+        در سیستم‌های LLM، تغییر در زبان کاربران، نوع سؤال‌ها، اسناد سازمانی،
+        ابزارهای متصل یا سیاست‌های کسب‌وکار می‌تواند کیفیت پاسخ را تحت تأثیر قرار دهد.
+      </p>
+
+      <h3>۷.۹. Governance در LLMOps</h3>
+      <ul>
+        <li>مشخص بودن مالک هر مدل و سرویس</li>
+        <li>ثبت نسخه‌ها و تغییرات</li>
+        <li>مستندسازی محدودیت‌های مدل</li>
+        <li>کنترل دسترسی به داده و مدل</li>
+        <li>ثبت نتایج ارزیابی و تصمیم انتشار</li>
+        <li>تعریف فرایند پاسخ‌گویی به رخدادهای AI</li>
+        <li>امکان Rollback به نسخه قبلی</li>
+      </ul>
+    </section>
+
+    <!-- CHAPTER 8 -->
+    <section class="chapter" id="deployment">
+      <h2>8. AI Deployment</h2>
+
+      <h3>۸.۱. Deployment در سیستم‌های AI</h3>
+      <p>
+        Deployment به معنای قرار دادن مدل یا برنامه هوش مصنوعی در محیطی است که کاربران
+        یا سرویس‌های دیگر بتوانند از آن استفاده کنند.
+        استقرار می‌تواند به شکل API، سرویس داخلی، برنامه وب، سرویس پردازش دسته‌ای
+        یا اجرای مدل روی دستگاه کاربر انجام شود.
+      </p>
+
+      <h3>۸.۲. انواع روش‌های استقرار</h3>
+
+      <h4>Cloud-based Deployment</h4>
+      <p>
+        مدل یا برنامه در زیرساخت ابری اجرا می‌شود. این روش می‌تواند مدیریت ظرفیت،
+        شبکه و زیرساخت را ساده‌تر کند، اما باید هزینه، محل پردازش داده و وابستگی به Provider بررسی شود.
+      </p>
+
+      <h4>Self-hosted Deployment</h4>
+      <p>
+        سازمان مدل را در زیرساخت تحت کنترل خود اجرا می‌کند.
+        این روش برای کنترل بیشتر بر داده، محیط اجرا و تنظیمات مفید است؛ اما مسئولیت مدیریت GPU،
+        به‌روزرسانی، امنیت، ظرفیت و نگهداری بر عهده سازمان خواهد بود.
+      </p>
+
+      <h4>Hybrid Deployment</h4>
+      <p>
+        در معماری Hybrid، بخشی از درخواست‌ها به مدل‌های ابری و بخشی به مدل‌های داخلی هدایت می‌شوند.
+        برای مثال، داده‌های حساس ممکن است در مدل داخلی پردازش شوند و درخواست‌های عمومی
+        به سرویس ابری فرستاده شوند.
+      </p>
+
+      <h4>Edge Deployment</h4>
+      <p>
+        در Edge Deployment، مدل روی دستگاه یا نزدیک به محل تولید داده اجرا می‌شود.
+        مزایای آن می‌تواند کاهش تأخیر، کاهش انتقال داده و امکان کار در شرایط اتصال محدود باشد.
+      </p>
+
+      <h3>۸.۳. Containerization</h3>
+      <p>
+        Containerization برنامه و وابستگی‌های آن را در یک بسته قابل اجرا قرار می‌دهد.
+        Docker یکی از فناوری‌های متداول این حوزه است.
+      </p>
+      <p>
+        کانتینرها به تیم‌ها کمک می‌کنند محیط توسعه، تست و Production را به هم نزدیک‌تر کنند.
+        در سرویس‌های مدل، باید منابع CPU، GPU، حافظه، فایل‌های مدل و تنظیمات شبکه نیز در نظر گرفته شوند.
+      </p>
+
+      <h3>۸.۴. Orchestration</h3>
+      <p>
+        وقتی تعداد سرویس‌ها زیاد می‌شود، مدیریت دستی کانتینرها دشوار خواهد شد.
+        ابزارهای Orchestration برای مدیریت استقرار، مقیاس‌پذیری، بازیابی سرویس و توزیع بار استفاده می‌شوند.
+      </p>
+      <p>
+        Kubernetes نمونه شناخته‌شده‌ای از این دسته است. بااین‌حال، استفاده از آن برای هر پروژه‌ای
+        ضروری نیست و باید با پیچیدگی واقعی زیرساخت تناسب داشته باشد.
+      </p>
+
+      <h3>۸.۵. استراتژی‌های Release</h3>
+      <ul>
+        <li><strong>Rolling Deployment:</strong> جایگزینی تدریجی نسخه‌های قبلی با نسخه جدید.</li>
+        <li><strong>Blue-Green:</strong> نگهداری دو محیط و انتقال کنترل‌شده ترافیک به محیط جدید.</li>
+        <li><strong>Canary:</strong> ارسال درصد کمی از ترافیک به نسخه جدید و ارزیابی رفتار آن.</li>
+        <li><strong>Shadow Deployment:</strong> ارسال نسخه‌ای از درخواست‌ها به سیستم جدید بدون استفاده از پاسخ آن برای
+          کاربر.</li>
+      </ul>
+
+      <h3>۸.۶. Canary Release برای مدل‌ها</h3>
+      <p>
+        فرض کنیم نسخه جدید یک مدل یا Prompt آماده شده است. به‌جای جایگزینی فوری همه ترافیک،
+        ابتدا بخش کوچکی از درخواست‌ها به نسخه جدید ارسال می‌شوند.
+      </p>
+      <p>
+        سپس کیفیت پاسخ، تأخیر، هزینه، خطا و شاخص‌های ایمنی با نسخه قبلی مقایسه می‌شوند.
+        اگر شاخص‌ها در محدوده قابل قبول باشند، سهم ترافیک افزایش پیدا می‌کند.
+      </p>
+
+      <h3>۸.۷. Rollback</h3>
+      <p>
+        Rollback یعنی بازگشت به نسخه قبلی در صورت بروز مشکل.
+        این قابلیت باید برای کد، Prompt، مدل، تنظیمات Gateway و در صورت امکان اجزای بازیابی اطلاعات
+        طراحی شود.
+      </p>
+      <p>
+        صرفاً نگهداری نسخه قبلی کافی نیست؛ باید مسیر بازگشت، سازگاری داده‌ها و زمان بازیابی
+        نیز آزمایش شوند.
+      </p>
+
+      <h3>۸.۸. Deployment Checklist</h3>
+      <ul class="checklist">
+        <li>مدل و نسخه آن مشخص و ثبت شده است.</li>
+        <li>ارزیابی کیفیت و Regression Test موفق بوده است.</li>
+        <li>سیاست‌های دسترسی و امنیت بررسی شده‌اند.</li>
+        <li>Timeout، Retry و Rate Limit تنظیم شده‌اند.</li>
+        <li>مدیریت Secretها و کلیدهای API امن است.</li>
+        <li>Logging و Monitoring فعال است.</li>
+        <li>بودجه و محدودیت مصرف تعریف شده است.</li>
+        <li>Rollback و Runbook آماده است.</li>
+        <li>تست‌های Staging و Smoke Test انجام شده‌اند.</li>
+      </ul>
+    </section>
+
+    <!-- CHAPTER 9 -->
+    <section class="chapter" id="scaling">
+      <h2>9. Scaling AI Applications</h2>
+
+      <h3>۹.۱. Scaling چیست؟</h3>
+      <p>
+        Scaling به توانایی سیستم برای پاسخ‌گویی به افزایش بار کاری گفته می‌شود.
+        افزایش تعداد کاربران، درخواست‌ها، حجم داده‌ها یا پیچیدگی وظایف می‌تواند نیاز به مقیاس‌پذیری
+        را ایجاد کند.
+      </p>
+      <p>
+        مقیاس‌پذیری در سیستم‌های AI فقط به افزایش تعداد سرورها محدود نیست.
+        تعداد توکن‌ها، اندازه Context، تعداد فراخوانی ابزارها، زمان پردازش مدل و ظرفیت Provider
+        نیز در آن نقش دارند.
+      </p>
+
+      <h3>۹.۲. Vertical Scaling</h3>
+      <p>
+        در Vertical Scaling منابع یک ماشین افزایش پیدا می‌کند؛ برای مثال CPU، RAM یا GPU قوی‌تری
+        در اختیار سرویس قرار می‌گیرد.
+      </p>
+      <p>
+        این روش در بعضی سرویس‌ها ساده است، اما محدودیت سخت‌افزاری و هزینه دارد و ممکن است
+        به‌تنهایی پاسخ‌گوی رشد بلندمدت نباشد.
+      </p>
+
+      <h3>۹.۳. Horizontal Scaling</h3>
+      <p>
+        در Horizontal Scaling تعداد نمونه‌های سرویس افزایش پیدا می‌کند.
+        یک Load Balancer درخواست‌ها را بین نمونه‌ها توزیع می‌کند.
+      </p>
+      <div class="diagram"> Incoming Requests
+        |
+        v
+        Load Balancer
+        / | \
+        v v v
+        Instance Instance Instance
+        \ | /
+        \ | /
+        v
+        Shared / Managed Services</div>
+
+      <h3>۹.۴. Stateless Architecture</h3>
+      <p>
+        یک سرویس Stateless برای پاسخ‌گویی به هر درخواست به وضعیت محلی دائمی وابسته نیست.
+        وضعیت مکالمه، فایل‌ها و اطلاعات موردنیاز در سیستم‌های مناسب مانند پایگاه داده،
+        Cache یا سرویس مدیریت Session نگهداری می‌شوند.
+      </p>
+      <p>
+        Stateless بودن سرویس API می‌تواند توزیع درخواست‌ها میان چند نمونه را ساده‌تر کند.
+        البته خود Agent ممکن است به وضعیت مکالمه یا وظیفه نیاز داشته باشد؛ این وضعیت باید
+        به‌صورت کنترل‌شده و قابل بازیابی ذخیره شود.
+      </p>
+
+      <h3>۹.۵. Asynchronous Processing</h3>
+      <p>
+        همه درخواست‌ها نباید تا پایان پردازش مدل، اتصال کاربر را باز نگه دارند.
+        در کارهای طولانی می‌توان از صف پیام و Worker استفاده کرد.
+      </p>
+      <div class="diagram">Client
+        |
+        v
+        API Service
+        |
+        v
+        Message Queue
+        |
+        +------ Worker 1
+        +------ Worker 2
+        +------ Worker 3
+        |
+        v
+        Result Storage
+        |
+        v
+        Notification / Polling</div>
+      <p>
+        این معماری برای پردازش اسناد حجیم، تولید گزارش، تحلیل چندمرحله‌ای و وظایف طولانی Agent مناسب است.
+      </p>
+
+      <h3>۹.۶. Batching</h3>
+      <p>
+        Batching چند درخواست را در یک عملیات پردازش ترکیب می‌کند.
+        این روش در پردازش Embedding، طبقه‌بندی انبوه و برخی زیرساخت‌های Model Serving می‌تواند
+        بهره‌وری را افزایش دهد.
+      </p>
+      <p>
+        بااین‌حال، Batch بزرگ‌تر ممکن است زمان انتظار را افزایش دهد.
+        بنابراین باید میان Throughput و Latency تعادل ایجاد شود.
+      </p>
+
+      <h3>۹.۷. GPU و Model Serving</h3>
+      <p>
+        در اجرای مدل‌های بزرگ، GPU و حافظه آن از منابع حیاتی هستند.
+        ظرفیت مدل تنها به تعداد پارامترها وابسته نیست؛ طول Context، تعداد درخواست‌های هم‌زمان،
+        روش Quantization و نحوه مدیریت KV Cache نیز اهمیت دارند.
+      </p>
+      <p>
+        در زیرساخت‌های خودمیزبان، باید مصرف حافظه GPU، زمان بارگذاری مدل، Throughput،
+        زمان تولید هر توکن و رفتار سیستم در فشار زیاد اندازه‌گیری شود.
+      </p>
+
+      <h3>۹.۸. Streaming</h3>
+      <p>
+        Streaming اجازه می‌دهد بخش‌های پاسخ به‌تدریج به کاربر ارسال شوند.
+        این روش می‌تواند زمان ادراک‌شده تا دریافت پاسخ را کاهش دهد.
+      </p>
+      <p>
+        باید تفاوت میان Time to First Token و زمان کامل‌شدن پاسخ اندازه‌گیری شود.
+        همچنین قطع اتصال کاربر، لغو درخواست و خطای میانی باید مدیریت شوند.
+      </p>
+
+      <h3>۹.۹. Backpressure</h3>
+      <p>
+        Backpressure زمانی مطرح می‌شود که سرعت ورود درخواست‌ها از ظرفیت پردازش بیشتر باشد.
+        سیستم باید بتواند صف را کنترل کند، درخواست‌های اضافی را محدود کند یا به کاربر پاسخ
+        مناسب درباره ظرفیت بدهد.
+      </p>
+
+      <h3>۹.۱۰. شاخص‌های مقیاس‌پذیری</h3>
+      <ul>
+        <li>Requests per Second</li>
+        <li>Concurrent Requests</li>
+        <li>Tokens per Second</li>
+        <li>Time to First Token</li>
+        <li>End-to-End Latency</li>
+        <li>Queue Length و Queue Wait Time</li>
+        <li>GPU Utilization و GPU Memory</li>
+        <li>Error Rate و Timeout Rate</li>
+      </ul>
+    </section>
+
+    <!-- CHAPTER 10 -->
+    <section class="chapter" id="observability">
+      <h2>10. Monitoring and Observability</h2>
+
+      <h3>۱۰.۱. Monitoring و Observability چه تفاوتی دارند؟</h3>
+      <p>
+        Monitoring به اندازه‌گیری وضعیت سیستم با شاخص‌ها و هشدارهای تعریف‌شده می‌پردازد.
+        برای مثال، اگر نرخ خطا از حد مشخصی بیشتر شود، یک Alert ایجاد می‌شود.
+      </p>
+      <p>
+        Observability به توانایی فهمیدن وضعیت داخلی سیستم از طریق داده‌های خروجی آن اشاره دارد.
+        این مفهوم کمک می‌کند حتی برای مشکلاتی که از قبل دقیقاً پیش‌بینی نشده‌اند،
+        علت احتمالی را پیدا کنیم.
+      </p>
+
+      <h3>۱۰.۲. سه ستون اصلی Observability</h3>
+
+      <h4>Logs</h4>
+      <p>
+        Logها رویدادهای ثبت‌شده در سیستم هستند.
+        برای مثال، درخواست دریافت شد، مدل انتخاب شد، ابزار فراخوانی شد یا درخواست با خطا مواجه شد.
+      </p>
+
+      <h4>Metrics</h4>
+      <p>
+        Metricها مقادیر عددی و قابل اندازه‌گیری در طول زمان هستند؛ مانند نرخ درخواست،
+        درصد خطا، زمان پاسخ و مصرف توکن.
+      </p>
+
+      <h4>Traces</h4>
+      <p>
+        Trace مسیر یک درخواست را در چند سرویس دنبال می‌کند.
+        در یک سیستم Agentic، Trace می‌تواند نشان دهد درخواست از API وارد شده،
+        به Planner رسیده، چند ابزار را فراخوانی کرده و در نهایت پاسخ تولید کرده است.
+      </p>
+
+      <div class="diagram">User Request
+        |
+        +-- API Gateway
+        | |
+        | +-- Authentication
+        | |
+        | +-- Model Router
+        | |
+        | +-- LLM Call
+        | |
+        | +-- Tool Call
+        | |
+        | +-- Database
+        | +-- External API
+        |
+        +-- Response Validation
+        |
+        +-- Final Response
+
+        All stages emit Logs + Metrics + Traces</div>
+
+      <h3>۱۰.۳. چه چیزهایی باید در سیستم AI اندازه‌گیری شوند؟</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>دسته</th>
+            <th>شاخص</th>
+            <th>کاربرد</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Performance</td>
+            <td>p50، p95، p99 Latency</td>
+            <td>شناخت تجربه واقعی کاربران</td>
+          </tr>
+          <tr>
+            <td>Reliability</td>
+            <td>Error Rate، Timeout Rate</td>
+            <td>تشخیص اختلال</td>
+          </tr>
+          <tr>
+            <td>Model Usage</td>
+            <td>Input/Output Tokens</td>
+            <td>تحلیل مصرف مدل</td>
+          </tr>
+          <tr>
+            <td>Cost</td>
+            <td>Cost per Request</td>
+            <td>کنترل اقتصادی</td>
+          </tr>
+          <tr>
+            <td>Quality</td>
+            <td>Evaluation Score</td>
+            <td>تشخیص افت کیفیت</td>
+          </tr>
+          <tr>
+            <td>RAG</td>
+            <td>Retrieval Success</td>
+            <td>بررسی کیفیت بازیابی</td>
+          </tr>
+          <tr>
+            <td>Agent</td>
+            <td>Tool Failure و Task Success</td>
+            <td>تحلیل عملکرد Agent</td>
+          </tr>
+          <tr>
+            <td>Capacity</td>
+            <td>Queue و GPU Utilization</td>
+            <td>برنامه‌ریزی ظرفیت</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>۱۰.۴. Latency را چگونه تحلیل کنیم؟</h3>
+      <p>
+        میانگین زمان پاسخ به‌تنهایی کافی نیست؛ زیرا ممکن است بیشتر درخواست‌ها سریع باشند
+        اما تعداد کمی از درخواست‌ها بسیار کند شوند.
+      </p>
+      <ul>
+        <li><strong>p50:</strong> نیمی از درخواست‌ها سریع‌تر از این مقدار تمام می‌شوند.</li>
+        <li><strong>p95:</strong> ۹۵ درصد درخواست‌ها در این زمان یا کمتر تمام می‌شوند.</li>
+        <li><strong>p99:</strong> ۹۹ درصد درخواست‌ها در این زمان یا کمتر تمام می‌شوند.</li>
+      </ul>
+      <p>
+        در سیستم‌های LLM بهتر است تأخیر به بخش‌های جداگانه تقسیم شود:
+        زمان صف، زمان آماده‌سازی Prompt، زمان اولین توکن، زمان Tool Call و زمان کامل‌شدن پاسخ.
+      </p>
+
+      <h3>۱۰.۵. Distributed Tracing برای Agentها</h3>
+      <p>
+        Agent ممکن است در یک وظیفه چندین مدل و ابزار را فراخوانی کند.
+        اگر فقط زمان کل درخواست را ثبت کنیم، مشخص نمی‌شود کدام مرحله باعث تأخیر یا خطا شده است.
+      </p>
+      <p>
+        Distributed Tracing هر مرحله را به‌عنوان یک Span ثبت می‌کند و ارتباط میان مراحل را نشان می‌دهد.
+        بهتر است شناسه Trace در سرویس‌ها و ابزارهای مختلف منتقل شود.
+      </p>
+
+      <h3>۱۰.۶. Alerting</h3>
+      <p>
+        Alert باید برای مسئله‌ای ایجاد شود که نیازمند بررسی یا اقدام است.
+        هشدارهای بیش‌ازحد باعث خستگی تیم عملیاتی می‌شوند.
+      </p>
+      <p>نمونه هشدارهای مهم:</p>
+      <ul>
+        <li>افزایش ناگهانی نرخ خطای Provider</li>
+        <li>افزایش p95 Latency</li>
+        <li>افزایش مصرف توکن نسبت به الگوی معمول</li>
+        <li>افت محسوس Task Success Rate</li>
+        <li>افزایش شکست Tool Call</li>
+        <li>نزدیک‌شدن به سقف بودجه</li>
+        <li>افزایش نرخ نقض سیاست‌های ایمنی</li>
+      </ul>
+
+      <h3>۱۰.۷. Privacy-aware Observability</h3>
+      <p>
+        ثبت داده برای تحلیل سیستم ضروری است، اما نباید باعث ذخیره بی‌ضابطه اطلاعات حساس شود.
+        باید مشخص باشد چه اطلاعاتی ثبت می‌شوند، چه کسانی به آن دسترسی دارند،
+        چه مدت نگهداری می‌شوند و چگونه حذف یا ناشناس‌سازی می‌شوند.
+      </p>
+      <div class="callout warning">
+        متن کامل مکالمه، Prompt، خروجی مدل و اسناد بازیابی‌شده را بدون بررسی سیاست داده
+        در Logهای عمومی ذخیره نکنید. در بسیاری از کاربردها، ثبت Metadata و Trace ساختاریافته
+        کافی‌تر و امن‌تر است.
+      </div>
+    </section>
+
+    <!-- CHAPTER 11 -->
+    <section class="chapter" id="security">
+      <h2>11. AI Security and Privacy</h2>
+
+      <h3>۱۱.۱. چرا امنیت سیستم‌های AI متفاوت است؟</h3>
+      <p>
+        سیستم‌های AI علاوه بر آسیب‌پذیری‌های معمول نرم‌افزار، با خطرهای مرتبط با ورودی‌های زبانی،
+        داده‌های بازیابی‌شده، خروجی غیرقطعی مدل و ابزارهای دارای اختیار عملیاتی مواجه هستند.
+      </p>
+      <p>
+        در یک Agent، مدل ممکن است به ایمیل، فایل‌ها، پایگاه داده یا APIهای خارجی دسترسی داشته باشد.
+        بنابراین یک تصمیم نادرست یا ورودی مخرب می‌تواند به اقدام واقعی منجر شود.
+      </p>
+
+      <h3>۱۱.۲. Prompt Injection</h3>
+      <p>
+        Prompt Injection زمانی رخ می‌دهد که ورودی مخرب تلاش کند دستورهای سیستم را تحت تأثیر قرار دهد.
+        این ورودی ممکن است مستقیماً از کاربر بیاید یا داخل سند، صفحه وب، ایمیل و داده بازیابی‌شده قرار داشته باشد.
+      </p>
+      <p>
+        برای مثال، یک سند ممکن است حاوی متنی باشد که به مدل دستور می‌دهد اطلاعات محرمانه را افشا کند.
+        سیستم نباید محتوای بازیابی‌شده را به‌عنوان دستور معتبر و دارای اختیار تلقی کند.
+      </p>
+
+      <h3>۱۱.۳. Indirect Prompt Injection</h3>
+      <p>
+        در Indirect Prompt Injection، دستور مخرب از منبعی غیر از پیام مستقیم کاربر وارد سیستم می‌شود.
+        برای مثال، Agent یک صفحه وب را می‌خواند و متن داخل صفحه تلاش می‌کند مسیر تصمیم‌گیری آن را تغییر دهد.
+      </p>
+      <p>
+        این مسئله برای Agentهایی که وب‌گردی، خواندن فایل یا بازیابی سند انجام می‌دهند اهمیت زیادی دارد.
+      </p>
+
+      <h3>۱۱.۴. Data Leakage</h3>
+      <p>
+        Data Leakage یعنی اطلاعاتی که نباید در اختیار کاربر یا سرویس دیگری قرار گیرند،
+        به شکلی افشا شوند.
+      </p>
+      <p>منشأهای رایج نشت داده:</p>
+      <ul>
+        <li>بازیابی اسناد بدون کنترل مجوز</li>
+        <li>استفاده مشترک و ناامن از Cache</li>
+        <li>ثبت اطلاعات حساس در Log</li>
+        <li>ارسال داده محرمانه به Provider نامناسب</li>
+        <li>افشای Secretها از طریق خروجی مدل یا ابزار</li>
+        <li>اشتباه در جداسازی داده مشتریان مختلف</li>
+      </ul>
+
+      <h3>۱۱.۵. Least Privilege</h3>
+      <p>
+        اصل Least Privilege می‌گوید هر کاربر، سرویس یا Agent باید فقط به حداقل دسترسی موردنیاز
+        برای انجام وظیفه خود دسترسی داشته باشد.
+      </p>
+      <p>
+        برای مثال، Agent پشتیبانی ممکن است اجازه مشاهده وضعیت سفارش را داشته باشد،
+        اما نباید بتواند بدون مجوز، سفارش را حذف یا اطلاعات پرداخت را تغییر دهد.
+      </p>
+
+      <h3>۱۱.۶. Tool Security</h3>
+      <p>
+        ابزارها یکی از حساس‌ترین بخش‌های سیستم‌های Agentic هستند.
+        فراخوانی ابزار باید در یک لایه اجرایی قابل اعتماد کنترل شود.
+      </p>
+      <ul>
+        <li>اعتبارسنجی نوع و مقدار پارامترها</li>
+        <li>کنترل دسترسی در سمت سرور</li>
+        <li>محدودکردن عملیات به منابع مجاز</li>
+        <li>جلوگیری از اجرای دستورات دلخواه</li>
+        <li>محدودکردن دسترسی شبکه و فایل‌سیستم</li>
+        <li>ثبت رویدادهای مهم و قابل ممیزی</li>
+        <li>تأیید انسانی برای اقدامات پرخطر</li>
+      </ul>
+
+      <h3>۱۱.۷. امنیت اجرای کد</h3>
+      <p>
+        اگر Agent اجازه تولید یا اجرای کد داشته باشد، باید محیط اجرا به‌شدت محدود شود.
+        اجرای کد تولیدشده توسط مدل روی سیستم اصلی، بدون Sandbox و محدودیت منابع، خطرناک است.
+      </p>
+      <p>
+        محیط Sandbox باید دسترسی فایل، شبکه، پردازنده، حافظه و مدت اجرا را محدود کند.
+        همچنین نباید Secretهای اصلی سیستم را در اختیار کد تولیدشده قرار دهد.
+      </p>
+
+      <h3>۱۱.۸. Authentication و Authorization</h3>
+      <p>
+        Authentication مشخص می‌کند چه کسی یا چه سرویسی درخواست را ارسال کرده است.
+        Authorization تعیین می‌کند آن هویت چه کاری می‌تواند انجام دهد.
+      </p>
+      <p>
+        در سیستم‌های چندمستاجری، Tenant Isolation اهمیت ویژه‌ای دارد.
+        حتی اگر مدل بتواند سندی را پیدا کند، لایه بازیابی باید بررسی کند که کاربر اجازه مشاهده آن را دارد.
+      </p>
+
+      <h3>۱۱.۹. امنیت داده و حریم خصوصی</h3>
+      <ul>
+        <li>طبقه‌بندی داده‌ها بر اساس حساسیت</li>
+        <li>رمزنگاری داده در انتقال و در حالت ذخیره‌شده</li>
+        <li>مدیریت امن Secret و کلیدهای API</li>
+        <li>محدودیت نگهداری داده و سیاست حذف</li>
+        <li>ناشناس‌سازی یا حداقل‌سازی داده‌های شخصی</li>
+        <li>بررسی قراردادها و سیاست‌های پردازش Provider</li>
+        <li>کنترل محل پردازش و انتقال داده در صورت نیاز قانونی</li>
+      </ul>
+
+      <h3>۱۱.۱۰. Human Approval برای عملیات حساس</h3>
+      <p>
+        برای عملیات حساس باید میان «پیشنهاد مدل» و «اجرای واقعی» تفاوت وجود داشته باشد.
+        مدل می‌تواند عملیات را پیشنهاد دهد، اما اجرای آن به تأیید یک کاربر مجاز نیاز داشته باشد.
+      </p>
+      <p>
+        نمونه عملیات حساس شامل پرداخت، بازپرداخت، حذف داده، تغییر دسترسی، ارسال پیام رسمی،
+        انتشار عمومی و تغییر تنظیمات زیرساخت است.
+      </p>
+
+      <h3>۱۱.۱۱. Threat Modeling</h3>
+      <p>
+        Threat Modeling یعنی پیش از انتشار سیستم، تهدیدها و مسیرهای احتمالی سوءاستفاده را شناسایی کنیم.
+        باید مشخص شود دارایی‌های ارزشمند چیست، مهاجم چه توانایی‌هایی دارد، مرزهای اعتماد کجا هستند
+        و هر آسیب‌پذیری چه پیامدی خواهد داشت.
+      </p>
+
+      <div class="callout danger">
+        خروجی مدل را نباید به‌عنوان مرز امنیتی در نظر گرفت.
+        اینکه مدل در Prompt نوشته‌شده قول می‌دهد کاری انجام ندهد، جایگزین کنترل دسترسی،
+        اعتبارسنجی سمت سرور و محدودیت اجرایی واقعی نیست.
+      </div>
+    </section>
+
+    <!-- CHAPTER 12 -->
+    <section class="chapter" id="cost">
+      <h2>12. Cost Optimization</h2>
+
+      <h3>۱۲.۱. چرا هزینه AI باید از ابتدا طراحی شود؟</h3>
+      <p>
+        در سیستم‌های مبتنی بر API، هر درخواست می‌تواند هزینه متغیری ایجاد کند.
+        تعداد توکن‌های ورودی و خروجی، نوع مدل، تعداد دفعات فراخوانی، پردازش تصویر،
+        ابزارهای خارجی و طول زنجیره Agent بر هزینه نهایی تأثیر دارند.
+      </p>
+      <p>
+        ممکن است یک سیستم در مرحله آزمایش کم‌هزینه به نظر برسد، اما با افزایش کاربران،
+        استفاده از Promptهای طولانی و چندین فراخوانی مدل، هزینه آن به‌سرعت رشد کند.
+      </p>
+
+      <h3>۱۲.۲. اجزای هزینه</h3>
+      <ul>
+        <li>هزینه توکن‌های ورودی</li>
+        <li>هزینه توکن‌های خروجی</li>
+        <li>هزینه Embedding</li>
+        <li>هزینه Reranking و Retrieval</li>
+        <li>هزینه اجرای مدل‌های میزبانی‌شده</li>
+        <li>هزینه GPU و زیرساخت</li>
+        <li>هزینه Storage و Database</li>
+        <li>هزینه ابزارها و APIهای خارجی</li>
+        <li>هزینه مانیتورینگ و انتقال داده</li>
+        <li>هزینه پردازش مجدد درخواست‌های ناموفق</li>
+      </ul>
+
+      <h3>۱۲.۳. Cost per Request</h3>
+      <p>
+        یکی از معیارهای مهم، هزینه متوسط هر درخواست است.
+        اما میانگین به‌تنهایی کافی نیست؛ بهتر است هزینه بر اساس نوع وظیفه،
+        مدل، کاربر، تیم و سطح پیچیدگی نیز تحلیل شود.
+      </p>
+      <div class="formula">Total Cost = Input Cost + Output Cost + Tool Cost + Infrastructure Cost</div>
+      <p>
+        اگر هزینه مدل بر اساس تعداد توکن محاسبه شود، باید تعداد توکن ورودی و خروجی
+        در نرخ مربوط به مدل ضرب شود. نرخ‌ها و واحد قیمت‌گذاری بین Providerها متفاوت‌اند.
+      </p>
+
+      <h3>۱۲.۴. Prompt Optimization</h3>
+      <p>
+        Promptهای طولانی می‌توانند هزینه ورودی و زمان پردازش را افزایش دهند.
+        حذف دستورهای تکراری، محدودکردن Context غیرضروری و استفاده از ساختار مناسب
+        می‌تواند مصرف را کاهش دهد.
+      </p>
+      <p>
+        بااین‌حال، کوتاه‌کردن Prompt نباید باعث حذف اطلاعات ضروری یا افت کیفیت شود.
+        هر بهینه‌سازی باید با ارزیابی کیفیت همراه باشد.
+      </p>
+
+      <h3>۱۲.۵. Model Routing برای کاهش هزینه</h3>
+      <p>
+        یکی از مؤثرترین روش‌ها، استفاده از مدل متناسب با پیچیدگی درخواست است.
+        مدل‌های کوچک‌تر می‌توانند بسیاری از وظایف ساده را انجام دهند و مدل‌های قوی‌تر
+        برای وظایفی استفاده شوند که واقعاً به توانایی بیشتر نیاز دارند.
+      </p>
+
+      <h3>۱۲.۶. Caching</h3>
+      <p>
+        اگر درخواست‌های مشابه زیاد تکرار شوند، Cache می‌تواند از پردازش مجدد جلوگیری کند.
+        Cache باید با توجه به نسخه مدل، Prompt، داده، سطح دسترسی و تازگی اطلاعات طراحی شود.
+      </p>
+      <p>
+        در Semantic Cache باید آستانه شباهت با دقت انتخاب شود؛ زیرا دو درخواست با متن مشابه
+        ممکن است از نظر کاربر یا مجوز دسترسی، معنای عملی متفاوتی داشته باشند.
+      </p>
+
+      <h3>۱۲.۷. Context Optimization</h3>
+      <p>
+        ارسال حجم زیادی از اسناد به مدل همیشه کیفیت را بهتر نمی‌کند.
+        گاهی Context بیش‌ازحد باعث افزایش هزینه، تأخیر و حتی کاهش تمرکز مدل می‌شود.
+      </p>
+      <ul>
+        <li>بازیابی فقط اسناد مرتبط</li>
+        <li>حذف تکرارها</li>
+        <li>Reranking نتایج</li>
+        <li>خلاصه‌سازی کنترل‌شده اسناد طولانی</li>
+        <li>محدودکردن تاریخچه مکالمه به اطلاعات مفید</li>
+        <li>استفاده از ساختار Metadata برای فیلترکردن اسناد</li>
+      </ul>
+
+      <h3>۱۲.۸. محدودکردن Agent Loop</h3>
+      <p>
+        Agent ممکن است چندین بار مدل و ابزارها را فراخوانی کند.
+        اگر تعداد مراحل محدود نباشد، یک وظیفه ساده می‌تواند به زنجیره‌ای طولانی و پرهزینه تبدیل شود.
+      </p>
+      <p>محدودیت‌های پیشنهادی:</p>
+      <ul>
+        <li>حداکثر تعداد گام‌ها</li>
+        <li>حداکثر تعداد فراخوانی ابزار</li>
+        <li>حداکثر توکن مصرفی</li>
+        <li>مهلت زمانی کل وظیفه</li>
+        <li>حداکثر تعداد Retry</li>
+        <li>شرط توقف و ارجاع به انسان</li>
+      </ul>
+
+      <h3>۱۲.۹. FinOps برای AI</h3>
+      <p>
+        FinOps به مدیریت و بهینه‌سازی هزینه فناوری با مشارکت تیم‌های فنی و مالی می‌پردازد.
+        در AI، باید هزینه‌ها به سرویس، تیم، پروژه، مدل و نوع وظیفه نسبت داده شوند.
+      </p>
+      <p>
+        بودجه، سقف مصرف، هشدار هزینه و گزارش‌های دوره‌ای کمک می‌کنند رشد هزینه پیش از تبدیل‌شدن
+        به بحران شناسایی شود.
+      </p>
+
+      <h3>۱۲.۱۰. شاخص‌های اقتصادی مهم</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>شاخص</th>
+            <th>مفهوم</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cost per Request</td>
+            <td>هزینه متوسط هر درخواست</td>
+          </tr>
+          <tr>
+            <td>Cost per Successful Task</td>
+            <td>هزینه رسیدن به یک وظیفه موفق</td>
+          </tr>
+          <tr>
+            <td>Cost per Active User</td>
+            <td>هزینه مصرف به‌ازای کاربر فعال</td>
+          </tr>
+          <tr>
+            <td>Token Efficiency</td>
+            <td>میزان ارزش خروجی نسبت به توکن مصرف‌شده</td>
+          </tr>
+          <tr>
+            <td>Cache Hit Rate</td>
+            <td>درصد درخواست‌هایی که از Cache پاسخ می‌گیرند</td>
+          </tr>
+          <tr>
+            <td>Fallback Rate</td>
+            <td>درصد درخواست‌هایی که به مسیر جایگزین می‌روند</td>
+          </tr>
+          <tr>
+            <td>Task Success Rate</td>
+            <td>درصد وظایف موفق در برابر هزینه مصرف‌شده</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout success">
+        بهترین معیار صرفاً «ارزان‌ترین پاسخ» نیست.
+        معیار بهتر، هزینه رسیدن به یک نتیجه درست، امن و قابل استفاده است.
+      </div>
+    </section>
+
+    <!-- CHAPTER 13 -->
+    <section class="chapter" id="agents">
+      <h2>13. Production-ready Agentic Systems</h2>
+
+      <h3>۱۳.۱. Agentic System چیست؟</h3>
+      <p>
+        یک سیستم Agentic از مدل هوش مصنوعی برای تحلیل هدف، برنامه‌ریزی، انتخاب ابزار،
+        اجرای مراحل و ارزیابی نتایج استفاده می‌کند.
+        برخلاف یک سیستم ساده پرسش‌وپاسخ، Agent ممکن است برای رسیدن به هدف چندین اقدام متوالی انجام دهد.
+      </p>
+      <p>
+        برای مثال، کاربر می‌گوید: «گزارش فروش ماه گذشته را آماده کن و موارد غیرعادی را مشخص کن.»
+        یک Agent می‌تواند داده‌ها را بازیابی کند، محاسبات را انجام دهد، ناهنجاری‌ها را بررسی کند،
+        نمودار بسازد و در نهایت گزارش تهیه کند.
+      </p>
+
+      <h3>۱۳.۲. اجزای اصلی یک Agent</h3>
+      <div class="diagram"> User Goal
+        |
+        v
+        Agent Runtime
+        |
+        +-------------+-------------+
+        | | |
+        v v v
+        Planning Memory Policies
+        | | |
+        +-------------+-------------+
+        |
+        v
+        LLM Reasoning
+        |
+        v
+        Tool Selection
+        |
+        v
+        Tool Execution Layer
+        |
+        +----------+----------+
+        | | |
+        v v v
+        Database APIs Services
+        | | |
+        +----------+----------+
+        |
+        v
+        Result Evaluation
+        |
+        +---------+---------+
+        | |
+        v v
+        Continue Finalize
+        | |
+        +---- Agent Loop ---+</div>
+
+      <h3>۱۳.۳. تفاوت Prototype و Production Agent</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>موضوع</th>
+            <th>Prototype</th>
+            <th>Production-ready</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Execution</td>
+            <td>اجرای ساده و مستقیم</td>
+            <td>اجرای کنترل‌شده با Timeout و محدودیت</td>
+          </tr>
+          <tr>
+            <td>Tools</td>
+            <td>دسترسی گسترده برای آزمایش</td>
+            <td>دسترسی حداقلی و اعتبارسنجی‌شده</td>
+          </tr>
+          <tr>
+            <td>State</td>
+            <td>حافظه موقت</td>
+            <td>ذخیره‌سازی پایدار و قابل بازیابی</td>
+          </tr>
+          <tr>
+            <td>Errors</td>
+            <td>خطا ممکن است متوقف‌کننده باشد</td>
+            <td>Retry، Fallback و Recovery</td>
+          </tr>
+          <tr>
+            <td>Evaluation</td>
+            <td>بررسی چند نمونه دستی</td>
+            <td>مجموعه ارزیابی و پایش مستمر</td>
+          </tr>
+          <tr>
+            <td>Security</td>
+            <td>کنترل محدود</td>
+            <td>Policy، Audit و Least Privilege</td>
+          </tr>
+          <tr>
+            <td>Scaling</td>
+            <td>مناسب تعداد کمی درخواست</td>
+            <td>Queue، Worker و کنترل ظرفیت</td>
+          </tr>
+          <tr>
+            <td>Operations</td>
+            <td>Log محدود</td>
+            <td>Trace، Metric، Alert و Runbook</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>۱۳.۴. مدیریت چرخه اجرای Agent</h3>
+      <p>
+        Agent باید یک چرخه اجرای مشخص داشته باشد.
+        این چرخه معمولاً شامل دریافت هدف، تحلیل، برنامه‌ریزی، انتخاب اقدام، اجرا،
+        بررسی نتیجه و تصمیم برای ادامه یا توقف است.
+      </p>
+      <p>
+        مهم است که اجرای Agent بی‌نهایت نباشد. تعداد مراحل، زمان کل، هزینه و تعداد ابزارها
+        باید محدود شود.
+      </p>
+
+      <h3>۱۳.۵. State Management</h3>
+      <p>
+        Agent ممکن است به اطلاعاتی درباره وضعیت کار نیاز داشته باشد.
+        برای مثال، بداند کدام مرحله انجام شده، کدام ابزار خطا داده و چه داده‌ای هنوز باید بازیابی شود.
+      </p>
+      <p>
+        State نباید صرفاً در حافظه موقت فرایند نگهداری شود؛ زیرا با Restart یا انتقال کار به Worker دیگر
+        از بین می‌رود. برای کارهای مهم باید وضعیت در یک ذخیره‌ساز پایدار نگهداری شود.
+      </p>
+      <p>یک State نمونه می‌تواند شامل موارد زیر باشد:</p>
+      <pre><code>{
+  "task_id": "task-123",
+  "status": "in_progress",
+  "goal": "prepare monthly sales report",
+  "completed_steps": [
+    "load_sales_data",
+    "calculate_monthly_totals"
+  ],
+  "pending_steps": [
+    "detect_anomalies",
+    "generate_report"
+  ],
+  "attempt_count": 2,
+  "created_at": "2026-11-02T10:00:00Z"
+}</code></pre>
+
+      <h3>۱۳.۶. Durable Execution</h3>
+      <p>
+        Durable Execution به معنای آن است که اجرای یک وظیفه طولانی بتواند در برابر Restart،
+        قطع ارتباط یا خرابی موقت سرویس ادامه پیدا کند.
+      </p>
+      <p>
+        برای رسیدن به این هدف باید وضعیت مراحل، نتایج ابزارها، شناسه عملیات و وضعیت فعلی وظیفه
+        ذخیره شوند. همچنین باید بتوانیم پس از بازیابی، از نقطه مناسب ادامه دهیم.
+      </p>
+
+      <h3>۱۳.۷. Idempotency</h3>
+      <p>
+        یک عملیات Idempotent اگر چند بار با ورودی یکسان اجرا شود، اثر تکراری ناخواسته ایجاد نمی‌کند.
+        این ویژگی در سیستم‌هایی که Retry دارند بسیار مهم است.
+      </p>
+      <p>
+        فرض کنید Agent برای ثبت سفارش یک درخواست به API ارسال می‌کند، اما قبل از دریافت پاسخ
+        ارتباط قطع می‌شود. Agent نمی‌داند سفارش ثبت شده یا خیر.
+        اگر درخواست را دوباره ارسال کند، ممکن است سفارش تکراری ایجاد شود.
+      </p>
+      <p>
+        استفاده از Idempotency Key و بررسی وضعیت عملیات می‌تواند از این مشکل جلوگیری کند.
+      </p>
+
+      <h3>۱۳.۸. Human-in-the-Loop در Agentهای Production</h3>
+      <p>
+        یک Agent قابل اعتماد باید بداند چه زمانی اختیار کافی دارد و چه زمانی باید تصمیم را به انسان بسپارد.
+      </p>
+      <p>موارد مناسب برای تأیید انسانی:</p>
+      <ul>
+        <li>عملیات مالی یا پرداخت</li>
+        <li>حذف یا تغییر داده مهم</li>
+        <li>ارسال پیام به مشتری یا نهاد بیرونی</li>
+        <li>تغییر مجوز و دسترسی کاربران</li>
+        <li>اقداماتی که بازگشت‌پذیری دشواری دارند</li>
+        <li>تصمیم‌هایی که اطمینان مدل در آن‌ها کافی نیست</li>
+      </ul>
+
+      <h3>۱۳.۹. Agent Memory</h3>
+      <p>
+        حافظه Agent به نگهداری اطلاعات موردنیاز برای ادامه وظایف یا شخصی‌سازی رفتار اشاره دارد.
+        حافظه می‌تواند کوتاه‌مدت، بلندمدت یا وابسته به یک وظیفه باشد.
+      </p>
+      <ul>
+        <li><strong>Short-term Memory:</strong> اطلاعات موردنیاز در مکالمه یا وظیفه جاری.</li>
+        <li><strong>Long-term Memory:</strong> اطلاعات منتخب که برای استفاده‌های بعدی نگهداری می‌شوند.</li>
+        <li><strong>Task State:</strong> وضعیت اجرایی و مرحله فعلی یک کار.</li>
+        <li><strong>External Knowledge:</strong> اطلاعاتی که از پایگاه داده یا سیستم‌های سازمانی بازیابی می‌شوند.</li>
+      </ul>
+      <p>
+        حافظه باید قابل کنترل، قابل حذف و دارای سیاست دسترسی باشد.
+        نباید هر چیزی که مدل در مکالمه می‌بیند به‌صورت دائمی ذخیره شود.
+      </p>
+
+      <h3>۱۳.۱۰. Multi-Agent Systems</h3>
+      <p>
+        در سیستم چندعاملی، چند Agent با نقش‌های مختلف برای انجام یک هدف مشترک همکاری می‌کنند.
+        برای مثال، یک Agent وظیفه تحقیق، Agent دیگر تحلیل داده و Agent سوم نگارش گزارش را بر عهده می‌گیرد.
+      </p>
+      <p>
+        استفاده از چند Agent همیشه بهتر از یک Agent نیست.
+        ارتباط میان Agentها، هماهنگی، مدیریت تعارض، هزینه فراخوانی‌ها و کنترل وضعیت
+        می‌توانند پیچیدگی زیادی ایجاد کنند.
+      </p>
+
+      <h3>۱۳.۱۱. الگوهای همکاری چند Agent</h3>
+
+      <h4>Supervisor Pattern</h4>
+      <p>
+        یک Agent ناظر وظایف را میان Agentهای تخصصی تقسیم می‌کند و نتایج را جمع‌بندی می‌کند.
+      </p>
+
+      <h4>Sequential Pattern</h4>
+      <p>
+        Agentها به‌صورت زنجیره‌ای کار می‌کنند؛ خروجی Agent اول ورودی Agent بعدی است.
+      </p>
+
+      <h4>Parallel Pattern</h4>
+      <p>
+        چند Agent بخش‌های مستقل کار را هم‌زمان انجام می‌دهند و سپس نتایج تجمیع می‌شوند.
+      </p>
+
+      <h4>Debate یا Review Pattern</h4>
+      <p>
+        یک Agent نتیجه را تولید می‌کند و Agent دیگر آن را نقد یا بررسی می‌کند.
+        این الگو می‌تواند برای یافتن خطا مفید باشد، اما تضمین‌کننده صحت نیست.
+      </p>
+
+      <h3>۱۳.۱۲. Production Architecture برای Agent</h3>
+      <div class="diagram"> Client / User
+        |
+        v
+        API Layer
+        |
+        v
+        Authentication
+        |
+        v
+        Agent Orchestrator
+        |
+        +------------+------------+
+        | | |
+        v v v
+        Planner Memory Policy Engine
+        | | |
+        +------------+------------+
+        |
+        v
+        Model Gateway
+        |
+        v
+        LLM
+        |
+        v
+        Tool Dispatcher
+        |
+        +------------+------------+
+        | | |
+        v v v
+        Database Internal API External API
+        | | |
+        +------------+------------+
+        |
+        v
+        Result Validator
+        |
+        v
+        Human Approval
+        |
+        v
+        Final Response
+
+        Persistent State + Queue + Logs + Metrics + Traces</div>
+
+      <h3>۱۳.۱۳. Failure Handling در Agentها</h3>
+      <p>
+        خطا در سیستم Agentic می‌تواند در مراحل مختلف رخ دهد:
+        انتخاب اشتباه ابزار، پارامتر نامعتبر، Timeout، خطای Provider، پاسخ ناقص،
+        شکست سرویس خارجی یا ناتوانی در رسیدن به هدف.
+      </p>
+      <p>
+        باید برای هر دسته خطا رفتار مشخصی تعریف شود.
+        بعضی خطاها قابل Retry هستند، برخی به Fallback نیاز دارند و برخی باید فوراً
+        به انسان ارجاع داده شوند.
+      </p>
+
+      <h3>۱۳.۱۴. کنترل اختیار Agent</h3>
+      <p>
+        یکی از اصول مهم طراحی Agentهای Production، محدودکردن دامنه اختیار آن‌هاست.
+        Agent باید فقط ابزارهایی را ببیند که برای وظیفه فعلی لازم‌اند.
+      </p>
+      <p>
+        بهتر است ابزارها به عملیات کوچک و مشخص تقسیم شوند؛ مثلاً به‌جای یک ابزار عمومی
+        برای اجرای هر نوع دستور روی پایگاه داده، ابزارهای محدود برای خواندن وضعیت سفارش،
+        دریافت فاکتور و بررسی موجودی تعریف شوند.
+      </p>
+
+      <h3>۱۳.۱۵. Production Readiness Checklist</h3>
+      <ul class="checklist">
+        <li>هدف و محدوده مسئولیت Agent روشن است.</li>
+        <li>ابزارها و مجوزهای Agent حداقلی هستند.</li>
+        <li>ورودی و خروجی ابزارها اعتبارسنجی می‌شوند.</li>
+        <li>حداکثر تعداد مراحل و هزینه اجرا مشخص است.</li>
+        <li>Timeout و Retry کنترل‌شده وجود دارد.</li>
+        <li>عملیات حساس به تأیید انسانی نیاز دارند.</li>
+        <li>وضعیت وظایف مهم به‌صورت پایدار ذخیره می‌شود.</li>
+        <li>از اجرای تکراری عملیات جانبی جلوگیری می‌شود.</li>
+        <li>Trace و Log برای مراحل مهم ثبت می‌شوند.</li>
+        <li>ارزیابی وظایف Agent به‌صورت منظم انجام می‌شود.</li>
+        <li>سناریوهای Prompt Injection آزمایش شده‌اند.</li>
+        <li>مسیر ارجاع به انسان و مدیریت خطا مشخص است.</li>
+        <li>Rollback و توقف اضطراری سیستم قابل اجراست.</li>
+      </ul>
+    </section>
+
+    <!-- END-TO-END PROJECT -->
+    <section class="project-card" id="project">
+      <h2>پروژه عملی: طراحی یک دستیار سازمانی آماده Production</h2>
+
+      <h3>سناریو</h3>
+      <p>
+        فرض کنید یک شرکت می‌خواهد دستیار هوشمندی بسازد که درخواست‌های کارکنان را دریافت کند،
+        اطلاعات را از مستندات داخلی پیدا کند، در صورت نیاز ابزارهای سازمانی را فراخوانی کند
+        و برای برخی عملیات، تأیید مدیر را بگیرد.
+      </p>
+
+      <h3>مرحله اول: تعریف نیازمندی‌ها</h3>
+      <ul>
+        <li>پاسخ‌گویی به پرسش‌های مربوط به فرایندهای سازمان</li>
+        <li>جست‌وجو در اسناد داخلی با رعایت مجوزها</li>
+        <li>دریافت وضعیت درخواست‌های ثبت‌شده</li>
+        <li>ساخت پیش‌نویس درخواست جدید</li>
+        <li>عدم اجرای عملیات حساس بدون تأیید مجاز</li>
+      </ul>
+
+      <h3>مرحله دوم: طراحی معماری</h3>
+      <div class="diagram">Employee
+        |
+        v
+        Web Application
+        |
+        v
+        API Gateway
+        |
+        v
+        Identity & Access Control
+        |
+        v
+        AI Orchestrator
+        |
+        +---- Model Router
+        | |
+        | +---- Fast Model
+        | +---- Strong Model
+        |
+        +---- RAG Service
+        | |
+        | +---- Document Store
+        | +---- Vector Search
+        | +---- Reranker
+        |
+        +---- Tool Layer
+        | |
+        | +---- HR API
+        | +---- Ticket API
+        | +---- Internal Database
+        |
+        +---- Approval Workflow
+        |
+        +---- State Store
+
+        Monitoring + Evaluation + Audit Logs</div>
+
+      <h3>مرحله سوم: انتخاب مدل</h3>
+      <p>
+        برای پرسش‌های ساده از مدل سریع‌تر استفاده می‌کنیم.
+        برای تحلیل درخواست‌های پیچیده، مدل قوی‌تر در نظر گرفته می‌شود.
+        درخواست‌های دارای اطلاعات محرمانه نیز بر اساس سیاست سازمان به مسیر مجاز هدایت می‌شوند.
+      </p>
+
+      <h3>مرحله چهارم: طراحی RAG</h3>
+      <ol>
+        <li>جمع‌آوری اسناد مجاز سازمان</li>
+        <li>پاک‌سازی و استخراج متن</li>
+        <li>تقسیم اسناد به قطعات مناسب</li>
+        <li>تولید Embedding</li>
+        <li>ذخیره در پایگاه داده برداری</li>
+        <li>اعمال فیلتر دسترسی در زمان بازیابی</li>
+        <li>بازیابی و رتبه‌بندی اسناد مرتبط</li>
+        <li>ارسال Context به مدل</li>
+        <li>تولید پاسخ همراه با ارجاع به منابع</li>
+      </ol>
+
+      <h3>مرحله پنجم: طراحی ابزارها</h3>
+      <p>ابزارها باید وظایف مشخص و محدود داشته باشند. برای نمونه:</p>
+      <pre><code>get_employee_profile(employee_id)
+search_internal_documents(query, user_scope)
+get_ticket_status(ticket_id)
+create_ticket_draft(title, description)
+submit_ticket_for_approval(ticket_id)
+get_approval_status(request_id)</code></pre>
+
+      <h3>مرحله ششم: طراحی امنیت</h3>
+      <ul>
+        <li>هویت کاربر پیش از اجرای عملیات بررسی می‌شود.</li>
+        <li>اسناد فقط در محدوده مجوز کاربر بازیابی می‌شوند.</li>
+        <li>Agent نمی‌تواند مستقیماً مجوزهای کاربر را تغییر دهد.</li>
+        <li>عملیات ثبت نهایی نیازمند تأیید است.</li>
+        <li>اطلاعات حساس در Log عمومی ثبت نمی‌شوند.</li>
+        <li>تمام عملیات جانبی در Audit Log ثبت می‌شوند.</li>
+      </ul>
+
+      <h3>مرحله هفتم: ارزیابی</h3>
+      <p>
+        یک مجموعه آزمون شامل پرسش‌های معمول، اسناد ناقص، درخواست‌های غیرمجاز،
+        اسناد متناقض، درخواست‌های خارج از حوزه و تلاش‌های Prompt Injection ایجاد می‌کنیم.
+      </p>
+      <p>
+        سپس کیفیت پاسخ، صحت ارجاع، رعایت مجوز، نرخ موفقیت ابزارها، هزینه و زمان پاسخ را اندازه می‌گیریم.
+      </p>
+
+      <h3>مرحله هشتم: استقرار</h3>
+      <ol>
+        <li>انتشار در محیط Staging</li>
+        <li>اجرای تست‌های خودکار و دستی</li>
+        <li>آزمایش با کاربران محدود</li>
+        <li>انتشار Canary</li>
+        <li>بررسی شاخص‌های کیفیت و عملکرد</li>
+        <li>افزایش تدریجی ترافیک</li>
+        <li>آماده نگه‌داشتن Rollback</li>
+      </ol>
+
+      <h3>مرحله نهم: پایش مداوم</h3>
+      <p>
+        پس از انتشار، باید افت کیفیت بازیابی، افزایش هزینه، افزایش خطاهای ابزار،
+        افزایش تأخیر و رفتارهای غیرمنتظره Agent بررسی شوند.
+        بازخورد کاربران نیز باید به چرخه ارزیابی و بهبود بازگردد.
+      </p>
+    </section>
+
+    <!-- FINAL -->
+    <section class="summary-card" id="summary">
+      <h2>جمع‌بندی نهایی: اصول طلایی Advanced AI Engineering</h2>
+      <ol>
+        <li><strong>Model First نیست؛ Problem First است.</strong> ابتدا مسئله و معیار موفقیت را تعریف کنید و سپس مدل را
+          انتخاب کنید.</li>
+        <li><strong>هر مشکلی نیازمند Fine-tuning نیست.</strong> گاهی RAG، Prompt یا اصلاح معماری راه‌حل بهتری است.</li>
+        <li><strong>ارزیابی باید پیش از انتشار وجود داشته باشد.</strong> کیفیت را نمی‌توان فقط با چند پاسخ نمونه سنجید.
+        </li>
+        <li><strong>مدل بخشی از سیستم است، نه تمام سیستم.</strong> داده، ابزار، امنیت، زیرساخت و کنترل جریان نیز اهمیت
+          دارند.</li>
+        <li><strong>خروجی مدل قابل اعتماد مطلق نیست.</strong> اعتبارسنجی و کنترل دسترسی باید بیرون از مدل اجرا شوند.
+        </li>
+        <li><strong>هزینه باید قابل مشاهده باشد.</strong> مصرف توکن، ابزار، زیرساخت و اجرای Agent باید اندازه‌گیری شود.
+        </li>
+        <li><strong>استقرار پایان کار نیست.</strong> Monitoring، Feedback، Regression و بهبود مستمر ضروری‌اند.</li>
+        <li><strong>Agent باید اختیار محدود داشته باشد.</strong> هر ابزار و هر عملیات باید مجوز و محدوده مشخص داشته
+          باشد.</li>
+        <li><strong>Human-in-the-Loop برای اقدامات حساس ضروری است.</strong> مدل نباید به‌تنهایی اختیار نامحدود داشته
+          باشد.</li>
+        <li><strong>Production Readiness یک ویژگی معماری است.</strong> نمی‌توان در آخر پروژه فقط با اضافه‌کردن چند Log
+          سیستم را آماده Production کرد.</li>
+      </ol>
+    </section>
+
+    <section class="chapter">
+      <h2>واژه‌نامه تخصصی</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>اصطلاح</th>
+            <th>معنی</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Fine-tuning</td>
+            <td>تنظیم مدل با آموزش بیشتر روی داده‌های هدفمند</td>
+          </tr>
+          <tr>
+            <td>PEFT</td>
+            <td>روش‌های تنظیم مدل با تغییر تعداد محدودی پارامتر</td>
+          </tr>
+          <tr>
+            <td>Model Routing</td>
+            <td>هدایت درخواست به مدل مناسب</td>
+          </tr>
+          <tr>
+            <td>AI Gateway</td>
+            <td>لایه مرکزی کنترل دسترسی و ارتباط با مدل‌ها</td>
+          </tr>
+          <tr>
+            <td>LLMOps</td>
+            <td>مدیریت چرخه عمر برنامه‌های مبتنی بر LLM</td>
+          </tr>
+          <tr>
+            <td>MLOps</td>
+            <td>مدیریت چرخه عمر سیستم‌های یادگیری ماشین</td>
+          </tr>
+          <tr>
+            <td>Golden Dataset</td>
+            <td>مجموعه آزمون مرجع برای ارزیابی کیفیت</td>
+          </tr>
+          <tr>
+            <td>Regression Test</td>
+            <td>آزمایش برای جلوگیری از خراب‌شدن قابلیت‌های قبلی</td>
+          </tr>
+          <tr>
+            <td>Canary Release</td>
+            <td>انتشار نسخه جدید برای بخش کوچکی از ترافیک</td>
+          </tr>
+          <tr>
+            <td>Observability</td>
+            <td>توانایی تحلیل وضعیت داخلی سیستم از داده‌های خروجی آن</td>
+          </tr>
+          <tr>
+            <td>Prompt Injection</td>
+            <td>تلاش برای تغییر رفتار مدل از طریق دستورهای مخرب</td>
+          </tr>
+          <tr>
+            <td>Idempotency</td>
+            <td>جلوگیری از ایجاد اثر تکراری ناخواسته در اجرای مجدد</td>
+          </tr>
+          <tr>
+            <td>Durable Execution</td>
+            <td>ادامه اجرای وظیفه پس از اختلال یا راه‌اندازی مجدد</td>
+          </tr>
+          <tr>
+            <td>Fallback</td>
+            <td>انتقال به مسیر جایگزین هنگام شکست مسیر اصلی</td>
+          </tr>
+          <tr>
+            <td>Backpressure</td>
+            <td>کنترل ورود درخواست هنگام بیشتر بودن بار از ظرفیت پردازش</td>
+          </tr>
+          <tr>
+            <td>FinOps</td>
+            <td>مدیریت و بهینه‌سازی هزینه زیرساخت و سرویس‌های فناوری</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="chapter">
+      <h2>سؤالات مرور و سنجش یادگیری</h2>
+
+      <h3>سؤالات مفهومی</h3>
+      <ol>
+        <li>چه زمانی Fine-tuning نسبت به RAG انتخاب بهتری است؟</li>
+        <li>چرا استفاده از یک مدل برای تمام درخواست‌ها همیشه بهینه نیست؟</li>
+        <li>AI Gateway چه مسئولیت‌هایی دارد و چرا می‌تواند به نقطه شکست واحد تبدیل شود؟</li>
+        <li>تفاوت Monitoring و Observability چیست؟</li>
+        <li>چرا ارزیابی یک سیستم Agentic با ارزیابی یک پاسخ متنی تفاوت دارد؟</li>
+        <li>چرا خروجی معتبر JSON الزاماً به‌معنای خروجی درست نیست؟</li>
+        <li>Prompt Injection مستقیم و غیرمستقیم چه تفاوتی دارند؟</li>
+        <li>چرا Idempotency برای ابزارهای دارای عملیات جانبی اهمیت دارد؟</li>
+        <li>چه تفاوتی میان Canary Release و Shadow Deployment وجود دارد؟</li>
+        <li>چرا تعداد مراحل Agent باید محدود شود؟</li>
+      </ol>
+
+      <h3>تمرین‌های عملی</h3>
+      <ol>
+        <li>برای یک دستیار پشتیبانی، یک Model Router ساده طراحی کنید.</li>
+        <li>یک Golden Dataset شامل حداقل ۳۰ سؤال برای یک RAG بسازید.</li>
+        <li>برای یک AI API، معیارهای p95 Latency، Error Rate و Cost per Request تعریف کنید.</li>
+        <li>یک طرح امنیتی برای Agent دارای دسترسی به ایمیل و فایل‌ها تهیه کنید.</li>
+        <li>یک معماری Human-in-the-Loop برای عملیات بازپرداخت طراحی کنید.</li>
+        <li>برای یک Agent چندمرحله‌ای، State Machine و سیاست Retry تعریف کنید.</li>
+        <li>یک برنامه Canary Release همراه با معیارهای توقف و Rollback بنویسید.</li>
+        <li>هزینه یک وظیفه Agent را با تعداد فراخوانی‌های مختلف مدل محاسبه و مقایسه کنید.</li>
+      </ol>
+
+      <div class="callout success">
+        <strong>معیار تسلط بر این فصل:</strong>
+        بتوانید یک سیستم AI را از مرحله انتخاب مدل و طراحی معماری تا ارزیابی،
+        استقرار، مانیتورینگ، امنیت، کنترل هزینه و مدیریت Agent در محیط Production طراحی کنید؛
+        نه اینکه فقط بتوانید یک API مدل را فراخوانی کنید.
+      </div>
+    </section>
+
+  
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-nav">
+      <a href="index.html">نقشه راه</a>
+      <a href="10.html">فصل قبل</a>
+      <a href="#intro">فهرست مطالب</a>
+      <a href="#">بالای صفحه ↑</a>
+    </div>
+    Advanced AI Engineering & Production · Chapter 11
+    <br>
+    <strong>M_Ai</strong>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      try { localStorage.setItem('m-ai-theme', theme); } catch (e) {}
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#10101e' : '#f5f5fb');
+    }
+    try {
+      const saved = localStorage.getItem('m-ai-theme');
+      if (saved === 'light' || saved === 'dark') setTheme(saved);
+    } catch (e) {}
+    themeToggle.addEventListener('click', () => {
+      setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      const el = document.getElementById('progress');
+      if (el) el.style.width = progress + '%';
+    });
+  </script>
+</body>
+</html>

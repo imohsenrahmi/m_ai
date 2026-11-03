@@ -1,0 +1,3908 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10101e">
+  <meta name="description" content="آموزش جامع توسعه اپلیکیشن‌های هوش مصنوعی">
+  <title>AI Application Development | فصل ۴ — M_Ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Vazirmatn', 'sans-serif'] },
+          colors: { ink: '#172033', brand: '#4f46e5', accent: '#0d9488' }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --purple: #9275f5;
+      --purple-strong: #7657e8;
+      --cyan: #51cbdc;
+      --green: #49c9a3;
+      --radius: 18px;
+      --transition: .28s ease;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #10101e;
+      --bg-secondary: #151529;
+      --surface: #1b1b32;
+      --surface-hover: #242440;
+      --surface-soft: rgba(255, 255, 255, .045);
+      --text: #f5f3ff;
+      --text-secondary: #c3c1d5;
+      --muted: #9695ae;
+      --border: rgba(255, 255, 255, .09);
+      --border-strong: rgba(255, 255, 255, .15);
+      --header-bg: rgba(16, 16, 30, .92);
+      --shadow: 0 18px 50px rgba(0, 0, 0, .24);
+      --callout-bg: rgba(146, 117, 245, .1);
+      --callout-border: rgba(146, 117, 245, .45);
+      --tip-bg: rgba(81, 203, 220, .08);
+      --tip-border: rgba(81, 203, 220, .4);
+      --warning-bg: rgba(217, 119, 6, .1);
+      --warning-border: rgba(217, 119, 6, .45);
+      --code-bg: #0c0c18;
+      --code-text: #b8f0d8;
+      --diagram-bg: rgba(146, 117, 245, .1);
+      --diagram-border: rgba(146, 117, 245, .28);
+      --table-head: rgba(146, 117, 245, .12);
+      --table-alt: rgba(255, 255, 255, .03);
+      --tag-bg: rgba(146, 117, 245, .15);
+      --tag-text: #c4b5fd;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .22), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .12), transparent 45%);
+      --progress-track: rgba(255, 255, 255, .08);
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f5fb;
+      --bg-secondary: #eeeefa;
+      --surface: #fff;
+      --surface-hover: #f7f5ff;
+      --surface-soft: rgba(102, 78, 190, .045);
+      --text: #202039;
+      --text-secondary: #55556f;
+      --muted: #77778f;
+      --border: rgba(40, 35, 90, .10);
+      --border-strong: rgba(40, 35, 90, .17);
+      --header-bg: rgba(255, 255, 255, .92);
+      --shadow: 0 18px 50px rgba(45, 35, 100, .09);
+      --callout-bg: #f5f3ff;
+      --callout-border: #6658e8;
+      --tip-bg: #f0fdfa;
+      --tip-border: #0d9488;
+      --warning-bg: #fffbeb;
+      --warning-border: #d97706;
+      --code-bg: #111827;
+      --code-text: #d1fae5;
+      --diagram-bg: #eef2ff;
+      --diagram-border: #c7d2fe;
+      --table-head: #f3f4f6;
+      --table-alt: #fafafa;
+      --tag-bg: #ede9fe;
+      --tag-text: #5b21b6;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .15), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .1), transparent 45%);
+      --progress-track: rgba(40, 35, 90, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+      transition: background .35s, color .35s;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--progress-track);
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      z-index: 200;
+    }
+    #progress {
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      transition: width .1s linear;
+    }
+
+    /* HEADER */
+    .site-header {
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--header-bg);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(146, 117, 245, .24);
+    }
+    .site-header::after {
+      content: "";
+      position: absolute;
+      bottom: -1px; right: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent 3%, rgba(81, 203, 220, .35) 25%, rgba(146, 117, 245, .85) 50%, rgba(81, 203, 220, .35) 75%, transparent 97%);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      direction: ltr;
+      flex-shrink: 0;
+    }
+    .brand-mark {
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #a58cff, #6848df);
+      box-shadow: 0 4px 18px rgba(118, 87, 232, .28), inset 0 1px 0 rgba(255,255,255,.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-mark::before {
+      content: "";
+      position: absolute; inset: 1px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 11px;
+    }
+    .brand-mark svg { width: 26px; height: 26px; position: relative; z-index: 1; }
+    .brand-name { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--text); }
+    .brand-name span { color: var(--purple); }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: 12px;
+      display: grid; place-items: center;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    .theme-toggle:hover { border-color: var(--purple); transform: rotate(12deg); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-icon-sun { display: none; }
+    html[data-theme="light"] .theme-icon-moon { display: none; }
+    html[data-theme="light"] .theme-icon-sun { display: block; }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 11px;
+      background: rgba(146, 117, 245, .12);
+      border: 1px solid rgba(146, 117, 245, .32);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .back-home:hover { background: var(--purple); color: #fff; }
+    .back-home svg { width: 15px; height: 15px; }
+
+    /* CHAPTER HERO */
+    .chapter-hero {
+      position: relative;
+      padding: 48px 20px 40px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .chapter-hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--hero-overlay);
+      pointer-events: none;
+    }
+    .chapter-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .chapter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(146, 117, 245, .35);
+      background: rgba(146, 117, 245, .1);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .8px;
+      direction: ltr;
+      margin-bottom: 16px;
+    }
+    .chapter-badge::before {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .chapter-hero h1 {
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 900;
+      line-height: 1.45;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .chapter-hero .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 2.1;
+      max-width: 720px;
+    }
+    .chapter-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .meta-chip {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .meta-chip strong {
+      color: var(--text);
+      font-size: 15px;
+      margin-left: 6px;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    /* LAYOUT */
+    .page-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static !important; order: -1; }
+    }
+
+    /* SIDEBAR TOC */
+    .sidebar {
+      position: sticky;
+      top: 88px;
+    }
+    .toc-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 18px 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.04);
+    }
+    .toc-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-title::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .toc-link {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      transition: .2s;
+      border: 1px solid transparent;
+    }
+    .toc-link:hover {
+      color: var(--text);
+      background: rgba(146, 117, 245, .08);
+      border-color: rgba(146, 117, 245, .2);
+      padding-right: 14px;
+    }
+    .toc-link-strong { color: var(--purple); font-weight: 800; }
+    .toc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+    .print-btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 11px;
+      border-radius: 12px;
+      background: linear-gradient(115deg, #a18aff, #7558e8);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .print-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* MAIN CONTENT SURFACE */
+    .content-area { min-width: 0; }
+
+    .section-card {
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      background: var(--surface) !important;
+      color: var(--text);
+    }
+    .section-number {
+      background: linear-gradient(135deg, #9275f5, #51cbdc) !important;
+      color: white !important;
+    }
+
+    /* Override common Tailwind color utilities for theme */
+    .content-area {
+      color: var(--text);
+    }
+    .content-area .text-slate-800,
+    .content-area .text-slate-700,
+    .content-area .text-slate-900 { color: var(--text) !important; }
+    .content-area .text-slate-500,
+    .content-area .text-slate-400,
+    .content-area .text-slate-600 { color: var(--muted) !important; }
+    .content-area .text-indigo-600,
+    .content-area .text-indigo-700,
+    .content-area .text-indigo-800 { color: var(--purple) !important; }
+    .content-area .bg-white { background: var(--surface) !important; }
+    .content-area .bg-slate-50,
+    .content-area .bg-slate-100,
+    .content-area .hover\:bg-slate-50:hover { background: var(--surface-soft) !important; }
+    .content-area .border,
+    .content-area .border-slate-200,
+    .content-area .border-slate-100 { border-color: var(--border) !important; }
+    .content-area .shadow-sm { box-shadow: 0 6px 24px rgba(0,0,0,.05) !important; }
+
+    .callout {
+      border-right: 4px solid var(--callout-border) !important;
+      background: var(--callout-bg) !important;
+      color: var(--text);
+    }
+    .tip {
+      border-right: 4px solid var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .warning {
+      border-right: 4px solid var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .code {
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .86rem;
+      border: 1px solid var(--border);
+    }
+    .ltr { direction: ltr; text-align: left; }
+    .diagram-box {
+      border: 1px solid var(--diagram-border) !important;
+      background: var(--diagram-bg) !important;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .arrow { color: var(--purple) !important; font-size: 1.5rem; font-weight: 800; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      background: var(--tag-bg) !important;
+      color: var(--tag-text) !important;
+      padding: 3px 10px;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+    .table-wrap { overflow-x: auto; border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td {
+      border: 1px solid var(--border) !important;
+      padding: 12px;
+      text-align: right;
+      vertical-align: top;
+      color: var(--text);
+    }
+    th { background: var(--table-head) !important; font-weight: 800; }
+    tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+    .content-area h2, .content-area h3, .content-area h4 {
+      color: var(--text);
+    }
+    .content-area p, .content-area li { color: var(--text-secondary); }
+    .content-area strong { color: var(--text); }
+
+    .content-area .bg-indigo-50,
+    .content-area .bg-teal-50 { background: var(--surface-soft) !important; }
+    .content-area .border-teal-300 { border-color: var(--diagram-border) !important; }
+    .content-area .text-teal-700 { color: var(--green) !important; }
+    .content-area .text-rose-700 { color: #f87171 !important; }
+    .content-area .text-amber-700 { color: #fbbf24 !important; }
+    .content-area .bg-indigo-700,
+    .content-area .hover\:bg-indigo-800:hover {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+    }
+    .content-area .text-indigo-900 { color: var(--text) !important; }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 2;
+    }
+    .site-footer strong {
+      color: var(--purple);
+      direction: ltr;
+      display: inline-block;
+      font-size: 15px;
+    }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .footer-nav a {
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      transition: .2s;
+    }
+    .footer-nav a:hover {
+      color: var(--purple);
+      border-color: rgba(146,117,245,.4);
+    }
+
+    @media print {
+      .site-header, .sidebar, .progress-bar, .no-print, .theme-toggle, .back-home { display: none !important; }
+      .page-layout { grid-template-columns: 1fr; }
+      .section-card { break-inside: avoid; }
+      body { background: white; color: black; }
+    }
+
+    @media (max-width: 640px) {
+      .chapter-hero { padding: 32px 16px 28px; }
+      .header-inner { padding: 0 14px; }
+      .back-home span.label { display: none; }
+      .page-layout { padding: 18px 14px 40px; }
+    }
+
+
+    .content-area .card {
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 18px !important;
+      padding: 24px !important;
+      margin: 20px 0 !important;
+      box-shadow: 0 5px 20px rgba(0,0,0,.04) !important;
+      color: var(--text);
+    }
+    .content-area .section-number {
+      display: inline-flex !important;
+      width: 42px !important; height: 42px !important;
+      align-items: center; justify-content: center;
+      border-radius: 12px !important;
+      background: rgba(146,117,245,.15) !important;
+      color: var(--purple) !important;
+      font-weight: 900 !important;
+      margin-left: 10px;
+    }
+    .content-area .section-title {
+      font-size: 1.55rem !important;
+      font-weight: 900 !important;
+      color: var(--text) !important;
+      margin: 36px 0 20px !important;
+      padding-bottom: 14px !important;
+      border-bottom: 2px solid var(--border) !important;
+    }
+    .content-area .sub-title {
+      font-size: 1.15rem !important;
+      font-weight: 800 !important;
+      color: var(--text) !important;
+      margin: 26px 0 12px !important;
+    }
+    .content-area .code-block {
+      direction: ltr; text-align: left;
+      overflow-x: auto; white-space: pre-wrap;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      padding: 20px; border-radius: 14px;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 13px; line-height: 1.8;
+      margin: 16px 0;
+      border: 1px solid var(--border);
+    }
+    .content-area .inline-code {
+      direction: ltr; display: inline-block;
+      background: rgba(146,117,245,.12) !important;
+      color: var(--purple) !important;
+      padding: 1px 7px; border-radius: 5px;
+      font-family: monospace; font-size: .9em;
+    }
+    .content-area .callout {
+      border-right: 4px solid var(--callout-border);
+      background: var(--callout-bg);
+      padding: 16px 20px; border-radius: 10px; margin: 20px 0;
+    }
+    .content-area .warning {
+      border-right: 4px solid #dc5555;
+      background: rgba(220,85,85,.1);
+      padding: 16px 20px; border-radius: 10px; margin: 20px 0;
+    }
+    .content-area .success {
+      border-right: 4px solid var(--tip-border);
+      background: var(--tip-bg);
+      padding: 16px 20px; border-radius: 10px; margin: 20px 0;
+    }
+    .content-area .diagram {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px; padding: 22px; margin: 22px 0; text-align: center;
+    }
+    .content-area .diagram-box {
+      padding: 13px; margin: 8px auto; border-radius: 10px;
+      max-width: 500px; font-weight: 700;
+    }
+    .content-area .diagram-arrow { color: var(--purple); font-size: 23px; }
+    .content-area .badge {
+      display: inline-block;
+      background: rgba(146,117,245,.15) !important;
+      color: var(--purple) !important;
+      border-radius: 30px; padding: 4px 12px;
+      font-size: .8rem; font-weight: 700;
+    }
+    .content-area .mini-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 18px;
+    }
+    .content-area .quiz-option {
+      display: block; width: 100%; text-align: right;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 10px; margin: 8px 0;
+      cursor: pointer; font-family: inherit; transition: .15s;
+      color: var(--text-secondary);
+    }
+    .content-area .quiz-option:hover {
+      border-color: rgba(146,117,245,.45);
+      background: var(--surface-soft);
+    }
+    .content-area .quiz-option.selected {
+      border-color: var(--purple);
+      background: rgba(146,117,245,.1);
+    }
+    .content-area .quiz-option.correct {
+      border-color: var(--green);
+      background: rgba(73,201,163,.12);
+    }
+    .content-area .quiz-option.wrong {
+      border-color: #dc2626;
+      background: rgba(220,38,38,.1);
+    }
+    .content-area .quiz-explanation {
+      display: none;
+      background: var(--surface-soft);
+      padding: 12px; border-radius: 10px; margin-top: 8px; font-size: .9rem;
+    }
+    .content-area .progress-track {
+      height: 9px; background: var(--border); border-radius: 20px; overflow: hidden;
+    }
+    .content-area .progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--purple), var(--cyan));
+      width: 0%; transition: .3s;
+    }
+    .content-area .bg-indigo-100, .content-area .bg-blue-100,
+    .content-area .bg-purple-100, .content-area .bg-emerald-100,
+    .content-area .bg-amber-100, .content-area .bg-indigo-50 {
+      background: var(--surface-soft) !important;
+    }
+    .content-area .text-indigo-900, .content-area .text-blue-900,
+    .content-area .text-purple-900, .content-area .text-emerald-900,
+    .content-area .text-amber-900, .content-area .text-indigo-700 {
+      color: var(--text) !important;
+    }
+    .content-area .bg-indigo-600, .content-area .hover\:bg-indigo-700:hover {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+    }
+    .content-area .border-emerald-200 { border-color: rgba(73,201,163,.35) !important; }
+    .content-area th { background: var(--table-head) !important; color: var(--text) !important; }
+    .content-area td { border-color: var(--border) !important; color: var(--text-secondary); }
+    .content-area tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+  </style>
+</head>
+<body>
+  <div class="progress-bar no-print"><div id="progress"></div></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="M_Ai Home">
+        <div class="brand-name"><span>M_Ai</span></div>
+        <div class="brand-mark">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 29V10L15 22L20 15L25 22L35 10V29" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 15V8" stroke="#DDFBFF" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="20" cy="6" r="2.5" fill="#DDFBFF"/>
+          </svg>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="تغییر تم">
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>
+          </svg>
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>
+          </svg>
+        </button>
+        <a href="index.html" class="back-home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/>
+          </svg>
+          <span class="label">صفحه اصلی</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="chapter-hero">
+    <div class="chapter-hero-inner">
+      <div class="chapter-badge">CHAPTER 04 · AI APPLICATION DEVELOPMENT</div>
+      <h1>توسعهٔ اپلیکیشن‌های هوش مصنوعی</h1>
+      <p class="subtitle">
+        آموزش جامع طراحی معماری، اتصال به مدل‌های زبانی، مدیریت مکالمات،
+        پردازش چندرسانه‌ای، اتصال به دیتابیس و بهینه‌سازی عملکرد اپلیکیشن‌های AI.
+      </p>
+      <div class="chapter-meta">
+        <div class="meta-chip"><strong>10</strong> سرفصل اصلی</div>
+        <div class="meta-chip"><strong>04</strong> از ۱۲ فصل</div>
+        <div class="meta-chip"><strong>Python</strong> و JavaScript</div>
+        <div class="meta-chip"><strong>10</strong> سؤال آزمون</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-layout">
+    <aside class="sidebar no-print">
+      <div class="toc-card">
+        <div class="toc-title">فهرست مطالب</div>
+        <nav class="toc-nav" id="toc">
+<a class="toc-link" href="#architecture">01. معماری اپلیکیشن AI</a>
+<a class="toc-link" href="#apis">02. کار با LLM APIs</a>
+<a class="toc-link" href="#providers">03. OpenAI و سایر Providerها</a>
+<a class="toc-link" href="#history">04. مدیریت تاریخچهٔ مکالمه</a>
+<a class="toc-link" href="#streaming">05. پاسخ‌های Streaming</a>
+<a class="toc-link" href="#tokens">06. مدیریت Context و Token</a>
+<a class="toc-link" href="#structured">07. استخراج دادهٔ ساختاریافته</a>
+<a class="toc-link" href="#multimodal">08. توسعهٔ AI چندرسانه‌ای</a>
+<a class="toc-link" href="#database">09. اتصال AI به دیتابیس</a>
+<a class="toc-link" href="#optimization">10. بهینه‌سازی هزینه و عملکرد</a>
+<div class="toc-divider"></div>
+<a class="toc-link toc-link-strong" href="#summary">جمع‌بندی</a>
+<a class="toc-link toc-link-strong" href="#glossary">واژه‌نامه</a>
+<a class="toc-link toc-link-strong" href="#exercises">تمرین‌ها</a>
+<a class="toc-link toc-link-strong" href="#quiz">آزمون پایانی</a>
+<a class="toc-link toc-link-strong" href="#project">پروژهٔ نهایی</a>
+        </nav>
+        <button class="print-btn" type="button" onclick="window.print()">چاپ یا ذخیره PDF</button>
+      </div>
+    </aside>
+
+    <main class="content-area min-w-0">
+<section class="card">
+      <h2 class="text-2xl font-black text-ink mb-4">مقدمهٔ فصل</h2>
+
+      <p>
+        در این فصل یاد می‌گیریم چگونه یک مدل زبانی بزرگ را از طریق API به
+        یک نرم‌افزار واقعی متصل کنیم و از آن برای ساخت چت‌بات، دستیار هوشمند،
+        سامانهٔ استخراج اطلاعات، جست‌وجوی هوشمند و اپلیکیشن‌های چندرسانه‌ای استفاده کنیم.
+      </p>
+
+      <p>
+        توسعهٔ اپلیکیشن هوش مصنوعی فقط به فرستادن یک پیام به مدل و دریافت پاسخ محدود نمی‌شود.
+        یک برنامهٔ قابل‌اعتماد باید معماری مناسبی داشته باشد، تاریخچهٔ مکالمه را مدیریت کند،
+        محدودیت توکن‌ها را بشناسد، خطاها و هزینه‌ها را کنترل کند، داده‌های ساختاریافته تحویل دهد
+        و امنیت اطلاعات را در نظر بگیرد.
+      </p>
+
+      <div class="callout">
+        <strong>هدف اصلی:</strong>
+        یاد بگیریم چگونه از یک مدل زبانی به‌عنوان بخشی از یک سیستم نرم‌افزاری کامل استفاده کنیم.
+      </div>
+    </section>
+
+
+        <!-- SECTION 1 -->
+
+        <section id="architecture">
+
+          <h2 class="section-title">
+            <span class="section-number">01</span>
+            AI Application Architecture
+          </h2>
+
+          <h3 class="sub-title">۱.۱. معماری اپلیکیشن هوش مصنوعی چیست؟</h3>
+
+          <p>
+            معماری اپلیکیشن هوش مصنوعی به ساختار کلی اجزای یک نرم‌افزار هوشمند
+            و نحوهٔ ارتباط آن‌ها با یکدیگر گفته می‌شود.
+          </p>
+
+          <p>
+            فرض کنید می‌خواهیم یک چت‌بات پشتیبانی مشتریان بسازیم. کاربر می‌پرسد:
+            «سفارشم چه زمانی به دستم می‌رسد؟»
+          </p>
+
+          <p>برای پاسخ به این سؤال، برنامه باید:</p>
+
+          <ol>
+            <li>پیام را از رابط کاربری دریافت کند.</li>
+            <li>مشخص کند کاربر چه کسی است.</li>
+            <li>مکالمهٔ فعلی را شناسایی کند.</li>
+            <li>در صورت نیاز اطلاعات سفارش را از پایگاه داده بخواند.</li>
+            <li>اطلاعات مرتبط را در اختیار مدل قرار دهد.</li>
+            <li>پاسخ مدل را دریافت کند.</li>
+            <li>پاسخ را ذخیره کند.</li>
+            <li>آن را به کاربر نمایش دهد.</li>
+          </ol>
+
+          <h3 class="sub-title">۱.۲. اجزای اصلی معماری</h3>
+
+          <div class="grid-cards">
+
+            <div class="mini-card">
+              <h4 class="font-black text-indigo-700">Frontend</h4>
+              <p class="text-sm">رابط کاربری شامل صفحهٔ چت، کادر پیام، دکمهٔ ارسال و نمایش پاسخ.</p>
+              <p class="text-xs text-slate-500">HTML، CSS، JavaScript، React، Next.js</p>
+            </div>
+
+            <div class="mini-card">
+              <h4 class="font-black text-indigo-700">Backend</h4>
+              <p class="text-sm">منطق اصلی برنامه، احراز هویت، مدیریت مکالمه، ارتباط با مدل و پردازش پاسخ.</p>
+              <p class="text-xs text-slate-500">Python، FastAPI، Node.js، Java، Go</p>
+            </div>
+
+            <div class="mini-card">
+              <h4 class="font-black text-indigo-700">LLM Provider</h4>
+              <p class="text-sm">ارائه‌دهندهٔ مدل زبانی که درخواست را پردازش و پاسخ تولید می‌کند.</p>
+              <p class="text-xs text-slate-500">OpenAI، Anthropic، Google، Mistral</p>
+            </div>
+
+            <div class="mini-card">
+              <h4 class="font-black text-indigo-700">Database</h4>
+              <p class="text-sm">نگهداری کاربران، پیام‌ها، مکالمات، تنظیمات و اطلاعات عملیاتی.</p>
+              <p class="text-xs text-slate-500">PostgreSQL، MySQL، MongoDB، Redis</p>
+            </div>
+
+            <div class="mini-card">
+              <h4 class="font-black text-indigo-700">External Tools</h4>
+              <p class="text-sm">ابزارهای خارجی برای جست‌وجو، ارسال ایمیل، ثبت سفارش و دریافت اطلاعات.</p>
+            </div>
+
+          </div>
+
+          <h3 class="sub-title">۱.۳. جریان ارتباط اجزا</h3>
+
+          <div class="diagram">
+            <div class="diagram-box bg-indigo-100 text-indigo-900">👤 کاربر (User)</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-blue-100 text-blue-900">رابط کاربری (Frontend)</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-purple-100 text-purple-900">Backend و منطق برنامه</div>
+            <div class="diagram-arrow">↓</div>
+
+            <div class="grid grid-cols-2 gap-3 max-w-xl mx-auto">
+              <div class="bg-emerald-100 text-emerald-900 rounded-xl p-4 font-bold">Database</div>
+              <div class="bg-amber-100 text-amber-900 rounded-xl p-4 font-bold">External Tools</div>
+            </div>
+
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-amber-100 text-amber-900">LLM Provider</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-emerald-100 text-emerald-900">پردازش و نمایش پاسخ</div>
+          </div>
+
+          <h3 class="sub-title">۱.۴. جریان اجرای یک درخواست</h3>
+
+          <p>کاربر می‌گوید: «وضعیت سفارش شمارهٔ ۱۲۳۴ چیست؟»</p>
+
+          <ol>
+            <li>Frontend پیام را دریافت می‌کند.</li>
+            <li>Backend کاربر را احراز هویت می‌کند.</li>
+            <li>مالکیت سفارش بررسی می‌شود.</li>
+            <li>اطلاعات سفارش از دیتابیس دریافت می‌شود.</li>
+            <li>اطلاعات مرتبط همراه پیام کاربر به مدل ارسال می‌شود.</li>
+            <li>مدل پاسخ قابل‌فهم تولید می‌کند.</li>
+            <li>Backend پاسخ را بررسی و ذخیره می‌کند.</li>
+            <li>پاسخ برای کاربر ارسال می‌شود.</li>
+          </ol>
+
+          <div class="warning">
+            <strong>نکتهٔ امنیتی:</strong>
+            صرفاً به دلیل وارد کردن شمارهٔ سفارش، نباید اطلاعات آن را به کاربر نمایش داد.
+            مالکیت سفارش باید در Backend بررسی شود.
+          </div>
+
+          <h3 class="sub-title">۱.۵. انواع معماری اپلیکیشن AI</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>معماری</th>
+                <th>ویژگی</th>
+                <th>کاربرد</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Simple LLM App</td>
+                <td>ارتباط مستقیم با مدل</td>
+                <td>نمونهٔ اولیه</td>
+              </tr>
+              <tr>
+                <td>Backend + LLM</td>
+                <td>سرور واسط و کنترل درخواست</td>
+                <td>اپلیکیشن واقعی</td>
+              </tr>
+              <tr>
+                <td>RAG Architecture</td>
+                <td>اتصال به اسناد و دانش خارجی</td>
+                <td>چت‌بات اسناد</td>
+              </tr>
+              <tr>
+                <td>Tool Calling</td>
+                <td>امکان اجرای عملیات خارجی</td>
+                <td>دستیار هوشمند</td>
+              </tr>
+              <tr>
+                <td>Agentic Architecture</td>
+                <td>برنامه‌ریزی و اجرای چندمرحله‌ای</td>
+                <td>گردش‌کارهای پیچیده</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">۱.۶. معماری RAG</h3>
+
+          <p>
+            RAG مخفف Retrieval-Augmented Generation است؛ یعنی تولید پاسخ با کمک بازیابی اطلاعات.
+          </p>
+
+          <p>
+            در این روش، به‌جای ارسال تمام اسناد به مدل، ابتدا بخش‌های مرتبط با سؤال کاربر
+            پیدا می‌شوند و سپس فقط اطلاعات مناسب در اختیار مدل قرار می‌گیرند.
+          </p>
+
+          <div class="diagram">
+            <div class="diagram-box bg-blue-100">سؤال کاربر</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-indigo-100">تبدیل سؤال به Embedding</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-emerald-100">جست‌وجو در Vector Database</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-amber-100">بازیابی متن‌های مرتبط</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-indigo-100">ارسال سؤال و متن‌ها به LLM</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-emerald-100">پاسخ مستند به کاربر</div>
+          </div>
+
+          <p>مراحل پیاده‌سازی:</p>
+
+          <ol>
+            <li>تقسیم اسناد به بخش‌های کوچک.</li>
+            <li>ساخت Embedding از هر بخش.</li>
+            <li>ذخیرهٔ بردارها در Vector Database.</li>
+            <li>تبدیل سؤال کاربر به بردار.</li>
+            <li>بازیابی بخش‌های نزدیک از نظر معنایی.</li>
+            <li>ارسال اطلاعات مرتبط به مدل.</li>
+            <li>تولید پاسخ بر اساس اطلاعات بازیابی‌شده.</li>
+          </ol>
+
+          <h3 class="sub-title">۱.۷. معماری Agent</h3>
+
+          <p>
+            Agent یا عامل هوشمند می‌تواند برای رسیدن به هدف، چند مرحله را اجرا کند.
+          </p>
+
+          <p>
+            مثال: کاربر می‌گوید «برای هفتهٔ آینده یک جلسه با تیم فروش تنظیم کن
+            و خلاصهٔ آخرین گزارش فروش را هم برایشان بفرست.»
+          </p>
+
+          <ol>
+            <li>بررسی تاریخ‌های مناسب.</li>
+            <li>خواندن تقویم.</li>
+            <li>پیشنهاد زمان جلسه.</li>
+            <li>بازیابی گزارش فروش.</li>
+            <li>ساخت خلاصه.</li>
+            <li>دریافت تأیید لازم.</li>
+            <li>ارسال دعوت‌نامه.</li>
+          </ol>
+
+          <div class="callout">
+            <strong>نکته:</strong>
+            هرچه Agent اختیار بیشتری برای عملیات واقعی داشته باشد، کنترل مجوزها،
+            محدودیت عملیات و تأیید انسانی اهمیت بیشتری پیدا می‌کند.
+          </div>
+
+        </section>
+
+        <!-- SECTION 2 -->
+
+        <section id="apis">
+
+          <h2 class="section-title">
+            <span class="section-number">02</span>
+            Working with LLM APIs
+          </h2>
+
+          <h3 class="sub-title">۲.۱. API چیست؟</h3>
+
+          <p>
+            API مخفف Application Programming Interface است.
+            API روشی استاندارد برای ارتباط دو نرم‌افزار با یکدیگر است.
+          </p>
+
+          <p>
+            در توسعهٔ اپلیکیشن AI، برنامه از طریق API به سرور ارائه‌دهندهٔ مدل درخواست می‌فرستد
+            و پاسخ را دریافت می‌کند.
+          </p>
+
+          <h3 class="sub-title">۲.۲. اجزای یک درخواست API</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>جزء</th>
+                <th>توضیح</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Endpoint</td>
+                <td>آدرس سرویس</td>
+              </tr>
+              <tr>
+                <td>HTTP Method</td>
+                <td>روش درخواست مانند POST</td>
+              </tr>
+              <tr>
+                <td>API Key</td>
+                <td>کلید احراز هویت</td>
+              </tr>
+              <tr>
+                <td>Headers</td>
+                <td>اطلاعات تکمیلی درخواست</td>
+              </tr>
+              <tr>
+                <td>Body</td>
+                <td>محتوای اصلی درخواست</td>
+              </tr>
+              <tr>
+                <td>Parameters</td>
+                <td>تنظیمات مدل و تولید پاسخ</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">۲.۳. نمونهٔ درخواست HTTP</h3>
+
+          <pre class="code-block">POST /v1/responses
+Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json
+
+{
+  "model": "MODEL_NAME",
+  "input": "Explain artificial intelligence simply."
+}</pre>
+
+          <h3 class="sub-title">۲.۴. متدهای HTTP</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>متد</th>
+                <th>کاربرد</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>GET</td>
+                <td>دریافت اطلاعات</td>
+              </tr>
+              <tr>
+                <td>POST</td>
+                <td>ارسال داده یا ایجاد درخواست</td>
+              </tr>
+              <tr>
+                <td>PUT</td>
+                <td>جایگزینی یک منبع</td>
+              </tr>
+              <tr>
+                <td>PATCH</td>
+                <td>اصلاح بخشی از یک منبع</td>
+              </tr>
+              <tr>
+                <td>DELETE</td>
+                <td>حذف یک منبع</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">۲.۵. Status Codeها</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>کد</th>
+                <th>مفهوم</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>200</td>
+                <td>درخواست موفق</td>
+              </tr>
+              <tr>
+                <td>201</td>
+                <td>منبع ایجاد شد</td>
+              </tr>
+              <tr>
+                <td>400</td>
+                <td>درخواست نامعتبر</td>
+              </tr>
+              <tr>
+                <td>401</td>
+                <td>احراز هویت ناموفق</td>
+              </tr>
+              <tr>
+                <td>403</td>
+                <td>دسترسی مجاز نیست</td>
+              </tr>
+              <tr>
+                <td>404</td>
+                <td>منبع پیدا نشد</td>
+              </tr>
+              <tr>
+                <td>408</td>
+                <td>زمان درخواست تمام شد</td>
+              </tr>
+              <tr>
+                <td>429</td>
+                <td>تعداد درخواست‌ها بیش از حد مجاز</td>
+              </tr>
+              <tr>
+                <td>500</td>
+                <td>خطای داخلی سرور</td>
+              </tr>
+              <tr>
+                <td>502</td>
+                <td>خطای Gateway</td>
+              </tr>
+              <tr>
+                <td>503</td>
+                <td>سرویس موقتاً در دسترس نیست</td>
+              </tr>
+              <tr>
+                <td>504</td>
+                <td>Timeout در Gateway</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">۲.۶. API Key و امنیت</h3>
+
+          <p>API Key مانند یک رمز دسترسی برای استفاده از سرویس است.</p>
+
+          <pre class="code-block">Authorization: Bearer YOUR_API_KEY</pre>
+
+          <div class="warning">
+            <strong>اشتباه امنیتی خطرناک:</strong>
+            هرگز API Key را در کد Frontend، فایل JavaScript قابل‌مشاهده در مرورگر،
+            مخزن عمومی Git یا اپلیکیشن موبایلی که کلید درون آن قرار گرفته منتشر نکنید.
+          </div>
+
+          <p>روش مناسب، نگهداری کلید در Environment Variable یا Secret Manager است.</p>
+
+          <pre class="code-block">export OPENAI_API_KEY="your-secret-key"</pre>
+
+          <pre class="code-block">import os
+
+api_key = os.environ["OPENAI_API_KEY"]</pre>
+
+          <h3 class="sub-title">۲.۷. اولین درخواست با Python</h3>
+
+          <pre class="code-block">pip install openai</pre>
+
+          <pre class="code-block">from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="YOUR_MODEL_NAME",
+    input="Explain what an API is in simple language."
+)
+
+print(response.output_text)</pre>
+
+          <p>در این مثال:</p>
+
+          <ul>
+            <li><span class="inline-code">OpenAI()</span> یک Client می‌سازد.</li>
+            <li><span class="inline-code">responses.create()</span> درخواست را ارسال می‌کند.</li>
+            <li><span class="inline-code">model</span> مدل مورد استفاده را مشخص می‌کند.</li>
+            <li><span class="inline-code">input</span> ورودی مدل است.</li>
+            <li><span class="inline-code">output_text</span> متن خروجی را ارائه می‌کند.</li>
+          </ul>
+
+          <h3 class="sub-title">۲.۸. درخواست با JavaScript</h3>
+
+          <pre class="code-block">import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+const response = await client.responses.create({
+  model: "YOUR_MODEL_NAME",
+  input: "Explain machine learning in simple terms."
+});
+
+console.log(response.output_text);</pre>
+
+          <h3 class="sub-title">۲.۹. مدیریت خطا</h3>
+
+          <pre class="code-block">from openai import OpenAI, RateLimitError, APIConnectionError
+import os
+
+client = OpenAI(
+    api_key=os.environ["OPENAI_API_KEY"],
+    timeout=30.0,
+    max_retries=2
+)
+
+try:
+    response = client.responses.create(
+        model="YOUR_MODEL_NAME",
+        input="What is a database?"
+    )
+
+    print(response.output_text)
+
+except RateLimitError:
+    print("درخواست‌ها بیش از حد مجاز هستند.")
+
+except APIConnectionError:
+    print("ارتباط با سرویس برقرار نشد.")
+
+except Exception as error:
+    print("خطای غیرمنتظره:", error)</pre>
+
+          <h3 class="sub-title">۲.۱۰. Retry و Exponential Backoff</h3>
+
+          <p>
+            Retry یعنی تلاش دوباره پس از شکست درخواست.
+            اما ارسال فوری و مکرر درخواست ممکن است مشکل را تشدید کند.
+          </p>
+
+          <p>در Exponential Backoff فاصلهٔ زمانی میان تلاش‌ها افزایش می‌یابد:</p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>تلاش</th>
+                <th>زمان انتظار فرضی</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>اول</td>
+                <td>۱ ثانیه</td>
+              </tr>
+              <tr>
+                <td>دوم</td>
+                <td>۲ ثانیه</td>
+              </tr>
+              <tr>
+                <td>سوم</td>
+                <td>۴ ثانیه</td>
+              </tr>
+              <tr>
+                <td>چهارم</td>
+                <td>۸ ثانیه</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            Retry را برای خطاهای موقت انجام دهید، نه برای تمام خطاها.
+            خطای احراز هویت با تکرار همان درخواست و همان کلید اشتباه حل نمی‌شود.
+          </div>
+
+        </section>
+
+        <!-- SECTION 3 -->
+
+        <section id="providers">
+
+          <h2 class="section-title">
+            <span class="section-number">03</span>
+            OpenAI API and Other LLM Providers
+          </h2>
+
+          <h3 class="sub-title">۳.۱. ارائه‌دهندهٔ مدل چه کاری انجام می‌دهد؟</h3>
+
+          <p>
+            ارائه‌دهندهٔ مدل زیرساخت لازم برای اجرای مدل را فراهم می‌کند.
+            وقتی درخواست API ارسال می‌کنید، سرویس درخواست را دریافت می‌کند،
+            هویت را بررسی می‌کند، ورودی را پردازش می‌کند و خروجی را به برنامه برمی‌گرداند.
+          </p>
+
+          <h3 class="sub-title">۳.۲. OpenAI API</h3>
+
+          <p>
+            Responses API یکی از رابط‌های اصلی OpenAI برای ساخت اپلیکیشن‌های مدل‌محور است.
+          </p>
+
+          <p>از کاربردهای آن می‌توان به موارد زیر اشاره کرد:</p>
+
+          <ul>
+            <li>دریافت ورودی متنی</li>
+            <li>پردازش ورودی تصویری</li>
+            <li>تولید پاسخ</li>
+            <li>مدیریت تعامل‌های چندمرحله‌ای</li>
+            <li>استفاده از ابزارها</li>
+            <li>تولید خروجی ساختاریافته</li>
+          </ul>
+
+          <pre class="code-block">from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="YOUR_MODEL_NAME",
+    instructions="You are a helpful programming tutor.",
+    input="Explain the difference between a list and a tuple in Python."
+)
+
+print(response.output_text)</pre>
+
+          <h3 class="sub-title">۳.۳. Chat Completions و Responses</h3>
+
+          <p>
+            Chat Completions یک رابط شناخته‌شده برای مکالمه با پیام‌های دارای نقش است.
+            Responses رابطی گسترده‌تر برای ساخت تعامل‌های مدل‌محور و استفاده از ابزارها ارائه می‌کند.
+          </p>
+
+          <div class="callout">
+            انتخاب API باید بر اساس نیاز پروژه و مستندات جاری انجام شود.
+            نباید فرض کرد تمام امکانات و پارامترهای APIها یکسان‌اند.
+          </div>
+
+          <h3 class="sub-title">۳.۴. Anthropic Claude API</h3>
+
+          <p>
+            Claude API از قالب پیام‌محور استفاده می‌کند.
+            برنامه پیام‌ها را ارسال می‌کند و مدل پیام بعدی را تولید می‌کند.
+          </p>
+
+          <pre class="code-block">import anthropic
+
+client = anthropic.Anthropic()
+
+message = client.messages.create(
+    model="YOUR_MODEL_NAME",
+    max_tokens=1024,
+    messages=[
+        {
+            "role": "user",
+            "content": "Explain REST APIs."
+        }
+    ]
+)
+
+print(message.content)</pre>
+
+          <h3 class="sub-title">۳.۵. Google Gemini API</h3>
+
+          <p>
+            Gemini API از محتوای متنی و انواع محتوای دیگر پشتیبانی می‌کند.
+            برای مکالمات چندمرحله‌ای، محتوا به‌صورت مجموعه‌ای از پیام‌ها و بخش‌ها ارسال می‌شود.
+          </p>
+
+          <p>
+            قابلیت‌هایی مانند Function Calling و خروجی ساختاریافته نیز در اکوسیستم آن وجود دارند.
+          </p>
+
+          <h3 class="sub-title">۳.۶. Mistral AI</h3>
+
+          <p>
+            Mistral نیز مدل‌های زبانی و APIهایی برای تولید متن و ساخت اپلیکیشن‌های هوشمند ارائه می‌کند.
+          </p>
+
+          <h3 class="sub-title">۳.۷. مقایسهٔ ارائه‌دهندگان</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ارائه‌دهنده</th>
+                <th>رابط‌های توسعه</th>
+                <th>نکتهٔ مهم</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>OpenAI</td>
+                <td>Responses و سایر APIها</td>
+                <td>تولید، ابزارها و ورودی‌های چندرسانه‌ای</td>
+              </tr>
+              <tr>
+                <td>Anthropic</td>
+                <td>Messages API</td>
+                <td>پیام‌محور و ابزارها</td>
+              </tr>
+              <tr>
+                <td>Google</td>
+                <td>Gemini API</td>
+                <td>محتوای چندبخشی و چندرسانه‌ای</td>
+              </tr>
+              <tr>
+                <td>Mistral</td>
+                <td>Mistral API</td>
+                <td>گزینه‌ای دیگر برای مدل‌های زبانی</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">۳.۸. انتخاب Provider مناسب</h3>
+
+          <ol>
+            <li>Quality: کیفیت پاسخ در وظایف موردنیاز.</li>
+            <li>Latency: زمان پاسخ‌گویی.</li>
+            <li>Cost: هزینهٔ ورودی و خروجی.</li>
+            <li>Context Window: ظرفیت متن ورودی.</li>
+            <li>Multimodal Support: پشتیبانی از تصویر، صدا و ویدئو.</li>
+            <li>Tool Calling: قابلیت استفاده از ابزارها.</li>
+            <li>Structured Output: تولید خروجی مطابق Schema.</li>
+            <li>Availability: دسترس‌پذیری سرویس.</li>
+            <li>Privacy: سیاست نگهداری و پردازش داده.</li>
+            <li>Regional Requirements: محدودیت‌های منطقه‌ای و قانونی.</li>
+          </ol>
+
+          <h3 class="sub-title">۳.۹. Provider Abstraction</h3>
+
+          <p>
+            اگر تمام کد برنامه را به شکل اختصاصی برای یک ارائه‌دهنده بنویسید،
+            تغییر Provider ممکن است دشوار شود. یک لایهٔ واسط می‌تواند این وابستگی را کاهش دهد.
+          </p>
+
+          <pre class="code-block">class LLMProvider:
+    def generate(self, messages):
+        raise NotImplementedError
+
+
+class OpenAIProvider(LLMProvider):
+    def generate(self, messages):
+        # Call OpenAI API
+        pass
+
+
+class ClaudeProvider(LLMProvider):
+    def generate(self, messages):
+        # Call Anthropic API
+        pass</pre>
+
+          <div class="callout">
+            یک Interface مشترک نباید قابلیت‌های اختصاصی و ارزشمند یک Provider
+            را پنهان یا حذف کند.
+          </div>
+
+        </section>
+
+        <!-- SECTION 4 -->
+
+        <section id="history">
+
+          <h2 class="section-title">
+            <span class="section-number">04</span>
+            Conversation and Chat History Management
+          </h2>
+
+          <h3 class="sub-title">۴.۱. چرا مدیریت تاریخچه مهم است؟</h3>
+
+          <p>
+            مدل زبانی معمولاً به‌طور خودکار از تمام مکالمات قبلی کاربران در اپلیکیشن
+            شما اطلاع ندارد.
+          </p>
+
+          <p>
+            اگر کاربر بگوید «اسم من علی است» و سپس بپرسد «اسم من چیست؟»،
+            مدل تنها در صورتی می‌تواند پاسخ مناسبی بدهد که پیام قبلی در زمینهٔ مکالمه
+            قرار گرفته باشد یا اطلاعات لازم از حافظهٔ بیرونی بازیابی شود.
+          </p>
+
+          <h3 class="sub-title">۴.۲. ساختار پیام‌ها</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>معنی</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>system</td>
+                <td>دستورالعمل سطح بالای سیستم در APIهای پشتیبانی‌شده</td>
+              </tr>
+              <tr>
+                <td>developer</td>
+                <td>دستورالعمل توسعه‌دهنده</td>
+              </tr>
+              <tr>
+                <td>user</td>
+                <td>پیام کاربر</td>
+              </tr>
+              <tr>
+                <td>assistant</td>
+                <td>پیام تولیدشده توسط مدل</td>
+              </tr>
+              <tr>
+                <td>tool</td>
+                <td>خروجی ابزار در برخی قالب‌های API</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <pre class="code-block">messages = [
+    {
+        "role": "system",
+        "content": "You are a helpful assistant."
+    },
+    {
+        "role": "user",
+        "content": "My name is Ali."
+    },
+    {
+        "role": "assistant",
+        "content": "Nice to meet you, Ali."
+    },
+    {
+        "role": "user",
+        "content": "What is my name?"
+    }
+]</pre>
+
+          <h3 class="sub-title">۴.۳. Stateless و Stateful</h3>
+
+          <div class="grid-cards">
+            <div class="mini-card">
+              <h4 class="font-black text-indigo-700">Stateless API</h4>
+              <p>هر درخواست مستقل است. برنامه باید پیام‌های قبلی لازم را دوباره ارسال کند.</p>
+            </div>
+
+            <div class="mini-card">
+              <h4 class="font-black text-indigo-700">Stateful Interaction</h4>
+              <p>سرویس می‌تواند با شناسهٔ مکالمه یا پاسخ قبلی، تعامل را ادامه دهد.</p>
+            </div>
+          </div>
+
+          <pre class="code-block">history = [
+    {"role": "user", "content": "My name is Ali."},
+    {"role": "assistant", "content": "Nice to meet you, Ali."}
+]
+
+history.append({
+    "role": "user",
+    "content": "What is my name?"
+})</pre>
+
+          <div class="callout">
+            Stateful بودن API به معنی بی‌نیازی از طراحی حافظه و پایگاه داده نیست.
+            محصول همچنان باید مالکیت داده، مجوزها و حذف اطلاعات را مدیریت کند.
+          </div>
+
+          <h3 class="sub-title">۴.۴. ذخیره‌سازی مکالمه در دیتابیس</h3>
+
+          <p>یک طراحی ساده می‌تواند شامل دو جدول باشد:</p>
+
+          <h4 class="font-bold mt-4">جدول Conversations</h4>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>توضیح</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>id</td>
+                <td>شناسهٔ مکالمه</td>
+              </tr>
+              <tr>
+                <td>user_id</td>
+                <td>شناسهٔ مالک مکالمه</td>
+              </tr>
+              <tr>
+                <td>title</td>
+                <td>عنوان مکالمه</td>
+              </tr>
+              <tr>
+                <td>created_at</td>
+                <td>زمان ایجاد</td>
+              </tr>
+              <tr>
+                <td>updated_at</td>
+                <td>آخرین تغییر</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4 class="font-bold mt-4">جدول Messages</h4>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>توضیح</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>id</td>
+                <td>شناسهٔ پیام</td>
+              </tr>
+              <tr>
+                <td>conversation_id</td>
+                <td>شناسهٔ مکالمه</td>
+              </tr>
+              <tr>
+                <td>role</td>
+                <td>نقش پیام</td>
+              </tr>
+              <tr>
+                <td>content</td>
+                <td>محتوای پیام</td>
+              </tr>
+              <tr>
+                <td>created_at</td>
+                <td>زمان ایجاد</td>
+              </tr>
+              <tr>
+                <td>token_count</td>
+                <td>تعداد توکن، در صورت محاسبه</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <pre class="code-block">CREATE TABLE conversations (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    title TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE messages (
+    id BIGSERIAL PRIMARY KEY,
+    conversation_id BIGINT REFERENCES conversations(id),
+    role VARCHAR(30) NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</pre>
+
+          <h3 class="sub-title">۴.۵. چرا نباید همیشه تمام تاریخچه را ارسال کنیم؟</h3>
+
+          <p>ارسال تمام پیام‌ها ممکن است باعث موارد زیر شود:</p>
+
+          <ul>
+            <li>افزایش مصرف توکن</li>
+            <li>افزایش هزینه</li>
+            <li>افزایش زمان پردازش</li>
+            <li>نزدیک شدن به محدودیت Context Window</li>
+            <li>ورود اطلاعات قدیمی و نامرتبط به زمینهٔ مدل</li>
+          </ul>
+
+          <h3 class="sub-title">۴.۶. روش‌های مدیریت تاریخچه</h3>
+
+          <p><strong>روش اول: نگهداری آخرین پیام‌ها</strong></p>
+          <p>فقط تعداد مشخصی از پیام‌های اخیر ارسال می‌شوند. این روش ساده است، اما ممکن است اطلاعات مهم قدیمی حذف شوند.
+          </p>
+
+          <p><strong>روش دوم: خلاصه‌سازی مکالمه</strong></p>
+          <p>مکالمات قدیمی به خلاصه‌ای فشرده تبدیل می‌شوند.</p>
+
+          <div class="callout">
+            مثال خلاصه:
+            «کاربر در حال طراحی یک پروژهٔ فروش آنلاین است. بودجهٔ اولیه ۵۰۰۰ یورو است.
+            مخاطبان هدف کسب‌وکارهای کوچک هستند. تمرکز فعلی روی بازاریابی محتواست.»
+          </div>
+
+          <p><strong>روش سوم: حافظهٔ بلندمدت</strong></p>
+
+          <pre class="code-block">{
+  "user_preferences": {
+    "language": "Persian",
+    "response_style": "Detailed"
+  },
+  "project": {
+    "name": "Online Store",
+    "status": "Planning"
+  }
+}</pre>
+
+          <p><strong>روش چهارم: بازیابی اطلاعات مرتبط</strong></p>
+          <p>در این روش، مکالمات یا اسناد قدیمی جست‌وجو می‌شوند و فقط بخش مرتبط بازیابی می‌شود.</p>
+
+          <h3 class="sub-title">۴.۷. تفاوت Conversation History و Memory</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>مفهوم</th>
+                <th>کاربرد</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Conversation History</td>
+                <td>ثبت پیام‌های ردوبدل‌شده</td>
+              </tr>
+              <tr>
+                <td>Short-term Context</td>
+                <td>اطلاعات لازم برای درخواست جاری</td>
+              </tr>
+              <tr>
+                <td>Long-term Memory</td>
+                <td>اطلاعات منتخب برای مکالمات آینده</td>
+              </tr>
+              <tr>
+                <td>Summary</td>
+                <td>فشرده‌سازی محتوای قدیمی</td>
+              </tr>
+              <tr>
+                <td>Retrieval</td>
+                <td>پیدا کردن اطلاعات مرتبط</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">۴.۸. امنیت و حریم خصوصی</h3>
+
+          <ul>
+            <li>هر مکالمه باید به مالک واقعی خود متصل باشد.</li>
+            <li>کاربران نباید تاریخچهٔ دیگران را مشاهده کنند.</li>
+            <li>اطلاعات حساس را بی‌دلیل ذخیره نکنید.</li>
+            <li>سیاست نگهداری و حذف داده باید مشخص باشد.</li>
+            <li>دسترسی به تاریخچه باید کنترل شود.</li>
+            <li>داده‌های ذخیره‌شده و منتقل‌شده باید متناسب با ریسک رمزنگاری شوند.</li>
+          </ul>
+
+        </section>
+
+        <!-- SECTION 5 -->
+
+        <section id="streaming">
+
+          <h2 class="section-title">
+            <span class="section-number">05</span>
+            Streaming Responses
+          </h2>
+
+          <h3 class="sub-title">۵.۱. Streaming چیست؟</h3>
+
+          <p>
+            در روش عادی، برنامه منتظر می‌ماند تا مدل کل پاسخ را تولید کند و سپس آن را یکجا دریافت می‌کند.
+            در Streaming، پاسخ به‌صورت تدریجی ارسال می‌شود.
+          </p>
+
+          <div class="grid-cards">
+            <div class="mini-card">
+              <h4 class="font-black text-indigo-700">Non-Streaming</h4>
+              <p>کاربر باید منتظر بماند تا کل پاسخ آماده شود.</p>
+              <div class="bg-slate-100 p-3 rounded-lg text-sm mt-3">
+                درخواست ← انتظار ← پاسخ کامل
+              </div>
+            </div>
+
+            <div class="mini-card">
+              <h4 class="font-black text-emerald-700">Streaming</h4>
+              <p>بخش‌های پاسخ به‌تدریج نمایش داده می‌شوند.</p>
+              <div class="bg-emerald-50 p-3 rounded-lg text-sm mt-3">
+                درخواست ← بخش اول ← بخش دوم ← تکمیل
+              </div>
+            </div>
+          </div>
+
+          <h3 class="sub-title">۵.۲. مزایای Streaming</h3>
+
+          <ol>
+            <li>کاهش زمان انتظار ادراک‌شده.</li>
+            <li>ایجاد تجربهٔ تعاملی بهتر.</li>
+            <li>نمایش زندهٔ پیشرفت پاسخ.</li>
+            <li>مناسب بودن برای پاسخ‌های طولانی.</li>
+            <li>امکان نمایش وضعیت عملیات.</li>
+          </ol>
+
+          <div class="callout">
+            Streaming الزاماً زمان لازم برای تولید پاسخ کامل را کاهش نمی‌دهد؛
+            بلکه باعث می‌شود کاربر زودتر اولین بخش پاسخ را ببیند.
+          </div>
+
+          <h3 class="sub-title">۵.۳. SSE چیست؟</h3>
+
+          <p>
+            SSE مخفف Server-Sent Events است.
+            این روش امکان ارسال رویدادهای متوالی از سرور به مرورگر را فراهم می‌کند.
+          </p>
+
+          <pre class="code-block">data: {"delta":"Hello"}
+
+data: {"delta":" world"}
+
+data: {"done":true}</pre>
+
+          <h3 class="sub-title">۵.۴. تفاوت SSE و WebSocket</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ویژگی</th>
+                <th>SSE</th>
+                <th>WebSocket</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>جهت ارتباط</td>
+                <td>عمدتاً سرور به کلاینت</td>
+                <td>دوطرفه</td>
+              </tr>
+              <tr>
+                <td>پیچیدگی</td>
+                <td>معمولاً ساده‌تر</td>
+                <td>پیچیده‌تر</td>
+              </tr>
+              <tr>
+                <td>کاربرد</td>
+                <td>پاسخ استریم‌شده</td>
+                <td>تعامل دوطرفه و پیوسته</td>
+              </tr>
+              <tr>
+                <td>اتصال</td>
+                <td>HTTP</td>
+                <td>WebSocket</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">۵.۵. Streaming با OpenAI</h3>
+
+          <pre class="code-block">from openai import OpenAI
+
+client = OpenAI()
+
+stream = client.responses.create(
+    model="YOUR_MODEL_NAME",
+    input="Explain how a neural network works.",
+    stream=True
+)
+
+for event in stream:
+    if event.type == "response.output_text.delta":
+        print(event.delta, end="", flush=True)</pre>
+
+          <p>
+            در این مثال، رویدادهای تدریجی دریافت می‌شوند.
+            در پیاده‌سازی واقعی باید رویدادهای پایان، خطا و سایر انواع خروجی نیز مدیریت شوند.
+          </p>
+
+          <h3 class="sub-title">۵.۶. Streaming در Frontend</h3>
+
+          <pre class="code-block">const response = await fetch("/api/chat", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    message: "Explain AI."
+  })
+});
+
+const reader = response.body.getReader();
+const decoder = new TextDecoder();
+
+while (true) {
+  const { value, done } = await reader.read();
+
+  if (done) break;
+
+  const chunk = decoder.decode(value, {
+    stream: true
+  });
+
+  console.log(chunk);
+}</pre>
+
+          <h3 class="sub-title">۵.۷. چالش‌های Streaming</h3>
+
+          <ul>
+            <li><strong>قطع اتصال:</strong> کاربر ممکن است صفحه را ببندد یا اینترنت قطع شود.</li>
+            <li><strong>پاسخ ناقص:</strong> ارتباط ممکن است در میانهٔ تولید قطع شود.</li>
+            <li><strong>محتوای نامناسب:</strong> متن قبل از کامل شدن پاسخ نمایش داده می‌شود.</li>
+            <li><strong>هم‌زمانی:</strong> پاسخ درخواست‌های مختلف نباید با هم اشتباه شوند.</li>
+            <li><strong>Markdown ناقص:</strong> بلوک کد ممکن است هنوز بسته نشده باشد.</li>
+          </ul>
+
+          <p>وضعیت پیام را می‌توان به شکل زیر مدیریت کرد:</p>
+
+          <div class="grid-cards">
+            <div class="mini-card text-center"><span class="badge">Generating</span>
+              <p class="text-sm">در حال تولید</p>
+            </div>
+            <div class="mini-card text-center"><span class="badge">Completed</span>
+              <p class="text-sm">تکمیل‌شده</p>
+            </div>
+            <div class="mini-card text-center"><span class="badge">Interrupted</span>
+              <p class="text-sm">متوقف‌شده</p>
+            </div>
+            <div class="mini-card text-center"><span class="badge">Failed</span>
+              <p class="text-sm">ناموفق</p>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- SECTION 6 -->
+
+        <section id="tokens">
+
+          <h2 class="section-title">
+            <span class="section-number">06</span>
+            Context and Token Management
+          </h2>
+
+          <h3 class="sub-title">۶.۱. Token چیست؟</h3>
+
+          <p>
+            مدل‌های زبانی متن را دقیقاً به همان شکلی که انسان می‌بیند پردازش نمی‌کنند.
+            متن ابتدا به واحدهایی به نام Token تبدیل می‌شود.
+          </p>
+
+          <p>Token ممکن است شامل این موارد باشد:</p>
+
+          <ul>
+            <li>یک کلمه</li>
+            <li>بخشی از یک کلمه</li>
+            <li>نشانهٔ نگارشی</li>
+            <li>فاصله یا ترکیبی از کاراکترها</li>
+          </ul>
+
+          <div class="card">
+            <p class="font-bold mb-2">مثال مفهومی Tokenization</p>
+
+            <p class="text-sm text-slate-500">Input:</p>
+            <div class="bg-slate-100 p-3 rounded-lg ltr">Artificial intelligence is useful.</div>
+
+            <p class="text-sm text-slate-500 mt-4">Tokens:</p>
+            <div class="bg-indigo-50 p-3 rounded-lg ltr text-indigo-800">
+              ["Artificial", " intelligence", " is", " useful", "."]
+            </div>
+          </div>
+
+          <p>
+            سپس هر Token به یک شناسهٔ عددی تبدیل می‌شود.
+            این شناسه‌ها به Tokenizer مدل وابسته‌اند.
+          </p>
+
+          <h3 class="sub-title">۶.۲. Tokenization چیست؟</h3>
+
+          <p>
+            Tokenization فرآیند تبدیل متن به توکن است.
+            تعداد کلمات با تعداد توکن‌ها برابر نیست و زبان و نوع Tokenizer بر نتیجه تأثیر دارند.
+          </p>
+
+          <h3 class="sub-title">۶.۳. Context Window چیست؟</h3>
+
+          <p>
+            Context Window حداکثر ظرفیت زمینه‌ای است که مدل می‌تواند در یک درخواست
+            یا تعامل مشخص پردازش کند. این ظرفیت معمولاً با Token اندازه‌گیری می‌شود.
+          </p>
+
+          <p>در Context باید موارد زیر را در نظر بگیریم:</p>
+
+          <ul>
+            <li>دستورالعمل‌ها</li>
+            <li>تاریخچهٔ مکالمه</li>
+            <li>متن کاربر</li>
+            <li>اسناد بازیابی‌شده</li>
+            <li>خروجی ابزارها</li>
+            <li>فضای موردنیاز برای تولید پاسخ</li>
+          </ul>
+
+          <h3 class="sub-title">۶.۴. Input Tokens و Output Tokens</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>نوع</th>
+                <th>توضیح</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Input Tokens</td>
+                <td>توکن‌های ورودی به مدل</td>
+              </tr>
+              <tr>
+                <td>Output Tokens</td>
+                <td>توکن‌های تولیدشده توسط مدل</td>
+              </tr>
+              <tr>
+                <td>Cached Input Tokens</td>
+                <td>بخش ورودی پردازش‌شده با سازوکار Cache در شرایط پشتیبانی‌شده</td>
+              </tr>
+              <tr>
+                <td>Reasoning Tokens</td>
+                <td>توکن‌های مرتبط با پردازش استدلالی در برخی مدل‌ها</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">۶.۵. مثال مدیریت بودجهٔ Context</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>بخش</th>
+                <th>تعداد توکن فرضی</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>System Instructions</td>
+                <td>۱۰۰۰</td>
+              </tr>
+              <tr>
+                <td>تاریخچهٔ مکالمه</td>
+                <td>۴۰۰۰</td>
+              </tr>
+              <tr>
+                <td>پیام جدید کاربر</td>
+                <td>۵۰۰</td>
+              </tr>
+              <tr>
+                <td>اسناد بازیابی‌شده</td>
+                <td>۵۰۰۰</td>
+              </tr>
+              <tr>
+                <td>فضای خروجی موردنظر</td>
+                <td>۲۰۰۰</td>
+              </tr>
+              <tr>
+                <th>مجموع</th>
+                <th>۱۲۵۰۰</th>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">۶.۶. روش‌های کاهش مصرف Context</h3>
+
+          <ol>
+            <li>حذف تاریخچهٔ غیرضروری.</li>
+            <li>خلاصه‌سازی مکالمات قدیمی.</li>
+            <li>بازیابی هدفمند اسناد.</li>
+            <li>محدود کردن طول خروجی.</li>
+            <li>کوتاه و دقیق نوشتن دستورالعمل‌ها.</li>
+            <li>استفاده از Prompt Caching در صورت پشتیبانی.</li>
+          </ol>
+
+          <h3 class="sub-title">۶.۷. مدیریت تاریخچه با Token Budget</h3>
+
+          <pre class="code-block">MAX_CONTEXT_TOKENS = 12000
+RESERVED_OUTPUT_TOKENS = 2000
+
+available_input = (
+    MAX_CONTEXT_TOKENS - RESERVED_OUTPUT_TOKENS
+)
+
+def build_context(system_prompt, history, user_message):
+    selected_history = []
+
+    for message in reversed(history):
+        # در نسخه واقعی باید تعداد توکن محاسبه شود.
+        if fits_budget(message, available_input):
+            selected_history.insert(0, message)
+
+    return [
+        {"role": "system", "content": system_prompt},
+        *selected_history,
+        {"role": "user", "content": user_message}
+    ]</pre>
+
+          <div class="warning">
+            تابع fits_budget در مثال فرضی است. در پروژهٔ واقعی باید از Tokenizer مناسب
+            استفاده شود و مجموع توکن تمام بخش‌ها محاسبه شود.
+          </div>
+
+          <h3 class="sub-title">۶.۸. Context Management در RAG</h3>
+
+          <p>
+            در RAG باید علاوه بر تعداد توکن، کیفیت متن‌های بازیابی‌شده نیز کنترل شود.
+            اگر بخش‌های کم‌ارتباط زیادی به مدل بدهیم، ممکن است پاسخ بدتری تولید شود.
+          </p>
+
+          <p>عوامل مهم:</p>
+
+          <ul>
+            <li>اندازهٔ Chunk</li>
+            <li>میزان هم‌پوشانی Chunkها</li>
+            <li>کیفیت Embedding</li>
+            <li>تعداد نتایج بازیابی‌شده</li>
+            <li>امتیاز شباهت</li>
+            <li>مرتب‌سازی نتایج</li>
+            <li>حذف اطلاعات تکراری</li>
+            <li>محدودیت Context</li>
+          </ul>
+
+        </section>
+
+        <!-- SECTION 7 -->
+
+        <section id="structured">
+
+          <h2 class="section-title">
+            <span class="section-number">07</span>
+            Structured Data Extraction
+          </h2>
+
+          <h3 class="sub-title">۷.۱. استخراج دادهٔ ساختاریافته چیست؟</h3>
+
+          <p>
+            در بسیاری از اپلیکیشن‌ها پاسخ متنی آزاد کافی نیست.
+            فرض کنید کاربر می‌گوید:
+            «من سارا احمدی هستم، ۲۸ سال دارم و در برلین زندگی می‌کنم.»
+          </p>
+
+          <p>برنامه می‌خواهد این اطلاعات را استخراج کند:</p>
+
+          <pre class="code-block">{
+  "name": "Sara Ahmadi",
+  "age": 28,
+  "city": "Berlin"
+}</pre>
+
+          <h3 class="sub-title">۷.۲. چرا خروجی ساختاریافته مهم است؟</h3>
+
+          <ul>
+            <li>استخراج اطلاعات فرم‌ها</li>
+            <li>پردازش فاکتور</li>
+            <li>استخراج مشخصات رزومه</li>
+            <li>تحلیل نظرات کاربران</li>
+            <li>دسته‌بندی ایمیل‌ها</li>
+            <li>استخراج اطلاعات قرارداد</li>
+            <li>پردازش سفارش‌ها</li>
+          </ul>
+
+          <h3 class="sub-title">۷.۳. JSON چیست؟</h3>
+
+          <p>
+            JSON مخفف JavaScript Object Notation است.
+            یک قالب متنی برای تبادل داده میان سیستم‌هاست.
+          </p>
+
+          <pre class="code-block">{
+  "customer": {
+    "name": "Sara",
+    "age": 28
+  },
+  "order": {
+    "id": 1234,
+    "status": "shipped"
+  }
+}</pre>
+
+          <p>نوع داده‌های متداول JSON:</p>
+
+          <ul>
+            <li>String</li>
+            <li>Number</li>
+            <li>Boolean</li>
+            <li>Null</li>
+            <li>Array</li>
+            <li>Object</li>
+          </ul>
+
+          <h3 class="sub-title">۷.۴. JSON Schema چیست؟</h3>
+
+          <p>
+            JSON Schema مجموعه‌ای از قوانین برای تعریف شکل دادهٔ موردانتظار است.
+          </p>
+
+          <pre class="code-block">{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "age": {
+      "type": "integer"
+    },
+    "email": {
+      "type": ["string", "null"]
+    }
+  },
+  "required": [
+    "name",
+    "age",
+    "email"
+  ],
+  "additionalProperties": false
+}</pre>
+
+          <h3 class="sub-title">۷.۵. Structured Outputs</h3>
+
+          <p>
+            در برخی APIها می‌توان Schema را به مدل ارائه کرد تا خروجی مطابق ساختار
+            تعیین‌شده تولید شود.
+          </p>
+
+          <pre class="code-block">from pydantic import BaseModel
+from openai import OpenAI
+
+client = OpenAI()
+
+class Person(BaseModel):
+    name: str
+    age: int
+    city: str
+
+response = client.responses.parse(
+    model="YOUR_MODEL_NAME",
+    input=(
+        "Extract the person's information: "
+        "Sara is 28 years old and lives in Berlin."
+    ),
+    text_format=Person
+)
+
+person = response.output_parsed
+
+print(person.name)
+print(person.age)
+print(person.city)</pre>
+
+          <h3 class="sub-title">۷.۶. JSON Mode و Structured Outputs</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ویژگی</th>
+                <th>JSON Mode</th>
+                <th>Structured Outputs</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>تولید JSON معتبر</td>
+                <td>هدف اصلی</td>
+                <td>بله</td>
+              </tr>
+              <tr>
+                <td>پیروی از Schema</td>
+                <td>لزوماً تضمین نمی‌شود</td>
+                <td>برای Schema پشتیبانی‌شده طراحی شده است</td>
+              </tr>
+              <tr>
+                <td>کنترل فیلدها</td>
+                <td>محدودتر</td>
+                <td>دقیق‌تر</td>
+              </tr>
+              <tr>
+                <td>کاربرد</td>
+                <td>ساختار عمومی JSON</td>
+                <td>خروجی قابل‌استفاده در برنامه</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="warning">
+            حتی اگر خروجی با Schema مطابقت داشته باشد، معنای آن لزوماً درست نیست.
+            اعتبار ساختاری با صحت معنایی متفاوت است.
+          </div>
+
+          <h3 class="sub-title">۷.۷. مثال استخراج فاکتور</h3>
+
+          <pre class="code-block">Invoice Number: INV-2045
+Customer: Sara Ahmadi
+Date: 2026-10-15
+Total: 250.00 EUR</pre>
+
+          <p>خروجی موردنیاز:</p>
+
+          <pre class="code-block">{
+  "invoice_number": "INV-2045",
+  "customer": "Sara Ahmadi",
+  "date": "2026-10-15",
+  "currency": "EUR",
+  "total": 250.00
+}</pre>
+
+          <p>اعتبارسنجی‌های ضروری:</p>
+
+          <ul>
+            <li>آیا تاریخ معتبر است؟</li>
+            <li>آیا مبلغ منفی نیست؟</li>
+            <li>آیا واحد پول مجاز است؟</li>
+            <li>آیا شمارهٔ فاکتور تکراری نیست؟</li>
+            <li>آیا مجموع اقلام با مبلغ کل مطابقت دارد؟</li>
+          </ul>
+
+          <h3 class="sub-title">۷.۸. Structured Extraction در برابر Function Calling</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>مفهوم</th>
+                <th>هدف</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Structured Output</td>
+                <td>تولید داده در قالب مشخص</td>
+              </tr>
+              <tr>
+                <td>Function Calling</td>
+                <td>درخواست اجرای ابزار یا تابع</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p>نمونهٔ Structured Output:</p>
+
+          <pre class="code-block">{
+  "intent": "check_order",
+  "order_id": "1234"
+}</pre>
+
+          <p>نمونهٔ Function Call:</p>
+
+          <pre class="code-block">{
+  "name": "get_order_status",
+  "arguments": {
+    "order_id": "1234"
+  }
+}</pre>
+
+          <p>
+            در Function Calling، برنامه باید تابع را اجرا کند و نتیجه را مدیریت کند.
+            خروجی ساختاریافته به‌تنهایی به معنی اجرای عملیات نیست.
+          </p>
+
+        </section>
+
+        <!-- SECTION 8 -->
+
+        <section id="multimodal">
+
+          <h2 class="section-title">
+            <span class="section-number">08</span>
+            Multimodal AI Development
+          </h2>
+
+          <h3 class="sub-title">۸.۱. هوش مصنوعی چندرسانه‌ای چیست؟</h3>
+
+          <p>
+            Multimodal AI به سیستم‌هایی گفته می‌شود که می‌توانند با بیش از یک نوع داده کار کنند.
+          </p>
+
+          <div class="grid-cards">
+            <div class="mini-card text-center">
+              <div class="text-3xl mb-2">📝</div>
+              <strong>Text</strong>
+              <p class="text-sm">متن</p>
+            </div>
+
+            <div class="mini-card text-center">
+              <div class="text-3xl mb-2">🖼️</div>
+              <strong>Image</strong>
+              <p class="text-sm">تصویر</p>
+            </div>
+
+            <div class="mini-card text-center">
+              <div class="text-3xl mb-2">🎧</div>
+              <strong>Audio</strong>
+              <p class="text-sm">صدا</p>
+            </div>
+
+            <div class="mini-card text-center">
+              <div class="text-3xl mb-2">🎬</div>
+              <strong>Video</strong>
+              <p class="text-sm">ویدئو</p>
+            </div>
+
+            <div class="mini-card text-center">
+              <div class="text-3xl mb-2">📄</div>
+              <strong>Documents</strong>
+              <p class="text-sm">اسناد</p>
+            </div>
+          </div>
+
+          <h3 class="sub-title">۸.۲. توسعهٔ اپلیکیشن تصویری</h3>
+
+          <p>
+            فرض کنید کاربر تصویری از یک گیاه ارسال می‌کند و می‌پرسد:
+            «این گیاه چه نوعی است؟»
+          </p>
+
+          <ol>
+            <li>تصویر از کاربر دریافت می‌شود.</li>
+            <li>نوع فایل و اندازه بررسی می‌شود.</li>
+            <li>تصویر به سرویس مدل ارسال می‌شود.</li>
+            <li>سؤال همراه تصویر قرار می‌گیرد.</li>
+            <li>پاسخ دریافت می‌شود.</li>
+            <li>نتیجه نمایش داده می‌شود.</li>
+          </ol>
+
+          <pre class="code-block">from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="YOUR_VISION_CAPABLE_MODEL",
+    input=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "input_text",
+                    "text": "Describe this image."
+                },
+                {
+                    "type": "input_image",
+                    "image_url": "https://example.com/plant.jpg"
+                }
+            ]
+        }
+    ]
+)
+
+print(response.output_text)</pre>
+
+          <h3 class="sub-title">۸.۳. توسعهٔ اپلیکیشن صوتی</h3>
+
+          <div class="grid-cards">
+            <div class="mini-card">
+              <h4 class="font-black text-indigo-700">Speech-to-Text</h4>
+              <p>تبدیل گفتار به متن.</p>
+              <p class="text-sm text-slate-500">مثال: تبدیل صدای کاربر به جملهٔ قابل‌پردازش.</p>
+            </div>
+
+            <div class="mini-card">
+              <h4 class="font-black text-indigo-700">Text-to-Speech</h4>
+              <p>تبدیل متن به صدا.</p>
+              <p class="text-sm text-slate-500">مثال: خواندن پاسخ مدل با صدای مصنوعی.</p>
+            </div>
+
+            <div class="mini-card">
+              <h4 class="font-black text-indigo-700">Speech-to-Speech</h4>
+              <p>دریافت ورودی صوتی و تولید پاسخ صوتی.</p>
+              <p class="text-sm text-slate-500">مثال: دستیار صوتی مکالمه‌ای.</p>
+            </div>
+          </div>
+
+          <h3 class="sub-title">۸.۴. توسعهٔ اپلیکیشن ویدئویی</h3>
+
+          <p>
+            ویدئو ترکیبی از تصویر و زمان است.
+            سیستم تحلیل ویدئو ممکن است مراحل زیر را اجرا کند:
+          </p>
+
+          <ol>
+            <li>دریافت فایل ویدئو.</li>
+            <li>استخراج اطلاعات زمانی.</li>
+            <li>انتخاب فریم‌های مناسب.</li>
+            <li>جدا کردن و پردازش صوت.</li>
+            <li>تحلیل تصویر و صدا.</li>
+            <li>تولید خلاصه.</li>
+          </ol>
+
+          <h3 class="sub-title">۸.۵. پردازش اسناد و فایل‌ها</h3>
+
+          <p>فایل‌های رایج:</p>
+
+          <ul>
+            <li>PDF</li>
+            <li>DOCX</li>
+            <li>XLSX</li>
+            <li>CSV</li>
+            <li>فایل متنی</li>
+          </ul>
+
+          <p>فرآیند معمول پردازش:</p>
+
+          <ol>
+            <li>دریافت فایل.</li>
+            <li>بررسی نوع و اندازه.</li>
+            <li>استخراج متن.</li>
+            <li>OCR در صورت نیاز.</li>
+            <li>تقسیم متن به بخش‌ها.</li>
+            <li>استخراج داده یا جست‌وجو.</li>
+            <li>ارسال اطلاعات مرتبط به مدل.</li>
+          </ol>
+
+          <h3 class="sub-title">۸.۶. OCR چیست؟</h3>
+
+          <p>
+            OCR مخفف Optical Character Recognition است.
+            این فناوری نوشته‌های موجود در تصویر یا اسکن را به متن قابل‌پردازش تبدیل می‌کند.
+          </p>
+
+          <p>
+            مثال: یک فاکتور اسکن‌شده به تصویر تبدیل شده است.
+            OCR متن آن را استخراج می‌کند تا مدل بتواند شمارهٔ فاکتور، تاریخ و مبلغ را شناسایی کند.
+          </p>
+
+          <h3 class="sub-title">۸.۷. چالش‌های Multimodal Development</h3>
+
+          <ul>
+            <li><strong>حجم داده:</strong> تصویر، صوت و ویدئو ممکن است بسیار بزرگ‌تر از متن باشند.</li>
+            <li><strong>فرمت فایل:</strong> نوع فایل و قالب قابل‌پشتیبانی باید بررسی شود.</li>
+            <li><strong>زمان پردازش:</strong> تحلیل ویدئو یا صوت طولانی ممکن است زمان‌بر باشد.</li>
+            <li><strong>حریم خصوصی:</strong> تصاویر و صدا ممکن است اطلاعات شخصی داشته باشند.</li>
+            <li><strong>دقت:</strong> مدل ممکن است جزئیات تصویر یا صوت را اشتباه تشخیص دهد.</li>
+            <li><strong>هزینه:</strong> پردازش داده‌های چندرسانه‌ای ممکن است قیمت متفاوتی داشته باشد.</li>
+          </ul>
+
+        </section>
+
+        <!-- SECTION 9 -->
+
+        <section id="database">
+
+          <h2 class="section-title">
+            <span class="section-number">09</span>
+            AI and Database Integration
+          </h2>
+
+          <h3 class="sub-title">۹.۱. چرا مدل به دیتابیس نیاز دارد؟</h3>
+
+          <p>
+            مدل زبانی دانش عمومی دارد، اما لزوماً به اطلاعات اختصاصی و به‌روز نرم‌افزار شما
+            دسترسی ندارد.
+          </p>
+
+          <p>
+            برای مثال مدل دربارهٔ سفارش و ارسال کالا اطلاعات عمومی دارد،
+            اما نمی‌داند سفارش واقعی یک مشتری در دیتابیس شرکت چه وضعیتی دارد.
+          </p>
+
+          <h3 class="sub-title">۹.۲. معماری اتصال مدل به دیتابیس</h3>
+
+          <div class="diagram">
+            <div class="diagram-box bg-blue-100">کاربر: «سفارش من کجاست؟»</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-indigo-100">LLM: تشخیص نیاز به اطلاعات سفارش</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-amber-100">Backend: بررسی هویت و مجوز کاربر</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-emerald-100">Database Query</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-indigo-100">LLM: تبدیل اطلاعات به پاسخ</div>
+            <div class="diagram-arrow">↓</div>
+            <div class="diagram-box bg-emerald-100">پاسخ به کاربر</div>
+          </div>
+
+          <h3 class="sub-title">۹.۳. Function Calling برای دریافت اطلاعات</h3>
+
+          <pre class="code-block">def get_order_status(order_id, user_id):
+    query = """
+        SELECT id, status, estimated_delivery
+        FROM orders
+        WHERE id = %s AND user_id = %s
+    """
+
+    return database.fetch_one(
+        query,
+        (order_id, user_id)
+    )</pre>
+
+          <p>
+            در این مثال، user_id باید از هویت احراز‌شدهٔ کاربر در Backend به دست آید،
+            نه از مقداری که مدل یا کاربر آزادانه تعیین می‌کند.
+          </p>
+
+          <h3 class="sub-title">۹.۴. چرخهٔ Function Calling</h3>
+
+          <ol>
+            <li>مدل درخواست استفاده از تابع را اعلام می‌کند.</li>
+            <li>Backend نام تابع و آرگومان‌ها را دریافت می‌کند.</li>
+            <li>آرگومان‌ها اعتبارسنجی می‌شوند.</li>
+            <li>مجوز کاربر بررسی می‌شود.</li>
+            <li>تابع اجرا می‌شود.</li>
+            <li>نتیجه به مدل برگردانده می‌شود.</li>
+            <li>مدل پاسخ نهایی را تولید می‌کند.</li>
+          </ol>
+
+          <div class="warning">
+            مدل می‌تواند پیشنهاد دهد که تابع اجرا شود، اما تصمیم نهایی دربارهٔ
+            مجاز بودن و اجرای آن در اختیار Backend است.
+          </div>
+
+          <h3 class="sub-title">۹.۵. SQL و هوش مصنوعی</h3>
+
+          <p>
+            یکی از کاربردهای مهم AI، تبدیل زبان طبیعی به SQL است.
+          </p>
+
+          <p>مثال سؤال:</p>
+          <div class="bg-indigo-50 rounded-lg p-4 font-bold">
+            «مجموع فروش ماه گذشته چقدر بوده است؟»
+          </div>
+
+          <p>مدل ممکن است کوئری زیر را پیشنهاد کند:</p>
+
+          <pre class="code-block">SELECT SUM(total_amount)
+FROM orders
+WHERE created_at >= DATE '2026-10-01'
+  AND created_at < DATE '2026-11-01';</pre>
+
+          <h3 class="sub-title">۹.۶. خطرهای Text-to-SQL</h3>
+
+          <ul>
+            <li>دسترسی غیرمجاز به داده‌ها</li>
+            <li>اجرای کوئری مخرب</li>
+            <li>حذف یا تغییر داده‌ها</li>
+            <li>مصرف بیش از حد منابع</li>
+            <li>استخراج اطلاعات محرمانه</li>
+            <li>اشتباه در تعریف بازهٔ زمانی یا معیارهای کسب‌وکار</li>
+          </ul>
+
+          <h3 class="sub-title">۹.۷. روش ایمن‌تر</h3>
+
+          <ol>
+            <li>فقط Schemaهای مجاز را در اختیار مدل قرار دهید.</li>
+            <li>دسترسی را به Read-only محدود کنید.</li>
+            <li>SQL تولیدشده را Parse و اعتبارسنجی کنید.</li>
+            <li>فقط Queryهای مجاز را اجرا کنید.</li>
+            <li>از Parameterized Queries استفاده کنید.</li>
+            <li>محدودیت زمان و تعداد رکورد اعمال کنید.</li>
+            <li>نتایج را از نظر مجوز و حساسیت بررسی کنید.</li>
+          </ol>
+
+          <pre class="code-block">def search_customer_orders(customer_id):
+    sql = """
+        SELECT id, status, total_amount
+        FROM orders
+        WHERE customer_id = %s
+        ORDER BY created_at DESC
+        LIMIT 20
+    """
+
+    return db.execute(
+        sql,
+        (customer_id,)
+    )</pre>
+
+          <h3 class="sub-title">۹.۸. RAG و Vector Database</h3>
+
+          <p>
+            گاهی داده‌ها در قالب اسناد متنی هستند و SQL به‌تنهایی مناسب نیست.
+            برای مثال راهنمای محصول، قرارداد، سیاست شرکت، گزارش و مستندات فنی.
+          </p>
+
+          <p>
+            Vector Database داده‌ها را به شکل بردارهای عددی نگهداری می‌کند
+            و امکان جست‌وجو بر اساس شباهت برداری را فراهم می‌کند.
+          </p>
+
+          <p>مثال دو جملهٔ نزدیک از نظر معنا:</p>
+
+          <div class="grid-cards">
+            <div class="mini-card">چگونه رمز عبورم را عوض کنم؟</div>
+            <div class="mini-card">روش تغییر پسورد چیست؟</div>
+          </div>
+
+          <h3 class="sub-title">۹.۹. SQL Database در برابر Vector Database</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ویژگی</th>
+                <th>SQL Database</th>
+                <th>Vector Database</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>داده</td>
+                <td>ساختاریافته و رابطه‌ای</td>
+                <td>بردارها و اطلاعات همراه</td>
+              </tr>
+              <tr>
+                <td>جست‌وجو</td>
+                <td>شرط و مقدار دقیق</td>
+                <td>شباهت معنایی</td>
+              </tr>
+              <tr>
+                <td>مثال</td>
+                <td>سفارش شمارهٔ ۱۲۳۴</td>
+                <td>اسناد مرتبط با یک سؤال</td>
+              </tr>
+              <tr>
+                <td>کاربرد</td>
+                <td>تراکنش و دادهٔ عملیاتی</td>
+                <td>RAG و Semantic Search</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">۹.۱۰. امنیت اتصال AI به دیتابیس</h3>
+
+          <p><strong>اصل Least Privilege:</strong> هر بخش فقط باید حداقل دسترسی لازم را داشته باشد.</p>
+
+          <p><strong>Parameterized Queries:</strong> ورودی کاربر نباید مستقیماً به SQL چسبانده شود.</p>
+
+          <p>روش ناامن:</p>
+
+          <pre class="code-block">sql = (
+    "SELECT * FROM users WHERE name = '"
+    + user_input
+    + "'"
+)</pre>
+
+          <p>روش بهتر:</p>
+
+          <pre class="code-block">sql = "SELECT * FROM users WHERE name = %s"
+
+db.execute(sql, (user_input,))</pre>
+
+          <p><strong>تأیید عملیات حساس:</strong> برای لغو سفارش، پرداخت، ارسال ایمیل یا تغییر حساب ممکن است تأیید کاربر
+            لازم باشد.</p>
+
+          <div class="warning">
+            تولید یک Function Call به معنی اجازهٔ اجرای آن نیست.
+          </div>
+
+        </section>
+
+        <!-- SECTION 10 -->
+
+        <section id="optimization">
+
+          <h2 class="section-title">
+            <span class="section-number">10</span>
+            Cost, Latency and Performance Optimization
+          </h2>
+
+          <h3 class="sub-title">۱۰.۱. چرا بهینه‌سازی اهمیت دارد؟</h3>
+
+          <p>
+            اگر هر درخواست هزینهٔ بالایی داشته باشد، هزینهٔ ماهانه با افزایش کاربران زیاد می‌شود.
+            اگر هر پاسخ ۱۵ ثانیه طول بکشد، کاربران تجربهٔ مناسبی نخواهند داشت.
+          </p>
+
+          <p>سه معیار اصلی:</p>
+
+          <div class="grid-cards">
+            <div class="mini-card text-center">
+              <div class="text-3xl">💰</div>
+              <h4 class="font-black mt-2">Cost</h4>
+              <p class="text-sm">هزینهٔ استفاده از مدل و زیرساخت</p>
+            </div>
+
+            <div class="mini-card text-center">
+              <div class="text-3xl">⏱️</div>
+              <h4 class="font-black mt-2">Latency</h4>
+              <p class="text-sm">تأخیر زمانی پاسخ</p>
+            </div>
+
+            <div class="mini-card text-center">
+              <div class="text-3xl">⚡</div>
+              <h4 class="font-black mt-2">Performance</h4>
+              <p class="text-sm">کارایی و پایداری سیستم</p>
+            </div>
+          </div>
+
+          <h3 class="sub-title">۱۰.۲. Cost چیست؟</h3>
+
+          <p>هزینهٔ استفاده از سرویس AI ممکن است به موارد زیر وابسته باشد:</p>
+
+          <ul>
+            <li>تعداد توکن ورودی</li>
+            <li>تعداد توکن خروجی</li>
+            <li>نوع مدل</li>
+            <li>قابلیت‌های مورد استفاده</li>
+            <li>ورودی‌های تصویری یا صوتی</li>
+            <li>ابزارهای جانبی</li>
+            <li>سیاست قیمت‌گذاری سرویس</li>
+          </ul>
+
+          <p class="font-bold mt-5">فرمول مفهومی هزینه:</p>
+
+          <div class="bg-slate-900 text-white p-5 rounded-xl text-center ltr">
+            Total Cost = Input Cost + Output Cost + Additional Costs
+          </div>
+
+          <p class="font-bold mt-5">اگر قیمت به‌ازای هر یک میلیون توکن تعریف شده باشد:</p>
+
+          <div class="bg-slate-900 text-white p-5 rounded-xl text-center ltr text-lg">
+            C = (T<sub>in</sub> / 1,000,000) × P<sub>in</sub>
+            <br>+
+            <br>(T<sub>out</sub> / 1,000,000) × P<sub>out</sub>
+          </div>
+
+          <p>که در آن:</p>
+
+          <ul>
+            <li><span class="inline-code">T_in</span>: تعداد توکن ورودی</li>
+            <li><span class="inline-code">T_out</span>: تعداد توکن خروجی</li>
+            <li><span class="inline-code">P_in</span>: قیمت هر یک میلیون توکن ورودی</li>
+            <li><span class="inline-code">P_out</span>: قیمت هر یک میلیون توکن خروجی</li>
+          </ul>
+
+          <h3 class="sub-title">۱۰.۳. مثال محاسبهٔ هزینه</h3>
+
+          <p>فرض کنیم قیمت‌های فرضی یک مدل:</p>
+
+          <ul>
+            <li>ورودی: ۲ دلار به‌ازای هر یک میلیون توکن</li>
+            <li>خروجی: ۸ دلار به‌ازای هر یک میلیون توکن</li>
+          </ul>
+
+          <p>مصرف یک درخواست:</p>
+
+          <ul>
+            <li>ورودی: ۱۰٬۰۰۰ توکن</li>
+            <li>خروجی: ۲٬۰۰۰ توکن</li>
+          </ul>
+
+          <pre class="code-block">Input Cost =
+(10,000 / 1,000,000) × 2
+= 0.02 USD
+
+Output Cost =
+(2,000 / 1,000,000) × 8
+= 0.016 USD
+
+Total Cost =
+0.02 + 0.016
+= 0.036 USD</pre>
+
+          <div class="callout">
+            اگر این درخواست روزانه ۱۰٬۰۰۰ بار اجرا شود،
+            هزینهٔ روزانهٔ فرضی برابر با ۳۶۰ دلار خواهد بود.
+            قیمت‌های مثال آموزشی‌اند، نه قیمت واقعی یک مدل مشخص.
+          </div>
+
+          <h3 class="sub-title">۱۰.۴. Latency چیست؟</h3>
+
+          <p>
+            Latency یعنی مدت زمانی که طول می‌کشد تا یک درخواست یا پاسخ از یک مرحله به مرحلهٔ دیگر برسد.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>معیار</th>
+                <th>مفهوم</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>TTFT</td>
+                <td>زمان تا دریافت اولین بخش خروجی</td>
+              </tr>
+              <tr>
+                <td>Time to Complete</td>
+                <td>زمان تکمیل پاسخ</td>
+              </tr>
+              <tr>
+                <td>API Latency</td>
+                <td>زمان پردازش و پاسخ سرویس</td>
+              </tr>
+              <tr>
+                <td>Network Latency</td>
+                <td>تأخیر شبکه</td>
+              </tr>
+              <tr>
+                <td>Database Latency</td>
+                <td>زمان عملیات پایگاه داده</td>
+              </tr>
+              <tr>
+                <td>End-to-End Latency</td>
+                <td>زمان کل درخواست تا نتیجه</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">۱۰.۵. مثال زمان‌بندی یک درخواست</h3>
+
+          <div class="card">
+            <div class="flex justify-between text-sm mb-2">
+              <span>ارسال درخواست</span><strong>۰.۰ ثانیه</strong>
+            </div>
+            <div class="flex justify-between text-sm mb-2">
+              <span>احراز هویت</span><strong>۰.۱ ثانیه</strong>
+            </div>
+            <div class="flex justify-between text-sm mb-2">
+              <span>دریافت اطلاعات دیتابیس</span><strong>۰.۲ ثانیه</strong>
+            </div>
+            <div class="flex justify-between text-sm mb-2">
+              <span>اولین بخش پاسخ مدل</span><strong>۱.۴ ثانیه</strong>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span>تکمیل پاسخ</span><strong>۴.۸ ثانیه</strong>
+            </div>
+          </div>
+
+          <h3 class="sub-title">۱۰.۶. Performance چیست؟</h3>
+
+          <p>
+            Performance به توانایی سیستم در پاسخ‌گویی سریع، پایدار و مؤثر
+            تحت بار کاری گفته می‌شود.
+          </p>
+
+          <ul>
+            <li>Latency</li>
+            <li>Throughput</li>
+            <li>Error Rate</li>
+            <li>Concurrent Requests</li>
+            <li>Resource Utilization</li>
+            <li>Availability</li>
+          </ul>
+
+          <p><strong>Throughput:</strong> تعداد درخواست‌هایی که سیستم در یک بازهٔ زمانی پردازش می‌کند.</p>
+
+          <h3 class="sub-title">۱۰.۷. روش‌های کاهش هزینه</h3>
+
+          <h4 class="font-bold mt-4">۱. انتخاب مدل متناسب با وظیفه</h4>
+          <p>برای هر کار لازم نیست از قدرتمندترین و گران‌ترین مدل استفاده شود.</p>
+
+          <h4 class="font-bold mt-4">۲. کاهش Tokenهای ورودی</h4>
+          <ul>
+            <li>حذف پیام‌های تکراری</li>
+            <li>خلاصه‌سازی تاریخچه</li>
+            <li>کوتاه‌سازی دستورالعمل‌ها</li>
+            <li>بازیابی هدفمند اسناد</li>
+          </ul>
+
+          <h4 class="font-bold mt-4">۳. محدود کردن خروجی</h4>
+          <p>اگر پاسخ ۱۰۰ کلمه‌ای کافی است، اجازه ندهید مدل بی‌دلیل پاسخ بسیار طولانی تولید کند.</p>
+
+          <h4 class="font-bold mt-4">۴. Caching</h4>
+
+          <pre class="code-block">cache_key = "faq:refund_policy"
+
+cached_answer = cache.get(cache_key)
+
+if cached_answer:
+    return cached_answer
+
+answer = generate_answer()
+
+cache.set(
+    cache_key,
+    answer,
+    ttl=3600
+)
+
+return answer</pre>
+
+          <div class="warning">
+            پاسخ‌های شخصی یا وابسته به مجوز کاربر را نباید بدون کلید کش مناسب
+            میان کاربران به اشتراک گذاشت.
+          </div>
+
+          <h4 class="font-bold mt-4">۵. Batch Processing</h4>
+          <p>اگر پردازش فوری لازم نیست، می‌توان چند درخواست را به‌صورت دسته‌ای اجرا کرد.</p>
+
+          <h4 class="font-bold mt-4">۶. Prompt Caching</h4>
+          <p>برای دستورالعمل‌ها یا بخش‌های تکراری ورودی، در صورت پشتیبانی سرویس، از Prompt Caching استفاده کنید.</p>
+
+          <h3 class="sub-title">۱۰.۸. روش‌های کاهش Latency</h3>
+
+          <ol>
+            <li>استفاده از Streaming.</li>
+            <li>کاهش تعداد مراحل متوالی.</li>
+            <li>اجرای موازی کارهای مستقل.</li>
+            <li>استفاده از Cache.</li>
+            <li>نزدیک کردن سرویس‌های مرتبط از نظر شبکه‌ای.</li>
+            <li>محدود کردن خروجی.</li>
+          </ol>
+
+          <h3 class="sub-title">۱۰.۹. بهینه‌سازی هم‌زمان هزینه و سرعت</h3>
+
+          <table>
+            <thead>
+              <tr>
+                <th>روش</th>
+                <th>مزیت احتمالی</th>
+                <th>محدودیت</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>مدل کوچک‌تر</td>
+                <td>هزینه و زمان کمتر</td>
+                <td>ممکن است کیفیت پایین‌تر باشد</td>
+              </tr>
+              <tr>
+                <td>مدل بزرگ‌تر</td>
+                <td>کیفیت بهتر در برخی وظایف</td>
+                <td>ممکن است گران‌تر باشد</td>
+              </tr>
+              <tr>
+                <td>RAG</td>
+                <td>کاهش ارسال اسناد غیرضروری</td>
+                <td>زمان بازیابی دارد</td>
+              </tr>
+              <tr>
+                <td>Cache</td>
+                <td>پاسخ سریع‌تر</td>
+                <td>نیازمند سیاست به‌روزرسانی</td>
+              </tr>
+              <tr>
+                <td>Streaming</td>
+                <td>کاهش انتظار ادراک‌شده</td>
+                <td>زمان تولید کامل را الزاماً کاهش نمی‌دهد</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">۱۰.۱۰. Load Balancing و Scaling</h3>
+
+          <p><strong>Load Balancing:</strong> تقسیم درخواست‌ها بین چند سرور.</p>
+          <p><strong>Horizontal Scaling:</strong> افزایش تعداد نمونه‌های سرور.</p>
+          <p><strong>Vertical Scaling:</strong> افزایش منابع یک سرور مانند CPU و RAM.</p>
+
+          <h3 class="sub-title">۱۰.۱۱. Monitoring و Observability</h3>
+
+          <p>معیارهایی که بهتر است ثبت شوند:</p>
+
+          <ul>
+            <li>تعداد درخواست‌ها</li>
+            <li>تعداد توکن ورودی و خروجی</li>
+            <li>هزینهٔ هر درخواست</li>
+            <li>زمان اولین توکن</li>
+            <li>زمان تکمیل پاسخ</li>
+            <li>نرخ خطا</li>
+            <li>نرخ Timeout</li>
+            <li>نرخ استفاده از Cache</li>
+            <li>تعداد فراخوانی ابزارها</li>
+            <li>کیفیت پاسخ</li>
+          </ul>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>هدف</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Average Latency</td>
+                <td>بررسی سرعت متوسط</td>
+              </tr>
+              <tr>
+                <td>P95 Latency</td>
+                <td>بررسی درخواست‌های کندتر</td>
+              </tr>
+              <tr>
+                <td>Error Rate</td>
+                <td>بررسی پایداری</td>
+              </tr>
+              <tr>
+                <td>Cost per Request</td>
+                <td>کنترل هزینه</td>
+              </tr>
+              <tr>
+                <td>Tokens per Request</td>
+                <td>کنترل مصرف</td>
+              </tr>
+              <tr>
+                <td>Cache Hit Rate</td>
+                <td>سنجش کارایی کش</td>
+              </tr>
+              <tr>
+                <td>Tool Failure Rate</td>
+                <td>سنجش پایداری ابزارها</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            P95 Latency یعنی ۹۵ درصد درخواست‌ها در زمانی برابر یا کمتر از مقدار گزارش‌شده
+            تکمیل شده‌اند. این معیار برای شناسایی تجربهٔ کاربران با تأخیر بالا مفید است.
+          </div>
+
+        </section>
+
+        <!-- SUMMARY -->
+
+        <section id="summary">
+
+          <h2 class="section-title">جمع‌بندی نهایی فصل</h2>
+
+          <p>
+            توسعهٔ یک اپلیکیشن هوش مصنوعی از چند لایهٔ اصلی تشکیل می‌شود.
+            در این فصل دیدیم که چگونه اجزای مختلف نرم‌افزار به مدل زبانی متصل می‌شوند.
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>سرفصل</th>
+                <th>مفهوم اصلی</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>01. Architecture</td>
+                <td>طراحی Frontend، Backend، دیتابیس و ارتباط با مدل</td>
+              </tr>
+              <tr>
+                <td>02. LLM APIs</td>
+                <td>ارسال درخواست، احراز هویت و مدیریت خطا</td>
+              </tr>
+              <tr>
+                <td>03. Providers</td>
+                <td>شناخت APIهای ارائه‌دهندگان مختلف</td>
+              </tr>
+              <tr>
+                <td>04. Chat History</td>
+                <td>ذخیره و مدیریت تاریخچه و حافظه</td>
+              </tr>
+              <tr>
+                <td>05. Streaming</td>
+                <td>دریافت و نمایش تدریجی پاسخ</td>
+              </tr>
+              <tr>
+                <td>06. Token Management</td>
+                <td>کنترل توکن و ظرفیت زمینه</td>
+              </tr>
+              <tr>
+                <td>07. Structured Extraction</td>
+                <td>دریافت خروجی قابل‌پردازش</td>
+              </tr>
+              <tr>
+                <td>08. Multimodal</td>
+                <td>ساخت اپلیکیشن‌های متنی، تصویری، صوتی و ویدئویی</td>
+              </tr>
+              <tr>
+                <td>09. Database Integration</td>
+                <td>اتصال امن مدل به داده‌ها و ابزارها</td>
+              </tr>
+              <tr>
+                <td>10. Optimization</td>
+                <td>کنترل هزینه، سرعت و پایداری</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="sub-title">مفاهیم کلیدی که باید به خاطر بسپارید</h3>
+
+          <div class="grid-cards">
+            <div class="mini-card">
+              <strong class="text-indigo-700">معماری مناسب</strong>
+              <p class="text-sm">مدل زبانی تنها یکی از اجزای اپلیکیشن است.</p>
+            </div>
+
+            <div class="mini-card">
+              <strong class="text-indigo-700">امنیت API</strong>
+              <p class="text-sm">کلیدهای دسترسی باید در Backend نگهداری شوند.</p>
+            </div>
+
+            <div class="mini-card">
+              <strong class="text-indigo-700">مدیریت مکالمه</strong>
+              <p class="text-sm">History، Memory و Context مفاهیم متفاوتی هستند.</p>
+            </div>
+
+            <div class="mini-card">
+              <strong class="text-indigo-700">خروجی ساختاریافته</strong>
+              <p class="text-sm">JSON و Schema برای اتصال مدل به نرم‌افزار مهم‌اند.</p>
+            </div>
+
+            <div class="mini-card">
+              <strong class="text-indigo-700">اتصال به دیتابیس</strong>
+              <p class="text-sm">مجوزها و عملیات باید در Backend کنترل شوند.</p>
+            </div>
+
+            <div class="mini-card">
+              <strong class="text-indigo-700">بهینه‌سازی</strong>
+              <p class="text-sm">کیفیت، سرعت و هزینه باید با هم سنجیده شوند.</p>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- GLOSSARY -->
+
+        <section id="glossary">
+
+          <h2 class="section-title">واژه‌نامهٔ تخصصی فصل</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>اصطلاح</th>
+                <th>معنی</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>API</td>
+                <td>رابط برنامه‌نویسی برای ارتباط نرم‌افزارها</td>
+              </tr>
+              <tr>
+                <td>Endpoint</td>
+                <td>آدرس مشخص یک API</td>
+              </tr>
+              <tr>
+                <td>Backend</td>
+                <td>منطق و پردازش سمت سرور</td>
+              </tr>
+              <tr>
+                <td>Frontend</td>
+                <td>رابط کاربری</td>
+              </tr>
+              <tr>
+                <td>Provider</td>
+                <td>ارائه‌دهندهٔ سرویس مدل</td>
+              </tr>
+              <tr>
+                <td>SDK</td>
+                <td>کتابخانهٔ آماده برای کار با API</td>
+              </tr>
+              <tr>
+                <td>API Key</td>
+                <td>کلید دسترسی به سرویس</td>
+              </tr>
+              <tr>
+                <td>Stateless</td>
+                <td>مستقل بودن هر درخواست</td>
+              </tr>
+              <tr>
+                <td>Stateful</td>
+                <td>نگهداری وضعیت میان تعامل‌ها</td>
+              </tr>
+              <tr>
+                <td>Conversation History</td>
+                <td>تاریخچهٔ مکالمه</td>
+              </tr>
+              <tr>
+                <td>Memory</td>
+                <td>اطلاعات منتخب برای استفادهٔ مجدد</td>
+              </tr>
+              <tr>
+                <td>Streaming</td>
+                <td>دریافت تدریجی خروجی</td>
+              </tr>
+              <tr>
+                <td>SSE</td>
+                <td>روش ارسال رویداد از سرور به کلاینت</td>
+              </tr>
+              <tr>
+                <td>WebSocket</td>
+                <td>ارتباط دوطرفه و پیوسته</td>
+              </tr>
+              <tr>
+                <td>Token</td>
+                <td>واحد پردازش متن در مدل</td>
+              </tr>
+              <tr>
+                <td>Tokenization</td>
+                <td>تبدیل متن به توکن</td>
+              </tr>
+              <tr>
+                <td>Context Window</td>
+                <td>ظرفیت زمینهٔ قابل‌پردازش مدل</td>
+              </tr>
+              <tr>
+                <td>JSON</td>
+                <td>قالب متنی تبادل داده</td>
+              </tr>
+              <tr>
+                <td>JSON Schema</td>
+                <td>تعریف ساختار و قواعد JSON</td>
+              </tr>
+              <tr>
+                <td>Structured Output</td>
+                <td>خروجی مطابق ساختار مشخص</td>
+              </tr>
+              <tr>
+                <td>Function Calling</td>
+                <td>درخواست اجرای ابزار یا تابع</td>
+              </tr>
+              <tr>
+                <td>Multimodal</td>
+                <td>کار با چند نوع داده</td>
+              </tr>
+              <tr>
+                <td>OCR</td>
+                <td>استخراج متن از تصویر</td>
+              </tr>
+              <tr>
+                <td>RAG</td>
+                <td>تولید پاسخ با کمک بازیابی اطلاعات</td>
+              </tr>
+              <tr>
+                <td>Embedding</td>
+                <td>نمایش برداری داده</td>
+              </tr>
+              <tr>
+                <td>Vector Database</td>
+                <td>پایگاه دادهٔ برداری</td>
+              </tr>
+              <tr>
+                <td>Latency</td>
+                <td>تأخیر زمانی</td>
+              </tr>
+              <tr>
+                <td>Throughput</td>
+                <td>تعداد عملیات در واحد زمان</td>
+              </tr>
+              <tr>
+                <td>Caching</td>
+                <td>نگهداری موقت داده برای استفادهٔ مجدد</td>
+              </tr>
+              <tr>
+                <td>Retry</td>
+                <td>تلاش مجدد پس از شکست</td>
+              </tr>
+              <tr>
+                <td>Backoff</td>
+                <td>افزایش فاصلهٔ زمانی میان تلاش‌ها</td>
+              </tr>
+              <tr>
+                <td>Load Balancing</td>
+                <td>توزیع بار بین سرورها</td>
+              </tr>
+              <tr>
+                <td>Monitoring</td>
+                <td>پایش وضعیت سیستم</td>
+              </tr>
+              <tr>
+                <td>Observability</td>
+                <td>امکان درک وضعیت داخلی سیستم</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </section>
+
+        <!-- EXERCISES -->
+
+        <section id="exercises">
+
+          <h2 class="section-title">تمرین‌های کاربردی</h2>
+
+          <div class="card">
+            <span class="badge">تمرین ۱</span>
+            <h3 class="sub-title">طراحی معماری چت‌بات</h3>
+
+            <p>یک چت‌بات پشتیبانی مشتریان طراحی کنید که بتواند:</p>
+
+            <ul>
+              <li>به پیام کاربر پاسخ دهد.</li>
+              <li>تاریخچهٔ مکالمه را ذخیره کند.</li>
+              <li>اطلاعات سفارش را از دیتابیس بخواند.</li>
+              <li>پاسخ را به‌صورت Streaming نمایش دهد.</li>
+            </ul>
+
+            <p><strong>خروجی موردانتظار:</strong> نمودار معماری شامل Frontend، Backend، LLM، Database و ابزار دریافت
+              سفارش.</p>
+          </div>
+
+          <div class="card">
+            <span class="badge">تمرین ۲</span>
+            <h3 class="sub-title">اولین درخواست API</h3>
+
+            <p>با Python یک درخواست به API یک ارائه‌دهندهٔ مدل ارسال کنید.</p>
+
+            <ul>
+              <li>API Key از Environment Variable خوانده شود.</li>
+              <li>یک سؤال به مدل ارسال شود.</li>
+              <li>پاسخ نمایش داده شود.</li>
+              <li>خطاهای ارتباطی مدیریت شوند.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="badge">تمرین ۳</span>
+            <h3 class="sub-title">مدیریت تاریخچه</h3>
+
+            <ol>
+              <li>پیام کاربر را دریافت کنید.</li>
+              <li>پیام را به تاریخچه اضافه کنید.</li>
+              <li>پاسخ مدل را ذخیره کنید.</li>
+              <li>پیام‌های قبلی را در درخواست بعدی استفاده کنید.</li>
+            </ol>
+
+            <p>سپس قابلیت محدود کردن تعداد پیام‌ها را اضافه کنید.</p>
+          </div>
+
+          <div class="card">
+            <span class="badge">تمرین ۴</span>
+            <h3 class="sub-title">استخراج داده</h3>
+
+            <p>متن زیر را به JSON تبدیل کنید:</p>
+
+            <pre class="code-block">Customer: Sara Ahmadi
+Age: 28
+City: Berlin
+Product: Laptop
+Price: 1200 EUR</pre>
+
+            <p>خروجی باید دارای فیلدهای زیر باشد:</p>
+
+            <pre class="code-block">{
+  "customer": "Sara Ahmadi",
+  "age": 28,
+  "city": "Berlin",
+  "product": "Laptop",
+  "price": 1200,
+  "currency": "EUR"
+}</pre>
+          </div>
+
+          <div class="card">
+            <span class="badge">تمرین ۵</span>
+            <h3 class="sub-title">اتصال به دیتابیس</h3>
+
+            <p>تابعی بسازید که شمارهٔ سفارش را دریافت کند و وضعیت آن را از دیتابیس بخواند.</p>
+
+            <ul>
+              <li>احراز هویت کاربر را اضافه کنید.</li>
+              <li>مالکیت سفارش را بررسی کنید.</li>
+              <li>از Query پارامتری استفاده کنید.</li>
+              <li>نتیجه را به مدل برگردانید.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="badge">تمرین ۶</span>
+            <h3 class="sub-title">بهینه‌سازی هزینه</h3>
+
+            <p>
+              فرض کنید هر درخواست به‌طور متوسط ۴۰۰۰ توکن ورودی و ۱۰۰۰ توکن خروجی دارد.
+              با تعیین قیمت فرضی برای ورودی و خروجی، هزینهٔ روزانه و ماهانه را
+              برای ۵۰۰، ۵۰۰۰ و ۵۰٬۰۰۰ درخواست محاسبه کنید.
+            </p>
+          </div>
+
+        </section>
+
+        <!-- QUIZ -->
+
+        <section id="quiz">
+
+          <h2 class="section-title">آزمون پایانی فصل</h2>
+
+          <p class="mb-5">
+            به ۱۰ سؤال زیر پاسخ دهید. پس از ثبت پاسخ‌ها، نمره و توضیح هر سؤال نمایش داده می‌شود.
+          </p>
+
+          <div class="card">
+
+            <div class="flex justify-between items-center mb-3">
+              <strong>پیشرفت آزمون</strong>
+              <span id="progressText" class="text-indigo-700 font-bold">۰ از ۱۰</span>
+            </div>
+
+            <div class="progress-track mb-6">
+              <div id="progressFill" class="progress-fill"></div>
+            </div>
+
+            <div id="quizContainer"></div>
+
+            <div class="quiz-actions mt-6 flex flex-wrap gap-3">
+              <button onclick="submitQuiz()" id="submitQuiz"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold">
+                ثبت پاسخ‌ها و مشاهدهٔ نتیجه
+              </button>
+
+              <button onclick="resetQuiz()" class="border border-slate-300 px-6 py-3 rounded-xl font-bold">
+                شروع دوباره
+              </button>
+            </div>
+
+            <div id="quizResult" class="hidden mt-6 rounded-xl p-5 bg-indigo-50">
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- FINAL PROJECT -->
+
+        <section id="project">
+
+          <h2 class="section-title">پروژهٔ نهایی: AI Customer Support Assistant</h2>
+
+          <div class="card border-2 border-emerald-200">
+
+            <span class="badge bg-emerald-100 text-emerald-800">پروژهٔ جامع فصل چهارم</span>
+
+            <h3 class="text-2xl font-black mt-4 mb-3">
+              ساخت یک دستیار هوشمند پشتیبانی مشتریان
+            </h3>
+
+            <p>
+              برای ترکیب تمام مفاهیم فصل، یک دستیار پشتیبانی مشتریان طراحی و پیاده‌سازی کنید.
+            </p>
+
+            <h3 class="sub-title">قابلیت‌های موردنیاز</h3>
+
+            <ol>
+              <li>کاربر بتواند ثبت‌نام کند و وارد سیستم شود.</li>
+              <li>بتواند چند مکالمهٔ مستقل ایجاد کند.</li>
+              <li>تاریخچهٔ مکالمات در دیتابیس ذخیره شود.</li>
+              <li>پاسخ مدل به‌صورت Streaming نمایش داده شود.</li>
+              <li>مدل بتواند اطلاعات سفارش را از Backend دریافت کند.</li>
+              <li>مدل بتواند فایل PDF راهنمای محصولات را تحلیل کند.</li>
+              <li>پاسخ‌های استخراج اطلاعات به‌صورت JSON ساختاریافته باشند.</li>
+              <li>مصرف توکن و هزینهٔ هر درخواست ثبت شود.</li>
+              <li>خطاها و درخواست‌های ناموفق مدیریت شوند.</li>
+              <li>دسترسی کاربر به داده‌های دیگران غیرممکن باشد.</li>
+            </ol>
+
+            <h3 class="sub-title">معماری پیشنهادی</h3>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>لایه</th>
+                  <th>فناوری پیشنهادی</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Frontend</td>
+                  <td>React یا Next.js</td>
+                </tr>
+                <tr>
+                  <td>Backend</td>
+                  <td>Python + FastAPI</td>
+                </tr>
+                <tr>
+                  <td>LLM</td>
+                  <td>یکی از ارائه‌دهندگان API</td>
+                </tr>
+                <tr>
+                  <td>Database</td>
+                  <td>PostgreSQL</td>
+                </tr>
+                <tr>
+                  <td>Cache</td>
+                  <td>Redis</td>
+                </tr>
+                <tr>
+                  <td>Document Retrieval</td>
+                  <td>Embeddings + Vector Database</td>
+                </tr>
+                <tr>
+                  <td>Streaming</td>
+                  <td>SSE</td>
+                </tr>
+                <tr>
+                  <td>Authentication</td>
+                  <td>Session یا JWT با پیاده‌سازی امن</td>
+                </tr>
+                <tr>
+                  <td>Monitoring</td>
+                  <td>ثبت زمان، توکن، خطا و هزینه</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3 class="sub-title">معیارهای موفقیت</h3>
+
+            <ul class="space-y-2">
+              <li>□ کاربر پاسخ مرتبط دریافت کند.</li>
+              <li>□ تاریخچه پس از خروج و ورود مجدد حفظ شود.</li>
+              <li>□ اطلاعات سفارش فقط به مالک آن نمایش داده شود.</li>
+              <li>□ پاسخ‌ها سریع و قابل‌قبول باشند.</li>
+              <li>□ هزینهٔ هر مکالمه قابل‌اندازه‌گیری باشد.</li>
+              <li>□ سیستم در برابر خطا و قطع ارتباط مقاوم باشد.</li>
+              <li>□ خروجی ساختاریافته قابل‌اعتبارسنجی باشد.</li>
+            </ul>
+
+          </div>
+
+        </section>
+
+        <!-- REFERENCES -->
+
+        <section class="card">
+          <h2 class="text-xl font-black mb-4">منابع رسمی برای مطالعهٔ بیشتر</h2>
+
+          <ul>
+            <li>
+              <a class="text-indigo-700 underline" target="_blank" rel="noopener"
+                href="https://platform.openai.com/docs">
+                OpenAI API Documentation
+              </a>
+            </li>
+            <li>
+              <a class="text-indigo-700 underline" target="_blank" rel="noopener" href="https://docs.anthropic.com/">
+                Anthropic API Documentation
+              </a>
+            </li>
+            <li>
+              <a class="text-indigo-700 underline" target="_blank" rel="noopener"
+                href="https://ai.google.dev/gemini-api/docs">
+                Google Gemini API Documentation
+              </a>
+            </li>
+            <li>
+              <a class="text-indigo-700 underline" target="_blank" rel="noopener" href="https://docs.mistral.ai/">
+                Mistral AI Documentation
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-nav">
+      <a href="index.html">نقشه راه</a>
+      <a href="3.html">فصل قبل</a>
+      <a href="#architecture">فهرست مطالب</a>
+      <a href="#">بالای صفحه ↑</a>
+    </div>
+    AI Application Development · Chapter 04
+    <br>
+    <strong>M_Ai</strong>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      try { localStorage.setItem('m-ai-theme', theme); } catch (e) {}
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#10101e' : '#f5f5fb');
+    }
+    try {
+      const saved = localStorage.getItem('m-ai-theme');
+      if (saved === 'light' || saved === 'dark') setTheme(saved);
+    } catch (e) {}
+    themeToggle.addEventListener('click', () => {
+      setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      const el = document.getElementById('progress');
+      if (el) el.style.width = progress + '%';
+    });
+  </script>
+<script>
+
+    const questions = [
+      {
+        q: "کدام بخش معمولاً مسئول نگهداری API Key و کنترل مجوزهای کاربر است؟",
+        options: ["Frontend", "Backend", "Tokenizer", "Vector Database"],
+        answer: 1,
+        explanation: "Backend باید کلیدهای محرمانه و منطق دسترسی را کنترل کند."
+      },
+      {
+        q: "در یک API از نوع Stateless، مسئولیت حفظ تاریخچهٔ مکالمه معمولاً بر عهدهٔ کیست؟",
+        options: ["برنامهٔ توسعه‌دهنده", "نمایشگر کاربر", "Tokenizer", "فقط مدل"],
+        answer: 0,
+        explanation: "در الگوی Stateless، برنامه باید زمینهٔ لازم را در درخواست‌های بعدی ارسال کند."
+      },
+      {
+        q: "مزیت اصلی Streaming چیست؟",
+        options: [
+          "حذف کامل هزینه",
+          "کاهش قطعی زمان تولید کامل",
+          "نمایش تدریجی پاسخ و کاهش زمان انتظار ادراک‌شده",
+          "افزایش Context Window"
+        ],
+        answer: 2,
+        explanation: "Streaming پاسخ را تدریجی نمایش می‌دهد، ولی لزوماً زمان تولید کامل را کاهش نمی‌دهد."
+      },
+      {
+        q: "Token چیست؟",
+        options: [
+          "نوعی پایگاه داده",
+          "واحد پردازش متن در مدل",
+          "کلید API",
+          "نوعی سرور"
+        ],
+        answer: 1,
+        explanation: "متن ابتدا به توکن‌ها تبدیل می‌شود تا مدل بتواند آن را پردازش کند."
+      },
+      {
+        q: "JSON Schema چه کاربردی دارد؟",
+        options: [
+          "افزایش سرعت اینترنت",
+          "تعریف ساختار و قواعد دادهٔ JSON",
+          "ذخیرهٔ تصویر",
+          "مدیریت نشست کاربر"
+        ],
+        answer: 1,
+        explanation: "JSON Schema شکل موردانتظار خروجی را مشخص می‌کند."
+      },
+      {
+        q: "Function Calling به چه معناست؟",
+        options: [
+          "اجرای خودکار و بدون کنترل هر کد تولیدشده",
+          "درخواست مدل برای اجرای یک ابزار یا تابع",
+          "تبدیل متن به تصویر",
+          "ذخیرهٔ تاریخچه"
+        ],
+        answer: 1,
+        explanation: "مدل درخواست فراخوانی ابزار را می‌دهد و Backend باید آن را اعتبارسنجی و اجرا کند."
+      },
+      {
+        q: "RAG بیشتر برای چه هدفی استفاده می‌شود؟",
+        options: [
+          "بازیابی اطلاعات مرتبط و استفاده از آن‌ها در تولید پاسخ",
+          "افزایش سرعت CPU",
+          "ساخت رابط کاربری",
+          "حذف نیاز به دیتابیس"
+        ],
+        answer: 0,
+        explanation: "RAG متن‌های مرتبط را بازیابی می‌کند و در اختیار مدل قرار می‌دهد."
+      },
+      {
+        q: "کدام گزینه نمونه‌ای از ورودی Multimodal است؟",
+        options: [
+          "فقط متن",
+          "فقط عدد",
+          "متن همراه تصویر",
+          "فقط SQL"
+        ],
+        answer: 2,
+        explanation: "Multimodal یعنی سیستم با بیش از یک نوع داده کار کند."
+      },
+      {
+        q: "کدام روش برای جلوگیری از SQL Injection مناسب‌تر است؟",
+        options: [
+          "چسباندن ورودی به SQL",
+          "اجرای مستقیم متن تولیدشده توسط مدل",
+          "Parameterized Query",
+          "دادن دسترسی کامل دیتابیس به مدل"
+        ],
+        answer: 2,
+        explanation: "Parameterized Query مقدار ورودی را از ساختار دستور SQL جدا می‌کند."
+      },
+      {
+        q: "کدام مورد می‌تواند هزینهٔ استفاده از مدل را کاهش دهد؟",
+        options: [
+          "ارسال تمام تاریخچه در هر درخواست",
+          "استفاده از مدل متناسب با وظیفه و کاهش توکن‌های غیرضروری",
+          "افزایش بی‌دلیل طول پاسخ",
+          "تکرار درخواست‌های ناموفق بدون محدودیت"
+        ],
+        answer: 1,
+        explanation: "انتخاب مدل مناسب، خلاصه‌سازی و کاهش ورودی‌های غیرضروری از روش‌های بهینه‌سازی هزینه‌اند."
+      }
+    ];
+
+    let answers = {};
+    let submitted = false;
+
+    const faNumbers = n => String(n).replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
+
+    function renderQuiz() {
+      const container = document.getElementById("quizContainer");
+
+      container.innerHTML = questions.map((question, index) => `
+    <div class="border-b border-slate-200 py-6" id="question-${index}">
+      <h3 class="font-bold text-lg mb-4">
+        ${faNumbers(index + 1)}. ${question.q}
+      </h3>
+
+      <div>
+        ${question.options.map((option, optionIndex) => `
+          <button
+            type="button"
+            class="quiz-option ${answers[index] === optionIndex ? "selected" : ""}"
+            data-question="${index}"
+            data-option="${optionIndex}"
+            ${submitted ? "disabled" : ""}
+          >
+            ${faNumbers(optionIndex + 1)}. ${option}
+          </button>
+        `).join("")}
+      </div>
+
+      <div class="quiz-explanation" id="explanation-${index}">
+        <strong>پاسخ صحیح:</strong>
+        ${question.options[question.answer]}
+        <br>
+        <span class="text-slate-600">${question.explanation}</span>
+      </div>
+    </div>
+  `).join("");
+
+      updateProgress();
+
+      container.querySelectorAll(".quiz-option").forEach(button => {
+        button.addEventListener("click", () => {
+          if (submitted) return;
+
+          const q = Number(button.dataset.question);
+          const a = Number(button.dataset.option);
+
+          answers[q] = a;
+          renderQuiz();
+        });
+      });
+    }
+
+    function updateProgress() {
+      const count = Object.keys(answers).length;
+      document.getElementById("progressText").textContent =
+        `${faNumbers(count)} از ۱۰`;
+
+      document.getElementById("progressFill").style.width =
+        `${count / questions.length * 100}%`;
+    }
+
+    function submitQuiz() {
+      if (Object.keys(answers).length !== questions.length) {
+        alert("لطفاً به تمام سؤال‌ها پاسخ دهید.");
+        return;
+      }
+
+      submitted = true;
+
+      let score = 0;
+
+      questions.forEach((question, index) => {
+        const selected = answers[index];
+        const correct = selected === question.answer;
+
+        if (correct) score++;
+
+        const buttons = document.querySelectorAll(
+          `[data-question="${index}"]`
+        );
+
+        buttons.forEach(button => {
+          const option = Number(button.dataset.option);
+
+          if (option === question.answer) {
+            button.classList.add("correct");
+          } else if (option === selected && !correct) {
+            button.classList.add("wrong");
+          }
+
+          button.disabled = true;
+        });
+
+        document.getElementById(`explanation-${index}`).style.display = "block";
+      });
+
+      const result = document.getElementById("quizResult");
+
+      let message = "";
+
+      if (score >= 8) {
+        message = "عالی! تسلط خوبی بر مفاهیم فصل دارید.";
+      } else if (score >= 5) {
+        message = "خوب است؛ اما بهتر است بخش‌هایی را که اشتباه پاسخ داده‌اید مرور کنید.";
+      } else {
+        message = "پیشنهاد می‌شود فصل را دوباره مطالعه کنید و آزمون را تکرار کنید.";
+      }
+
+      result.innerHTML = `
+    <div class="text-center">
+      <div class="text-4xl font-black text-indigo-700 mb-2">
+        ${faNumbers(score)} از ۱۰
+      </div>
+      <p class="font-bold text-lg">${message}</p>
+      <p class="text-sm text-slate-500 mt-2">
+        پاسخ‌های درست: ${faNumbers(score)}
+        |
+        پاسخ‌های نادرست: ${faNumbers(10 - score)}
+      </p>
+    </div>
+  `;
+
+      result.classList.remove("hidden");
+
+      document.getElementById("submitQuiz").disabled = true;
+      document.getElementById("submitQuiz").classList.add("opacity-50");
+    }
+
+    function resetQuiz() {
+      answers = {};
+      submitted = false;
+
+      document.getElementById("quizResult").classList.add("hidden");
+
+      document.getElementById("submitQuiz").disabled = false;
+      document.getElementById("submitQuiz").classList.remove("opacity-50");
+
+      renderQuiz();
+
+      document.getElementById("quiz").scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+
+    renderQuiz();
+  
+</script>
+</body>
+</html>

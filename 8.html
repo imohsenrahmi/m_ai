@@ -1,0 +1,2913 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10101e">
+  <meta name="description" content="AI Frameworks and Ecosystem — LangChain، LangGraph، LlamaIndex، CrewAI و بیشتر">
+  <title>AI Frameworks and Ecosystem | فصل ۸ — M_Ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --purple: #9275f5;
+      --purple-strong: #7657e8;
+      --cyan: #51cbdc;
+      --green: #49c9a3;
+      --radius: 18px;
+      --transition: .28s ease;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #10101e;
+      --bg-secondary: #151529;
+      --surface: #1b1b32;
+      --surface-hover: #242440;
+      --surface-soft: rgba(255, 255, 255, .045);
+      --text: #f5f3ff;
+      --text-secondary: #c3c1d5;
+      --muted: #9695ae;
+      --border: rgba(255, 255, 255, .09);
+      --border-strong: rgba(255, 255, 255, .15);
+      --header-bg: rgba(16, 16, 30, .92);
+      --shadow: 0 18px 50px rgba(0, 0, 0, .24);
+      --callout-bg: rgba(146, 117, 245, .1);
+      --callout-border: rgba(146, 117, 245, .45);
+      --tip-bg: rgba(81, 203, 220, .08);
+      --tip-border: rgba(81, 203, 220, .4);
+      --warning-bg: rgba(217, 119, 6, .1);
+      --warning-border: rgba(217, 119, 6, .45);
+      --code-bg: #0c0c18;
+      --code-text: #b8f0d8;
+      --diagram-bg: rgba(146, 117, 245, .1);
+      --diagram-border: rgba(146, 117, 245, .28);
+      --table-head: rgba(146, 117, 245, .12);
+      --table-alt: rgba(255, 255, 255, .03);
+      --tag-bg: rgba(146, 117, 245, .15);
+      --tag-text: #c4b5fd;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .22), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .12), transparent 45%);
+      --progress-track: rgba(255, 255, 255, .08);
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f5fb;
+      --bg-secondary: #eeeefa;
+      --surface: #fff;
+      --surface-hover: #f7f5ff;
+      --surface-soft: rgba(102, 78, 190, .045);
+      --text: #202039;
+      --text-secondary: #55556f;
+      --muted: #77778f;
+      --border: rgba(40, 35, 90, .10);
+      --border-strong: rgba(40, 35, 90, .17);
+      --header-bg: rgba(255, 255, 255, .92);
+      --shadow: 0 18px 50px rgba(45, 35, 100, .09);
+      --callout-bg: #f5f3ff;
+      --callout-border: #6658e8;
+      --tip-bg: #f0fdfa;
+      --tip-border: #0d9488;
+      --warning-bg: #fffbeb;
+      --warning-border: #d97706;
+      --code-bg: #111827;
+      --code-text: #d1fae5;
+      --diagram-bg: #eef2ff;
+      --diagram-border: #c7d2fe;
+      --table-head: #f3f4f6;
+      --table-alt: #fafafa;
+      --tag-bg: #ede9fe;
+      --tag-text: #5b21b6;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .15), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .1), transparent 45%);
+      --progress-track: rgba(40, 35, 90, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+      transition: background .35s, color .35s;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--progress-track);
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      z-index: 200;
+    }
+    #progress {
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      transition: width .1s linear;
+    }
+
+    /* HEADER */
+    .site-header {
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--header-bg);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(146, 117, 245, .24);
+    }
+    .site-header::after {
+      content: "";
+      position: absolute;
+      bottom: -1px; right: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent 3%, rgba(81, 203, 220, .35) 25%, rgba(146, 117, 245, .85) 50%, rgba(81, 203, 220, .35) 75%, transparent 97%);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      direction: ltr;
+      flex-shrink: 0;
+    }
+    .brand-mark {
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #a58cff, #6848df);
+      box-shadow: 0 4px 18px rgba(118, 87, 232, .28), inset 0 1px 0 rgba(255,255,255,.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-mark::before {
+      content: "";
+      position: absolute; inset: 1px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 11px;
+    }
+    .brand-mark svg { width: 26px; height: 26px; position: relative; z-index: 1; }
+    .brand-name { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--text); }
+    .brand-name span { color: var(--purple); }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: 12px;
+      display: grid; place-items: center;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    .theme-toggle:hover { border-color: var(--purple); transform: rotate(12deg); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-icon-sun { display: none; }
+    html[data-theme="light"] .theme-icon-moon { display: none; }
+    html[data-theme="light"] .theme-icon-sun { display: block; }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 11px;
+      background: rgba(146, 117, 245, .12);
+      border: 1px solid rgba(146, 117, 245, .32);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .back-home:hover { background: var(--purple); color: #fff; }
+    .back-home svg { width: 15px; height: 15px; }
+
+    /* CHAPTER HERO */
+    .chapter-hero {
+      position: relative;
+      padding: 48px 20px 40px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .chapter-hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--hero-overlay);
+      pointer-events: none;
+    }
+    .chapter-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .chapter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(146, 117, 245, .35);
+      background: rgba(146, 117, 245, .1);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .8px;
+      direction: ltr;
+      margin-bottom: 16px;
+    }
+    .chapter-badge::before {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .chapter-hero h1 {
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 900;
+      line-height: 1.45;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .chapter-hero .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 2.1;
+      max-width: 720px;
+    }
+    .chapter-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .meta-chip {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .meta-chip strong {
+      color: var(--text);
+      font-size: 15px;
+      margin-left: 6px;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    /* LAYOUT */
+    .page-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static !important; order: -1; }
+    }
+
+    /* SIDEBAR TOC */
+    .sidebar {
+      position: sticky;
+      top: 88px;
+    }
+    .toc-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 18px 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.04);
+    }
+    .toc-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-title::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .toc-link {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      transition: .2s;
+      border: 1px solid transparent;
+    }
+    .toc-link:hover {
+      color: var(--text);
+      background: rgba(146, 117, 245, .08);
+      border-color: rgba(146, 117, 245, .2);
+      padding-right: 14px;
+    }
+    .toc-link-strong { color: var(--purple); font-weight: 800; }
+    .toc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+    .print-btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 11px;
+      border-radius: 12px;
+      background: linear-gradient(115deg, #a18aff, #7558e8);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .print-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* MAIN CONTENT SURFACE */
+    .content-area { min-width: 0; }
+
+    .section-card {
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      background: var(--surface) !important;
+      color: var(--text);
+    }
+    .section-number {
+      background: linear-gradient(135deg, #9275f5, #51cbdc) !important;
+      color: white !important;
+    }
+
+    /* Override common Tailwind color utilities for theme */
+    .content-area {
+      color: var(--text);
+    }
+    .content-area .text-slate-800,
+    .content-area .text-slate-700,
+    .content-area .text-slate-900 { color: var(--text) !important; }
+    .content-area .text-slate-500,
+    .content-area .text-slate-400,
+    .content-area .text-slate-600 { color: var(--muted) !important; }
+    .content-area .text-indigo-600,
+    .content-area .text-indigo-700,
+    .content-area .text-indigo-800 { color: var(--purple) !important; }
+    .content-area .bg-white { background: var(--surface) !important; }
+    .content-area .bg-slate-50,
+    .content-area .bg-slate-100,
+    .content-area .hover\:bg-slate-50:hover { background: var(--surface-soft) !important; }
+    .content-area .border,
+    .content-area .border-slate-200,
+    .content-area .border-slate-100 { border-color: var(--border) !important; }
+    .content-area .shadow-sm { box-shadow: 0 6px 24px rgba(0,0,0,.05) !important; }
+
+    .callout {
+      border-right: 4px solid var(--callout-border) !important;
+      background: var(--callout-bg) !important;
+      color: var(--text);
+    }
+    .tip {
+      border-right: 4px solid var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .warning {
+      border-right: 4px solid var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .code {
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .86rem;
+      border: 1px solid var(--border);
+    }
+    .ltr { direction: ltr; text-align: left; }
+    .diagram-box {
+      border: 1px solid var(--diagram-border) !important;
+      background: var(--diagram-bg) !important;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .arrow { color: var(--purple) !important; font-size: 1.5rem; font-weight: 800; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      background: var(--tag-bg) !important;
+      color: var(--tag-text) !important;
+      padding: 3px 10px;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+    .table-wrap { overflow-x: auto; border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td {
+      border: 1px solid var(--border) !important;
+      padding: 12px;
+      text-align: right;
+      vertical-align: top;
+      color: var(--text);
+    }
+    th { background: var(--table-head) !important; font-weight: 800; }
+    tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+    .content-area h2, .content-area h3, .content-area h4 {
+      color: var(--text);
+    }
+    .content-area p, .content-area li { color: var(--text-secondary); }
+    .content-area strong { color: var(--text); }
+
+    .content-area .bg-indigo-50,
+    .content-area .bg-teal-50 { background: var(--surface-soft) !important; }
+    .content-area .border-teal-300 { border-color: var(--diagram-border) !important; }
+    .content-area .text-teal-700 { color: var(--green) !important; }
+    .content-area .text-rose-700 { color: #f87171 !important; }
+    .content-area .text-amber-700 { color: #fbbf24 !important; }
+    .content-area .bg-indigo-700,
+    .content-area .hover\:bg-indigo-800:hover {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+    }
+    .content-area .text-indigo-900 { color: var(--text) !important; }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 2;
+    }
+    .site-footer strong {
+      color: var(--purple);
+      direction: ltr;
+      display: inline-block;
+      font-size: 15px;
+    }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .footer-nav a {
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      transition: .2s;
+    }
+    .footer-nav a:hover {
+      color: var(--purple);
+      border-color: rgba(146,117,245,.4);
+    }
+
+    @media print {
+      .site-header, .sidebar, .progress-bar, .no-print, .theme-toggle, .back-home { display: none !important; }
+      .page-layout { grid-template-columns: 1fr; }
+      .section-card { break-inside: avoid; }
+      body { background: white; color: black; }
+    }
+
+    @media (max-width: 640px) {
+      .chapter-hero { padding: 32px 16px 28px; }
+      .header-inner { padding: 0 14px; }
+      .back-home span.label { display: none; }
+      .page-layout { padding: 18px 14px 40px; }
+    }
+
+
+    .content-area .panel,
+    .content-area .section,
+    .content-area .source-card {
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 18px !important;
+      padding: 24px !important;
+      margin-top: 22px !important;
+      color: var(--text);
+    }
+    .content-area h2 {
+      font-size: 1.4rem !important;
+      color: var(--text) !important;
+      margin: 0 0 15px !important;
+    }
+    .content-area h3 {
+      font-size: 1.1rem !important;
+      color: var(--purple) !important;
+      margin: 25px 0 10px !important;
+    }
+    .content-area h4 {
+      font-size: .95rem !important;
+      color: var(--text) !important;
+      margin: 18px 0 7px !important;
+    }
+    .content-area .muted { color: var(--muted) !important; }
+    .content-area .lead { font-size: 1.05rem; color: var(--text-secondary) !important; }
+    .content-area .callout {
+      border-right: 4px solid var(--callout-border);
+      background: var(--callout-bg);
+      padding: 14px 17px; border-radius: 10px; margin: 16px 0;
+    }
+    .content-area .callout.good {
+      border-color: var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .content-area .callout.warn {
+      border-color: var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .content-area .callout.danger {
+      border-color: #b91c1c !important;
+      background: rgba(185,28,28,.1) !important;
+    }
+    .content-area .mini {
+      background: var(--surface-soft) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 13px; padding: 15px;
+    }
+    .content-area pre {
+      direction: ltr; text-align: left; white-space: pre-wrap;
+      overflow-x: auto;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      padding: 18px; border-radius: 12px;
+      font: 12px/1.75 ui-monospace, Consolas, monospace;
+      margin: 14px 0; border: 1px solid var(--border);
+    }
+    .content-area p code, .content-area li code, .content-area td code {
+      background: rgba(146,117,245,.12) !important;
+      color: var(--purple) !important;
+      padding: 2px 5px; border-radius: 5px; font-size: .9em;
+    }
+    .content-area pre code { background: transparent !important; color: inherit !important; padding: 0; }
+    .content-area .diagram {
+      background: var(--surface-soft);
+      border: 1px dashed var(--border);
+      border-radius: 13px; padding: 17px; margin: 16px 0; text-align: center;
+    }
+    .content-area .node {
+      display: inline-block; padding: 9px 13px; margin: 5px;
+      border-radius: 9px;
+      background: rgba(146,117,245,.12) !important;
+      border: 1px solid rgba(146,117,245,.3) !important;
+      font-weight: 700; font-size: 13px; color: var(--text);
+    }
+    .content-area .node.green {
+      background: rgba(73,201,163,.12) !important;
+      border-color: rgba(73,201,163,.35) !important;
+    }
+    .content-area .node.orange {
+      background: rgba(245,158,11,.12) !important;
+      border-color: rgba(245,158,11,.35) !important;
+    }
+    .content-area .arrow { display: inline-block; color: var(--muted); font-weight: 900; padding: 0 3px; }
+    .content-area .tag {
+      display: inline-block;
+      background: rgba(146,117,245,.12) !important;
+      color: var(--purple) !important;
+      padding: 3px 9px; border-radius: 99px; font-size: 11px; font-weight: 700;
+    }
+    .content-area .framework-title {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 10px; flex-wrap: wrap;
+    }
+    .content-area .links a {
+      border: 1px solid var(--border); border-radius: 8px; padding: 5px 9px;
+      color: var(--purple);
+    }
+    .content-area .quiz-question {
+      border: 1px solid var(--border); border-radius: 12px;
+      padding: 15px; margin: 12px 0; color: var(--text-secondary);
+    }
+    .content-area .quiz-question label { display: block; padding: 5px; cursor: pointer; }
+    .content-area .result {
+      margin-top: 15px; padding: 14px; border-radius: 10px; display: none;
+    }
+    .content-area .result.show {
+      display: block; background: var(--tip-bg); color: var(--text);
+    }
+    .content-area th { background: var(--table-head) !important; color: var(--text) !important; }
+    .content-area td { border-color: var(--border) !important; color: var(--text-secondary); }
+    .content-area tr:nth-child(even) td { background: var(--table-alt) !important; }
+    .content-area button {
+      font-family: inherit; cursor: pointer; border: 0; border-radius: 9px;
+      padding: 9px 14px;
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+      color: white; font-weight: 700;
+    }
+    .content-area button.secondary {
+      background: var(--surface-soft) !important;
+      color: var(--text) !important;
+      border: 1px solid var(--border);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="progress-bar no-print"><div id="progress"></div></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="M_Ai Home">
+        <div class="brand-name"><span>M_Ai</span></div>
+        <div class="brand-mark">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 29V10L15 22L20 15L25 22L35 10V29" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 15V8" stroke="#DDFBFF" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="20" cy="6" r="2.5" fill="#DDFBFF"/>
+          </svg>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="تغییر تم">
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>
+          </svg>
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>
+          </svg>
+        </button>
+        <a href="index.html" class="back-home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/>
+          </svg>
+          <span class="label">صفحه اصلی</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="chapter-hero">
+    <div class="chapter-hero-inner">
+      <div class="chapter-badge">CHAPTER 08 · AI FRAMEWORKS AND ECOSYSTEM</div>
+      <h1>AI Frameworks and Ecosystem</h1>
+      <p class="subtitle">
+        راهنمای جامع شناخت، مقایسه و انتخاب فریم‌ورک‌های ساخت برنامه‌های مبتنی بر
+        مدل‌های زبانی، RAG، Agentها و سیستم‌های چندعاملی.
+      </p>
+      <div class="chapter-meta">
+        <div class="meta-chip"><strong>7</strong> فریم‌ورک اصلی</div>
+        <div class="meta-chip"><strong>08</strong> از ۱۲ فصل</div>
+        <div class="meta-chip"><strong>LangChain</strong></div>
+        <div class="meta-chip"><strong>10</strong> سؤال آزمون</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-layout">
+    <aside class="sidebar no-print">
+      <div class="toc-card">
+        <div class="toc-title">فهرست مطالب</div>
+        <nav class="toc-nav" id="toc">
+<a class="toc-link toc-link-strong" href="#intro">مقدمه و نقشه اکوسیستم</a>
+<a class="toc-link" href="#langchain">۱. LangChain</a>
+<a class="toc-link" href="#langgraph">۲. LangGraph</a>
+<a class="toc-link" href="#llamaindex">۳. LlamaIndex</a>
+<a class="toc-link" href="#semantic">۴. Semantic Kernel</a>
+<a class="toc-link" href="#autogen">۵. AutoGen</a>
+<a class="toc-link" href="#crewai">۶. CrewAI</a>
+<a class="toc-link" href="#openai">۷. OpenAI Agents SDK</a>
+<a class="toc-link" href="#comparison">۸. مقایسه فریم‌ورک‌ها</a>
+<a class="toc-link" href="#selection">۹. روش انتخاب</a>
+<a class="toc-link" href="#architecture">۱۰. معماری ترکیبی</a>
+<a class="toc-link" href="#project">۱۱. پروژه نمونه</a>
+<a class="toc-link" href="#production">۱۲. نکات Production</a>
+<div class="toc-divider"></div>
+<a class="toc-link" href="#roadmap">۱۳. مسیر یادگیری</a>
+<a class="toc-link toc-link-strong" href="#glossary">۱۴. واژه‌نامه</a>
+<a class="toc-link toc-link-strong" href="#quiz">۱۵. آزمون</a>
+<a class="toc-link toc-link-strong" href="#references">منابع رسمی</a>
+        </nav>
+        <button class="print-btn" type="button" onclick="window.print()">چاپ یا ذخیره PDF</button>
+      </div>
+    </aside>
+
+    <main class="content-area min-w-0">
+
+      <section class="panel" id="intro">
+        <h2>مقدمه: چرا به AI Framework نیاز داریم؟</h2>
+        <p class="lead">
+          یک مدل زبانی به‌تنهایی یک محصول هوش مصنوعی کامل نیست. برای تبدیل مدل به یک
+          سیستم نرم‌افزاری واقعی، باید ورودی‌ها، حافظه، ابزارها، داده‌ها، کنترل اجرای
+          مراحل، مدیریت خطا، امنیت، ارزیابی و مانیتورینگ را هم طراحی کنیم.
+        </p>
+        <p>
+          فرض کن می‌خواهی یک دستیار هوشمند بسازی که بتواند اسناد شرکت را بخواند،
+          اطلاعات را از پایگاه داده استخراج کند، با چند API ارتباط بگیرد، در صورت نیاز
+          کار را به Agent متخصص واگذار کند و در نهایت گزارشی قابل استناد تولید کند.
+          نوشتن همه این اجزا از صفر ممکن است، اما زمان‌بر و مستعد خطاست.
+        </p>
+        <p>
+          فریم‌ورک‌ها مجموعه‌ای از abstractionها، ابزارها و الگوهای آماده ارائه می‌کنند
+          تا توسعه‌دهنده به‌جای پیاده‌سازی تمام جزئیات زیرساختی، روی منطق کسب‌وکار و
+          کیفیت سیستم تمرکز کند.
+        </p>
+
+        <h3>یک AI Application از چه اجزایی تشکیل می‌شود؟</h3>
+        <div class="diagram">
+          <div class="node">User Interface</div><span class="arrow">→</span>
+          <div class="node">Application / API</div><span class="arrow">→</span>
+          <div class="node">Agent Runtime</div>
+          <div style="margin:10px">↓</div>
+          <div class="node green">LLM / Model Provider</div>
+          <div class="node green">Tools / APIs</div>
+          <div class="node green">Memory / State</div>
+          <div class="node green">RAG / Knowledge</div>
+          <div class="node orange">Security / Guardrails</div>
+          <div class="node orange">Tracing / Evaluation</div>
+        </div>
+
+        <h3>فریم‌ورک دقیقاً چه کاری انجام می‌دهد؟</h3>
+        <div class="grid2">
+          <div class="mini">
+            <h4>۱. اتصال به مدل‌ها</h4>
+            یک interface مشترک برای ارتباط با مدل‌های مختلف فراهم می‌کند؛ البته سطح
+            پشتیبانی و میزان وابستگی به Provider در هر فریم‌ورک متفاوت است.
+          </div>
+          <div class="mini">
+            <h4>۲. مدیریت Prompt و Context</h4>
+            ساخت، قالب‌بندی و انتقال دستورها، پیام‌ها و اطلاعات زمینه‌ای را ساده می‌کند.
+          </div>
+          <div class="mini">
+            <h4>۳. ابزارها و Function Calling</h4>
+            اجازه می‌دهد مدل از API، دیتابیس، جست‌وجو، فایل و توابع برنامه استفاده کند.
+          </div>
+          <div class="mini">
+            <h4>۴. Workflow و Orchestration</h4>
+            ترتیب اجرای مراحل، branching، parallel execution و انتقال کنترل را مدیریت می‌کند.
+          </div>
+          <div class="mini">
+            <h4>۵. حافظه و State</h4>
+            وضعیت اجرای کار، تاریخچه گفتگو و اطلاعات پایدار را مدیریت یا به ذخیره‌سازها متصل می‌کند.
+          </div>
+          <div class="mini">
+            <h4>۶. مشاهده‌پذیری و ارزیابی</h4>
+            اجرای Agent، فراخوانی ابزارها، هزینه، خطاها و کیفیت پاسخ را قابل بررسی می‌کند.
+          </div>
+        </div>
+
+        <h3>یک تمایز مهم: همه فریم‌ورک‌ها یک نوع ابزار نیستند</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>دسته</th>
+              <th>مسئله اصلی</th>
+              <th>نمونه</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>LLM Application Framework</td>
+              <td>اتصال مدل، Prompt، Tool و اجزای برنامه</td>
+              <td>LangChain</td>
+            </tr>
+            <tr>
+              <td>Agent Orchestration Runtime</td>
+              <td>کنترل اجرای حالت‌مند، گراف، وقفه و ادامه کار</td>
+              <td>LangGraph</td>
+            </tr>
+            <tr>
+              <td>Data / RAG Framework</td>
+              <td>ورود، پردازش، ایندکس و بازیابی داده</td>
+              <td>LlamaIndex</td>
+            </tr>
+            <tr>
+              <td>Enterprise AI SDK</td>
+              <td>ادغام AI با کد و زیرساخت سازمانی</td>
+              <td>Semantic Kernel</td>
+            </tr>
+            <tr>
+              <td>Multi-Agent Framework</td>
+              <td>تعریف و هماهنگی Agentهای همکار</td>
+              <td>AutoGen، CrewAI</td>
+            </tr>
+            <tr>
+              <td>Agent SDK</td>
+              <td>تعریف Agent، ابزار، handoff و اجرای Agent</td>
+              <td>OpenAI Agents SDK</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout good">
+          <strong>اصل مهم:</strong>
+          فریم‌ورک را براساس مسئله انتخاب کن، نه براساس تعداد ستاره‌های GitHub،
+          ترند شبکه‌های اجتماعی یا تعداد مثال‌های آموزشی آن.
+        </div>
+      </section>
+
+      <section class="section" id="langchain">
+        <div class="framework-title">
+          <h2>۱. LangChain</h2><span class="tag">LLM Application Framework</span>
+        </div>
+        <p class="lead">
+          LangChain مجموعه‌ای از abstractionها و integrationها برای ساخت برنامه‌های
+          مبتنی بر LLM است. تمرکز آن روی ساده‌کردن ارتباط مدل، Prompt، ابزارها، پیام‌ها،
+          Retrieverها و Agent loop است.
+        </p>
+
+        <h3>LangChain چه مشکلی را حل می‌کند؟</h3>
+        <p>
+          در توسعه مستقیم با API یک مدل، معمولاً باید خودت درخواست‌ها را بسازی،
+          پیام‌ها را مدیریت کنی، ابزارها را تعریف کنی، خروجی ابزار را به مدل برگردانی،
+          خطاها را مدیریت کنی و بین Providerهای مختلف جابه‌جا شوی.
+          LangChain بسیاری از این اجزا را به abstractionهای قابل ترکیب تبدیل می‌کند.
+        </p>
+
+        <h3>مفاهیم اصلی LangChain</h3>
+        <div class="grid2">
+          <div class="mini">
+            <h4>Models</h4>
+            لایه ارتباط با مدل زبانی. هدف این است که بخش‌های مختلف برنامه به‌جای وابستگی
+            مستقیم به جزئیات یک API، از interface مشخصی استفاده کنند.
+          </div>
+          <div class="mini">
+            <h4>Messages</h4>
+            پیام‌های system، human، assistant و پیام‌های مرتبط با tool call که
+            مکالمه و زمینه اجرای مدل را تشکیل می‌دهند.
+          </div>
+          <div class="mini">
+            <h4>Prompt Templates</h4>
+            قالب‌هایی برای ساخت Prompt با متغیرهای ورودی. این کار مدیریت Promptهای
+            تکرارشونده را ساده می‌کند.
+          </div>
+          <div class="mini">
+            <h4>Tools</h4>
+            توابع یا قابلیت‌هایی که Agent می‌تواند درخواست اجرای آن‌ها را مطرح کند؛
+            مانند جست‌وجو، محاسبه یا خواندن اطلاعات از API.
+          </div>
+          <div class="mini">
+            <h4>Retrievers</h4>
+            اجزایی برای بازیابی اسناد یا قطعه‌های مرتبط با سؤال کاربر از یک منبع داده.
+          </div>
+          <div class="mini">
+            <h4>Agents</h4>
+            Agent می‌تواند با توجه به ورودی و نتیجه ابزارها تصمیم بگیرد گام بعدی چیست.
+            پیاده‌سازی Agentهای LangChain بر زیرساخت LangGraph بنا شده است.
+          </div>
+        </div>
+
+        <h3>مدل ذهنی: Agent Loop</h3>
+        <div class="diagram">
+          <div class="node">User Input</div><span class="arrow">→</span>
+          <div class="node">Agent / Model</div><span class="arrow">→</span>
+          <div class="node orange">Tool Decision</div>
+          <div style="margin:8px">↓</div>
+          <div class="node green">Tool Execution</div><span class="arrow">→</span>
+          <div class="node">Tool Result</div><span class="arrow">→</span>
+          <div class="node">Agent / Model</div>
+          <div style="margin:8px">↓</div>
+          <div class="node green">Final Answer</div>
+          <p class="muted">اگر مدل به اطلاعات یا اقدام دیگری نیاز داشته باشد، چرخه ادامه پیدا می‌کند.</p>
+        </div>
+
+        <h3>نمونه کد مفهومی: Agent دارای ابزار</h3>
+        <pre><code># Illustrative Python-style example
+from langchain.agents import create_agent
+
+def get_order_status(order_id: str) -> str:
+    """Return the status of an order."""
+    return f"Order {order_id}: shipped"
+
+agent = create_agent(
+    model="provider:model-name",
+    tools=[get_order_status],
+    system_prompt=(
+        "You are a customer support assistant. "
+        "Use the order tool when an order status is requested."
+    )
+)
+
+result = agent.invoke({
+    "messages": [
+        {"role": "user", "content": "Where is order 1234?"}
+    ]
+})
+
+print(result)</code></pre>
+
+        <p class="muted">
+          این نمونه برای نمایش الگوی استفاده است؛ نام Provider، مدل، importها و جزئیات
+          API باید با نسخه فعلی نصب‌شده هماهنگ شوند.
+        </p>
+
+        <h3>چه زمانی LangChain انتخاب خوبی است؟</h3>
+        <ul>
+          <li>وقتی می‌خواهی سریع یک LLM application یا Agent اولیه بسازی.</li>
+          <li>وقتی به integrationهای متعدد برای مدل‌ها و ابزارها نیاز داری.</li>
+          <li>وقتی می‌خواهی اجزای مختلف را به‌صورت modular کنار هم قرار دهی.</li>
+          <li>وقتی قصد داری ابتدا با abstraction سطح بالاتر شروع کنی و بعداً بخش‌های پیچیده را سفارشی‌سازی کنی.</li>
+        </ul>
+
+        <h3>محدودیت‌ها و ریسک‌ها</h3>
+        <ul>
+          <li>Abstraction زیاد می‌تواند فهم دقیق جریان اجرای برنامه را دشوار کند.</li>
+          <li>تغییر نسخه‌ها ممکن است باعث تغییر importها، APIها یا الگوهای پیشنهادی شود.</li>
+          <li>استفاده بی‌رویه از زنجیره‌ها و اجزای آماده می‌تواند debugging را دشوار کند.</li>
+          <li>Framework جایگزین طراحی معماری، امنیت ابزارها یا ارزیابی کیفیت نمی‌شود.</li>
+        </ul>
+
+        <div class="callout">
+          <strong>توصیه:</strong>
+          برای ساخت Agentهای معمولی و اتصال ابزارها، LangChain نقطه شروع مناسبی است.
+          اگر به کنترل دقیق روی state، چرخه‌های پیچیده، وقفه و ادامه اجرا نیاز داری،
+          LangGraph را جدی بررسی کن.
+        </div>
+        <div class="links">
+          <a href="https://docs.langchain.com/oss/python/learn" target="_blank">مستندات رسمی LangChain</a>
+          <a href="https://docs.langchain.com/" target="_blank">آموزش‌ها و مفاهیم</a>
+        </div>
+      </section>
+
+      <section class="section" id="langgraph">
+        <div class="framework-title">
+          <h2>۲. LangGraph</h2><span class="tag">Stateful Agent Orchestration</span>
+        </div>
+        <p class="lead">
+          LangGraph یک فریم‌ورک سطح پایین‌تر برای طراحی و اجرای Workflowها و Agentهای
+          حالت‌مند، طولانی‌مدت و قابل کنترل است. به‌جای اینکه فقط یک زنجیره خطی از
+          عملیات بسازی، می‌توانی سیستم را به‌صورت گرافی از Nodeها و Edgeها مدل کنی.
+        </p>
+
+        <h3>چرا به LangGraph نیاز داریم؟</h3>
+        <p>
+          در برنامه‌های ساده، یک درخواست به مدل و یک پاسخ نهایی کافی است. اما در سیستم
+          واقعی ممکن است Agent لازم باشد چند بار ابزار اجرا کند، نتیجه را بررسی کند،
+          به مرحله قبلی برگردد، منتظر تأیید انسان بماند، بعد از خطا ادامه دهد یا
+          بر اساس وضعیت فعلی مسیر متفاوتی انتخاب کند.
+        </p>
+        <p>
+          مدل گرافی LangGraph برای چنین رفتارهایی مناسب است. طبق مستندات رسمی،
+          LangGraph روی orchestration، اجرای پایدار، streaming، human-in-the-loop
+          و persistence تمرکز دارد. برای استفاده از آن الزاماً مجبور نیستی LangChain
+          را هم به کار ببری.
+        </p>
+
+        <h3>مفاهیم کلیدی</h3>
+        <table>
+          <tr>
+            <th>مفهوم</th>
+            <th>توضیح</th>
+            <th>مثال</th>
+          </tr>
+          <tr>
+            <td>State</td>
+            <td>اطلاعات مشترک و وضعیت فعلی اجرای گراف</td>
+            <td>سؤال، اسناد بازیابی‌شده، نتیجه بررسی</td>
+          </tr>
+          <tr>
+            <td>Node</td>
+            <td>یک واحد اجرایی که State را می‌خواند و تغییر می‌دهد</td>
+            <td>Search، Summarize، Verify</td>
+          </tr>
+          <tr>
+            <td>Edge</td>
+            <td>ارتباط و انتقال اجرا از یک Node به Node دیگر</td>
+            <td>Search → Verify</td>
+          </tr>
+          <tr>
+            <td>Conditional Edge</td>
+            <td>انتخاب مسیر براساس State یا نتیجه تصمیم</td>
+            <td>معتبر است؟ بله/خیر</td>
+          </tr>
+          <tr>
+            <td>Checkpoint</td>
+            <td>ذخیره snapshot از وضعیت اجرای گراف</td>
+            <td>ادامه پس از تأیید کاربر</td>
+          </tr>
+          <tr>
+            <td>Interrupt</td>
+            <td>توقف کنترل‌شده برای دریافت ورودی یا تأیید انسان</td>
+            <td>تأیید ارسال ایمیل</td>
+          </tr>
+        </table>
+
+        <h3>نمونه معماری گراف</h3>
+        <div class="diagram">
+          <div class="node">START</div><span class="arrow">→</span>
+          <div class="node">Understand Request</div><span class="arrow">→</span>
+          <div class="node">Retrieve Data</div><span class="arrow">→</span>
+          <div class="node orange">Verify Evidence</div>
+          <div style="margin:8px">↓</div>
+          <div class="node green">Evidence Sufficient?</div>
+          <div style="margin:8px">
+            <span class="node green">Yes → Compose</span>
+            <span class="node orange">No → Retrieve More</span>
+          </div>
+          <div style="margin:8px">↓</div>
+          <div class="node">END</div>
+        </div>
+
+        <h3>نمونه کد مفهومی: تعریف گراف</h3>
+        <pre><code># Illustrative LangGraph-style example
+from typing import TypedDict
+from langgraph.graph import StateGraph, START, END
+
+class ResearchState(TypedDict):
+    question: str
+    evidence: list
+    answer: str
+
+def retrieve(state: ResearchState):
+    # Retrieve documents from a knowledge source
+    docs = search_knowledge_base(state["question"])
+    return {"evidence": docs}
+
+def compose(state: ResearchState):
+    answer = generate_answer(
+        question=state["question"],
+        evidence=state["evidence"]
+    )
+    return {"answer": answer}
+
+builder = StateGraph(ResearchState)
+builder.add_node("retrieve", retrieve)
+builder.add_node("compose", compose)
+
+builder.add_edge(START, "retrieve")
+builder.add_edge("retrieve", "compose")
+builder.add_edge("compose", END)
+
+graph = builder.compile()
+result = graph.invoke({
+    "question": "What is our refund policy?",
+    "evidence": [],
+    "answer": ""
+})</code></pre>
+
+        <h3>Persistence و Checkpointing</h3>
+        <p>
+          یکی از قابلیت‌های مهم LangGraph ذخیره وضعیت اجرا در checkpointها است.
+          این قابلیت برای ادامه گفتگو، بازیابی پس از خطا، workflowهای طولانی و
+          تعامل انسانی مفید است.
+        </p>
+        <ul>
+          <li><strong>Thread-scoped state:</strong> وضعیت یک مکالمه یا اجرای مشخص را نگه می‌دارد.</li>
+          <li><strong>Long-term store:</strong> برای داده‌هایی که باید میان چند Thread باقی بمانند مناسب است.</li>
+          <li><strong>Resume:</strong> پس از توقف یا وقفه، اجرای گراف می‌تواند ادامه یابد.</li>
+          <li><strong>Time travel:</strong> در محیط‌های پشتیبانی‌شده می‌توان وضعیت‌های قبلی را بررسی و مسیر را بازسازی
+            کرد.</li>
+        </ul>
+
+        <h3>چه زمانی LangGraph انتخاب مناسبی است؟</h3>
+        <ul>
+          <li>وقتی Workflow دارای branching و loopهای پیچیده است.</li>
+          <li>وقتی باید اجرای Agent بعد از وقفه یا خطا ادامه پیدا کند.</li>
+          <li>وقتی تأیید انسانی بخشی از فرآیند است.</li>
+          <li>وقتی می‌خواهی مراحل deterministic و تصمیم‌های LLM را ترکیب کنی.</li>
+          <li>وقتی لازم است state و مسیر اجرای Agent دقیقاً قابل بررسی باشند.</li>
+        </ul>
+
+        <div class="callout warn">
+          LangGraph صرفاً یک ابزار برای ساخت Agentهای چندگانه نیست. ارزش اصلی آن
+          کنترل دقیق جریان اجرا و مدیریت state است. اگر فقط یک Agent ساده با یک Tool
+          می‌خواهی، ممکن است abstraction سطح بالاتر ساده‌تر باشد.
+        </div>
+        <div class="links">
+          <a href="https://docs.langchain.com/oss/python/langgraph/overview" target="_blank">LangGraph Overview</a>
+          <a href="https://docs.langchain.com/oss/python/langgraph/persistence" target="_blank">Persistence</a>
+          <a href="https://docs.langchain.com/" target="_blank">LangChain Docs</a>
+        </div>
+      </section>
+
+      <section class="section" id="llamaindex">
+        <div class="framework-title">
+          <h2>۳. LlamaIndex</h2><span class="tag">Data Framework / RAG / Agents</span>
+        </div>
+        <p class="lead">
+          LlamaIndex یک ابزار مهم برای ساخت برنامه‌های LLMمحور بر پایه داده‌های
+          اختصاصی است. تمرکز شاخص آن روی اتصال به منابع داده، پردازش اسناد،
+          indexing، retrieval، query engineها، RAG و ساخت Agentهایی است که با داده کار می‌کنند.
+        </p>
+
+        <h3>مسئله اصلی LlamaIndex چیست؟</h3>
+        <p>
+          مدل زبانی لزوماً به اطلاعات داخلی سازمان، فایل‌های PDF، اسناد فنی،
+          قراردادها، پایگاه داده یا دانش به‌روز شرکت دسترسی ندارد. LlamaIndex کمک
+          می‌کند این منابع را وارد برنامه کنی، ساختار بدهی، index بسازی و هنگام
+          پاسخ‌گویی اطلاعات مرتبط را بازیابی کنی.
+        </p>
+
+        <h3>معماری رایج RAG در LlamaIndex</h3>
+        <div class="diagram">
+          <div class="node">PDF / Docs / DB / API</div><span class="arrow">→</span>
+          <div class="node">Data Connectors</div><span class="arrow">→</span>
+          <div class="node">Parsing / Chunking</div><span class="arrow">→</span>
+          <div class="node">Embeddings</div>
+          <div style="margin:8px">↓</div>
+          <div class="node green">Vector / Document Store</div>
+          <div style="margin:8px">↓</div>
+          <div class="node orange">Retriever / Query Engine</div><span class="arrow">→</span>
+          <div class="node">LLM</div><span class="arrow">→</span>
+          <div class="node green">Grounded Answer</div>
+        </div>
+
+        <h3>اجزای کلیدی LlamaIndex</h3>
+        <div class="grid2">
+          <div class="mini">
+            <h4>Documents و Nodes</h4>
+            Document نماینده داده ورودی است و Node معمولاً قطعه یا واحد پردازش‌شده‌ای
+            از داده محسوب می‌شود.
+          </div>
+          <div class="mini">
+            <h4>Data Connectors</h4>
+            اتصال به فایل‌ها، پایگاه‌های داده و منابع بیرونی را ساده می‌کنند.
+          </div>
+          <div class="mini">
+            <h4>Ingestion Pipeline</h4>
+            فرآیند دریافت، تبدیل، قطعه‌بندی، افزودن metadata و آماده‌سازی داده را مدیریت می‌کند.
+          </div>
+          <div class="mini">
+            <h4>Index</h4>
+            ساختار سازمان‌دهی اطلاعات برای بازیابی کارآمد است؛ مانند Vector Index یا
+            ساختارهای مبتنی بر گراف.
+          </div>
+          <div class="mini">
+            <h4>Retriever</h4>
+            بخش بازیابی اطلاعات مرتبط با query کاربر است.
+          </div>
+          <div class="mini">
+            <h4>Query Engine</h4>
+            یک مسیر end-to-end برای دریافت سؤال، بازیابی context و تولید پاسخ فراهم می‌کند.
+          </div>
+          <div class="mini">
+            <h4>Agents و Tools</h4>
+            Agent می‌تواند از query engine یا سایر قابلیت‌ها به‌عنوان ابزار استفاده کند.
+          </div>
+          <div class="mini">
+            <h4>Workflows</h4>
+            برای طراحی جریان‌های event-driven، چندمرحله‌ای، شاخه‌دار و پیچیده کاربرد دارد.
+          </div>
+        </div>
+
+        <h3>نمونه کد ساده RAG</h3>
+        <pre><code># Illustrative LlamaIndex-style example
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+
+documents = SimpleDirectoryReader("./company_docs").load_data()
+
+index = VectorStoreIndex.from_documents(documents)
+
+query_engine = index.as_query_engine()
+
+response = query_engine.query(
+    "What is the company's annual leave policy?"
+)
+
+print(response)</code></pre>
+
+        <p>
+          این مثال ساده است و برای Production کافی نیست. در یک سیستم واقعی باید
+          سیاست chunking، metadata، دسترسی کاربران، به‌روزرسانی index، حذف اسناد،
+          ارزیابی retrieval، citation و کنترل نسخه داده را طراحی کنی.
+        </p>
+
+        <h3>LlamaIndex و Agentها</h3>
+        <p>
+          LlamaIndex فقط برای RAG ساده نیست. Agent می‌تواند چند ابزار داشته باشد و
+          بر اساس سؤال، تصمیم بگیرد از کدام ابزار استفاده کند. برای مثال:
+        </p>
+        <ul>
+          <li>ابزار اول: جست‌وجو در اسناد سیاست‌های شرکت.</li>
+          <li>ابزار دوم: query روی پایگاه داده فروش.</li>
+          <li>ابزار سوم: محاسبه KPI.</li>
+          <li>ابزار چهارم: تولید گزارش از نتایج.</li>
+        </ul>
+        <p>
+          همچنین می‌توان Agentهای تخصصی را در یک AgentWorkflow کنار هم قرار داد یا
+          با Workflows سطح پایین‌تر، جریان اجرایی سفارشی ساخت.
+        </p>
+
+        <h3>چه زمانی LlamaIndex را انتخاب کنیم؟</h3>
+        <ul>
+          <li>وقتی داده اختصاصی و اسناد سازمانی هسته اصلی محصول هستند.</li>
+          <li>وقتی به ingestion و retrieval پیشرفته نیاز داری.</li>
+          <li>وقتی کیفیت بازیابی و grounding پاسخ اهمیت بالایی دارد.</li>
+          <li>وقتی می‌خواهی Agentها به Query Engineها و داده‌های ساختاریافته دسترسی داشته باشند.</li>
+          <li>وقتی می‌خواهی pipeline داده و Agent را در یک اکوسیستم منسجم طراحی کنی.</li>
+        </ul>
+
+        <div class="callout good">
+          <strong>قاعده تجربی:</strong>
+          اگر مسئله تو «چطور به مدل اجازه بدهم دانش داخلی سازمان را به‌درستی پیدا کند؟»
+          باشد، LlamaIndex یکی از گزینه‌های جدی است. اگر مسئله اصلی «چطور اجرای یک
+          Agent پیچیده را کنترل کنم؟» باشد، LangGraph را نیز بررسی کن.
+        </div>
+        <div class="links">
+          <a href="https://developers.llamaindex.ai/python/framework/" target="_blank">LlamaIndex Framework</a>
+          <a href="https://developers.llamaindex.ai/python/framework/getting_started/concepts/"
+            target="_blank">High-Level Concepts</a>
+          <a href="https://developers.llamaindex.ai/python/framework/use_cases/agents/" target="_blank">Agents</a>
+        </div>
+      </section>
+
+      <section class="section" id="semantic">
+        <div class="framework-title">
+          <h2>۴. Semantic Kernel</h2><span class="tag">Enterprise AI SDK</span>
+        </div>
+        <p class="lead">
+          Semantic Kernel یک SDK از مایکروسافت برای ادغام قابلیت‌های مدل‌های زبانی
+          با برنامه‌های نرم‌افزاری متعارف است. این پروژه به‌ویژه برای تیم‌هایی که
+          در اکوسیستم .NET، C#، Python یا Java کار می‌کنند و به ساختار سازمانی،
+          Pluginها و ادغام با سیستم‌های موجود اهمیت می‌دهند، قابل توجه است.
+        </p>
+
+        <h3>فلسفه Semantic Kernel</h3>
+        <p>
+          فرض کن یک سامانه سازمانی قدیمی داری که شامل سرویس حسابداری، CRM، پایگاه
+          داده و سرویس احراز هویت است. نمی‌خواهی این منطق را کنار بگذاری و همه‌چیز را
+          به یک Agent آزاد بسپاری. می‌خواهی قابلیت زبان طبیعی را به سیستم موجود اضافه
+          کنی، بدون اینکه کنترل برنامه و منطق تجاری از دست توسعه‌دهنده خارج شود.
+        </p>
+        <p>
+          Semantic Kernel به تو کمک می‌کند سرویس‌ها و توابع برنامه را به شکلی
+          سازمان‌یافته در اختیار قابلیت‌های AI قرار دهی.
+        </p>
+
+        <h3>مفاهیم مهم</h3>
+        <table>
+          <tr>
+            <th>مفهوم</th>
+            <th>کاربرد</th>
+          </tr>
+          <tr>
+            <td>Kernel</td>
+            <td>هسته‌ای برای مدیریت سرویس‌های AI، Pluginها و اجزای موردنیاز برنامه.</td>
+          </tr>
+          <tr>
+            <td>Plugins</td>
+            <td>بسته‌بندی قابلیت‌های موجود برنامه، APIها و توابع قابل فراخوانی.</td>
+          </tr>
+          <tr>
+            <td>Functions</td>
+            <td>توابعی که می‌توانند از کد یا Prompt تشکیل شده باشند و در اختیار Kernel قرار گیرند.</td>
+          </tr>
+          <tr>
+            <td>Memory</td>
+            <td>قابلیت اتصال به سازوکارهای نگه‌داری و بازیابی اطلاعات.</td>
+          </tr>
+          <tr>
+            <td>Agents</td>
+            <td>موجودیت‌هایی که با مدل، ابزار و ورودی‌های مختلف برای انجام وظیفه کار می‌کنند.</td>
+          </tr>
+          <tr>
+            <td>Filters / Middleware</td>
+            <td>امکان کنترل و مداخله در مراحل اجرای عملیات.</td>
+          </tr>
+        </table>
+
+        <h3>Plugin یعنی چه؟</h3>
+        <p>
+          فرض کن یک سیستم فروش داری و تابعی به نام <code>get_customer_orders</code>
+          در برنامه وجود دارد. می‌توانی این قابلیت را در قالب Plugin در دسترس مدل
+          قرار دهی تا در صورت نیاز درخواست اجرای آن را مطرح کند.
+        </p>
+        <pre><code># Conceptual example
+class OrderPlugin:
+    def __init__(self, order_service):
+        self.order_service = order_service
+
+    def get_customer_orders(self, customer_id: str):
+        """
+        Retrieve orders for a customer.
+        """
+        return self.order_service.find_orders(customer_id)
+
+# The application registers the plugin
+# with its AI kernel and configures model services.</code></pre>
+
+        <p>
+          مزیت مهم این رویکرد این است که مدل به‌جای دسترسی مستقیم و نامحدود به
+          زیرساخت، فقط قابلیت‌هایی را می‌بیند که توسعه‌دهنده صریحاً در اختیارش
+          قرار داده است.
+        </p>
+
+        <h3>Orchestration در Semantic Kernel</h3>
+        <p>
+          Semantic Kernel الگوهایی برای هماهنگی Agentها ارائه کرده است؛ از جمله
+          اجرای Sequential، Concurrent، Handoff، Group Chat و الگوهای پیچیده‌تر.
+          با این حال، وضعیت بلوغ هر قابلیت و زبان پشتیبانی‌شده باید در نسخه مورد
+          استفاده بررسی شود.
+        </p>
+
+        <div class="diagram">
+          <div class="node">Business Application</div><span class="arrow">→</span>
+          <div class="node">Semantic Kernel</div>
+          <div style="margin:8px">↓</div>
+          <div class="node green">Plugins / Functions</div>
+          <div class="node green">AI Services / Models</div>
+          <div class="node green">Memory / Data</div>
+          <div class="node orange">Filters / Policies</div>
+        </div>
+
+        <h3>نقاط قوت</h3>
+        <ul>
+          <li>مناسب برای اتصال AI به نرم‌افزارهای موجود.</li>
+          <li>مفهوم Plugin برای سازمان‌دهی قابلیت‌های برنامه.</li>
+          <li>پشتیبانی از چند زبان برنامه‌نویسی در اکوسیستم آن.</li>
+          <li>توجه به integration، dependency injection، فیلترها و کنترل سازمانی.</li>
+        </ul>
+
+        <h3>نکته بسیار مهم درباره وضعیت Microsoft</h3>
+        <div class="callout warn">
+          Microsoft Agent Framework به‌عنوان نسل بعدی و جانشین مستقیم AutoGen و
+          Semantic Kernel معرفی شده است. این به معنی بی‌استفاده بودن Semantic Kernel
+          نیست؛ نسخه‌های موجود و سامانه‌های فعلی باید براساس سیاست پشتیبانی رسمی
+          بررسی شوند. اما برای پروژه جدید، حتماً Microsoft Agent Framework و مسیر
+          مهاجرت را نیز ارزیابی کن.
+        </div>
+
+        <h3>چه زمانی Semantic Kernel مناسب است؟</h3>
+        <ul>
+          <li>وقتی می‌خواهی قابلیت AI را به یک برنامه سازمانی موجود اضافه کنی.</li>
+          <li>وقتی معماری نرم‌افزار، Pluginها و integration برایت اهمیت دارد.</li>
+          <li>وقتی تیم با .NET و C# کار می‌کند.</li>
+          <li>وقتی به‌دنبال SDK سازمانی هستی، نه صرفاً یک ابزار آزمایش Agent.</li>
+        </ul>
+        <div class="links">
+          <a href="https://learn.microsoft.com/en-us/semantic-kernel/" target="_blank">Semantic Kernel Docs</a>
+          <a href="https://learn.microsoft.com/en-us/semantic-kernel/concepts/plugins" target="_blank">Plugins</a>
+          <a href="https://learn.microsoft.com/en-us/semantic-kernel/frameworks/agent/" target="_blank">Agent
+            Framework</a>
+          <a href="https://learn.microsoft.com/en-us/agent-framework/overview/" target="_blank">Microsoft Agent
+            Framework</a>
+        </div>
+      </section>
+
+      <section class="section" id="autogen">
+        <div class="framework-title">
+          <h2>۵. AutoGen</h2><span class="tag">Multi-Agent Conversation</span>
+        </div>
+        <p class="lead">
+          AutoGen یک پروژه مایکروسافت برای ساخت برنامه‌های مبتنی بر Agent و
+          هماهنگی چند Agent از طریق تعاملات پیام‌محور بود. از نظر آموزشی و تاریخی،
+          نقش مهمی در رواج معماری‌های multi-agent مبتنی بر مکالمه داشته است.
+        </p>
+
+        <h3>ایده اصلی AutoGen</h3>
+        <p>
+          به‌جای اینکه تمام کار را به یک Agent بسپاری، چند Agent با نقش‌های متفاوت
+          تعریف می‌کنی. آن‌ها می‌توانند پیام ردوبدل کنند، خروجی یکدیگر را بررسی کنند،
+          ابزار اجرا کنند و برای رسیدن به هدف مشترک همکاری داشته باشند.
+        </p>
+
+        <h3>مفاهیم معماری</h3>
+        <div class="grid2">
+          <div class="mini">
+            <h4>AgentChat</h4>
+            API سطح بالاتر برای ساخت برنامه‌های مکالمه‌ای تک‌عاملی و چندعاملی و استفاده
+            از الگوهای آماده هماهنگی.
+          </div>
+          <div class="mini">
+            <h4>Core</h4>
+            لایه پایین‌تر و event-driven برای طراحی سیستم‌های چندعاملی با کنترل بیشتر.
+          </div>
+          <div class="mini">
+            <h4>Teams</h4>
+            گروهی از Agentها که براساس یک الگوی هماهنگی با یکدیگر کار می‌کنند.
+          </div>
+          <div class="mini">
+            <h4>Extensions</h4>
+            اتصال به مدل‌ها، ابزارها و سیستم‌های اجرایی مختلف.
+          </div>
+        </div>
+
+        <h3>نمونه همکاری چند Agent</h3>
+        <div class="diagram">
+          <div class="node">User Task</div><span class="arrow">→</span>
+          <div class="node">Team Coordinator</div>
+          <div style="margin:10px">
+            <span class="node green">Research Agent</span>
+            <span class="node green">Analysis Agent</span>
+            <span class="node green">Critic Agent</span>
+          </div>
+          <div style="margin:8px">↓</div>
+          <div class="node orange">Coordinator Reviews Results</div>
+          <div style="margin:8px">↓</div>
+          <div class="node">Final Result</div>
+        </div>
+
+        <h3>الگوهای همکاری</h3>
+        <ul>
+          <li><strong>Round Robin:</strong> Agentها به‌ترتیب فرصت مشارکت پیدا می‌کنند.</li>
+          <li><strong>Selector Group Chat:</strong> یک سازوکار انتخاب تعیین می‌کند Agent بعدی چه کسی باشد.</li>
+          <li><strong>Swarm-style coordination:</strong> انتخاب و انتقال کنترل می‌تواند محلی‌تر و مبتنی بر ابزار یا
+            قابلیت Agentها باشد.</li>
+          <li><strong>Event-driven Core:</strong> ارتباط و اجرای اجزا با رویکرد رویدادمحور انجام می‌شود.</li>
+        </ul>
+
+        <h3>نمونه کد مفهومی</h3>
+        <pre><code># Historical / illustrative AutoGen-style pattern
+import asyncio
+from autogen_agentchat.agents import AssistantAgent
+from autogen_agentchat.teams import RoundRobinGroupChat
+from autogen_ext.models.openai import OpenAIChatCompletionClient
+
+async def main():
+    model_client = OpenAIChatCompletionClient(
+        model="your-supported-model"
+    )
+
+    researcher = AssistantAgent(
+        name="researcher",
+        model_client=model_client,
+        system_message="Collect relevant evidence."
+    )
+
+    reviewer = AssistantAgent(
+        name="reviewer",
+        model_client=model_client,
+        system_message="Critique the evidence and identify gaps."
+    )
+
+    team = RoundRobinGroupChat(
+        participants=[researcher, reviewer],
+        max_turns=4
+    )
+
+    result = await team.run(
+        task="Analyze the benefits and risks of RAG."
+    )
+    print(result)
+
+asyncio.run(main())</code></pre>
+
+        <h3>وضعیت فعلی AutoGen: نکته حیاتی برای انتخاب</h3>
+        <div class="callout danger">
+          <strong>وضعیت پروژه را جدی بگیر:</strong>
+          مستندات فعلی AutoGen اعلام می‌کنند که پروژه آرشیو شده و دیگر به‌صورت فعال
+          توسط Microsoft نگه‌داری نمی‌شود؛ یعنی انتظار رفع اشکال امنیتی، قابلیت جدید
+          یا پشتیبانی رسمی مستمر نباید داشته باشی. برای پروژه‌های جدید، Microsoft
+          پیشنهاد می‌کند از Microsoft Agent Framework شروع شود. کاربران فعلی نیز
+          می‌توانند مسیر مهاجرت را بررسی کنند.
+        </div>
+
+        <p>
+          این وضعیت AutoGen را از نظر یادگیری بی‌ارزش نمی‌کند. مفاهیم AgentChat،
+          پیام‌رسانی Agentها، انتخاب Agent بعدی و event-driven orchestration همچنان
+          برای درک معماری multi-agent مفید هستند. اما انتخاب آن برای یک محصول جدید
+          Production نیازمند دلیل فنی و بررسی ریسک نگه‌داری است.
+        </p>
+
+        <h3>چه زمانی AutoGen را بررسی کنیم؟</h3>
+        <ul>
+          <li>برای مطالعه معماری مکالمه‌ای چند Agent و نمونه‌های تاریخی.</li>
+          <li>برای نگه‌داری یا مهاجرت سیستم موجودی که قبلاً با AutoGen ساخته شده است.</li>
+          <li>برای آزمایش و مقایسه الگوهای همکاری، با درنظرگرفتن وضعیت پشتیبانی پروژه.</li>
+        </ul>
+        <div class="links">
+          <a href="https://microsoft.github.io/autogen/" target="_blank">AutoGen Documentation</a>
+          <a href="https://learn.microsoft.com/en-us/agent-framework/" target="_blank">Microsoft Agent Framework</a>
+        </div>
+      </section>
+
+      <section class="section" id="crewai">
+        <div class="framework-title">
+          <h2>۶. CrewAI</h2><span class="tag">Role-Based Multi-Agent Framework</span>
+        </div>
+        <p class="lead">
+          CrewAI فریم‌ورکی برای ساخت سیستم‌های چندعاملی است که در آن Agentها با
+          نقش‌ها، هدف‌ها و مسئولیت‌های مشخص تعریف می‌شوند. ایده اصلی آن این است که
+          کارهای پیچیده را به یک تیم از Agentهای تخصصی بسپاری.
+        </p>
+
+        <h3>دو مفهوم مهم: Crew و Flow</h3>
+        <div class="grid2">
+          <div class="mini">
+            <h4>Crew = تیم متخصصان</h4>
+            یک گروه از Agentها که برای انجام یک کار پیچیده با هم همکاری می‌کنند.
+            هر Agent می‌تواند نقش، هدف، ابزار و تنظیمات خودش را داشته باشد.
+          </div>
+          <div class="mini">
+            <h4>Flow = کنترل‌کننده فرآیند</h4>
+            جریان اصلی برنامه را تعریف می‌کند؛ State، ترتیب مراحل، branching،
+            eventها و تصمیم‌گیری درباره مرحله بعد را مدیریت می‌کند.
+          </div>
+        </div>
+
+        <p>
+          در معماری مناسب Production، Flow معمولاً اسکلت اصلی برنامه است و Crew در
+          مرحله‌ای استفاده می‌شود که واقعاً به همکاری و استقلال Agentها نیاز داریم.
+        </p>
+
+        <div class="diagram">
+          <div class="node">Application Request</div><span class="arrow">→</span>
+          <div class="node">Flow Orchestrator</div>
+          <div style="margin:8px">↓</div>
+          <div class="node orange">State / Routing / Conditions</div>
+          <div style="margin:8px">↓</div>
+          <div class="node green">Research Crew</div>
+          <div style="margin:8px">↓</div>
+          <div class="node">Flow Validates Result</div><span class="arrow">→</span>
+          <div class="node">Save / Respond</div>
+        </div>
+
+        <h3>مفاهیم اصلی CrewAI</h3>
+        <table>
+          <tr>
+            <th>مفهوم</th>
+            <th>معنا</th>
+            <th>مثال</th>
+          </tr>
+          <tr>
+            <td>Agent</td>
+            <td>یک عضو تخصصی تیم</td>
+            <td>Researcher</td>
+          </tr>
+          <tr>
+            <td>Role</td>
+            <td>نقش Agent</td>
+            <td>تحلیل‌گر بازار</td>
+          </tr>
+          <tr>
+            <td>Goal</td>
+            <td>هدف Agent</td>
+            <td>شناسایی روندهای بازار</td>
+          </tr>
+          <tr>
+            <td>Backstory</td>
+            <td>زمینه‌ای برای تعریف نحوه رفتار و تخصص Agent</td>
+            <td>تحلیل‌گر باتجربه</td>
+          </tr>
+          <tr>
+            <td>Task</td>
+            <td>وظیفه مشخصی که باید انجام شود</td>
+            <td>تهیه گزارش رقبا</td>
+          </tr>
+          <tr>
+            <td>Crew</td>
+            <td>گروه Agentها و Taskها</td>
+            <td>تیم تحقیقات بازار</td>
+          </tr>
+          <tr>
+            <td>Process</td>
+            <td>نحوه اجرای Taskها</td>
+            <td>Sequential یا Hierarchical</td>
+          </tr>
+          <tr>
+            <td>Flow</td>
+            <td>کنترل و مدیریت کل فرآیند</td>
+            <td>دریافت درخواست تا انتشار گزارش</td>
+          </tr>
+        </table>
+
+        <h3>مثال: تیم تولید گزارش بازار</h3>
+        <pre><code># Illustrative CrewAI-style example
+from crewai import Agent, Task, Crew, Process
+
+researcher = Agent(
+    role="Market Researcher",
+    goal="Collect relevant market evidence",
+    backstory="You are a careful research analyst.",
+    tools=[search_tool]
+)
+
+analyst = Agent(
+    role="Market Analyst",
+    goal="Identify trends and compare competitors",
+    backstory="You analyze evidence and quantify uncertainty."
+)
+
+writer = Agent(
+    role="Report Writer",
+    goal="Produce a clear executive report",
+    backstory="You write concise evidence-based reports."
+)
+
+research_task = Task(
+    description="Research the target market and cite sources.",
+    expected_output="A structured evidence summary.",
+    agent=researcher
+)
+
+analysis_task = Task(
+    description="Analyze the evidence and identify trends.",
+    expected_output="A structured analysis with caveats.",
+    agent=analyst,
+    context=[research_task]
+)
+
+writing_task = Task(
+    description="Write an executive report.",
+    expected_output="A concise report with recommendations.",
+    agent=writer,
+    context=[analysis_task]
+)
+
+crew = Crew(
+    agents=[researcher, analyst, writer],
+    tasks=[research_task, analysis_task, writing_task],
+    process=Process.sequential
+)
+
+result = crew.kickoff()
+print(result)</code></pre>
+
+        <h3>چه زمانی CrewAI مناسب است؟</h3>
+        <ul>
+          <li>وقتی مسئله به چند نقش تخصصی قابل تفکیک است.</li>
+          <li>وقتی می‌خواهی یک تیم Agent را با تعریف Role، Goal و Task بسازی.</li>
+          <li>وقتی برای تحقیق، تحلیل، بازبینی و تولید محتوا به همکاری Agentها نیاز داری.</li>
+          <li>وقتی می‌خواهی در کنار همکاری خودمختار، با Flow کنترل ساختاریافته داشته باشی.</li>
+        </ul>
+
+        <h3>محدودیت‌ها و ملاحظات</h3>
+        <ul>
+          <li>تعریف تعداد زیادی Agent بدون تقسیم کار واقعی، هزینه و پیچیدگی را بالا می‌برد.</li>
+          <li>Role و Backstory خوب به‌تنهایی تضمین‌کننده خروجی دقیق نیستند.</li>
+          <li>باید ورودی و خروجی Taskها، محدودیت ابزارها و معیار پذیرش مشخص باشند.</li>
+          <li>برای عملیات حساس، Flow و کنترل‌های deterministic را جایگزین اعتماد کامل به تصمیم Agent کن.</li>
+        </ul>
+
+        <div class="callout good">
+          برای CrewAI یک الگوی ذهنی مفید این است:
+          <strong>Flow برای کنترل؛ Crew برای همکاری.</strong>
+        </div>
+        <div class="links">
+          <a href="https://docs.crewai.com/" target="_blank">CrewAI Documentation</a>
+          <a href="https://docs.crewai.com/en/concepts/agents" target="_blank">Agents</a>
+          <a href="https://docs.crewai.com/en/concepts/tasks" target="_blank">Tasks</a>
+          <a href="https://docs.crewai.com/en/concepts/flows" target="_blank">Flows</a>
+        </div>
+      </section>
+
+      <section class="section" id="openai">
+        <div class="framework-title">
+          <h2>۷. OpenAI Agents SDK</h2><span class="tag">Agent SDK</span>
+        </div>
+        <p class="lead">
+          OpenAI Agents SDK یک SDK سبک برای ساخت Agentهایی است که دستورالعمل،
+          مدل، ابزار، Guardrail و امکان واگذاری کار به Agentهای دیگر دارند.
+          این SDK روی ساخت Agentهای قابل ترکیب و مدیریت اجرای آن‌ها تمرکز می‌کند.
+        </p>
+
+        <h3>چه چیزی در آن مهم است؟</h3>
+        <div class="grid2">
+          <div class="mini">
+            <h4>Agent</h4>
+            یک واحد اجرایی با نام، دستورالعمل، مدل و قابلیت‌های مشخص.
+          </div>
+          <div class="mini">
+            <h4>Tools</h4>
+            توابع، ابزارهای میزبانی‌شده یا اتصال به قابلیت‌های بیرونی.
+          </div>
+          <div class="mini">
+            <h4>Handoffs</h4>
+            انتقال کنترل از یک Agent به Agent متخصص دیگر.
+          </div>
+          <div class="mini">
+            <h4>Agents as Tools</h4>
+            یک Agent می‌تواند Agent دیگری را مانند یک ابزار فراخوانی کند و کنترل را نزد خود نگه دارد.
+          </div>
+          <div class="mini">
+            <h4>Guardrails</h4>
+            کنترل ورودی و خروجی و متوقف‌کردن اجرای نامعتبر با سازوکارهای مشخص.
+          </div>
+          <div class="mini">
+            <h4>Sessions</h4>
+            مدیریت تاریخچه و زمینه گفتگو میان اجرای Agentها.
+          </div>
+          <div class="mini">
+            <h4>Tracing</h4>
+            ثبت اجرای Agent، فراخوانی ابزارها، handoffها و Guardrailها برای debugging.
+          </div>
+          <div class="mini">
+            <h4>Human in the Loop</h4>
+            امکان واردکردن انسان در فرآیند برای بررسی یا تأیید اقدامات حساس.
+          </div>
+        </div>
+
+        <h3>دو الگوی مهم: Handoff و Manager</h3>
+        <table>
+          <tr>
+            <th>الگو</th>
+            <th>نحوه کار</th>
+            <th>چه زمانی مفید است؟</th>
+          </tr>
+          <tr>
+            <td>Handoff</td>
+            <td>Agent فعلی کنترل را به Agent متخصص دیگری منتقل می‌کند.</td>
+            <td>وقتی مالکیت ادامه مکالمه باید به متخصص جدید منتقل شود.</td>
+          </tr>
+          <tr>
+            <td>Manager / Agents as Tools</td>
+            <td>Agent اصلی Agentهای تخصصی را فراخوانی می‌کند و خودش کنترل پاسخ نهایی را نگه می‌دارد.</td>
+            <td>وقتی یک مدیر باید خروجی چند متخصص را جمع‌بندی و ترکیب کند.</td>
+          </tr>
+        </table>
+
+        <h3>نمونه کد: یک Agent ساده</h3>
+        <pre><code># Illustrative OpenAI Agents SDK example
+from agents import Agent, Runner
+
+assistant = Agent(
+    name="Support Assistant",
+    instructions=(
+        "You are a customer support assistant. "
+        "Answer clearly and ask for missing information."
+    )
+)
+
+result = Runner.run_sync(
+    assistant,
+    "Explain how I can reset my password."
+)
+
+print(result.final_output)</code></pre>
+
+        <h3>نمونه تعریف ابزار</h3>
+        <pre><code># Conceptual function tool example
+from agents import Agent, Runner, function_tool
+
+@function_tool
+def get_invoice_status(invoice_id: str) -> str:
+    """Look up an invoice status."""
+    return invoice_service.get_status(invoice_id)
+
+agent = Agent(
+    name="Billing Assistant",
+    instructions="Use the invoice tool to check invoice status.",
+    tools=[get_invoice_status]
+)
+
+result = Runner.run_sync(
+    agent,
+    "Check invoice INV-100."
+)
+
+print(result.final_output)</code></pre>
+
+        <h3>Tracing چه ارزشی دارد؟</h3>
+        <p>
+          در سیستم Agentic فقط پاسخ نهایی کافی نیست. باید بدانی Agent چه تصمیمی گرفت،
+          چه ابزاری را فراخواند، چه handoffی انجام شد، کدام Guardrail فعال شد و هر
+          مرحله چقدر زمان و هزینه مصرف کرد. SDK دارای tracing داخلی است که برای
+          بررسی این رخدادها کاربرد دارد.
+        </p>
+
+        <h3>چه زمانی OpenAI Agents SDK را انتخاب کنیم؟</h3>
+        <ul>
+          <li>وقتی به یک SDK سبک برای تعریف Agent و ابزارها نیاز داری.</li>
+          <li>وقتی می‌خواهی الگوهای handoff و manager را پیاده‌سازی کنی.</li>
+          <li>وقتی Guardrail و tracing یکپارچه برایت مهم است.</li>
+          <li>وقتی برنامه می‌خواهد کنترل اصلی روی storage، ابزارها و منطق تجاری را در اختیار خودش نگه دارد.</li>
+          <li>وقتی می‌خواهی از abstractionهای Agent آماده استفاده کنی، بدون ساختن یک سیستم orchestration کامل از صفر.
+          </li>
+        </ul>
+
+        <div class="callout warn">
+          توجه کن که وجود یک SDK برای Agent به این معنا نیست که همه اجزای زیرساخت
+          Production برایت حل شده‌اند. ذخیره‌سازی، مدیریت دسترسی، اجرای امن ابزارها،
+          محدودیت هزینه، شبکه، مانیتورینگ سازمانی و فرآیند استقرار همچنان مسئولیت
+          طراحی سیستم تو هستند.
+        </div>
+
+        <div class="links">
+          <a href="https://openai.github.io/openai-agents-python/" target="_blank">Agents SDK Python</a>
+          <a href="https://developers.openai.com/api/docs/guides/agents/sdk" target="_blank">OpenAI Agents SDK Guide</a>
+          <a href="https://openai.github.io/openai-agents-python/tracing/" target="_blank">Tracing</a>
+          <a href="https://openai.github.io/openai-agents-python/guardrails/" target="_blank">Guardrails</a>
+        </div>
+      </section>
+
+      <section class="section" id="comparison">
+        <h2>۸. Framework Comparison and Selection</h2>
+        <p class="lead">
+          مقایسه درست باید بر مبنای نوع مسئله، میزان کنترل موردنیاز، زبان برنامه‌نویسی،
+          مدل‌های مورد استفاده، وضعیت نگه‌داری و الزامات Production انجام شود.
+        </p>
+
+        <h3>مقایسه سریع بر اساس تمرکز اصلی</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>فریم‌ورک</th>
+              <th>تمرکز اصلی</th>
+              <th>مناسب برای</th>
+              <th>نقطه قوت شاخص</th>
+              <th>ملاحظه اصلی</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>LangChain</td>
+              <td>ساخت LLM Application و Agent</td>
+              <td>ابزارها، مدل‌ها و برنامه‌های قابل ترکیب</td>
+              <td>اکوسیستم و abstractionهای گسترده</td>
+              <td>پیچیدگی abstraction و تغییر APIها</td>
+            </tr>
+            <tr>
+              <td>LangGraph</td>
+              <td>Orchestration حالت‌مند</td>
+              <td>Agentهای پیچیده، long-running و workflowهای شاخه‌دار</td>
+              <td>کنترل دقیق state و جریان اجرا</td>
+              <td>نیاز به طراحی صریح‌تر و کدنویسی بیشتر</td>
+            </tr>
+            <tr>
+              <td>LlamaIndex</td>
+              <td>Data / RAG / Agents</td>
+              <td>داده‌های اختصاصی و اسناد سازمانی</td>
+              <td>ابزارهای ingestion و retrieval</td>
+              <td>باید کیفیت داده و retrieval را جداگانه ارزیابی کرد</td>
+            </tr>
+            <tr>
+              <td>Semantic Kernel</td>
+              <td>Enterprise AI Integration</td>
+              <td>افزودن AI به برنامه‌های موجود</td>
+              <td>Pluginها و یکپارچگی سازمانی</td>
+              <td>بررسی مسیر انتقال به Microsoft Agent Framework</td>
+            </tr>
+            <tr>
+              <td>AutoGen</td>
+              <td>Multi-Agent Conversation</td>
+              <td>مطالعه، نمونه‌های قدیمی و مهاجرت</td>
+              <td>الگوهای مکالمه و همکاری Agentها</td>
+              <td>پروژه آرشیوشده و بدون نگه‌داری فعال</td>
+            </tr>
+            <tr>
+              <td>CrewAI</td>
+              <td>Role-Based Multi-Agent</td>
+              <td>تیم‌های Agent تخصصی و کارهای قابل تقسیم</td>
+              <td>مدل ذهنی ساده Role / Task / Crew</td>
+              <td>کنترل و اعتبارسنجی دقیق خروجی همچنان لازم است</td>
+            </tr>
+            <tr>
+              <td>OpenAI Agents SDK</td>
+              <td>Agent Runtime / SDK</td>
+              <td>Agent، Tool، Handoff و Guardrail</td>
+              <td>سادگی مفاهیم و tracing یکپارچه</td>
+              <td>زیرساخت و منطق تجاری همچنان بر عهده برنامه است</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>مقایسه بر اساس نیاز پروژه</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>نیاز اصلی</th>
+              <th>گزینه‌هایی که ارزش بررسی دارند</th>
+              <th>دلیل</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ساخت سریع Agent با Tool</td>
+              <td>LangChain، OpenAI Agents SDK</td>
+              <td>مسیر شروع نسبتاً ساده و abstraction آماده</td>
+            </tr>
+            <tr>
+              <td>Workflow پیچیده با state</td>
+              <td>LangGraph</td>
+              <td>مدل گرافی، persistence و کنترل مسیر اجرا</td>
+            </tr>
+            <tr>
+              <td>RAG روی اسناد داخلی</td>
+              <td>LlamaIndex، LangChain</td>
+              <td>ابزارهای retrieval و اتصال به منابع داده</td>
+            </tr>
+            <tr>
+              <td>تیم Agentهای نقش‌محور</td>
+              <td>CrewAI</td>
+              <td>مدل Agent، Task و Crew</td>
+            </tr>
+            <tr>
+              <td>Handoff بین Agentها</td>
+              <td>OpenAI Agents SDK، LangGraph، CrewAI</td>
+              <td>الگوهای انتقال کنترل و orchestration</td>
+            </tr>
+            <tr>
+              <td>کنترل دقیق هر مرحله</td>
+              <td>LangGraph</td>
+              <td>تعریف صریح nodeها و transitionها</td>
+            </tr>
+            <tr>
+              <td>یکپارچگی با نرم‌افزار سازمانی Microsoft</td>
+              <td>Microsoft Agent Framework، Semantic Kernel موجود</td>
+              <td>هماهنگی با اکوسیستم و مسیرهای سازمانی Microsoft</td>
+            </tr>
+            <tr>
+              <td>یادگیری الگوهای تاریخی multi-agent</td>
+              <td>AutoGen</td>
+              <td>برای فهم مفاهیم؛ نه انتخاب پیش‌فرض پروژه جدید</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>مقایسه از نظر سطح abstraction</h3>
+        <p>
+          این جدول یک نقشه ذهنی تقریبی است، نه رتبه‌بندی رسمی یا اندازه‌گیری علمی.
+          هر فریم‌ورک می‌تواند در بعضی لایه‌ها سطح بالاتر و در بعضی لایه‌ها سطح پایین‌تری ارائه کند.
+        </p>
+        <table>
+          <tr>
+            <th>رویکرد</th>
+            <th>نمونه</th>
+            <th>ویژگی</th>
+          </tr>
+          <tr>
+            <td>شروع سریع و abstraction آماده</td>
+            <td>LangChain، CrewAI، OpenAI Agents SDK</td>
+            <td>راه‌اندازی سریع‌تر برای الگوهای رایج</td>
+          </tr>
+          <tr>
+            <td>کنترل جریان و state</td>
+            <td>LangGraph</td>
+            <td>کنترل صریح و سفارشی‌سازی بیشتر</td>
+          </tr>
+          <tr>
+            <td>تمرکز داده و retrieval</td>
+            <td>LlamaIndex</td>
+            <td>انتخاب ابزار مناسب برای داده و RAG</td>
+          </tr>
+          <tr>
+            <td>ادغام سازمانی</td>
+            <td>Semantic Kernel / Microsoft Agent Framework</td>
+            <td>تمرکز بر integration و قابلیت‌های سازمانی</td>
+          </tr>
+        </table>
+
+        <h3>آیا می‌توان چند فریم‌ورک را با هم استفاده کرد؟</h3>
+        <p>
+          بله. در معماری واقعی، لازم نیست کل برنامه را به یک فریم‌ورک محدود کنی.
+          برای مثال، می‌توانی LlamaIndex را برای retrieval و LangGraph را برای
+          orchestration به کار ببری. یا از ابزارهای LangChain در یک جریان سفارشی
+          استفاده کنی. شرط مهم این است که مرز مسئولیت‌ها روشن باشد.
+        </p>
+
+        <div class="callout danger">
+          استفاده هم‌زمان از چند فریم‌ورک فقط وقتی ارزش دارد که یک نیاز مشخص را بهتر
+          حل کند. اگر دو کتابخانه state، retry، tracing یا memory مشابهی مدیریت کنند،
+          احتمال ایجاد دو منبع حقیقت، ناسازگاری و پیچیدگی debugging بالا می‌رود.
+        </div>
+      </section>
+
+      <section class="section" id="selection">
+        <h2>۹. چگونه فریم‌ورک مناسب را انتخاب کنیم؟</h2>
+        <p class="lead">
+          انتخاب را با مسئله شروع کن. ابتدا مشخص کن سیستم چه کاری باید انجام دهد و
+          کدام بخش از آن واقعاً به تصمیم‌گیری مدل نیاز دارد.
+        </p>
+
+        <h3>مرحله اول: نوع مسئله را مشخص کن</h3>
+        <div class="grid2">
+          <div class="mini">
+            <h4>مسئله داده‌محور است؟</h4>
+            اگر ارزش اصلی برنامه از جست‌وجو و پاسخ‌گویی روی اسناد، فایل‌ها یا پایگاه
+            داده می‌آید، LlamaIndex را بررسی کن.
+          </div>
+          <div class="mini">
+            <h4>مسئله orchestration است؟</h4>
+            اگر کنترل دقیق مراحل، state، branching و resume مهم است، LangGraph را بررسی کن.
+          </div>
+          <div class="mini">
+            <h4>مسئله تیم Agentها است؟</h4>
+            اگر نقش‌های تخصصی و همکاری Agentها مهم‌اند، CrewAI را بررسی کن.
+          </div>
+          <div class="mini">
+            <h4>مسئله یک Agent با ابزارها است؟</h4>
+            LangChain یا OpenAI Agents SDK می‌توانند نقطه شروع مناسبی باشند.
+          </div>
+          <div class="mini">
+            <h4>مسئله سازمانی و integration است؟</h4>
+            Semantic Kernel موجود یا Microsoft Agent Framework را متناسب با وضعیت پروژه بررسی کن.
+          </div>
+          <div class="mini">
+            <h4>مسئله سیستم قدیمی AutoGen است؟</h4>
+            مستندات مهاجرت به Microsoft Agent Framework را بررسی کن و ریسک ادامه استفاده را بسنج.
+          </div>
+        </div>
+
+        <h3>مرحله دوم: معیارهای فنی را امتیازدهی کن</h3>
+        <table>
+          <tr>
+            <th>معیار</th>
+            <th>سؤال</th>
+            <th>چرا مهم است؟</th>
+          </tr>
+          <tr>
+            <td>Language Support</td>
+            <td>با Python، TypeScript یا C# کار می‌کنی؟</td>
+            <td>تطبیق با مهارت و کدبیس تیم</td>
+          </tr>
+          <tr>
+            <td>Model Flexibility</td>
+            <td>آیا به چند Provider یا مدل محلی نیاز داری؟</td>
+            <td>کاهش وابستگی و امکان تغییر مدل</td>
+          </tr>
+          <tr>
+            <td>Control Flow</td>
+            <td>آیا branching، loop و resume نیاز داری؟</td>
+            <td>قابلیت کنترل اجرای Agent</td>
+          </tr>
+          <tr>
+            <td>Data Integration</td>
+            <td>آیا داده داخلی و RAG هسته محصول است؟</td>
+            <td>کیفیت retrieval و اتصال به منابع</td>
+          </tr>
+          <tr>
+            <td>Observability</td>
+            <td>آیا trace و debug دقیق داری؟</td>
+            <td>رفع خطا و بهینه‌سازی هزینه</td>
+          </tr>
+          <tr>
+            <td>Security</td>
+            <td>آیا کنترل دسترسی و محدودیت Tool داری؟</td>
+            <td>جلوگیری از اقدام ناخواسته و افشای داده</td>
+          </tr>
+          <tr>
+            <td>Persistence</td>
+            <td>آیا کار باید بعد از توقف ادامه پیدا کند؟</td>
+            <td>پشتیبانی از فرآیندهای طولانی</td>
+          </tr>
+          <tr>
+            <td>Maintenance</td>
+            <td>آیا پروژه فعال و مستندات به‌روز دارد؟</td>
+            <td>کاهش ریسک بلندمدت</td>
+          </tr>
+          <tr>
+            <td>Deployment</td>
+            <td>آیا زیرساخت استقرار با نیاز تیم سازگار است؟</td>
+            <td>عملیاتی‌سازی و مقیاس‌پذیری</td>
+          </tr>
+          <tr>
+            <td>Evaluation</td>
+            <td>آیا می‌توان کیفیت و رفتار را سنجید؟</td>
+            <td>جلوگیری از تصمیم‌گیری براساس demo</td>
+          </tr>
+        </table>
+
+        <h3>مرحله سوم: قبل از انتخاب، یک Proof of Concept بساز</h3>
+        <p>برای هر گزینه منتخب، یک آزمایش کوچک اما یکسان طراحی کن:</p>
+        <ol>
+          <li>یک مسئله واقعی و محدود انتخاب کن.</li>
+          <li>یک مجموعه ورودی ثابت از نمونه‌های واقعی بساز.</li>
+          <li>برای خروجی خوب و بد معیار مشخص تعریف کن.</li>
+          <li>همان مدل، داده، ابزار و شرایط را در گزینه‌های مختلف استفاده کن.</li>
+          <li>کیفیت پاسخ، هزینه، زمان اجرا و نرخ شکست را اندازه بگیر.</li>
+          <li>پیچیدگی توسعه و debugging را هم ثبت کن.</li>
+          <li>تصمیم را براساس نتایج آزمایش بگیر، نه برداشت شخصی.</li>
+        </ol>
+
+        <h3>نمونه ماتریس امتیازدهی</h3>
+        <p class="muted">اعداد زیر صرفاً نمونه هستند و امتیاز واقعی هیچ فریم‌ورکی محسوب نمی‌شوند.</p>
+        <table>
+          <tr>
+            <th>معیار</th>
+            <th>وزن نمونه</th>
+            <th>LangGraph</th>
+            <th>LlamaIndex</th>
+            <th>CrewAI</th>
+          </tr>
+          <tr>
+            <td>کنترل Workflow</td>
+            <td>25%</td>
+            <td>5</td>
+            <td>4</td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td>تمرکز بر RAG</td>
+            <td>25%</td>
+            <td>3</td>
+            <td>5</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td>Role-based collaboration</td>
+            <td>15%</td>
+            <td>4</td>
+            <td>3</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <td>سادگی شروع</td>
+            <td>15%</td>
+            <td>3</td>
+            <td>4</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <td>کنترل state</td>
+            <td>20%</td>
+            <td>5</td>
+            <td>4</td>
+            <td>4</td>
+          </tr>
+        </table>
+        <p>
+          وزن‌ها باید با نیاز پروژه تغییر کنند. اگر مسئله تو RAG نیست، نباید وزن
+          retrieval در تصمیم‌گیری بالا باشد.
+        </p>
+      </section>
+
+      <section class="section" id="architecture">
+        <h2>۱۰. معماری ترکیبی: استفاده هوشمندانه از چند ابزار</h2>
+        <p class="lead">
+          در بسیاری از پروژه‌ها، بهترین معماری استفاده از یک ابزار برای هر مسئولیت
+          مشخص است؛ نه تلاش برای اینکه یک فریم‌ورک تمام کارها را انجام دهد.
+        </p>
+
+        <h3>مثال معماری یک دستیار دانش سازمانی</h3>
+        <div class="diagram">
+          <div class="node">Web / Chat UI</div><span class="arrow">→</span>
+          <div class="node">Backend API</div><span class="arrow">→</span>
+          <div class="node">LangGraph Orchestrator</div>
+          <div style="margin:8px">↓</div>
+          <div class="node green">LlamaIndex Retrieval</div>
+          <div class="node green">Business API Tools</div>
+          <div class="node green">Specialist Agent</div>
+          <div style="margin:8px">↓</div>
+          <div class="node orange">Verifier / Policy Check</div>
+          <div style="margin:8px">↓</div>
+          <div class="node">Response Composer</div>
+          <div style="margin:8px">↓</div>
+          <div class="node">User</div>
+        </div>
+
+        <h3>تقسیم مسئولیت‌ها</h3>
+        <table>
+          <tr>
+            <th>لایه</th>
+            <th>مسئولیت</th>
+            <th>گزینه نمونه</th>
+          </tr>
+          <tr>
+            <td>Application</td>
+            <td>API، احراز هویت و منطق محصول</td>
+            <td>FastAPI / Backend دلخواه</td>
+          </tr>
+          <tr>
+            <td>Orchestration</td>
+            <td>مدیریت State و جریان اجرای کار</td>
+            <td>LangGraph</td>
+          </tr>
+          <tr>
+            <td>Knowledge</td>
+            <td>Ingestion، indexing و retrieval</td>
+            <td>LlamaIndex</td>
+          </tr>
+          <tr>
+            <td>Agent Runtime</td>
+            <td>اجرای Agent و Tool Calling</td>
+            <td>LangChain یا Agents SDK</td>
+          </tr>
+          <tr>
+            <td>Storage</td>
+            <td>داده عملیاتی و vector storage</td>
+            <td>PostgreSQL / Vector DB</td>
+          </tr>
+          <tr>
+            <td>Observability</td>
+            <td>Trace، metrics و ارزیابی</td>
+            <td>ابزار سازگار با stack</td>
+          </tr>
+        </table>
+
+        <h3>چه چیزی را نباید انجام دهیم؟</h3>
+        <ul>
+          <li>دو سیستم حافظه مستقل بدون سیاست همگام‌سازی ایجاد نکنیم.</li>
+          <li>یک Tool را هم‌زمان در چند لایه با تعریف متفاوت ثبت نکنیم.</li>
+          <li>نتیجه retrieval را بدون metadata و مجوز دسترسی به Agent ندهیم.</li>
+          <li>همه مراحل را به LLM نسپاریم؛ اعتبارسنجی، محاسبات و مجوزها باید deterministic باشند.</li>
+          <li>برای هر نقش کوچک یک Agent جدید نسازیم؛ ابتدا مشخص کنیم جداسازی واقعاً ارزش دارد یا نه.</li>
+        </ul>
+      </section>
+
+      <section class="section" id="project">
+        <h2>۱۱. پروژه عملی: ساخت دستیار پاسخ‌گویی به اسناد شرکت</h2>
+        <p class="lead">
+          حالا مفاهیم را در یک سناریوی نزدیک به دنیای واقعی کنار هم قرار می‌دهیم.
+        </p>
+
+        <h3>صورت مسئله</h3>
+        <p>
+          یک شرکت تعداد زیادی سند دارد: قراردادها، دستورالعمل‌ها، سیاست‌های منابع انسانی،
+          راهنماهای فنی و مستندات محصول. کاربر می‌خواهد سؤال بپرسد و پاسخ مستند دریافت کند.
+          در بعضی موارد، پاسخ نیازمند استعلام از API داخلی یا تأیید انسان است.
+        </p>
+
+        <h3>نیازمندی‌های سیستم</h3>
+        <ul>
+          <li>دریافت سؤال به زبان طبیعی.</li>
+          <li>تشخیص نوع درخواست.</li>
+          <li>بازیابی اسناد مرتبط و کنترل سطح دسترسی.</li>
+          <li>استفاده از ابزارهای داخلی در صورت نیاز.</li>
+          <li>بررسی کیفیت شواهد و کفایت پاسخ.</li>
+          <li>تولید پاسخ همراه با منبع.</li>
+          <li>ثبت trace و امکان بررسی خطاها.</li>
+        </ul>
+
+        <h3>معماری پیشنهادی</h3>
+        <div class="diagram">
+          <div class="node">User Question</div><span class="arrow">→</span>
+          <div class="node">Intent Router</div><span class="arrow">→</span>
+          <div class="node">Orchestrator</div>
+          <div style="margin:8px">
+            <span class="node green">Document Retriever</span>
+            <span class="node green">Business API Tool</span>
+            <span class="node green">Policy Checker</span>
+          </div>
+          <div style="margin:8px">↓</div>
+          <div class="node orange">Evidence Verifier</div><span class="arrow">→</span>
+          <div class="node">Answer Composer</div><span class="arrow">→</span>
+          <div class="node">Final Response</div>
+        </div>
+
+        <h3>مرحله ۱: طراحی قرارداد ورودی و خروجی</h3>
+        <pre><code>{
+  "request_id": "req-001",
+  "user_id": "user-123",
+  "tenant_id": "company-01",
+  "question": "What is the parental leave policy?",
+  "language": "en",
+  "allowed_domains": [
+    "hr-policy",
+    "employee-handbook"
+  ],
+  "risk_level": "normal",
+  "response_format": "answer_with_sources"
+}</code></pre>
+
+        <h3>مرحله ۲: طراحی ساختار نتیجه Retrieval</h3>
+        <pre><code>{
+  "query": "parental leave policy",
+  "results": [
+    {
+      "document_id": "hr-2026-04",
+      "chunk_id": "chunk-018",
+      "text": "The policy states ...",
+      "source_title": "Employee Handbook",
+      "page": 18,
+      "score": 0.91,
+      "access_allowed": true
+    }
+  ]
+}</code></pre>
+
+        <h3>مرحله ۳: طراحی خروجی ساختاریافته Agent</h3>
+        <pre><code>{
+  "status": "completed",
+  "answer": "According to the employee handbook ...",
+  "citations": [
+    {
+      "document_id": "hr-2026-04",
+      "page": 18
+    }
+  ],
+  "confidence": "high",
+  "needs_human_review": false,
+  "missing_information": []
+}</code></pre>
+
+        <h3>مرحله ۴: شبه‌کد Orchestration</h3>
+        <pre><code># Architecture-oriented pseudocode.
+# This is not a drop-in implementation.
+
+async def handle_request(request):
+    trace = start_trace(request.request_id)
+
+    identity = authenticate(request.user_id)
+    permissions = load_permissions(identity)
+
+    intent = classify_intent(request.question)
+
+    if intent.requires_documents:
+        evidence = await retrieve_documents(
+            query=request.question,
+            permissions=permissions,
+            domains=request.allowed_domains
+        )
+    else:
+        evidence = []
+
+    if intent.requires_business_data:
+        business_data = await call_authorized_api(
+            intent=intent,
+            identity=identity
+        )
+    else:
+        business_data = None
+
+    verification = verify_evidence(
+        question=request.question,
+        evidence=evidence,
+        business_data=business_data
+    )
+
+    if verification.insufficient:
+        return ask_for_clarification_or_escalate()
+
+    draft = compose_answer(
+        question=request.question,
+        evidence=evidence,
+        business_data=business_data
+    )
+
+    result = validate_citations_and_policy(draft)
+
+    record_trace(trace, result)
+
+    return result</code></pre>
+
+        <h3>مرحله ۵: امنیت و دسترسی</h3>
+        <ul>
+          <li>کاربر فقط اسنادی را بازیابی کند که مجاز به دیدن آن‌ها است.</li>
+          <li>فیلتر دسترسی باید در مرحله retrieval اعمال شود، نه فقط بعد از تولید پاسخ.</li>
+          <li>محتوای سند به‌عنوان داده غیرقابل اعتماد در نظر گرفته شود؛ دستورهای داخل سند نباید سیاست‌های سیستم را تغییر
+            دهند.</li>
+          <li>ابزارهای تغییردهنده اطلاعات به مجوز و تأیید جداگانه نیاز دارند.</li>
+          <li>اطلاعات حساس در traceها و logها باید حذف یا mask شوند.</li>
+        </ul>
+
+        <h3>مرحله ۶: ارزیابی سیستم</h3>
+        <table>
+          <tr>
+            <th>معیار</th>
+            <th>روش اندازه‌گیری</th>
+          </tr>
+          <tr>
+            <td>Retrieval Recall</td>
+            <td>آیا سند یا قطعه مرتبط در نتایج بازیابی وجود دارد؟</td>
+          </tr>
+          <tr>
+            <td>Answer Correctness</td>
+            <td>آیا پاسخ با محتوای منبع سازگار است؟</td>
+          </tr>
+          <tr>
+            <td>Citation Accuracy</td>
+            <td>آیا ارجاع واقعاً ادعای مربوط را پشتیبانی می‌کند؟</td>
+          </tr>
+          <tr>
+            <td>Access Compliance</td>
+            <td>آیا هیچ سند غیرمجاز وارد context نشده است؟</td>
+          </tr>
+          <tr>
+            <td>Latency</td>
+            <td>زمان پاسخ‌گویی کل و زمان هر مرحله</td>
+          </tr>
+          <tr>
+            <td>Cost</td>
+            <td>هزینه مدل، embedding، retrieval و ابزارها</td>
+          </tr>
+          <tr>
+            <td>Escalation Rate</td>
+            <td>درصد درخواست‌هایی که به انسان ارجاع می‌شوند</td>
+          </tr>
+        </table>
+
+        <div class="callout good">
+          در این پروژه، LlamaIndex می‌تواند مسئول retrieval باشد و LangGraph مسئول
+          کنترل مراحل. Agent SDK یا LangChain هم می‌تواند برای ساخت Agent و Toolها
+          به کار رود. این ترکیب فقط یک گزینه معماری است؛ باید با یک نمونه واقعی
+          benchmark شود.
+        </div>
+      </section>
+
+      <section class="section" id="production">
+        <h2>۱۲. نکات مهم برای استفاده در Production</h2>
+
+        <h3>۱. Framework امنیت را به‌صورت خودکار تضمین نمی‌کند</h3>
+        <p>
+          حتی اگر کتابخانه Guardrail داشته باشد، مسئولیت نهایی کنترل دسترسی،
+          احراز هویت، مجوز Tool، اعتبارسنجی ورودی، جداسازی Tenantها و حفاظت از داده
+          با طراحی کل سیستم است.
+        </p>
+
+        <h3>۲. مدل را از داده غیرقابل اعتماد جدا کن</h3>
+        <p>
+          متن بازیابی‌شده از وب، PDF، ایمیل یا پایگاه دانش ممکن است حاوی دستورهای
+          مخرب یا گمراه‌کننده باشد. آن را به‌عنوان محتوا و evidence در نظر بگیر،
+          نه دستور معتبر برای تغییر رفتار سیستم.
+        </p>
+
+        <h3>۳. همه Toolها باید قرارداد مشخص داشته باشند</h3>
+        <pre><code>{
+  "tool_name": "create_refund_request",
+  "description": "Create a refund request for an eligible order",
+  "input_schema": {
+    "order_id": "string",
+    "reason": "string"
+  },
+  "permission": "refund:create",
+  "requires_approval": true,
+  "idempotent": true
+}</code></pre>
+
+        <h3>۴. Loop و هزینه را محدود کن</h3>
+        <ul>
+          <li>حداکثر تعداد گام‌های Agent را تعیین کن.</li>
+          <li>برای اجرای کلی deadline داشته باش.</li>
+          <li>بودجه token و هزینه را محدود کن.</li>
+          <li>تعداد retry ابزارها را کنترل کن.</li>
+          <li>تکرار state یا اقدام بدون پیشرفت را تشخیص بده.</li>
+        </ul>
+
+        <h3>۵. Evaluation را از ابتدا طراحی کن</h3>
+        <p>
+          پیش از انتخاب فریم‌ورک، معیار موفقیت را تعریف کن. اگر نمی‌دانی سیستم
+          موفق است یا نه، انتخاب فریم‌ورک هم قابل دفاع نخواهد بود.
+        </p>
+
+        <h3>۶. Versioning و Maintenance</h3>
+        <ul>
+          <li>نسخه کتابخانه و dependencyها را pin کن.</li>
+          <li>تغییرات مهم و breaking changes را بررسی کن.</li>
+          <li>برای مدل‌ها، Promptها و Tool schemaها نسخه داشته باش.</li>
+          <li>قبل از ارتقای نسخه، تست regression اجرا کن.</li>
+          <li>وضعیت نگه‌داری پروژه و سیاست امنیتی آن را بررسی کن.</li>
+        </ul>
+
+        <h3>چک‌لیست انتخاب و Production</h3>
+        <ul class="checklist">
+          <li>مسئله اصلی پروژه دقیق تعریف شده است.</li>
+          <li>مشخص است کدام مراحل deterministic و کدام مراحل agentic هستند.</li>
+          <li>حداقل دو گزینه با یک benchmark مشترک ارزیابی شده‌اند.</li>
+          <li>نسخه و وضعیت نگه‌داری فریم‌ورک بررسی شده است.</li>
+          <li>مدل و Provider با نیاز پروژه سازگارند.</li>
+          <li>Toolها schema و مجوز مشخص دارند.</li>
+          <li>ورودی و خروجی Agent ساختاریافته هستند.</li>
+          <li>State و persistence مشخص شده‌اند.</li>
+          <li>برای خطاها و timeoutها راهبرد وجود دارد.</li>
+          <li>برای loop و retry محدودیت وجود دارد.</li>
+          <li>داده‌های حساس از log و trace حذف یا mask می‌شوند.</li>
+          <li>کنترل دسترسی در retrieval اعمال می‌شود.</li>
+          <li>برای عملیات حساس تأیید انسانی وجود دارد.</li>
+          <li>کیفیت پاسخ و citation ارزیابی می‌شود.</li>
+          <li>هزینه و latency اندازه‌گیری می‌شود.</li>
+          <li>تست regression برای Prompt و Tool وجود دارد.</li>
+          <li>امکان مشاهده مسیر اجرای Agent وجود دارد.</li>
+          <li>برنامه fallback و graceful degradation وجود دارد.</li>
+          <li>فرآیند استقرار و rollback تعریف شده است.</li>
+          <li>مالکیت نگه‌داری و مسئول پاسخ‌گویی مشخص است.</li>
+        </ul>
+      </section>
+
+      <section class="section" id="roadmap">
+        <h2>۱۳. مسیر پیشنهادی یادگیری</h2>
+        <p>
+          برای یادگیری مؤثر، بهتر است همه فریم‌ورک‌ها را هم‌زمان شروع نکنی.
+          ابتدا مفاهیم مشترک را یاد بگیر، سپس یک ابزار را عمیق‌تر مطالعه کن و بعد
+          با ابزارهای دیگر مقایسه انجام بده.
+        </p>
+
+        <div class="diagram">
+          <div class="node">Python / API / JSON</div><span class="arrow">→</span>
+          <div class="node">LLM Fundamentals</div><span class="arrow">→</span>
+          <div class="node">Prompt / Tool Calling</div>
+          <div style="margin:8px">↓</div>
+          <div class="node green">LangChain Basics</div><span class="arrow">→</span>
+          <div class="node green">RAG with LlamaIndex</div>
+          <div style="margin:8px">↓</div>
+          <div class="node orange">LangGraph Workflows</div>
+          <div style="margin:8px">↓</div>
+          <div class="node">Multi-Agent: CrewAI / Agents SDK</div>
+          <div style="margin:8px">↓</div>
+          <div class="node green">Evaluation / Security / Production</div>
+        </div>
+
+        <h3>برنامه ۶ هفته‌ای پیشنهادی</h3>
+        <table>
+          <tr>
+            <th>هفته</th>
+            <th>موضوع</th>
+            <th>خروجی عملی</th>
+          </tr>
+          <tr>
+            <td>۱</td>
+            <td>LLM API، Prompt، JSON و Tool Calling</td>
+            <td>یک برنامه پرسش و پاسخ با یک Tool</td>
+          </tr>
+          <tr>
+            <td>۲</td>
+            <td>LangChain</td>
+            <td>Agent با چند ابزار و خروجی ساختاریافته</td>
+          </tr>
+          <tr>
+            <td>۳</td>
+            <td>LlamaIndex و RAG</td>
+            <td>دستیار پرسش و پاسخ روی فایل‌های PDF</td>
+          </tr>
+          <tr>
+            <td>۴</td>
+            <td>LangGraph</td>
+            <td>Workflow دارای State، branching و retry</td>
+          </tr>
+          <tr>
+            <td>۵</td>
+            <td>CrewAI یا OpenAI Agents SDK</td>
+            <td>سیستم چندعاملی با وظایف مشخص</td>
+          </tr>
+          <tr>
+            <td>۶</td>
+            <td>Evaluation و Production</td>
+            <td>Benchmark، tracing و guardrail</td>
+          </tr>
+        </table>
+
+        <h3>تمرین‌های عملی</h3>
+        <ol>
+          <li>یک Agent بساز که بتواند با یک API عمومی کار کند.</li>
+          <li>یک RAG ساده روی چند فایل PDF پیاده‌سازی کن.</li>
+          <li>یک Workflow با دو شاخه شرطی طراحی کن.</li>
+          <li>یک Agent تولیدکننده پاسخ و یک Agent بازبین بساز.</li>
+          <li>همان مسئله را با دو فریم‌ورک پیاده‌سازی و مقایسه کن.</li>
+          <li>برای سیستم خود trace و metric تعریف کن.</li>
+          <li>یک تست prompt injection طراحی کن و بررسی کن سیستم چگونه واکنش نشان می‌دهد.</li>
+        </ol>
+      </section>
+
+      <section class="section" id="glossary">
+        <h2>۱۴. واژه‌نامه مهم</h2>
+        <table>
+          <tr>
+            <th>اصطلاح</th>
+            <th>تعریف ساده</th>
+          </tr>
+          <tr>
+            <td>Framework</td>
+            <td>مجموعه‌ای از ابزارها و abstractionها برای توسعه نرم‌افزار.</td>
+          </tr>
+          <tr>
+            <td>SDK</td>
+            <td>مجموعه کتابخانه‌ها و interfaceها برای استفاده از یک سرویس یا قابلیت.</td>
+          </tr>
+          <tr>
+            <td>Agent</td>
+            <td>برنامه‌ای مبتنی بر مدل که می‌تواند تصمیم بگیرد و از ابزار استفاده کند.</td>
+          </tr>
+          <tr>
+            <td>Orchestration</td>
+            <td>هماهنگی مراحل و اجزای مختلف یک فرآیند.</td>
+          </tr>
+          <tr>
+            <td>Workflow</td>
+            <td>تعریف مراحل و ترتیب اجرای یک کار.</td>
+          </tr>
+          <tr>
+            <td>State</td>
+            <td>اطلاعات وضعیت فعلی اجرای سیستم.</td>
+          </tr>
+          <tr>
+            <td>Node</td>
+            <td>یک واحد اجرایی در گراف Workflow.</td>
+          </tr>
+          <tr>
+            <td>Edge</td>
+            <td>مسیر ارتباط و انتقال اجرا بین Nodeها.</td>
+          </tr>
+          <tr>
+            <td>Checkpoint</td>
+            <td>نسخه ذخیره‌شده‌ای از State در یک نقطه از اجرا.</td>
+          </tr>
+          <tr>
+            <td>Tool Calling</td>
+            <td>درخواست مدل برای اجرای یک تابع یا ابزار.</td>
+          </tr>
+          <tr>
+            <td>Handoff</td>
+            <td>انتقال کنترل از یک Agent به Agent دیگر.</td>
+          </tr>
+          <tr>
+            <td>Retrieval</td>
+            <td>بازیابی اطلاعات مرتبط با یک سؤال.</td>
+          </tr>
+          <tr>
+            <td>Embedding</td>
+            <td>نمایش عددی داده برای مقایسه معنایی.</td>
+          </tr>
+          <tr>
+            <td>Vector Index</td>
+            <td>ساختاری برای جست‌وجوی بردارهای مشابه.</td>
+          </tr>
+          <tr>
+            <td>RAG</td>
+            <td>تولید پاسخ با کمک اطلاعات بازیابی‌شده از منبع بیرونی.</td>
+          </tr>
+          <tr>
+            <td>Guardrail</td>
+            <td>قانون یا کنترل برای محدودکردن رفتار نامطلوب سیستم.</td>
+          </tr>
+          <tr>
+            <td>Tracing</td>
+            <td>ثبت مسیر اجرای عملیات و ارتباط میان اجزا.</td>
+          </tr>
+          <tr>
+            <td>Evaluation</td>
+            <td>اندازه‌گیری کیفیت و عملکرد سیستم.</td>
+          </tr>
+          <tr>
+            <td>Provider</td>
+            <td>سرویس‌دهنده مدل یا قابلیت AI.</td>
+          </tr>
+          <tr>
+            <td>Abstraction</td>
+            <td>پنهان‌کردن جزئیات پیچیده پشت یک interface ساده‌تر.</td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section" id="quiz">
+        <h2>۱۵. آزمون ارزیابی یادگیری</h2>
+        <p class="muted">برای هر سؤال یک گزینه انتخاب کن و در انتها نتیجه را ببین.</p>
+
+        <form id="quizForm">
+          <div class="quiz-question">
+            <strong>۱. کدام ابزار تمرکز ویژه‌ای روی ingestion، indexing و retrieval داده دارد؟</strong>
+            <label><input type="radio" name="q1" value="a"> AutoGen</label>
+            <label><input type="radio" name="q1" value="b"> LlamaIndex</label>
+            <label><input type="radio" name="q1" value="c"> CrewAI</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۲. اگر Workflow به State، Checkpoint و Human-in-the-loop نیاز داشته باشد، کدام گزینه را باید بررسی
+              کرد؟</strong>
+            <label><input type="radio" name="q2" value="a"> LangGraph</label>
+            <label><input type="radio" name="q2" value="b"> فقط Prompt Template</label>
+            <label><input type="radio" name="q2" value="c"> فقط Embedding Model</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۳. در CrewAI، Crew به چه معناست؟</strong>
+            <label><input type="radio" name="q3" value="a"> یک Vector Database</label>
+            <label><input type="radio" name="q3" value="b"> یک تیم از Agentهای همکار</label>
+            <label><input type="radio" name="q3" value="c"> یک نوع Embedding</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۴. Flow در معماری CrewAI بیشتر چه نقشی دارد؟</strong>
+            <label><input type="radio" name="q4" value="a"> مدیریت ساختار، State و جریان اجرای برنامه</label>
+            <label><input type="radio" name="q4" value="b"> تبدیل متن به تصویر</label>
+            <label><input type="radio" name="q4" value="c"> فقط ذخیره Embedding</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۵. Handoff در OpenAI Agents SDK چیست؟</strong>
+            <label><input type="radio" name="q5" value="a"> حذف تاریخچه گفتگو</label>
+            <label><input type="radio" name="q5" value="b"> انتقال کنترل به Agent دیگر</label>
+            <label><input type="radio" name="q5" value="c"> تغییر اندازه تصویر</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۶. AutoGen طبق مستندات فعلی چه وضعیتی دارد؟</strong>
+            <label><input type="radio" name="q6" value="a"> پروژه‌ای آرشیوشده و بدون نگه‌داری فعال</label>
+            <label><input type="radio" name="q6" value="b"> تنها فریم‌ورک رسمی OpenAI</label>
+            <label><input type="radio" name="q6" value="c"> یک Vector Database</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۷. Semantic Kernel بیشتر برای چه نوع نیازی شناخته می‌شود؟</strong>
+            <label><input type="radio" name="q7" value="a"> ساخت بازی گرافیکی</label>
+            <label><input type="radio" name="q7" value="b"> ادغام قابلیت AI با برنامه‌ها و سرویس‌های نرم‌افزاری</label>
+            <label><input type="radio" name="q7" value="c"> فقط آموزش مدل از صفر</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۸. آیا استفاده از چند فریم‌ورک همیشه بهتر از استفاده از یک فریم‌ورک است؟</strong>
+            <label><input type="radio" name="q8" value="a"> بله، هرچه بیشتر بهتر</label>
+            <label><input type="radio" name="q8" value="b"> خیر، فقط وقتی مزیت مشخصی ایجاد کند</label>
+            <label><input type="radio" name="q8" value="c"> همیشه باید هفت فریم‌ورک داشت</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۹. کدام مورد برای مقایسه منصفانه فریم‌ورک‌ها مهم‌تر است؟</strong>
+            <label><input type="radio" name="q9" value="a"> تعداد نام‌های جذاب در مستندات</label>
+            <label><input type="radio" name="q9" value="b"> یک benchmark مشترک با ورودی و معیار ثابت</label>
+            <label><input type="radio" name="q9" value="c"> رنگ لوگوی پروژه</label>
+          </div>
+
+          <div class="quiz-question">
+            <strong>۱۰. آیا وجود Guardrail در فریم‌ورک به‌تنهایی امنیت Production را تضمین می‌کند؟</strong>
+            <label><input type="radio" name="q10" value="a"> بله</label>
+            <label><input type="radio" name="q10" value="b"> خیر، امنیت باید در کل معماری اعمال شود</label>
+            <label><input type="radio" name="q10" value="c"> فقط برای RAG بله</label>
+          </div>
+
+          <button type="button" onclick="gradeQuiz()">محاسبه امتیاز</button>
+          <button type="reset" class="secondary"
+            onclick="document.getElementById('quizResult').classList.remove('show')">شروع مجدد</button>
+        </form>
+        <div id="quizResult" class="result"></div>
+      </section>
+
+      <section class="section" id="references">
+        <h2>منابع رسمی برای مطالعه بیشتر</h2>
+        <p>
+          برای یادگیری APIها، بررسی نسخه‌ها و پیاده‌سازی Production، مستندات رسمی
+          هر پروژه را مرجع اصلی قرار بده. مقاله‌های مقایسه‌ای و آموزش‌های شخص ثالث
+          برای آشنایی مفیدند، اما ممکن است با نسخه فعلی کتابخانه هماهنگ نباشند.
+        </p>
+        <div class="source-card">
+          <h3>LangChain و LangGraph</h3>
+          <ul>
+            <li><a href="https://docs.langchain.com/" target="_blank">LangChain Documentation</a></li>
+            <li><a href="https://docs.langchain.com/oss/python/langgraph/overview" target="_blank">LangGraph
+                Overview</a></li>
+            <li><a href="https://docs.langchain.com/oss/python/langgraph/persistence" target="_blank">LangGraph
+                Persistence</a></li>
+          </ul>
+        </div>
+        <div class="source-card">
+          <h3>LlamaIndex</h3>
+          <ul>
+            <li><a href="https://developers.llamaindex.ai/python/framework/" target="_blank">LlamaIndex Framework</a>
+            </li>
+            <li><a href="https://developers.llamaindex.ai/python/framework/getting_started/concepts/"
+                target="_blank">High-Level Concepts</a></li>
+            <li><a href="https://developers.llamaindex.ai/python/framework/use_cases/agents/" target="_blank">Agents and
+                Use Cases</a></li>
+          </ul>
+        </div>
+        <div class="source-card">
+          <h3>Microsoft</h3>
+          <ul>
+            <li><a href="https://learn.microsoft.com/en-us/semantic-kernel/" target="_blank">Semantic Kernel</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/agent-framework/overview/" target="_blank">Microsoft Agent
+                Framework</a></li>
+            <li><a href="https://microsoft.github.io/autogen/" target="_blank">AutoGen Documentation and Project
+                Status</a></li>
+          </ul>
+        </div>
+        <div class="source-card">
+          <h3>CrewAI</h3>
+          <ul>
+            <li><a href="https://docs.crewai.com/" target="_blank">CrewAI Documentation</a></li>
+            <li><a href="https://docs.crewai.com/en/concepts/agents" target="_blank">Agents</a></li>
+            <li><a href="https://docs.crewai.com/en/concepts/flows" target="_blank">Flows</a></li>
+          </ul>
+        </div>
+        <div class="source-card">
+          <h3>OpenAI Agents SDK</h3>
+          <ul>
+            <li><a href="https://openai.github.io/openai-agents-python/" target="_blank">Python SDK Documentation</a>
+            </li>
+            <li><a href="https://developers.openai.com/api/docs/guides/agents/sdk" target="_blank">Agents SDK Guide</a>
+            </li>
+            <li><a href="https://openai.github.io/openai-agents-python/tracing/" target="_blank">Tracing</a></li>
+            <li><a href="https://openai.github.io/openai-agents-python/guardrails/" target="_blank">Guardrails</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>جمع‌بندی نهایی</h2>
+        <p class="lead">
+          فریم‌ورک خوب، فریم‌ورکی نیست که بیشترین قابلیت را داشته باشد؛ فریم‌ورکی است
+          که با کمترین پیچیدگی لازم، مسئله واقعی تو را حل کند.
+        </p>
+        <ul>
+          <li><strong>LangChain:</strong> برای ساخت LLM Application و Agent با ابزارها و integrationهای متنوع.</li>
+          <li><strong>LangGraph:</strong> برای کنترل دقیق Workflow، State، Checkpoint و اجرای پیچیده Agent.</li>
+          <li><strong>LlamaIndex:</strong> برای داده، اسناد، Retrieval و RAG.</li>
+          <li><strong>Semantic Kernel:</strong> برای ادغام AI با برنامه‌ها و قابلیت‌های نرم‌افزاری سازمانی؛ با توجه به
+            مسیر Microsoft Agent Framework.</li>
+          <li><strong>AutoGen:</strong> برای فهم الگوهای multi-agent و کار با پروژه‌های موجود؛ با توجه به آرشیوشدن
+            پروژه.</li>
+          <li><strong>CrewAI:</strong> برای تعریف تیم‌های Agent نقش‌محور و ترکیب آن‌ها با Flowهای کنترل‌شده.</li>
+          <li><strong>OpenAI Agents SDK:</strong> برای ساخت Agent، Tool، Handoff و Guardrail با یک SDK سبک.</li>
+        </ul>
+        <div class="callout good">
+          <strong>مهم‌ترین توصیه مهندسی:</strong>
+          با ساده‌ترین معماری‌ای شروع کن که مسئله را حل می‌کند. ابتدا یک Workflow
+          deterministic یا یک Agent ساده بساز. سپس فقط وقتی اندازه‌گیری‌ها نشان دادند
+          که چند Agent یا orchestration پیچیده‌تر ارزش واقعی ایجاد می‌کند، معماری را
+          گسترش بده.
+        </div>
+      </section>
+
+      
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-nav">
+      <a href="index.html">نقشه راه</a>
+      <a href="7.html">فصل قبل</a>
+      <a href="#intro">فهرست مطالب</a>
+      <a href="#">بالای صفحه ↑</a>
+    </div>
+    AI Frameworks and Ecosystem · Chapter 08
+    <br>
+    <strong>M_Ai</strong>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      try { localStorage.setItem('m-ai-theme', theme); } catch (e) {}
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#10101e' : '#f5f5fb');
+    }
+    try {
+      const saved = localStorage.getItem('m-ai-theme');
+      if (saved === 'light' || saved === 'dark') setTheme(saved);
+    } catch (e) {}
+    themeToggle.addEventListener('click', () => {
+      setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      const el = document.getElementById('progress');
+      if (el) el.style.width = progress + '%';
+    });
+  </script>
+<script>
+
+    function gradeQuiz() {
+      const answers = {
+        q1: "b", q2: "a", q3: "b", q4: "a", q5: "b",
+        q6: "a", q7: "b", q8: "b", q9: "b", q10: "b"
+      };
+
+      const explanations = {
+        q1: "LlamaIndex روی داده، ingestion، indexing و retrieval تمرکز ویژه دارد.",
+        q2: "LangGraph برای Workflowهای stateful و کنترل‌شده مناسب است.",
+        q3: "Crew یک گروه از Agentهای همکار است.",
+        q4: "Flow ساختار اجرا، State و مسیرهای شرطی را کنترل می‌کند.",
+        q5: "Handoff یعنی انتقال کنترل از Agent فعلی به Agent دیگر.",
+        q6: "مستندات فعلی AutoGen را پروژه‌ای آرشیوشده معرفی می‌کنند.",
+        q7: "Semantic Kernel برای ادغام AI با برنامه‌ها و قابلیت‌های نرم‌افزاری طراحی شده است.",
+        q8: "ترکیب چند فریم‌ورک فقط وقتی منطقی است که مزیت مشخص و قابل اندازه‌گیری داشته باشد.",
+        q9: "Benchmark مشترک امکان مقایسه منصفانه را فراهم می‌کند.",
+        q10: "امنیت باید در کل معماری و در لایه‌های داده، ابزار، هویت و اجرا اعمال شود."
+      };
+
+      let score = 0;
+      let details = [];
+
+      Object.keys(answers).forEach((key, index) => {
+        const selected = document.querySelector('input[name="' + key + '"]:checked');
+        const correct = selected && selected.value === answers[key];
+        if (correct) score++;
+        details.push(
+          (index + 1) + ". " + (correct ? "درست" : "نیازمند مرور") +
+          " — " + explanations[key]
+        );
+      });
+
+      const result = document.getElementById("quizResult");
+      result.classList.add("show");
+      result.innerHTML =
+        "<strong>امتیاز شما: " + score + " از 10</strong><br>" +
+        (score >= 9 ? "عالی! مفاهیم اصلی را به‌خوبی درک کرده‌ای." :
+          score >= 7 ? "خوب است؛ چند مفهوم را دوباره مرور کن." :
+            score >= 5 ? "پایه‌ها را می‌دانی، اما بهتر است بخش‌های مربوط را دوباره بخوانی." :
+              "پیشنهاد می‌شود فصل را از ابتدا مرور و مثال‌ها را اجرا کنی.") +
+        "<hr style='border:0;border-top:1px solid #99f6e4;margin:12px 0'>" +
+        details.map(x => "<div style='margin:6px 0'>" + x + "</div>").join("");
+      result.scrollIntoView({behavior: "smooth", block: "nearest"});
+    }
+  
+</script>
+</body>
+</html>

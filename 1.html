@@ -1,0 +1,2884 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10101e">
+  <meta name="description" content="آموزش جامع مبانی هوش مصنوعی؛ از تاریخچه و شبکه‌های عصبی تا هوش مصنوعی مولد">
+  <title>Foundations of Artificial Intelligence | مبانی هوش مصنوعی — M_Ai</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Vazirmatn', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --purple: #9275f5;
+      --purple-strong: #7657e8;
+      --cyan: #51cbdc;
+      --green: #49c9a3;
+      --radius: 18px;
+      --transition: .28s ease;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #10101e;
+      --bg-secondary: #151529;
+      --surface: #1b1b32;
+      --surface-hover: #242440;
+      --surface-soft: rgba(255, 255, 255, .045);
+      --text: #f5f3ff;
+      --text-secondary: #c3c1d5;
+      --muted: #9695ae;
+      --border: rgba(255, 255, 255, .09);
+      --border-strong: rgba(255, 255, 255, .15);
+      --header-bg: rgba(16, 16, 30, .92);
+      --shadow: 0 18px 50px rgba(0, 0, 0, .24);
+      --callout-bg: rgba(146, 117, 245, .1);
+      --callout-border: rgba(146, 117, 245, .45);
+      --tip-bg: rgba(81, 203, 220, .08);
+      --tip-border: rgba(81, 203, 220, .4);
+      --warning-bg: rgba(217, 119, 6, .1);
+      --warning-border: rgba(217, 119, 6, .45);
+      --code-bg: #0c0c18;
+      --code-text: #b8f0d8;
+      --diagram-bg: rgba(146, 117, 245, .1);
+      --diagram-border: rgba(146, 117, 245, .28);
+      --table-head: rgba(146, 117, 245, .12);
+      --table-alt: rgba(255, 255, 255, .03);
+      --tag-bg: rgba(146, 117, 245, .15);
+      --tag-text: #c4b5fd;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .22), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .12), transparent 45%);
+      --progress-track: rgba(255, 255, 255, .08);
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f5fb;
+      --bg-secondary: #eeeefa;
+      --surface: #fff;
+      --surface-hover: #f7f5ff;
+      --surface-soft: rgba(102, 78, 190, .045);
+      --text: #202039;
+      --text-secondary: #55556f;
+      --muted: #77778f;
+      --border: rgba(40, 35, 90, .10);
+      --border-strong: rgba(40, 35, 90, .17);
+      --header-bg: rgba(255, 255, 255, .92);
+      --shadow: 0 18px 50px rgba(45, 35, 100, .09);
+      --callout-bg: #f5f3ff;
+      --callout-border: #6658e8;
+      --tip-bg: #f0fdfa;
+      --tip-border: #0d9488;
+      --warning-bg: #fffbeb;
+      --warning-border: #d97706;
+      --code-bg: #111827;
+      --code-text: #d1fae5;
+      --diagram-bg: #eef2ff;
+      --diagram-border: #c7d2fe;
+      --table-head: #f3f4f6;
+      --table-alt: #fafafa;
+      --tag-bg: #ede9fe;
+      --tag-text: #5b21b6;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .15), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .1), transparent 45%);
+      --progress-track: rgba(40, 35, 90, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+      transition: background .35s, color .35s;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--progress-track);
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      z-index: 200;
+    }
+    #progress {
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      transition: width .1s linear;
+    }
+
+    /* HEADER */
+    .site-header {
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--header-bg);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(146, 117, 245, .24);
+    }
+    .site-header::after {
+      content: "";
+      position: absolute;
+      bottom: -1px; right: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent 3%, rgba(81, 203, 220, .35) 25%, rgba(146, 117, 245, .85) 50%, rgba(81, 203, 220, .35) 75%, transparent 97%);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      direction: ltr;
+      flex-shrink: 0;
+    }
+    .brand-mark {
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #a58cff, #6848df);
+      box-shadow: 0 4px 18px rgba(118, 87, 232, .28), inset 0 1px 0 rgba(255,255,255,.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-mark::before {
+      content: "";
+      position: absolute; inset: 1px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 11px;
+    }
+    .brand-mark svg { width: 26px; height: 26px; position: relative; z-index: 1; }
+    .brand-name { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--text); }
+    .brand-name span { color: var(--purple); }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: 12px;
+      display: grid; place-items: center;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    .theme-toggle:hover { border-color: var(--purple); transform: rotate(12deg); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-icon-sun { display: none; }
+    html[data-theme="light"] .theme-icon-moon { display: none; }
+    html[data-theme="light"] .theme-icon-sun { display: block; }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 11px;
+      background: rgba(146, 117, 245, .12);
+      border: 1px solid rgba(146, 117, 245, .32);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .back-home:hover { background: var(--purple); color: #fff; }
+    .back-home svg { width: 15px; height: 15px; }
+
+    /* CHAPTER HERO */
+    .chapter-hero {
+      position: relative;
+      padding: 48px 20px 40px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .chapter-hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--hero-overlay);
+      pointer-events: none;
+    }
+    .chapter-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .chapter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(146, 117, 245, .35);
+      background: rgba(146, 117, 245, .1);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .8px;
+      direction: ltr;
+      margin-bottom: 16px;
+    }
+    .chapter-badge::before {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .chapter-hero h1 {
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 900;
+      line-height: 1.45;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .chapter-hero .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 2.1;
+      max-width: 720px;
+    }
+    .chapter-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .meta-chip {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .meta-chip strong {
+      color: var(--text);
+      font-size: 15px;
+      margin-left: 6px;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    /* LAYOUT */
+    .page-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static !important; order: -1; }
+    }
+
+    /* SIDEBAR TOC */
+    .sidebar {
+      position: sticky;
+      top: 88px;
+    }
+    .toc-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 18px 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.04);
+    }
+    .toc-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-title::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .toc-link {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      transition: .2s;
+      border: 1px solid transparent;
+    }
+    .toc-link:hover {
+      color: var(--text);
+      background: rgba(146, 117, 245, .08);
+      border-color: rgba(146, 117, 245, .2);
+      padding-right: 14px;
+    }
+    .toc-link-strong { color: var(--purple); font-weight: 800; }
+    .toc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+    .print-btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 11px;
+      border-radius: 12px;
+      background: linear-gradient(115deg, #a18aff, #7558e8);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .print-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* MAIN CONTENT SURFACE */
+    .content-area { min-width: 0; }
+
+    .section-card {
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      background: var(--surface) !important;
+      color: var(--text);
+    }
+    .section-number {
+      background: linear-gradient(135deg, #9275f5, #51cbdc) !important;
+      color: white !important;
+    }
+
+    /* Override common Tailwind color utilities for theme */
+    .content-area {
+      color: var(--text);
+    }
+    .content-area .text-slate-800,
+    .content-area .text-slate-700,
+    .content-area .text-slate-900 { color: var(--text) !important; }
+    .content-area .text-slate-500,
+    .content-area .text-slate-400,
+    .content-area .text-slate-600 { color: var(--muted) !important; }
+    .content-area .text-indigo-600,
+    .content-area .text-indigo-700,
+    .content-area .text-indigo-800 { color: var(--purple) !important; }
+    .content-area .bg-white { background: var(--surface) !important; }
+    .content-area .bg-slate-50,
+    .content-area .bg-slate-100,
+    .content-area .hover\:bg-slate-50:hover { background: var(--surface-soft) !important; }
+    .content-area .border,
+    .content-area .border-slate-200,
+    .content-area .border-slate-100 { border-color: var(--border) !important; }
+    .content-area .shadow-sm { box-shadow: 0 6px 24px rgba(0,0,0,.05) !important; }
+
+    .callout {
+      border-right: 4px solid var(--callout-border) !important;
+      background: var(--callout-bg) !important;
+      color: var(--text);
+    }
+    .tip {
+      border-right: 4px solid var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .warning {
+      border-right: 4px solid var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .code {
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .86rem;
+      border: 1px solid var(--border);
+    }
+    .ltr { direction: ltr; text-align: left; }
+    .diagram-box {
+      border: 1px solid var(--diagram-border) !important;
+      background: var(--diagram-bg) !important;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .arrow { color: var(--purple) !important; font-size: 1.5rem; font-weight: 800; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      background: var(--tag-bg) !important;
+      color: var(--tag-text) !important;
+      padding: 3px 10px;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+    .table-wrap { overflow-x: auto; border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td {
+      border: 1px solid var(--border) !important;
+      padding: 12px;
+      text-align: right;
+      vertical-align: top;
+      color: var(--text);
+    }
+    th { background: var(--table-head) !important; font-weight: 800; }
+    tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+    .content-area h2, .content-area h3, .content-area h4 {
+      color: var(--text);
+    }
+    .content-area p, .content-area li { color: var(--text-secondary); }
+    .content-area strong { color: var(--text); }
+
+    .content-area .bg-indigo-50,
+    .content-area .bg-teal-50 { background: var(--surface-soft) !important; }
+    .content-area .border-teal-300 { border-color: var(--diagram-border) !important; }
+    .content-area .text-teal-700 { color: var(--green) !important; }
+    .content-area .text-rose-700 { color: #f87171 !important; }
+    .content-area .text-amber-700 { color: #fbbf24 !important; }
+    .content-area .bg-indigo-700,
+    .content-area .hover\:bg-indigo-800:hover {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+    }
+    .content-area .text-indigo-900 { color: var(--text) !important; }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 2;
+    }
+    .site-footer strong {
+      color: var(--purple);
+      direction: ltr;
+      display: inline-block;
+      font-size: 15px;
+    }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .footer-nav a {
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      transition: .2s;
+    }
+    .footer-nav a:hover {
+      color: var(--purple);
+      border-color: rgba(146,117,245,.4);
+    }
+
+    @media print {
+      .site-header, .sidebar, .progress-bar, .no-print, .theme-toggle, .back-home { display: none !important; }
+      .page-layout { grid-template-columns: 1fr; }
+      .section-card { break-inside: avoid; }
+      body { background: white; color: black; }
+    }
+
+    @media (max-width: 640px) {
+      .chapter-hero { padding: 32px 16px 28px; }
+      .header-inner { padding: 0 14px; }
+      .back-home span.label { display: none; }
+      .page-layout { padding: 18px 14px 40px; }
+    }
+</style>
+</head>
+<body>
+  <div class="progress-bar"><div id="progress"></div></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="M_Ai Home">
+        <div class="brand-name"><span>M_Ai</span></div>
+        <div class="brand-mark">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 29V10L15 22L20 15L25 22L35 10V29" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 15V8" stroke="#DDFBFF" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="20" cy="6" r="2.5" fill="#DDFBFF"/>
+          </svg>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="تغییر تم">
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>
+          </svg>
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>
+          </svg>
+        </button>
+        <a href="index.html" class="back-home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/>
+          </svg>
+          <span class="label">صفحه اصلی</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="chapter-hero">
+    <div class="chapter-hero-inner">
+      <div class="chapter-badge">CHAPTER 01 · FOUNDATIONS OF AI</div>
+      <h1>مبانی هوش مصنوعی</h1>
+      <p class="subtitle">
+        از درک مفهوم هوش مصنوعی و تاریخچه آن تا یادگیری ماشین، شبکه‌های عصبی،
+        آموزش مدل‌ها و دنیای هوش مصنوعی مولد.
+      </p>
+      <div class="chapter-meta">
+        <div class="meta-chip"><strong>07</strong> سرفصل اصلی</div>
+        <div class="meta-chip"><strong>01</strong> از ۱۲ فصل</div>
+        <div class="meta-chip"><strong>AI</strong> مفاهیم بنیادی</div>
+        <div class="meta-chip"><strong>GenAI</strong> هوش مصنوعی مولد</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-layout">
+    <aside class="sidebar no-print">
+      <div class="toc-card">
+        <div class="toc-title">فهرست مطالب</div>
+        <nav class="toc-nav" id="toc">
+          <a class="toc-link" href="#chapter-1">01. مقدمه‌ای بر هوش مصنوعی</a>
+          <a class="toc-link" href="#chapter-2">02. تاریخچه و تکامل AI</a>
+          <a class="toc-link" href="#chapter-3">03. تفاوت AI، ML، DL و GenAI</a>
+          <a class="toc-link" href="#chapter-4">04. مبانی شبکه‌های عصبی</a>
+          <a class="toc-link" href="#chapter-5">05. آموزش، استنتاج و Fine-tuning</a>
+          <a class="toc-link" href="#chapter-6">06. انواع مدل‌های هوش مصنوعی</a>
+          <a class="toc-link" href="#chapter-7">07. مبانی هوش مصنوعی مولد</a>
+          <div class="toc-divider"></div>
+          <a class="toc-link toc-link-strong" href="#summary">جمع‌بندی فصل</a>
+          <a class="toc-link toc-link-strong" href="#glossary">واژه‌نامه</a>
+          <a class="toc-link toc-link-strong" href="#quiz">آزمون پایانی</a>
+        </nav>
+        <button class="print-btn" type="button" onclick="window.print()">چاپ یا ذخیره PDF</button>
+      </div>
+    </aside>
+
+    <main class="content-area min-w-0 space-y-12">
+
+
+            <!-- CHAPTER 1 -->
+            <section id="chapter-1" class="scroll-mt-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div
+                        class="section-number rounded-2xl w-14 h-14 flex items-center justify-center text-2xl font-black">
+                        01</div>
+                    <div>
+                        <p class="text-indigo-600 text-sm font-bold">FOUNDATION</p>
+                        <h2 class="text-2xl md:text-3xl font-black">Introduction to Artificial Intelligence</h2>
+                    </div>
+                </div>
+
+                <div class="section-card p-6 md:p-8 space-y-6 shadow-sm">
+                    <h3 class="text-xl font-black">1.1 هوش مصنوعی چیست؟</h3>
+                    <p>
+                        هوش مصنوعی یا <strong>Artificial Intelligence (AI)</strong> شاخه‌ای از علوم کامپیوتر است
+                        که هدف آن ساخت سیستم‌هایی است که بتوانند وظایفی را انجام دهند که معمولاً به توانایی‌های
+                        شناختی انسان نیاز دارند؛ مانند یادگیری، استدلال، تشخیص الگو، درک زبان، تصمیم‌گیری و حل مسئله.
+                    </p>
+                    <p>
+                        وقتی می‌گوییم یک سیستم هوشمند است، لزوماً منظورمان این نیست که مانند انسان فکر می‌کند،
+                        احساس دارد یا خودآگاه است. در بسیاری از کاربردها، هوشمندی به این معناست که سیستم بتواند
+                        ورودی را تحلیل کند، از اطلاعات الگو استخراج کند و خروجی یا تصمیم مناسبی تولید کند.
+                    </p>
+
+                    <div class="callout rounded-xl p-5">
+                        <strong class="text-indigo-800">نکته کلیدی:</strong>
+                        هوش مصنوعی الزاماً به معنی ساخت یک ذهن مصنوعی شبیه انسان نیست. بسیاری از سیستم‌های AI
+                        فقط یک وظیفه مشخص را با دقت و سرعت بالا انجام می‌دهند.
+                    </div>
+
+                    <h3 class="text-xl font-black">1.2 چرا هوش مصنوعی اهمیت دارد؟</h3>
+                    <p>هوش مصنوعی به سازمان‌ها و افراد کمک می‌کند تا حجم بزرگی از داده را تحلیل کنند، کارهای تکراری را
+                        خودکار سازند و در موقعیت‌های پیچیده تصمیم‌های آگاهانه‌تری بگیرند.</p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-50 rounded-xl p-5">
+                            <h4 class="font-black mb-2">افزایش بهره‌وری</h4>
+                            <p class="text-sm">خودکارسازی کارهایی مانند دسته‌بندی اسناد، پاسخ به پرسش‌های متداول و
+                                پردازش اطلاعات.</p>
+                        </div>
+                        <div class="bg-slate-50 rounded-xl p-5">
+                            <h4 class="font-black mb-2">تحلیل داده‌های بزرگ</h4>
+                            <p class="text-sm">کشف الگوهایی در داده‌ها که شناسایی آن‌ها برای انسان دشوار یا زمان‌بر است.
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 rounded-xl p-5">
+                            <h4 class="font-black mb-2">شخصی‌سازی</h4>
+                            <p class="text-sm">پیشنهاد محتوا، محصول یا خدمات متناسب با رفتار و نیاز هر کاربر.</p>
+                        </div>
+                        <div class="bg-slate-50 rounded-xl p-5">
+                            <h4 class="font-black mb-2">پشتیبانی از تصمیم‌گیری</h4>
+                            <p class="text-sm">پیش‌بینی تقاضا، ارزیابی ریسک و کمک به انتخاب گزینه مناسب‌تر.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">1.3 اجزای اصلی یک سیستم هوش مصنوعی</h3>
+                    <p>یک سیستم AI معمولاً از چند جزء تشکیل می‌شود. شکل دقیق آن به نوع مسئله و معماری سیستم بستگی دارد.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 items-center">
+                        <div class="diagram-box">داده<br><small class="font-normal">Data</small></div>
+                        <div class="arrow text-center">←</div>
+                        <div class="diagram-box">مدل<br><small class="font-normal">Model</small></div>
+                        <div class="arrow text-center">←</div>
+                        <div class="diagram-box">خروجی<br><small class="font-normal">Output</small></div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-4 mt-4">
+                        <div class="border rounded-xl p-4">
+                            <h4 class="font-bold mb-2">داده (Data)</h4>
+                            <p class="text-sm">نمونه‌ها و اطلاعاتی که سیستم از آن‌ها برای یادگیری یا تصمیم‌گیری استفاده
+                                می‌کند.</p>
+                        </div>
+                        <div class="border rounded-xl p-4">
+                            <h4 class="font-bold mb-2">مدل (Model)</h4>
+                            <p class="text-sm">ساختاری محاسباتی که روابط و الگوها را در داده‌ها نمایش می‌دهد.</p>
+                        </div>
+                        <div class="border rounded-xl p-4">
+                            <h4 class="font-bold mb-2">خروجی (Output)</h4>
+                            <p class="text-sm">پیش‌بینی، طبقه‌بندی، پیشنهاد، تصمیم یا محتوایی که سیستم تولید می‌کند.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">1.4 هوش مصنوعی چگونه مسئله حل می‌کند؟</h3>
+                    <p>در یک نگاه عمومی، یک سیستم هوشمند این مراحل را طی می‌کند:</p>
+                    <ol class="list-decimal pr-6 space-y-2">
+                        <li><strong>دریافت ورودی:</strong> دریافت متن، تصویر، صوت، داده عددی یا اطلاعات محیط.</li>
+                        <li><strong>پردازش:</strong> تبدیل ورودی به شکلی که سیستم بتواند آن را تحلیل کند.</li>
+                        <li><strong>تحلیل یا استنتاج:</strong> استفاده از قوانین یا الگوهای آموخته‌شده برای حل مسئله.
+                        </li>
+                        <li><strong>تولید خروجی:</strong> ارائه پاسخ، پیش‌بینی، تصمیم یا اقدام.</li>
+                        <li><strong>ارزیابی و بازخورد:</strong> سنجش کیفیت نتیجه و در صورت نیاز بهبود سیستم.</li>
+                    </ol>
+
+                    <h3 class="text-xl font-black">1.5 انواع هوش مصنوعی از نظر دامنه توانایی</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>نوع</th>
+                                    <th>تعریف</th>
+                                    <th>وضعیت</th>
+                                    <th>نمونه یا توضیح</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Narrow AI</strong></td>
+                                    <td>هوش مصنوعی محدود برای انجام وظیفه یا مجموعه‌ای محدود از وظایف</td>
+                                    <td><span class="tag">واقعی و رایج</span></td>
+                                    <td>تشخیص چهره، ترجمه ماشینی، سیستم پیشنهاددهنده</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>AGI</strong></td>
+                                    <td>هوش عمومی مصنوعی با توانایی یادگیری و حل طیف گسترده‌ای از مسائل در سطحی عمومی
+                                    </td>
+                                    <td><span class="tag">موضوع پژوهش و بحث</span></td>
+                                    <td>سامانه‌ای با توانایی عمومی و انعطاف‌پذیر در حوزه‌های مختلف</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ASI</strong></td>
+                                    <td>هوش مصنوعی فرضی که در تقریباً همه زمینه‌های شناختی از انسان فراتر رود</td>
+                                    <td><span class="tag">فرضی</span></td>
+                                    <td>یک مفهوم نظری درباره آینده احتمالی AI</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="warning rounded-xl p-5">
+                        <strong>توجه:</strong> ابزارهای بسیار پیشرفته امروزی را نباید صرفاً به دلیل عملکرد چشمگیرشان
+                        به‌طور خودکار AGI یا ASI نامید. این مفاهیم تعریف‌ها و معیارهای مورد بحث خود را دارند.
+                    </div>
+
+                    <h3 class="text-xl font-black">1.6 کاربردهای هوش مصنوعی</h3>
+                    <div class="grid sm:grid-cols-2 gap-3">
+                        <div class="border rounded-xl p-4"><strong>پزشکی:</strong>
+                            <p class="text-sm">تحلیل تصاویر پزشکی، کمک به تشخیص و پیش‌بینی ریسک؛ تصمیم نهایی باید با
+                                نظارت متخصص باشد.</p>
+                        </div>
+                        <div class="border rounded-xl p-4"><strong>مالی:</strong>
+                            <p class="text-sm">کشف تقلب، ارزیابی اعتبار و تحلیل ریسک.</p>
+                        </div>
+                        <div class="border rounded-xl p-4"><strong>حمل‌ونقل:</strong>
+                            <p class="text-sm">پیش‌بینی ترافیک، مسیریابی و کمک‌راننده‌های هوشمند.</p>
+                        </div>
+                        <div class="border rounded-xl p-4"><strong>آموزش:</strong>
+                            <p class="text-sm">یادگیری شخصی‌سازی‌شده، تولید تمرین و دستیار آموزشی.</p>
+                        </div>
+                        <div class="border rounded-xl p-4"><strong>صنعت:</strong>
+                            <p class="text-sm">نگهداری پیش‌بینانه تجهیزات و کنترل کیفیت.</p>
+                        </div>
+                        <div class="border rounded-xl p-4"><strong>تجارت:</strong>
+                            <p class="text-sm">پیش‌بینی تقاضا، پیشنهاد محصول و تحلیل رفتار مشتری.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">1.7 مثال کاربردی: تشخیص ایمیل اسپم</h3>
+                    <p>فرض کن یک سرویس ایمیل باید تشخیص دهد هر پیام اسپم است یا پیام عادی. سیستم می‌تواند از نمونه‌های
+                        قبلی یاد بگیرد که چه ویژگی‌هایی معمولاً در پیام‌های اسپم دیده می‌شوند.</p>
+                    <div class="code">ورودی: متن ایمیل + فرستنده + لینک‌ها + الگوهای پیام
+
+                        مدل:
+                        تحلیل ویژگی‌ها
+                        محاسبه احتمال اسپم بودن
+
+                        خروجی:
+                        Spam: 0.94
+                        Normal: 0.06
+
+                        تصمیم:
+                        انتقال به پوشه Spam</div>
+                    <p class="text-sm text-slate-500">اعداد بالا صرفاً مثالی برای توضیح مفهوم هستند و خروجی یک سیستم
+                        واقعی نیستند.</p>
+                </div>
+            </section>
+
+            <!-- CHAPTER 2 -->
+            <section id="chapter-2" class="scroll-mt-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div
+                        class="section-number rounded-2xl w-14 h-14 flex items-center justify-center text-2xl font-black">
+                        02</div>
+                    <div>
+                        <p class="text-indigo-600 text-sm font-bold">HISTORY & EVOLUTION</p>
+                        <h2 class="text-2xl md:text-3xl font-black">History and Evolution of AI</h2>
+                    </div>
+                </div>
+
+                <div class="section-card p-6 md:p-8 space-y-6 shadow-sm">
+                    <h3 class="text-xl font-black">2.1 ریشه‌های فکری هوش مصنوعی</h3>
+                    <p>
+                        ایده ساخت ماشین‌هایی که بتوانند استدلال کنند، بسیار قدیمی‌تر از کامپیوترهای امروزی است.
+                        منطق، ریاضیات، فلسفه ذهن و نظریه محاسبات، پایه‌های فکری شکل‌گیری هوش مصنوعی را فراهم کردند.
+                    </p>
+                    <p>
+                        با ظهور رایانه‌های قابل برنامه‌ریزی در قرن بیستم، این پرسش از یک ایده فلسفی به یک برنامه
+                        پژوهشی تبدیل شد: آیا می‌توان فرایندهایی از هوش را به‌صورت محاسباتی مدل‌سازی کرد؟
+                    </p>
+
+                    <h3 class="text-xl font-black">2.2 آزمون تورینگ</h3>
+                    <p>
+                        آلن تورینگ در مقاله مشهور سال ۱۹۵۰ پرسشی را مطرح کرد که بعدها به آزمون تورینگ معروف شد.
+                        در نسخه کلاسیک این ایده، یک ارزیاب از طریق گفت‌وگوی متنی با دو طرف تعامل می‌کند و تلاش می‌کند
+                        تشخیص دهد کدام طرف انسان است و کدام ماشین.
+                    </p>
+                    <div class="bg-slate-50 rounded-xl p-5">
+                        <div class="grid grid-cols-3 gap-2 text-center items-center">
+                            <div class="diagram-box">ارزیاب انسانی</div>
+                            <div class="text-indigo-600 text-xl">↔</div>
+                            <div class="space-y-2">
+                                <div class="diagram-box">انسان</div>
+                                <div class="diagram-box">ماشین</div>
+                            </div>
+                        </div>
+                        <p class="text-sm mt-4">هدف: بررسی اینکه آیا ارزیاب می‌تواند از روی گفت‌وگو طرف ماشین را تشخیص
+                            دهد یا نه.</p>
+                    </div>
+                    <div class="warning rounded-xl p-4">
+                        <strong>نکته:</strong> آزمون تورینگ معیار کامل هوش، فهم، آگاهی یا حقیقت‌گویی نیست؛ فقط یک چارچوب
+                        تاریخی برای بررسی رفتار گفت‌وگویی ماشین است.
+                    </div>
+
+                    <h3 class="text-xl font-black">2.3 تولد رسمی حوزه AI</h3>
+                    <p>
+                        اصطلاح Artificial Intelligence در کارگاه دارتموث در سال ۱۹۵۶ مطرح شد. این رویداد معمولاً
+                        به‌عنوان یکی از نقاط آغاز رسمی هوش مصنوعی به‌عنوان یک حوزه پژوهشی مستقل شناخته می‌شود.
+                    </p>
+
+                    <h3 class="text-xl font-black">2.4 سیستم‌های نمادین و هوش مصنوعی اولیه</h3>
+                    <p>
+                        رویکردهای اولیه بر نمایش صریح دانش و استفاده از قواعد منطقی تمرکز داشتند. در این روش‌ها،
+                        برنامه‌نویس قوانین و روابط را به سیستم می‌داد و سیستم با استفاده از آن‌ها نتیجه‌گیری می‌کرد.
+                    </p>
+                    <div class="code">IF temperature > 38
+                        AND cough = true
+                        THEN recommend_medical_review</div>
+                    <p>
+                        چنین سیستمی می‌تواند در یک دامنه محدود مفید باشد، اما اگر شرایطی پیش بیاید که در قواعد
+                        پیش‌بینی نشده باشد، ممکن است عملکرد مناسبی نداشته باشد.
+                    </p>
+
+                    <h3 class="text-xl font-black">2.5 دوره‌های زمستان هوش مصنوعی</h3>
+                    <p>
+                        در برخی دوره‌ها، وعده‌های بسیار بلندپروازانه با توان محاسباتی، داده و روش‌های موجود هم‌خوانی
+                        نداشتند. کاهش بودجه پژوهشی و افت اعتماد عمومی به دوره‌هایی از رکود انجامید که به آن‌ها
+                        <strong>AI Winter</strong> گفته می‌شود.
+                    </p>
+                    <ul class="list-disc pr-6 space-y-2">
+                        <li>انتظارات غیرواقع‌بینانه درباره توانایی سیستم‌ها.</li>
+                        <li>محدودیت قدرت پردازش و حافظه.</li>
+                        <li>کمبود داده‌های مناسب و روش‌های مؤثر یادگیری.</li>
+                        <li>هزینه زیاد توسعه در برابر نتایج محدود.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-black">2.6 سیستم‌های خبره</h3>
+                    <p>
+                        در دهه‌های ۱۹۷۰ و ۱۹۸۰ سیستم‌های خبره مورد توجه قرار گرفتند. این سیستم‌ها تلاش می‌کردند
+                        دانش متخصصان یک حوزه را در قالب قواعد و پایگاه دانش ذخیره کنند.
+                    </p>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <div class="border rounded-xl p-4"><strong>Knowledge Base</strong>
+                            <p class="text-sm">قواعد و دانش حوزه تخصصی.</p>
+                        </div>
+                        <div class="border rounded-xl p-4"><strong>Inference Engine</strong>
+                            <p class="text-sm">موتور استنتاج برای اعمال قواعد.</p>
+                        </div>
+                        <div class="border rounded-xl p-4"><strong>User Interface</strong>
+                            <p class="text-sm">رابط ارتباط کاربر با سیستم.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">2.7 ظهور یادگیری ماشین</h3>
+                    <p>
+                        به‌تدریج پژوهشگران به روش‌هایی روی آوردند که به‌جای نوشتن تمام قواعد توسط انسان، از داده‌ها
+                        برای یادگیری الگو استفاده می‌کردند. این تغییر یکی از مهم‌ترین تحولات تاریخ AI بود.
+                    </p>
+                    <p>
+                        در یادگیری ماشین، مدل با مشاهده نمونه‌ها پارامترهای خود را تنظیم می‌کند تا بتواند روی داده‌های
+                        جدید نیز پیش‌بینی یا تصمیم‌گیری انجام دهد.
+                    </p>
+
+                    <h3 class="text-xl font-black">2.8 انقلاب یادگیری عمیق</h3>
+                    <p>
+                        پیشرفت شبکه‌های عصبی عمیق، دسترسی به داده‌های بزرگ، GPUهای قدرتمند و بهبود الگوریتم‌های
+                        آموزش باعث شد مدل‌ها در بینایی ماشین، تشخیص گفتار و پردازش زبان عملکرد بسیار بهتری پیدا کنند.
+                    </p>
+                    <p>
+                        شبکه‌های کانولوشنی در تحلیل تصویر و معماری‌های دنباله‌ای در پردازش داده‌های ترتیبی نقش مهمی
+                        داشتند. سپس معماری Transformer مسیر تازه‌ای برای مدل‌سازی زبان و داده‌های دنباله‌ای باز کرد.
+                    </p>
+
+                    <h3 class="text-xl font-black">2.9 ظهور هوش مصنوعی مولد</h3>
+                    <p>
+                        مدل‌های مولد می‌توانند بر اساس الگوهای آموخته‌شده محتوای جدیدی مانند متن، تصویر، صوت و کد
+                        تولید کنند. مدل‌های زبانی بزرگ و مدل‌های انتشار از نمونه‌های مهم این موج هستند.
+                    </p>
+
+                    <h3 class="text-xl font-black">2.10 خط زمانی تحولات مهم</h3>
+                    <div class="space-y-4 border-r-2 border-indigo-200 pr-6 mr-2">
+                        <div><span class="tag">1950</span>
+                            <p><strong>آزمون تورینگ:</strong> طرح یک چارچوب برای بررسی رفتار هوشمند ماشین.</p>
+                        </div>
+                        <div><span class="tag">1956</span>
+                            <p><strong>کارگاه دارتموث:</strong> شکل‌گیری رسمی AI به‌عنوان حوزه پژوهشی.</p>
+                        </div>
+                        <div><span class="tag">دهه 1960–1970</span>
+                            <p><strong>سیستم‌های نمادین:</strong> تمرکز بر منطق، قواعد و حل مسئله.</p>
+                        </div>
+                        <div><span class="tag">دهه 1980</span>
+                            <p><strong>سیستم‌های خبره:</strong> کاربرد قواعد تخصصی در مسائل واقعی.</p>
+                        </div>
+                        <div><span class="tag">دهه 1990–2000</span>
+                            <p><strong>یادگیری ماشین آماری:</strong> رشد روش‌های داده‌محور.</p>
+                        </div>
+                        <div><span class="tag">2012 به بعد</span>
+                            <p><strong>یادگیری عمیق:</strong> جهش عملکرد در تصویر، صوت و زبان.</p>
+                        </div>
+                        <div><span class="tag">2017</span>
+                            <p><strong>Transformer:</strong> معرفی معماری مبتنی بر مکانیزم Attention.</p>
+                        </div>
+                        <div><span class="tag">دهه 2020</span>
+                            <p><strong>هوش مصنوعی مولد:</strong> گسترش مدل‌های بزرگ زبانی و چندوجهی.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">2.11 چرا AI در سال‌های اخیر سریع‌تر رشد کرده است؟</h3>
+                    <ul class="list-disc pr-6 space-y-2">
+                        <li><strong>داده بیشتر:</strong> تولید و ذخیره گسترده داده‌های دیجیتال.</li>
+                        <li><strong>قدرت محاسباتی:</strong> پردازنده‌های گرافیکی و سخت‌افزارهای تخصصی.</li>
+                        <li><strong>الگوریتم‌های بهتر:</strong> معماری‌ها و روش‌های آموزش کارآمدتر.</li>
+                        <li><strong>زیرساخت ابری:</strong> دسترسی گسترده‌تر به منابع محاسباتی.</li>
+                        <li><strong>سرمایه‌گذاری و کاربرد تجاری:</strong> افزایش تقاضا و منابع پژوهشی.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- CHAPTER 3 -->
+            <section id="chapter-3" class="scroll-mt-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div
+                        class="section-number rounded-2xl w-14 h-14 flex items-center justify-center text-2xl font-black">
+                        03</div>
+                    <div>
+                        <p class="text-indigo-600 text-sm font-bold">CORE CONCEPTS</p>
+                        <h2 class="text-2xl md:text-3xl font-black">AI vs ML vs DL vs Generative AI</h2>
+                    </div>
+                </div>
+
+                <div class="section-card p-6 md:p-8 space-y-6 shadow-sm">
+                    <h3 class="text-xl font-black">3.1 تفاوت این چهار مفهوم چیست؟</h3>
+                    <p>
+                        این چهار اصطلاح به یک معنا نیستند. آن‌ها رابطه‌ای سلسله‌مراتبی و مفهومی دارند:
+                        هوش مصنوعی گسترده‌ترین مفهوم است، یادگیری ماشین یکی از رویکردهای AI است،
+                        یادگیری عمیق زیرمجموعه‌ای از ML محسوب می‌شود و بسیاری از فناوری‌های مولد جدید
+                        بر پایه یادگیری عمیق ساخته شده‌اند.
+                    </p>
+
+                    <div class="max-w-xl mx-auto space-y-2 text-center">
+                        <div class="bg-indigo-700 text-white rounded-2xl p-5 font-black">Artificial Intelligence (AI)
+                        </div>
+                        <div class="text-indigo-500 font-black">↓</div>
+                        <div class="bg-indigo-500 text-white rounded-2xl p-5 font-bold mx-5">Machine Learning (ML)</div>
+                        <div class="text-indigo-500 font-black">↓</div>
+                        <div class="bg-teal-600 text-white rounded-2xl p-5 font-bold mx-10">Deep Learning (DL)</div>
+                        <div class="text-indigo-500 font-black">↓</div>
+                        <div class="bg-slate-800 text-white rounded-2xl p-5 font-bold mx-14">بسیاری از مدل‌های
+                            Generative AI</div>
+                    </div>
+                    <p class="text-sm text-slate-500">این نمودار رابطه رایج فناوری‌های مولد مبتنی بر یادگیری عمیق را
+                        نشان می‌دهد؛ همه روش‌های AI مولد الزاماً در یک زنجیره ساده و انحصاری قرار نمی‌گیرند.</p>
+
+                    <h3 class="text-xl font-black">3.2 Artificial Intelligence (AI)</h3>
+                    <p>
+                        AI چتر مفهومی بزرگی است که روش‌های مختلف ساخت سیستم‌های هوشمند را در بر می‌گیرد.
+                        بعضی سیستم‌ها بر اساس قواعد صریح کار می‌کنند و بعضی از داده‌ها یاد می‌گیرند.
+                    </p>
+                    <p><strong>مثال:</strong> یک سیستم برنامه‌ریزی مبتنی بر قواعد می‌تواند با توجه به محدودیت‌ها،
+                        زمان‌بندی تولید را تنظیم کند، بدون اینکه الزاماً از یک مدل یادگیری ماشین استفاده کند.</p>
+
+                    <h3 class="text-xl font-black">3.3 Machine Learning (ML)</h3>
+                    <p>
+                        یادگیری ماشین رویکردی است که در آن الگوریتم با استفاده از داده‌ها، الگوها و روابط را
+                        یاد می‌گیرد. به‌جای اینکه برنامه‌نویس تمام قواعد را دستی بنویسد، داده و هدف یادگیری را
+                        فراهم می‌کند تا مدل پارامترهای مناسب را پیدا کند.
+                    </p>
+                    <div class="callout rounded-xl p-5">
+                        <strong>مثال:</strong> برای پیش‌بینی قیمت خانه، می‌توان از داده‌های خانه‌های قبلی شامل متراژ،
+                        موقعیت، تعداد اتاق و قیمت استفاده کرد تا مدل رابطه میان ویژگی‌ها و قیمت را یاد بگیرد.
+                    </div>
+
+                    <h3 class="text-xl font-black">3.4 Deep Learning (DL)</h3>
+                    <p>
+                        یادگیری عمیق شاخه‌ای از یادگیری ماشین است که از شبکه‌های عصبی با لایه‌های متعدد استفاده
+                        می‌کند. این شبکه‌ها می‌توانند نمایش‌های پیچیده‌ای از داده‌ها یاد بگیرند.
+                    </p>
+                    <p>
+                        برای مثال در تشخیص تصویر، لایه‌های ابتدایی ممکن است الگوهای ساده‌ای مانند لبه‌ها را
+                        تشخیص دهند و لایه‌های عمیق‌تر ترکیب‌های پیچیده‌تری مانند اجزای اشیا را استخراج کنند.
+                    </p>
+
+                    <h3 class="text-xl font-black">3.5 Generative AI</h3>
+                    <p>
+                        هوش مصنوعی مولد به مدل‌هایی گفته می‌شود که می‌توانند داده یا محتوای جدیدی تولید کنند؛
+                        مانند متن، تصویر، صدا، ویدئو یا کد. این مدل‌ها معمولاً توزیع آماری داده‌های آموزشی را
+                        یاد می‌گیرند و نمونه‌های تازه‌ای بر اساس ورودی یا درخواست کاربر می‌سازند.
+                    </p>
+                    <p><strong>مثال:</strong> یک مدل زبانی می‌تواند بر اساس توضیح کاربر، پیش‌نویس ایمیل بنویسد یا یک مدل
+                        تصویرساز می‌تواند از یک توصیف متنی تصویر تولید کند.</p>
+
+                    <h3 class="text-xl font-black">3.6 جدول مقایسه‌ای</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ویژگی</th>
+                                    <th>AI</th>
+                                    <th>ML</th>
+                                    <th>DL</th>
+                                    <th>Generative AI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ماهیت</td>
+                                    <td>حوزه گسترده هوشمندسازی</td>
+                                    <td>یادگیری الگو از داده</td>
+                                    <td>یادگیری با شبکه‌های عصبی عمیق</td>
+                                    <td>تولید محتوای جدید</td>
+                                </tr>
+                                <tr>
+                                    <td>نیاز به داده</td>
+                                    <td>بسته به روش</td>
+                                    <td>معمولاً زیاد</td>
+                                    <td>اغلب زیاد</td>
+                                    <td>معمولاً بسیار زیاد در آموزش پایه</td>
+                                </tr>
+                                <tr>
+                                    <td>قواعد دستی</td>
+                                    <td>ممکن است</td>
+                                    <td>کمتر از سیستم‌های قانون‌محور</td>
+                                    <td>عموماً کمتر</td>
+                                    <td>عموماً کمتر در مدل پایه</td>
+                                </tr>
+                                <tr>
+                                    <td>خروجی</td>
+                                    <td>تصمیم یا رفتار هوشمند</td>
+                                    <td>پیش‌بینی یا طبقه‌بندی</td>
+                                    <td>پیش‌بینی یا نمایش پیچیده</td>
+                                    <td>محتوای جدید</td>
+                                </tr>
+                                <tr>
+                                    <td>مثال</td>
+                                    <td>سیستم برنامه‌ریزی</td>
+                                    <td>تشخیص تقلب</td>
+                                    <td>تشخیص تصویر</td>
+                                    <td>تولید متن یا تصویر</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-xl font-black">3.7 تفاوت مدل‌های پیش‌بینی‌کننده و مولد</h3>
+                    <p>
+                        مدل پیش‌بینی‌کننده معمولاً می‌خواهد یک ویژگی یا برچسب را از روی ورودی تخمین بزند؛
+                        مدل مولد تلاش می‌کند نمونه‌هایی از داده را تولید کند.
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="border rounded-xl p-5">
+                            <span class="tag">Discriminative</span>
+                            <h4 class="font-black mt-2">مدل تمایزی</h4>
+                            <p class="text-sm mt-2">پاسخ می‌دهد: «این ورودی متعلق به کدام کلاس است؟»</p>
+                            <div class="code mt-3">Input: تصویر
+                                Output: گربه (98%)</div>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <span class="tag">Generative</span>
+                            <h4 class="font-black mt-2">مدل مولد</h4>
+                            <p class="text-sm mt-2">پاسخ می‌دهد: «چه نمونه‌ای می‌توان تولید کرد که با الگوهای آموخته‌شده
+                                سازگار باشد؟»</p>
+                            <div class="code mt-3">Prompt: یک گربه فضانورد
+                                Output: تصویر جدید گربه فضانورد</div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-500">از نظر ریاضی، یک مدل تمایزی ممکن است احتمال شرطی \(P(y|x)\) را مدل
+                        کند، در حالی که مدل مولد می‌تواند توزیع \(P(x)\) یا توزیع مشترک \(P(x,y)\) را مدل کند. این توصیف
+                        به خانواده مدل بستگی دارد.</p>
+
+                    <h3 class="text-xl font-black">3.8 مثال یک مسئله در چهار رویکرد</h3>
+                    <p>فرض کن می‌خواهیم ایمیل‌های یک سازمان را مدیریت کنیم:</p>
+                    <ul class="list-disc pr-6 space-y-2">
+                        <li><strong>AI:</strong> یک سامانه هوشمند برای مدیریت ایمیل‌ها طراحی می‌کنیم.</li>
+                        <li><strong>ML:</strong> مدلی آموزش می‌دهیم تا ایمیل‌ها را به گروه‌های مختلف طبقه‌بندی کند.</li>
+                        <li><strong>DL:</strong> از شبکه عصبی عمیق برای درک بهتر متن ایمیل استفاده می‌کنیم.</li>
+                        <li><strong>Generative AI:</strong> مدلی به کار می‌بریم تا پاسخ پیشنهادی به ایمیل بنویسد.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- CHAPTER 4 -->
+            <section id="chapter-4" class="scroll-mt-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div
+                        class="section-number rounded-2xl w-14 h-14 flex items-center justify-center text-2xl font-black">
+                        04</div>
+                    <div>
+                        <p class="text-indigo-600 text-sm font-bold">NEURAL NETWORKS</p>
+                        <h2 class="text-2xl md:text-3xl font-black">Neural Networks Fundamentals</h2>
+                    </div>
+                </div>
+
+                <div class="section-card p-6 md:p-8 space-y-6 shadow-sm">
+                    <h3 class="text-xl font-black">4.1 شبکه عصبی چیست؟</h3>
+                    <p>
+                        شبکه عصبی مصنوعی یا <strong>Artificial Neural Network (ANN)</strong> یک مدل محاسباتی
+                        الهام‌گرفته از برخی ایده‌های ساده‌شده درباره نورون‌های زیستی است. این شبکه از واحدهایی
+                        به نام نورون مصنوعی تشکیل می‌شود که اطلاعات را دریافت، پردازش و به لایه بعدی منتقل می‌کنند.
+                    </p>
+                    <p>
+                        شبکه عصبی از طریق تنظیم وزن‌ها و بایاس‌ها یاد می‌گیرد که چگونه ورودی‌ها را به خروجی مناسب
+                        تبدیل کند.
+                    </p>
+
+                    <h3 class="text-xl font-black">4.2 نورون مصنوعی</h3>
+                    <p>هر نورون معمولاً ورودی‌ها را دریافت می‌کند، به هر ورودی یک وزن اختصاص می‌دهد، بایاس را اضافه
+                        می‌کند و نتیجه را از تابع فعال‌سازی عبور می‌دهد.</p>
+                    <div class="bg-slate-50 rounded-2xl p-5 text-center">
+                        \[
+                        z = \sum_{i=1}^{n} w_i x_i + b
+                        \]
+                        \[
+                        a = f(z)
+                        \]
+                        <p class="text-sm text-slate-600 mt-3">\(x_i\): ورودی، \(w_i\): وزن، \(b\): بایاس، \(f\): تابع
+                            فعال‌سازی، \(a\): خروجی نورون</p>
+                    </div>
+
+                    <h3 class="text-xl font-black">4.3 وزن و بایاس چه معنایی دارند؟</h3>
+                    <ul class="list-disc pr-6 space-y-2">
+                        <li><strong>Weight:</strong> میزان اثر هر ورودی بر محاسبه نورون را تعیین می‌کند.</li>
+                        <li><strong>Bias:</strong> به مدل امکان می‌دهد آستانه یا موقعیت تابع را مستقل از ورودی‌ها تنظیم
+                            کند.</li>
+                    </ul>
+                    <p>در طول آموزش، الگوریتم یادگیری وزن‌ها و بایاس‌ها را تغییر می‌دهد تا خروجی شبکه به هدف نزدیک‌تر
+                        شود.</p>
+
+                    <h3 class="text-xl font-black">4.4 تابع فعال‌سازی</h3>
+                    <p>
+                        اگر نورون‌ها فقط ترکیب خطی ورودی‌ها را انجام دهند، ترکیب تعداد زیادی لایه نیز در نهایت
+                        می‌تواند به یک تبدیل خطی معادل شود. توابع فعال‌سازی غیرخطی به شبکه اجازه می‌دهند
+                        روابط پیچیده‌تر را یاد بگیرد.
+                    </p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>تابع</th>
+                                    <th>ایده اصلی</th>
+                                    <th>کاربرد رایج</th>
+                                    <th>نکته</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Sigmoid</td>
+                                    <td>خروجی بین صفر و یک</td>
+                                    <td>خروجی دودویی در برخی مدل‌ها</td>
+                                    <td>در مقادیر بسیار بزرگ یا کوچک ممکن است گرادیان کوچک شود.</td>
+                                </tr>
+                                <tr>
+                                    <td>Tanh</td>
+                                    <td>خروجی بین منفی یک و یک</td>
+                                    <td>برخی شبکه‌های دنباله‌ای</td>
+                                    <td>مرکز آن صفر است، اما ممکن است اشباع شود.</td>
+                                </tr>
+                                <tr>
+                                    <td>ReLU</td>
+                                    <td>مقادیر منفی را صفر و مثبت را حفظ می‌کند</td>
+                                    <td>لایه‌های پنهان شبکه‌های عمیق</td>
+                                    <td>ساده و محاسباتی کارآمد است.</td>
+                                </tr>
+                                <tr>
+                                    <td>Softmax</td>
+                                    <td>تبدیل امتیازها به توزیع احتمال</td>
+                                    <td>طبقه‌بندی چندکلاسه</td>
+                                    <td>مجموع خروجی‌ها برابر یک می‌شود.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bg-slate-50 rounded-xl p-4 space-y-2">
+                        <p><strong>ReLU:</strong> \(f(x)=\max(0,x)\)</p>
+                        <p><strong>Sigmoid:</strong> \(f(x)=\frac{1}{1+e^{-x}}\)</p>
+                        <p><strong>Softmax:</strong> \(P(y_i)=\frac{e^{z_i}}{\sum_j e^{z_j}}\)</p>
+                    </div>
+
+                    <h3 class="text-xl font-black">4.5 ساختار لایه‌ای شبکه عصبی</h3>
+                    <p>شبکه عصبی معمولاً سه نوع لایه اصلی دارد:</p>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <div class="border rounded-xl p-4">
+                            <h4 class="font-black">Input Layer</h4>
+                            <p class="text-sm">دریافت ویژگی‌ها و داده ورودی.</p>
+                        </div>
+                        <div class="border rounded-xl p-4">
+                            <h4 class="font-black">Hidden Layers</h4>
+                            <p class="text-sm">استخراج الگوها و تبدیل تدریجی نمایش داده.</p>
+                        </div>
+                        <div class="border rounded-xl p-4">
+                            <h4 class="font-black">Output Layer</h4>
+                            <p class="text-sm">تولید پیش‌بینی یا نتیجه نهایی.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl">
+                        <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
+                            <div class="diagram-box w-full sm:w-40">ورودی‌ها</div>
+                            <span class="arrow">←</span>
+                            <div class="diagram-box w-full sm:w-40">لایه پنهان ۱</div>
+                            <span class="arrow">←</span>
+                            <div class="diagram-box w-full sm:w-40">لایه پنهان ۲</div>
+                            <span class="arrow">←</span>
+                            <div class="diagram-box w-full sm:w-40">خروجی</div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">4.6 شبکه عصبی چگونه یاد می‌گیرد؟</h3>
+                    <p>آموزش شبکه عصبی معمولاً شامل یک چرخه تکرارشونده است:</p>
+                    <ol class="list-decimal pr-6 space-y-2">
+                        <li><strong>Forward Pass:</strong> داده از لایه ورودی به سمت خروجی حرکت می‌کند و پیش‌بینی تولید
+                            می‌شود.</li>
+                        <li><strong>Loss Calculation:</strong> خطای پیش‌بینی نسبت به مقدار هدف محاسبه می‌شود.</li>
+                        <li><strong>Backpropagation:</strong> سهم پارامترها در خطا با استفاده از مشتق‌ها محاسبه می‌شود.
+                        </li>
+                        <li><strong>Optimization:</strong> وزن‌ها و بایاس‌ها برای کاهش خطا به‌روزرسانی می‌شوند.</li>
+                        <li><strong>Repeat:</strong> این چرخه بارها روی داده‌های آموزشی تکرار می‌شود.</li>
+                    </ol>
+
+                    <h3 class="text-xl font-black">4.7 تابع زیان (Loss Function)</h3>
+                    <p>
+                        تابع زیان معیاری عددی است که نشان می‌دهد پیش‌بینی مدل چقدر با مقدار هدف فاصله دارد.
+                        هدف آموزش معمولاً کاهش این مقدار است.
+                    </p>
+                    <p><strong>Mean Squared Error:</strong> برای بسیاری از مسائل رگرسیون استفاده می‌شود.</p>
+                    \[
+                    MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2
+                    \]
+                    <p><strong>Cross-Entropy:</strong> در مسائل طبقه‌بندی بسیار رایج است.</p>
+                    \[
+                    L = -\sum_i y_i \log(\hat{y}_i)
+                    \]
+
+                    <h3 class="text-xl font-black">4.8 پس‌انتشار خطا (Backpropagation)</h3>
+                    <p>
+                        پس‌انتشار خطا روشی برای محاسبه گرادیان تابع زیان نسبت به پارامترهای شبکه است.
+                        این روش با استفاده از قاعده زنجیره‌ای مشتق، اثر هر وزن را بر خطای نهایی محاسبه می‌کند.
+                    </p>
+                    <div class="callout rounded-xl p-5">
+                        <strong>درک ساده:</strong> شبکه ابتدا پاسخ می‌دهد، سپس میزان اشتباه خود را می‌سنجد،
+                        بعد مشخص می‌کند کدام پارامترها چقدر در اشتباه نقش داشته‌اند و آن‌ها را اصلاح می‌کند.
+                    </div>
+
+                    <h3 class="text-xl font-black">4.9 گرادیان‌کاهشی (Gradient Descent)</h3>
+                    <p>یکی از روش‌های رایج بهینه‌سازی پارامترها، حرکت در جهتی است که تابع زیان کاهش یابد.</p>
+                    \[
+                    \theta_{new} = \theta_{old} - \eta \nabla_\theta L
+                    \]
+                    <p>
+                        در این رابطه، \(\theta\) پارامتر مدل، \(\eta\) نرخ یادگیری و \(\nabla L\) گرادیان تابع زیان است.
+                    </p>
+                    <ul class="list-disc pr-6 space-y-2">
+                        <li>نرخ یادگیری بسیار بزرگ ممکن است باعث ناپایداری یا عبور از نقطه مناسب شود.</li>
+                        <li>نرخ یادگیری بسیار کوچک ممکن است آموزش را کند کند.</li>
+                        <li>روش‌هایی مانند Adam برای تنظیم تطبیقی گام‌های به‌روزرسانی استفاده می‌شوند.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-black">4.10 انواع مهم معماری‌های شبکه عصبی</h3>
+                    <div class="space-y-4">
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black text-lg">الف) Feedforward Neural Network</h4>
+                            <p>اطلاعات از ورودی به خروجی حرکت می‌کند و حلقه بازگشتی در مسیر اصلی جریان داده وجود ندارد.
+                                برای مسائل رگرسیون و طبقه‌بندی مناسب است.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black text-lg">ب) CNN – Convolutional Neural Network</h4>
+                            <p>شبکه کانولوشنی برای استخراج الگوهای مکانی از داده‌هایی مانند تصویر طراحی شده است. فیلترها
+                                روی بخش‌های مختلف تصویر حرکت می‌کنند و ویژگی‌هایی مانند لبه، بافت و شکل را استخراج
+                                می‌کنند.</p>
+                            <div class="code mt-3">Image → Convolution → Activation
+                                → Pooling → Feature Maps
+                                → Classification</div>
+                            <p class="text-sm mt-2"><strong>کاربردها:</strong> تشخیص اشیا، تحلیل تصاویر پزشکی و کنترل
+                                کیفیت بصری.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black text-lg">ج) RNN – Recurrent Neural Network</h4>
+                            <p>برای داده‌های ترتیبی طراحی شده است و اطلاعات مراحل قبلی را در حالت داخلی خود نگه می‌دارد.
+                                در شکل ساده، خروجی حالت پنهان به مرحله بعد منتقل می‌شود.</p>
+                            <p class="text-sm mt-2"><strong>کاربردها:</strong> مدل‌سازی توالی، متن و سری زمانی. شبکه‌های
+                                RNN ساده در توالی‌های طولانی ممکن است با مشکل محو یا انفجار گرادیان مواجه شوند.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black text-lg">د) LSTM – Long Short-Term Memory</h4>
+                            <p>LSTM گونه‌ای از RNN است که با استفاده از سازوکار دروازه‌ای به مدیریت اطلاعات و
+                                وابستگی‌های طولانی‌تر کمک می‌کند.</p>
+                            <ul class="list-disc pr-6 text-sm mt-2">
+                                <li><strong>Forget Gate:</strong> تعیین می‌کند چه اطلاعاتی فراموش شود.</li>
+                                <li><strong>Input Gate:</strong> تعیین می‌کند چه اطلاعات جدیدی وارد حافظه شود.</li>
+                                <li><strong>Output Gate:</strong> تعیین می‌کند چه بخشی از وضعیت حافظه به خروجی برسد.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black text-lg">هـ) Transformer</h4>
+                            <p>Transformer معماری‌ای است که بر مکانیزم Attention تکیه دارد. این معماری می‌تواند روابط
+                                میان بخش‌های مختلف یک توالی را مدل کند و برخلاف RNN کلاسیک، پردازش بسیاری از موقعیت‌ها
+                                را به‌شکل موازی امکان‌پذیر می‌کند.</p>
+                            <p class="text-sm mt-2"><strong>کاربردها:</strong> مدل‌های زبانی بزرگ، ترجمه ماشینی،
+                                خلاصه‌سازی و بسیاری از مدل‌های چندوجهی.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">4.11 بیش‌برازش و کم‌برازش</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-rose-50 border border-rose-100 rounded-xl p-5">
+                            <h4 class="font-black text-rose-800">Overfitting</h4>
+                            <p class="text-sm">مدل داده‌های آموزشی را بیش از حد یاد می‌گیرد و در داده‌های جدید عملکرد
+                                ضعیفی دارد.</p>
+                            <p class="text-sm mt-2"><strong>راهکار:</strong> داده بیشتر، Regularization، Dropout، توقف
+                                زودهنگام و ارزیابی صحیح.</p>
+                        </div>
+                        <div class="bg-amber-50 border border-amber-100 rounded-xl p-5">
+                            <h4 class="font-black text-amber-800">Underfitting</h4>
+                            <p class="text-sm">مدل آن‌قدر ساده یا کم‌آموزش است که حتی الگوهای مهم داده آموزشی را هم یاد
+                                نمی‌گیرد.</p>
+                            <p class="text-sm mt-2"><strong>راهکار:</strong> مدل مناسب‌تر، ویژگی‌های بهتر یا آموزش
+                                مؤثرتر.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">4.12 مثال کاربردی: تشخیص ارقام دست‌نویس</h3>
+                    <p>
+                        فرض کن می‌خواهیم تصویر یک رقم دست‌نویس را به یکی از کلاس‌های صفر تا نه نسبت دهیم.
+                        تصویر به شبکه داده می‌شود، لایه‌های شبکه ویژگی‌های آن را استخراج می‌کنند و لایه خروجی
+                        احتمال هر رقم را تخمین می‌زند.
+                    </p>
+                    <div class="code">Input: 28 × 28 grayscale image
+
+                        CNN:
+                        Extract edges and shapes
+                        Learn visual features
+                        Predict class probabilities
+
+                        Output:
+                        0: 0.01
+                        1: 0.02
+                        2: 0.03
+                        3: 0.90
+                        ...
+
+                        Prediction: 3</div>
+                    <p class="text-sm text-slate-500">این اعداد صرفاً نمونه نمایشی هستند.</p>
+                </div>
+            </section>
+
+            <!-- CHAPTER 5 -->
+            <section id="chapter-5" class="scroll-mt-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div
+                        class="section-number rounded-2xl w-14 h-14 flex items-center justify-center text-2xl font-black">
+                        05</div>
+                    <div>
+                        <p class="text-indigo-600 text-sm font-bold">MODEL LIFECYCLE</p>
+                        <h2 class="text-2xl md:text-3xl font-black">Training, Inference and Fine-tuning</h2>
+                    </div>
+                </div>
+
+                <div class="section-card p-6 md:p-8 space-y-6 shadow-sm">
+                    <h3 class="text-xl font-black">5.1 چرخه عمر یک مدل هوش مصنوعی</h3>
+                    <p>
+                        برای درک عملکرد مدل‌های AI باید سه مفهوم را از هم جدا کنیم:
+                        <strong>Training</strong> یعنی آموزش مدل، <strong>Inference</strong> یعنی استفاده از مدل
+                        آموزش‌دیده
+                        برای تولید خروجی و <strong>Fine-tuning</strong> یعنی تنظیم بیشتر یک مدل از پیش آموزش‌دیده
+                        برای هدف یا دامنه خاص.
+                    </p>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <div class="diagram-box">Training<br><small class="font-normal">یادگیری پارامترها</small></div>
+                        <div class="diagram-box">Inference<br><small class="font-normal">استفاده از مدل</small></div>
+                        <div class="diagram-box">Fine-tuning<br><small class="font-normal">سازگارکردن مدل</small></div>
+                    </div>
+
+                    <h3 class="text-xl font-black">5.2 Training چیست؟</h3>
+                    <p>
+                        آموزش فرایندی است که طی آن مدل با مشاهده داده‌ها و مقایسه پیش‌بینی‌های خود با پاسخ‌های
+                        هدف، پارامترهایش را تنظیم می‌کند. در آموزش نظارت‌شده، داده‌ها معمولاً شامل ورودی و برچسب
+                        یا پاسخ مورد انتظار هستند.
+                    </p>
+                    <p>برای مثال، برای آموزش مدل تشخیص گربه، مجموعه‌ای از تصاویر به همراه برچسب «گربه» یا «غیرگربه» در
+                        اختیار مدل قرار می‌گیرد.</p>
+
+                    <h3 class="text-xl font-black">5.3 مراحل آموزش مدل</h3>
+                    <ol class="list-decimal pr-6 space-y-3">
+                        <li><strong>جمع‌آوری داده:</strong> گردآوری نمونه‌های مرتبط با مسئله.</li>
+                        <li><strong>پاک‌سازی و آماده‌سازی:</strong> اصلاح داده‌های ناقص، ناسازگار یا نامعتبر.</li>
+                        <li><strong>تقسیم داده:</strong> جداسازی مجموعه آموزش، اعتبارسنجی و آزمون.</li>
+                        <li><strong>انتخاب معماری:</strong> انتخاب الگوریتم یا ساختار مدل متناسب با مسئله.</li>
+                        <li><strong>تعریف تابع زیان:</strong> مشخص‌کردن معیار خطای مدل.</li>
+                        <li><strong>آموزش:</strong> اجرای چرخه پیش‌بینی، محاسبه خطا و به‌روزرسانی پارامترها.</li>
+                        <li><strong>ارزیابی:</strong> بررسی عملکرد مدل روی داده‌های دیده‌نشده.</li>
+                        <li><strong>استقرار:</strong> آماده‌سازی مدل برای استفاده در محصول یا سرویس.</li>
+                    </ol>
+
+                    <h3 class="text-xl font-black">5.4 مجموعه‌های داده</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>مجموعه</th>
+                                    <th>هدف</th>
+                                    <th>زمان استفاده</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Training Set</strong></td>
+                                    <td>یادگیری پارامترهای مدل</td>
+                                    <td>در طول آموزش</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Validation Set</strong></td>
+                                    <td>انتخاب مدل و تنظیم ابرپارامترها</td>
+                                    <td>در جریان توسعه</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Test Set</strong></td>
+                                    <td>برآورد نهایی عملکرد روی داده‌های مستقل</td>
+                                    <td>پس از تکمیل انتخاب مدل</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="warning rounded-xl p-5">
+                        <strong>نکته بسیار مهم:</strong> اگر اطلاعات مجموعه آزمون هنگام آموزش یا انتخاب مدل استفاده شود،
+                        ارزیابی نهایی دیگر مستقل نیست. این مسئله می‌تواند باعث برآورد خوش‌بینانه و غیرواقعی از عملکرد
+                        شود.
+                    </div>
+
+                    <h3 class="text-xl font-black">5.5 Epoch، Batch و Iteration</h3>
+                    <ul class="list-disc pr-6 space-y-2">
+                        <li><strong>Epoch:</strong> یک بار عبور کامل از کل داده‌های آموزشی.</li>
+                        <li><strong>Batch:</strong> بخشی از داده که در یک مرحله پردازش می‌شود.</li>
+                        <li><strong>Iteration:</strong> یک مرحله به‌روزرسانی پارامترها بر اساس یک Batch.</li>
+                    </ul>
+                    <div class="bg-slate-50 rounded-xl p-5">
+                        <p class="font-bold mb-2">مثال:</p>
+                        <p class="text-sm">اگر ۱۰۰۰ نمونه آموزشی داشته باشیم و اندازه Batch برابر ۱۰۰ باشد، در هر Epoch
+                            تقریباً ۱۰ Batch پردازش می‌شود. اگر همه Batchها یک بار پردازش شوند، یک Epoch کامل شده است.
+                        </p>
+                    </div>
+
+                    <h3 class="text-xl font-black">5.6 Hyperparameters و Parameters</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Parameters</h4>
+                            <p class="text-sm">مقادیر قابل یادگیری مدل مانند وزن‌ها و بایاس‌ها که در جریان آموزش تنظیم
+                                می‌شوند.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Hyperparameters</h4>
+                            <p class="text-sm">تنظیمات فرایند آموزش یا ساختار مدل که معمولاً توسط توسعه‌دهنده انتخاب
+                                می‌شوند؛ مانند Learning Rate و Batch Size.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">5.7 Inference چیست؟</h3>
+                    <p>
+                        پس از آموزش، مدل می‌تواند ورودی جدید دریافت کند و بر اساس پارامترهای آموخته‌شده خروجی
+                        تولید کند. این مرحله استنتاج یا Inference نام دارد.
+                    </p>
+                    <div class="code">Training:
+                        Many labeled examples
+                        → Parameter optimization
+                        → Trained model
+
+                        Inference:
+                        New input
+                        → Trained model
+                        → Prediction / Generated output</div>
+                    <p>
+                        برای مثال، یک مدل تشخیص تصویر ممکن است در مرحله آموزش با میلیون‌ها تصویر آموزش ببیند،
+                        اما در زمان استفاده فقط یک تصویر جدید دریافت کند و کلاس آن را پیش‌بینی کند.
+                    </p>
+
+                    <h3 class="text-xl font-black">5.8 تفاوت Training و Inference</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ویژگی</th>
+                                    <th>Training</th>
+                                    <th>Inference</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>هدف</td>
+                                    <td>یادگیری پارامترها</td>
+                                    <td>تولید خروجی با پارامترهای موجود</td>
+                                </tr>
+                                <tr>
+                                    <td>داده</td>
+                                    <td>مجموعه داده آموزشی</td>
+                                    <td>ورودی جدید</td>
+                                </tr>
+                                <tr>
+                                    <td>به‌روزرسانی وزن‌ها</td>
+                                    <td>معمولاً بله</td>
+                                    <td>معمولاً خیر</td>
+                                </tr>
+                                <tr>
+                                    <td>هزینه محاسباتی</td>
+                                    <td>اغلب بالا و تکرارشونده</td>
+                                    <td>بسته به مدل و ورودی، متغیر</td>
+                                </tr>
+                                <tr>
+                                    <td>خروجی</td>
+                                    <td>مدل آموزش‌دیده</td>
+                                    <td>پیش‌بینی یا محتوای تولیدشده</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-xl font-black">5.9 Fine-tuning چیست؟</h3>
+                    <p>
+                        Fine-tuning یا تنظیم دقیق، فرایندی است که طی آن یک مدل از پیش آموزش‌دیده با داده‌های
+                        مرتبط با یک وظیفه یا حوزه خاص دوباره آموزش داده می‌شود. هدف، سازگارکردن رفتار مدل با
+                        نیاز مشخص‌تر است.
+                    </p>
+                    <p>
+                        به‌جای آموزش یک مدل بزرگ از صفر، می‌توان از دانشی که مدل قبلاً آموخته استفاده کرد و
+                        آن را با مجموعه داده هدف تنظیم کرد.
+                    </p>
+                    <div class="bg-slate-50 rounded-xl p-5">
+                        <div class="space-y-3 text-center">
+                            <div class="diagram-box">Pre-trained Model</div>
+                            <div class="arrow">↓</div>
+                            <div class="diagram-box">Domain-specific Data</div>
+                            <div class="arrow">↓</div>
+                            <div class="diagram-box">Fine-tuning</div>
+                            <div class="arrow">↓</div>
+                            <div class="diagram-box bg-teal-50 border-teal-300">Task-adapted Model</div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">5.10 چه زمانی Fine-tuning مناسب است؟</h3>
+                    <ul class="list-disc pr-6 space-y-2">
+                        <li>وقتی مدل باید سبک پاسخ‌دهی یا قالب مشخصی را به‌طور پایدار دنبال کند.</li>
+                        <li>وقتی نمونه‌های باکیفیت و مرتبط با وظیفه موردنظر در اختیار داریم.</li>
+                        <li>وقتی مدل پایه در یک وظیفه مشخص عملکرد کافی ندارد.</li>
+                        <li>وقتی می‌خواهیم رفتار مدل را برای یک حوزه تخصصی سازگارتر کنیم.</li>
+                    </ul>
+
+                    <h3 class="text-xl font-black">5.11 روش‌های تنظیم دقیق</h3>
+                    <div class="space-y-3">
+                        <div class="border rounded-xl p-4">
+                            <h4 class="font-bold">Full Fine-tuning</h4>
+                            <p class="text-sm">بخش بزرگی از پارامترهای مدل یا تمام آن‌ها به‌روزرسانی می‌شوند. این روش
+                                ممکن است به منابع محاسباتی قابل‌توجهی نیاز داشته باشد.</p>
+                        </div>
+                        <div class="border rounded-xl p-4">
+                            <h4 class="font-bold">PEFT – Parameter-Efficient Fine-tuning</h4>
+                            <p class="text-sm">به‌جای تغییر همه پارامترها، بخش کوچکی از پارامترها یا اجزای افزوده‌شده
+                                آموزش داده می‌شوند.</p>
+                        </div>
+                        <div class="border rounded-xl p-4">
+                            <h4 class="font-bold">LoRA</h4>
+                            <p class="text-sm">روشی محبوب از خانواده PEFT که به‌روزرسانی‌های کم‌رتبه را به مدل اضافه
+                                می‌کند تا تعداد پارامترهای قابل آموزش کاهش یابد.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">5.12 Fine-tuning در برابر Prompting و RAG</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>روش</th>
+                                    <th>چه چیزی را تغییر می‌دهد؟</th>
+                                    <th>بهترین کاربرد معمول</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Prompting</td>
+                                    <td>دستور و زمینه ورودی</td>
+                                    <td>هدایت مدل بدون تغییر وزن‌ها</td>
+                                </tr>
+                                <tr>
+                                    <td>RAG</td>
+                                    <td>اطلاعات بازیابی‌شده در زمان پاسخ</td>
+                                    <td>استفاده از اسناد یا اطلاعات به‌روز و اختصاصی</td>
+                                </tr>
+                                <tr>
+                                    <td>Fine-tuning</td>
+                                    <td>پارامترها یا بخشی از آن‌ها</td>
+                                    <td>تغییر یا تخصصی‌سازی رفتار مدل</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tip rounded-xl p-5">
+                        <strong>قاعده کاربردی:</strong> اگر مدل فقط به اطلاعات تازه یا اختصاصی نیاز دارد، ابتدا RAG را
+                        بررسی کن.
+                        اگر مسئله مربوط به سبک یا رفتار پایدار مدل است، Fine-tuning می‌تواند مناسب باشد.
+                        اگر فقط باید خروجی یک درخواست بهتر هدایت شود، Prompting را امتحان کن.
+                    </div>
+
+                    <h3 class="text-xl font-black">5.13 ارزیابی مدل</h3>
+                    <p>معیار ارزیابی باید با نوع مسئله متناسب باشد.</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>معیار</th>
+                                    <th>کاربرد</th>
+                                    <th>توضیح</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Accuracy</td>
+                                    <td>طبقه‌بندی</td>
+                                    <td>نسبت پیش‌بینی‌های صحیح به کل پیش‌بینی‌ها.</td>
+                                </tr>
+                                <tr>
+                                    <td>Precision</td>
+                                    <td>طبقه‌بندی</td>
+                                    <td>از مواردی که مثبت پیش‌بینی شده‌اند، چه تعداد واقعاً مثبت هستند؟</td>
+                                </tr>
+                                <tr>
+                                    <td>Recall</td>
+                                    <td>طبقه‌بندی</td>
+                                    <td>از موارد مثبت واقعی، چه تعداد شناسایی شده‌اند؟</td>
+                                </tr>
+                                <tr>
+                                    <td>F1-score</td>
+                                    <td>طبقه‌بندی</td>
+                                    <td>میانگین هارمونیک Precision و Recall.</td>
+                                </tr>
+                                <tr>
+                                    <td>MAE / RMSE</td>
+                                    <td>رگرسیون</td>
+                                    <td>اندازه خطای پیش‌بینی عددی.</td>
+                                </tr>
+                                <tr>
+                                    <td>Human Evaluation</td>
+                                    <td>تولید محتوا</td>
+                                    <td>ارزیابی کیفیت، ارتباط، ایمنی و سودمندی توسط انسان.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHAPTER 6 -->
+            <section id="chapter-6" class="scroll-mt-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div
+                        class="section-number rounded-2xl w-14 h-14 flex items-center justify-center text-2xl font-black">
+                        06</div>
+                    <div>
+                        <p class="text-indigo-600 text-sm font-bold">MODEL LANDSCAPE</p>
+                        <h2 class="text-2xl md:text-3xl font-black">Types of AI Models</h2>
+                    </div>
+                </div>
+
+                <div class="section-card p-6 md:p-8 space-y-6 shadow-sm">
+                    <h3 class="text-xl font-black">6.1 مدل‌های قانون‌محور (Rule-Based Systems)</h3>
+                    <p>
+                        مدل‌های قانون‌محور از مجموعه‌ای از قواعد صریح استفاده می‌کنند که معمولاً توسط انسان
+                        تعریف شده‌اند. این سیستم‌ها لزوماً از داده یاد نمی‌گیرند؛ بلکه قواعد از پیش تعیین‌شده را
+                        روی ورودی اعمال می‌کنند.
+                    </p>
+                    <div class="code">IF account_balance < 0 THEN flag_account=true IF transaction_amount> 10000
+                            AND location_changed = true
+                            THEN request_additional_verification</div>
+                    <p><strong>مزایا:</strong> قابل‌توضیح بودن، کنترل‌پذیری، سادگی در مسائل محدود و امکان بررسی مستقیم
+                        قواعد.</p>
+                    <p><strong>محدودیت‌ها:</strong> دشواری نگهداری تعداد زیادی قانون، انعطاف‌پذیری پایین در شرایط جدید و
+                        وابستگی به دانش طراح.</p>
+                    <p><strong>کاربردها:</strong> موتورهای قوانین کسب‌وکار، اعتبارسنجی فرم‌ها، کنترل دسترسی و برخی
+                        سیستم‌های تصمیم‌گیری محدود.</p>
+
+                    <h3 class="text-xl font-black">6.2 مدل‌های کلاسیک یادگیری ماشین</h3>
+                    <p>
+                        مدل‌های کلاسیک ML با استفاده از داده‌ها الگوهای آماری را یاد می‌گیرند. این خانواده شامل
+                        الگوریتم‌هایی مانند رگرسیون خطی، رگرسیون لجستیک، درخت تصمیم، جنگل تصادفی، ماشین بردار
+                        پشتیبان و روش‌های خوشه‌بندی است.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black text-lg">الف) Supervised Learning – یادگیری نظارت‌شده</h4>
+                            <p>مدل با نمونه‌هایی آموزش می‌بیند که برای آن‌ها پاسخ یا برچسب مشخص وجود دارد.</p>
+                            <p class="text-sm mt-2"><strong>مثال:</strong> پیش‌بینی قیمت خانه با استفاده از نمونه‌های
+                                دارای قیمت واقعی.</p>
+                            <div class="code mt-3">Input: house features
+                                Label: actual house price
+                                Model learns: features → price</div>
+                            <p class="text-sm mt-2">دو وظیفه رایج آن عبارت‌اند از:</p>
+                            <ul class="list-disc pr-6 text-sm">
+                                <li><strong>Classification:</strong> پیش‌بینی یک کلاس مانند اسپم یا غیر اسپم.</li>
+                                <li><strong>Regression:</strong> پیش‌بینی یک مقدار عددی مانند قیمت یا دما.</li>
+                            </ul>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black text-lg">ب) Unsupervised Learning – یادگیری بدون نظارت</h4>
+                            <p>داده‌ها برچسب هدف مشخص ندارند و مدل تلاش می‌کند ساختار یا الگوهای پنهان را کشف کند.</p>
+                            <p class="text-sm mt-2"><strong>مثال:</strong> گروه‌بندی مشتریان بر اساس الگوی خرید بدون
+                                اینکه از قبل گروه‌ها مشخص شده باشند.</p>
+                            <p class="text-sm mt-2"><strong>روش‌ها:</strong> Clustering، کاهش ابعاد و کشف ساختار داده.
+                            </p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black text-lg">ج) Semi-supervised Learning – یادگیری نیمه‌نظارتی</h4>
+                            <p>ترکیبی از داده‌های برچسب‌دار و بدون برچسب استفاده می‌کند. این روش زمانی مفید است که
+                                برچسب‌گذاری داده‌ها گران یا زمان‌بر باشد.</p>
+                            <p class="text-sm mt-2"><strong>مثال:</strong> تعداد کمی تصویر پزشکی برچسب‌خورده و تعداد
+                                زیادی تصویر بدون برچسب در اختیار داریم.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black text-lg">د) Reinforcement Learning – یادگیری تقویتی</h4>
+                            <p>یک عامل با محیط تعامل می‌کند، اقدام انجام می‌دهد و بر اساس پاداش یا جریمه بازخورد
+                                می‌گیرد. هدف، یادگیری سیاستی است که پاداش تجمعی را بهینه کند.</p>
+                            <div class="bg-slate-50 rounded-xl p-4 mt-3">
+                                <div class="grid grid-cols-3 gap-2 items-center text-center">
+                                    <div class="diagram-box">Agent</div>
+                                    <div class="text-indigo-600 font-black">Action →</div>
+                                    <div class="diagram-box">Environment</div>
+                                </div>
+                                <div class="text-center text-indigo-600 text-2xl">↑</div>
+                                <div class="diagram-box max-w-xs mx-auto">Reward + New State</div>
+                            </div>
+                            <p class="text-sm mt-2"><strong>مثال:</strong> آموزش یک عامل برای حرکت در محیط شبیه‌سازی‌شده
+                                یا یادگیری راهبرد بازی.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">6.3 مدل‌های یادگیری عمیق</h3>
+                    <p>
+                        مدل‌های یادگیری عمیق از شبکه‌های عصبی چندلایه استفاده می‌کنند. آن‌ها در بسیاری از مسائل
+                        پیچیده مانند تحلیل تصویر، صوت، زبان و داده‌های چندوجهی کاربرد دارند.
+                    </p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>معماری</th>
+                                    <th>ایده اصلی</th>
+                                    <th>کاربردهای رایج</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>CNN</td>
+                                    <td>استخراج ویژگی‌های مکانی با کانولوشن</td>
+                                    <td>تصویر، ویدئو و بینایی ماشین</td>
+                                </tr>
+                                <tr>
+                                    <td>RNN</td>
+                                    <td>پردازش ترتیبی با حالت داخلی</td>
+                                    <td>توالی‌ها و سری‌های زمانی</td>
+                                </tr>
+                                <tr>
+                                    <td>LSTM</td>
+                                    <td>مدیریت بهتر وابستگی‌های طولانی‌تر در توالی</td>
+                                    <td>متن و سری زمانی</td>
+                                </tr>
+                                <tr>
+                                    <td>Transformer</td>
+                                    <td>مدل‌سازی روابط با Attention</td>
+                                    <td>زبان، تصویر و مدل‌های چندوجهی</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-xl font-black">6.4 مدل‌های مولد و تمایزی</h3>
+                    <p>
+                        مدل تمایزی معمولاً برای تشخیص، طبقه‌بندی یا پیش‌بینی برچسب استفاده می‌شود؛ مدل مولد
+                        برای یادگیری الگوهای داده و تولید نمونه‌های جدید طراحی می‌شود.
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Discriminative Models</h4>
+                            <p class="text-sm">ورودی را تحلیل می‌کنند و برچسب یا مقدار موردنظر را پیش‌بینی می‌کنند.</p>
+                            <p class="text-sm mt-3"><strong>مثال:</strong> تشخیص اینکه تصویر حاوی سگ است یا گربه.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Generative Models</h4>
+                            <p class="text-sm">توزیع داده را یاد می‌گیرند و می‌توانند نمونه‌های تازه تولید کنند.</p>
+                            <p class="text-sm mt-3"><strong>مثال:</strong> ساخت تصویر جدید از یک سگ در فضای برفی.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">6.5 مدل‌های زبانی بزرگ (LLMs)</h3>
+                    <p>
+                        مدل زبانی بزرگ یا Large Language Model نوعی مدل است که با حجم زیادی از داده‌های متنی
+                        آموزش می‌بیند تا ساختارها و الگوهای زبان را یاد بگیرد. بسیاری از LLMهای جدید بر پایه
+                        معماری Transformer ساخته شده‌اند.
+                    </p>
+
+                    <h4 class="font-black text-lg">الف) Token چیست؟</h4>
+                    <p>
+                        مدل‌های زبانی معمولاً متن را مستقیماً به شکل کلمات کامل پردازش نمی‌کنند. متن ابتدا به
+                        واحدهایی به نام Token تبدیل می‌شود. یک Token می‌تواند یک کلمه، بخشی از کلمه، نشانه
+                        نگارشی یا واحد دیگری از متن باشد.
+                    </p>
+                    <div class="code">Text:
+                        Artificial intelligence is useful.
+
+                        Possible tokenization:
+                        ["Artificial", " intelligence", " is", " useful", "."]</div>
+                    <p class="text-sm text-slate-500">این تقسیم‌بندی نمونه‌ای ساده و فرضی است؛ توکن‌سازی واقعی به
+                        Tokenizer مدل بستگی دارد.</p>
+
+                    <h4 class="font-black text-lg">ب) Context Window چیست؟</h4>
+                    <p>
+                        پنجره زمینه یا Context Window به میزان اطلاعاتی اشاره دارد که مدل می‌تواند در یک نوبت
+                        پردازش در نظر بگیرد. این ظرفیت معمولاً بر اساس Token بیان می‌شود و ممکن است ورودی،
+                        دستورها، تاریخچه گفتگو و فضای موردنیاز برای خروجی را شامل شود.
+                    </p>
+                    <div class="tip rounded-xl p-4">
+                        هرچه زمینه طولانی‌تر باشد، مدل می‌تواند اطلاعات بیشتری را در یک درخواست در نظر بگیرد؛
+                        اما طولانی‌تر بودن زمینه به‌تنهایی تضمین نمی‌کند که مدل همه جزئیات را درست به خاطر بسپارد
+                        یا به‌خوبی از آن‌ها استفاده کند.
+                    </div>
+
+                    <h4 class="font-black text-lg">ج) Parameters چیست؟</h4>
+                    <p>
+                        پارامترها مقادیر عددی قابل یادگیری درون مدل هستند. تعداد پارامترها یکی از ویژگی‌های
+                        معماری مدل است، اما به‌تنهایی معیار کافی برای سنجش کیفیت، سرعت، استدلال یا قابلیت‌های آن نیست.
+                    </p>
+
+                    <h4 class="font-black text-lg">د) Embedding چیست؟</h4>
+                    <p>
+                        Embedding روشی برای تبدیل داده‌هایی مانند کلمه، جمله یا تصویر به بردار عددی است.
+                        این بردارها می‌توانند برخی ویژگی‌های معنایی یا ساختاری داده را در فضای عددی نمایش دهند.
+                    </p>
+                    <p><strong>مثال مفهومی:</strong> بردارهای مربوط به عبارت‌های نزدیک از نظر معنا ممکن است در فضای
+                        embedding به یکدیگر نزدیک‌تر باشند.</p>
+
+                    <h4 class="font-black text-lg">هـ) Attention چیست؟</h4>
+                    <p>
+                        Attention مکانیزمی است که به مدل کمک می‌کند هنگام پردازش یک بخش از ورودی، اهمیت بخش‌های
+                        دیگر را نیز در نظر بگیرد. در Self-Attention، موقعیت‌های مختلف یک توالی می‌توانند با یکدیگر
+                        ارتباط برقرار کنند.
+                    </p>
+                    <p>در شکل رایج Attention، Query، Key و Value با هم ترکیب می‌شوند:</p>
+                    \[
+                    Attention(Q,K,V)=softmax\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+                    \]
+                    <p class="text-sm text-slate-500">این فرمول، شکل متداول Scaled Dot-Product Attention را نشان می‌دهد.
+                    </p>
+
+                    <h4 class="font-black text-lg">و) چرا خروجی LLM احتمالی است؟</h4>
+                    <p>
+                        مدل زبانی در بسیاری از معماری‌های رایج، برای Token بعدی یک توزیع احتمال محاسبه می‌کند.
+                        سپس بر اساس روش انتخاب Token، یک Token انتخاب می‌شود و فرایند تا تولید خروجی ادامه پیدا می‌کند.
+                    </p>
+                    <div class="code">Context:
+                        "The capital of France is"
+
+                        Possible next-token probabilities:
+                        " Paris" → 0.92
+                        " Lyon" → 0.03
+                        " Berlin" → 0.01
+                        Other → 0.04</div>
+                    <p class="text-sm text-slate-500">اعداد فرضی‌اند و فقط سازوکار انتخاب احتمالی را توضیح می‌دهند.</p>
+
+                    <h3 class="text-xl font-black">6.6 مدل‌های چندوجهی (Multimodal Models)</h3>
+                    <p>
+                        مدل چندوجهی می‌تواند بیش از یک نوع داده را دریافت یا تولید کند. برای مثال، یک مدل ممکن
+                        است متن و تصویر را با هم تحلیل کند، درباره یک تصویر پاسخ دهد یا میان صوت و متن ارتباط برقرار
+                        کند.
+                    </p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="border rounded-xl p-4 text-center">
+                            <div class="text-3xl">📝</div><strong>Text</strong>
+                            <p class="text-xs">متن</p>
+                        </div>
+                        <div class="border rounded-xl p-4 text-center">
+                            <div class="text-3xl">🖼️</div><strong>Image</strong>
+                            <p class="text-xs">تصویر</p>
+                        </div>
+                        <div class="border rounded-xl p-4 text-center">
+                            <div class="text-3xl">🎧</div><strong>Audio</strong>
+                            <p class="text-xs">صوت</p>
+                        </div>
+                        <div class="border rounded-xl p-4 text-center">
+                            <div class="text-3xl">🎬</div><strong>Video</strong>
+                            <p class="text-xs">ویدئو</p>
+                        </div>
+                    </div>
+                    <p><strong>مثال:</strong> کاربر عکسی از یک نمودار ارسال می‌کند و از مدل می‌خواهد روند آن را توضیح
+                        دهد. مدل باید اطلاعات تصویری را پردازش کند و پاسخ متنی بسازد.</p>
+
+                    <h3 class="text-xl font-black">6.7 مدل‌های تخصصی و عمومی</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">General-purpose Models</h4>
+                            <p class="text-sm">برای طیف متنوعی از وظایف طراحی شده‌اند؛ مانند پاسخ به پرسش، خلاصه‌سازی،
+                                نوشتن و کمک به برنامه‌نویسی.</p>
+                            <p class="text-sm mt-2"><strong>مزیت:</strong> انعطاف‌پذیری و کاربردهای متنوع.</p>
+                            <p class="text-sm"><strong>محدودیت:</strong> ممکن است در یک حوزه تخصصی به دقت یا عمق مدل
+                                اختصاصی نرسند.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Specialized Models</h4>
+                            <p class="text-sm">برای یک حوزه، وظیفه یا نوع داده مشخص بهینه شده‌اند.</p>
+                            <p class="text-sm mt-2"><strong>مزیت:</strong> امکان عملکرد بهتر در وظیفه هدف.</p>
+                            <p class="text-sm"><strong>محدودیت:</strong> انعطاف‌پذیری کمتر خارج از دامنه تخصصی.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">6.8 چگونه نوع مدل مناسب را انتخاب کنیم؟</h3>
+                    <p>انتخاب مدل باید بر اساس مسئله، داده، هزینه و الزامات عملیاتی انجام شود.</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>نیاز</th>
+                                    <th>گزینه‌ای که می‌توان بررسی کرد</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>قوانین ثابت و شفاف</td>
+                                    <td>Rule-Based System</td>
+                                </tr>
+                                <tr>
+                                    <td>پیش‌بینی قیمت یا مقدار</td>
+                                    <td>Regression Model</td>
+                                </tr>
+                                <tr>
+                                    <td>دسته‌بندی داده‌های جدولی</td>
+                                    <td>Decision Tree، Random Forest، Gradient Boosting و روش‌های دیگر</td>
+                                </tr>
+                                <tr>
+                                    <td>گروه‌بندی بدون برچسب</td>
+                                    <td>Clustering</td>
+                                </tr>
+                                <tr>
+                                    <td>تحلیل تصویر</td>
+                                    <td>CNN یا Vision Transformer و مدل‌های بینایی دیگر</td>
+                                </tr>
+                                <tr>
+                                    <td>پردازش زبان</td>
+                                    <td>Transformer و مدل‌های زبانی</td>
+                                </tr>
+                                <tr>
+                                    <td>تولید متن</td>
+                                    <td>Autoregressive Language Model</td>
+                                </tr>
+                                <tr>
+                                    <td>تولید تصویر</td>
+                                    <td>Diffusion یا معماری‌های مولد دیگر</td>
+                                </tr>
+                                <tr>
+                                    <td>تصمیم‌گیری تعاملی</td>
+                                    <td>Reinforcement Learning در صورت تناسب مسئله</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHAPTER 7 -->
+            <section id="chapter-7" class="scroll-mt-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div
+                        class="section-number rounded-2xl w-14 h-14 flex items-center justify-center text-2xl font-black">
+                        07</div>
+                    <div>
+                        <p class="text-indigo-600 text-sm font-bold">GENERATIVE AI</p>
+                        <h2 class="text-2xl md:text-3xl font-black">Generative AI Fundamentals</h2>
+                    </div>
+                </div>
+
+                <div class="section-card p-6 md:p-8 space-y-6 shadow-sm">
+                    <h3 class="text-xl font-black">7.1 هوش مصنوعی مولد چیست؟</h3>
+                    <p>
+                        هوش مصنوعی مولد شاخه‌ای از AI است که برای تولید نمونه‌های جدید از داده طراحی شده است.
+                        این نمونه‌ها می‌توانند متن، تصویر، صوت، موسیقی، ویدئو، کد یا داده‌های ساختاریافته باشند.
+                    </p>
+                    <p>
+                        مدل مولد با آموزش روی مجموعه‌ای از نمونه‌ها، الگوهای آماری و ساختارهای موجود در آن داده‌ها
+                        را می‌آموزد. سپس می‌تواند بر اساس یک ورودی یا درخواست، محتوای جدیدی تولید کند.
+                    </p>
+
+                    <h3 class="text-xl font-black">7.2 تفاوت Generative AI با AI سنتی</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ویژگی</th>
+                                    <th>AI پیش‌بینی‌کننده یا سنتی</th>
+                                    <th>Generative AI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>هدف معمول</td>
+                                    <td>تشخیص، پیش‌بینی، تصمیم‌گیری</td>
+                                    <td>تولید محتوای جدید</td>
+                                </tr>
+                                <tr>
+                                    <td>ورودی</td>
+                                    <td>داده و ویژگی‌های مسئله</td>
+                                    <td>دستور، زمینه یا داده ورودی</td>
+                                </tr>
+                                <tr>
+                                    <td>خروجی</td>
+                                    <td>برچسب، عدد یا تصمیم</td>
+                                    <td>متن، تصویر، صوت، ویدئو یا کد</td>
+                                </tr>
+                                <tr>
+                                    <td>مثال</td>
+                                    <td>تشخیص تراکنش مشکوک</td>
+                                    <td>تولید گزارش درباره تراکنش‌ها</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-xl font-black">7.3 انواع خروجی در هوش مصنوعی مولد</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Text Generation</h4>
+                            <p class="text-sm">نوشتن مقاله، پاسخ، خلاصه، ایمیل و توضیح.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Image Generation</h4>
+                            <p class="text-sm">ساخت تصویر، تصویرسازی مفهومی، طرح محصول و آثار هنری.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Audio Generation</h4>
+                            <p class="text-sm">تولید گفتار، صدا و موسیقی.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Video Generation</h4>
+                            <p class="text-sm">تولید یا تکمیل کلیپ‌های ویدئویی.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Code Generation</h4>
+                            <p class="text-sm">تولید کد، توضیح کد، پیشنهاد اصلاح و نوشتن آزمون.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Synthetic Data</h4>
+                            <p class="text-sm">تولید داده مصنوعی برای آزمایش، شبیه‌سازی یا آموزش در شرایط مشخص.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">7.4 فضای نهفته (Latent Space)</h3>
+                    <p>
+                        بسیاری از مدل‌های مولد از یک نمایش فشرده و عددی از داده‌ها استفاده می‌کنند که به آن
+                        فضای نهفته گفته می‌شود. در این فضا، اطلاعات مهم داده در قالب بردارها یا نمایش‌های
+                        عددی سازمان‌دهی می‌شوند.
+                    </p>
+                    <p>
+                        هدف، حفظ ویژگی‌های مهم داده در یک نمایش قابل پردازش برای مدل است. در برخی مدل‌ها،
+                        نقاط نزدیک در فضای نهفته ممکن است نمونه‌هایی با ویژگی‌های مشابه را نمایش دهند؛
+                        البته این موضوع به معماری و روش آموزش بستگی دارد.
+                    </p>
+
+                    <h4 class="font-black text-lg">الف) Vector Representation</h4>
+                    <p>یک نمونه می‌تواند به برداری از اعداد تبدیل شود:</p>
+                    \[
+                    z = [z_1,z_2,z_3,\ldots,z_n]
+                    \]
+                    <p>هر مؤلفه بخشی از نمایش آموخته‌شده مدل را در خود دارد؛ معمولاً تفسیر مستقیم و ساده‌ای برای تک‌تک
+                        مؤلفه‌ها وجود ندارد.</p>
+
+                    <h4 class="font-black text-lg">ب) Semantic Similarity</h4>
+                    <p>
+                        در برخی فضاهای embedding، نمونه‌هایی که از نظر معنایی یا ویژگی‌های آموخته‌شده مشابه‌اند،
+                        ممکن است بردارهای نزدیک‌تری داشته باشند.
+                    </p>
+                    <p>برای سنجش شباهت دو بردار می‌توان از Cosine Similarity استفاده کرد:</p>
+                    \[
+                    cos(\theta)=\frac{A\cdot B}{\|A\|\|B\|}
+                    \]
+
+                    <h4 class="font-black text-lg">ج) Interpolation</h4>
+                    <p>
+                        در برخی مدل‌های مولد می‌توان میان دو نقطه فضای نهفته حرکت کرد و نمونه‌های میانی تولید کرد.
+                        به این فرایند Interpolation گفته می‌شود.
+                    </p>
+                    \[
+                    z(t)=(1-t)z_1+t z_2
+                    \]
+                    <p class="text-sm text-slate-500">این رابطه یک درون‌یابی خطی ساده است. کیفیت و معنای مسیر میانی به
+                        ساختار فضای نهفته وابسته است.</p>
+
+                    <h3 class="text-xl font-black">7.5 معماری‌های اصلی مدل‌های مولد</h3>
+
+                    <div class="border rounded-xl p-5 space-y-3">
+                        <h4 class="text-lg font-black">الف) GAN – Generative Adversarial Network</h4>
+                        <p>
+                            شبکه مولد تخاصمی از دو شبکه تشکیل می‌شود: Generator و Discriminator.
+                            مولد تلاش می‌کند نمونه مصنوعی بسازد و تمایزدهنده تلاش می‌کند نمونه واقعی را از
+                            نمونه تولیدشده تشخیص دهد.
+                        </p>
+                        <div class="bg-slate-50 rounded-xl p-4">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="diagram-box">Generator<br><small class="font-normal">تولید نمونه
+                                        مصنوعی</small></div>
+                                <div class="diagram-box">Real Data<br><small class="font-normal">نمونه واقعی</small>
+                                </div>
+                            </div>
+                            <div class="text-center text-indigo-600 text-2xl">↓</div>
+                            <div class="diagram-box max-w-md mx-auto">Discriminator<br><small class="font-normal">تشخیص
+                                    واقعی یا مصنوعی</small></div>
+                        </div>
+                        <p><strong>مزایا:</strong> امکان تولید نمونه‌های باکیفیت در برخی وظایف.</p>
+                        <p><strong>محدودیت‌ها:</strong> دشواری پایداری آموزش و احتمال Mode Collapse؛ یعنی مولد به تنوع
+                            کافی در خروجی‌ها نرسد.</p>
+                    </div>
+
+                    <div class="border rounded-xl p-5 space-y-3">
+                        <h4 class="text-lg font-black">ب) VAE – Variational Autoencoder</h4>
+                        <p>
+                            VAE یک مدل مولد مبتنی بر ایده رمزگذار و رمزگشا است. Encoder ورودی را به توزیعی در
+                            فضای نهفته نگاشت می‌کند و Decoder از نمونه‌گیری در آن فضا برای بازسازی یا تولید داده
+                            استفاده می‌کند.
+                        </p>
+                        <div class="bg-slate-50 rounded-xl p-4">
+                            <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
+                                <div class="diagram-box w-full">Input</div>
+                                <span class="arrow">→</span>
+                                <div class="diagram-box w-full">Encoder</div>
+                                <span class="arrow">→</span>
+                                <div class="diagram-box w-full">Latent Space</div>
+                                <span class="arrow">→</span>
+                                <div class="diagram-box w-full">Decoder</div>
+                                <span class="arrow">→</span>
+                                <div class="diagram-box w-full">Output</div>
+                            </div>
+                        </div>
+                        <p><strong>مزایا:</strong> فضای نهفته ساختارمند و امکان نمونه‌گیری و تولید.</p>
+                        <p><strong>محدودیت‌ها:</strong> در برخی کاربردهای تصویری، خروجی ممکن است نسبت به مدل‌های دیگر
+                            جزئیات کمتری داشته باشد.</p>
+                    </div>
+
+                    <div class="border rounded-xl p-5 space-y-3">
+                        <h4 class="text-lg font-black">ج) Autoregressive Models</h4>
+                        <p>
+                            مدل‌های خودرگرسیو خروجی را به‌صورت مرحله‌ای تولید می‌کنند. هر مرحله به بخش‌هایی از
+                            خروجی قبلی وابسته است. مدل‌های زبانی بزرگ رایج اغلب از این الگو استفاده می‌کنند.
+                        </p>
+                        \[
+                        P(x_1,\ldots,x_n)=\prod_{i=1}^{n}P(x_i|x_1,\ldots,x_{i-1})
+                        \]
+                        <p>یعنی احتمال کل توالی به حاصل‌ضرب احتمال هر Token با توجه به Tokenهای قبلی وابسته است.</p>
+                        <div class="code">Prompt: Artificial intelligence can
+
+                            Step 1: predict "help"
+                            Step 2: predict "people"
+                            Step 3: predict "solve"
+                            Step 4: predict "problems"</div>
+                        <p><strong>مزایا:</strong> مناسب برای تولید توالی و مدل‌سازی زبان.</p>
+                        <p><strong>محدودیت‌ها:</strong> تولید ترتیبی می‌تواند زمان‌بر باشد و خطاهای مراحل قبلی بر ادامه
+                            خروجی اثر بگذارند.</p>
+                    </div>
+
+                    <div class="border rounded-xl p-5 space-y-3">
+                        <h4 class="text-lg font-black">د) Diffusion Models</h4>
+                        <p>
+                            مدل‌های انتشار معمولاً با فرایند افزودن تدریجی نویز به داده و سپس یادگیری فرایند
+                            معکوس برای حذف نویز آموزش می‌بینند. هنگام تولید، مدل از یک نمونه نویزی شروع می‌کند
+                            و در چندین مرحله آن را به نمونه‌ای معنادار تبدیل می‌کند.
+                        </p>
+                        <div class="bg-slate-50 rounded-xl p-4">
+                            <div class="space-y-2 text-center">
+                                <div class="diagram-box">داده اولیه</div>
+                                <div class="arrow">↓ افزودن نویز</div>
+                                <div class="diagram-box">داده نویزی‌تر</div>
+                                <div class="arrow">↓ ادامه فرایند</div>
+                                <div class="diagram-box">نویز تقریباً کامل</div>
+                                <div class="arrow">↓ یادگیری حذف نویز</div>
+                                <div class="diagram-box bg-teal-50 border-teal-300">نمونه تولیدشده</div>
+                            </div>
+                        </div>
+                        <p><strong>مزایا:</strong> کیفیت و تنوع بالا در بسیاری از وظایف تولید تصویر.</p>
+                        <p><strong>محدودیت‌ها:</strong> تولید ممکن است به چندین مرحله محاسباتی نیاز داشته باشد و هزینه
+                            زمانی یا محاسباتی ایجاد کند.</p>
+                    </div>
+
+                    <h3 class="text-xl font-black">7.6 مقایسه معماری‌های مولد</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>معماری</th>
+                                    <th>سازوکار اصلی</th>
+                                    <th>نقطه قوت</th>
+                                    <th>چالش</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>GAN</td>
+                                    <td>رقابت مولد و تمایزدهنده</td>
+                                    <td>تولید نمونه‌های واقع‌گرایانه در برخی وظایف</td>
+                                    <td>پایداری آموزش و Mode Collapse</td>
+                                </tr>
+                                <tr>
+                                    <td>VAE</td>
+                                    <td>Encoder و Decoder با فضای نهفته احتمالی</td>
+                                    <td>نمایش نهفته و نمونه‌گیری ساختارمند</td>
+                                    <td>احتمال خروجی نرم‌تر یا کم‌جزئیات‌تر</td>
+                                </tr>
+                                <tr>
+                                    <td>Autoregressive</td>
+                                    <td>تولید مرحله‌ای بر اساس خروجی قبلی</td>
+                                    <td>مدل‌سازی توالی و زبان</td>
+                                    <td>وابستگی ترتیبی و تأخیر تولید</td>
+                                </tr>
+                                <tr>
+                                    <td>Diffusion</td>
+                                    <td>یادگیری حذف تدریجی نویز</td>
+                                    <td>کیفیت بالای تولید در بسیاری از کاربردهای تصویری</td>
+                                    <td>هزینه محاسباتی چندمرحله‌ای</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-xl font-black">7.7 Prompting چیست؟</h3>
+                    <p>
+                        Prompt یا پرامپت ورودی‌ای است که کاربر برای هدایت مدل ارائه می‌کند. این ورودی می‌تواند
+                        یک سؤال کوتاه، دستور چندمرحله‌ای، متن مرجع، مثال یا ترکیبی از آن‌ها باشد.
+                    </p>
+                    <p>
+                        Prompt Engineering به طراحی و بهبود دستورها برای دریافت خروجی مفیدتر، دقیق‌تر و
+                        متناسب‌تر با هدف گفته می‌شود.
+                    </p>
+
+                    <h4 class="font-black text-lg">اجزای یک پرامپت مناسب</h4>
+                    <ol class="list-decimal pr-6 space-y-2">
+                        <li><strong>نقش یا زاویه دید:</strong> مشخص‌کردن اینکه مدل از چه دیدگاهی پاسخ دهد.</li>
+                        <li><strong>وظیفه:</strong> توضیح دقیق کاری که باید انجام شود.</li>
+                        <li><strong>زمینه:</strong> اطلاعات لازم برای فهم درخواست.</li>
+                        <li><strong>محدودیت‌ها:</strong> مواردی که باید رعایت شوند یا نباید انجام شوند.</li>
+                        <li><strong>قالب خروجی:</strong> تعیین ساختار پاسخ مانند جدول، فهرست یا JSON.</li>
+                        <li><strong>معیار کیفیت:</strong> مشخص‌کردن ویژگی‌های پاسخ مطلوب.</li>
+                    </ol>
+
+                    <h4 class="font-black text-lg">مقایسه پرامپت ضعیف و قوی</h4>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-rose-50 rounded-xl p-5">
+                            <span class="tag !bg-rose-100 !text-rose-700">پرامپت ضعیف</span>
+                            <p class="mt-3 font-medium">«درباره بازاریابی توضیح بده.»</p>
+                            <p class="text-sm mt-3">موضوع گسترده است و مخاطب، هدف، سطح و قالب خروجی مشخص نیست.</p>
+                        </div>
+                        <div class="bg-teal-50 rounded-xl p-5">
+                            <span class="tag !bg-teal-100 !text-teal-700">پرامپت بهتر</span>
+                            <p class="mt-3 font-medium">«بازاریابی دیجیتال را برای فرد مبتدی توضیح بده. پنج کانال اصلی
+                                را با مثال کسب‌وکار کوچک مقایسه کن و پاسخ را در قالب جدول ارائه بده.»</p>
+                            <p class="text-sm mt-3">هدف، سطح، محدوده، مثال و قالب خروجی مشخص است.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">7.8 کاربردهای هوش مصنوعی مولد</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">تولید محتوا</h4>
+                            <p class="text-sm">پیش‌نویس مقاله، توضیح محصول، خلاصه و ایده‌پردازی.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">برنامه‌نویسی</h4>
+                            <p class="text-sm">تولید کد، توضیح خطا، ساخت آزمون و مستندسازی.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">آموزش</h4>
+                            <p class="text-sm">توضیح مفاهیم، طراحی تمرین و ایجاد مثال‌های متنوع.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">پزشکی و سلامت</h4>
+                            <p class="text-sm">کمک به خلاصه‌سازی اسناد و پشتیبانی از کارهای اطلاعاتی با نظارت متخصص.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">طراحی</h4>
+                            <p class="text-sm">ایده‌پردازی بصری، تولید طرح اولیه و نمونه‌سازی.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">کسب‌وکار</h4>
+                            <p class="text-sm">پشتیبانی مشتری، تحلیل اسناد و تولید گزارش‌های اولیه.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">7.9 محدودیت‌ها و ریسک‌های Generative AI</h3>
+                    <div class="space-y-3">
+                        <div class="warning rounded-xl p-5">
+                            <h4 class="font-black">الف) Hallucination – توهم یا تولید اطلاعات نادرست</h4>
+                            <p class="text-sm">مدل ممکن است پاسخی روان و قانع‌کننده تولید کند که از نظر واقعی نادرست یا
+                                ساختگی باشد. بنابراین خروجی باید در موارد حساس با منابع معتبر بررسی شود.</p>
+                        </div>
+                        <div class="warning rounded-xl p-5">
+                            <h4 class="font-black">ب) Bias – سوگیری</h4>
+                            <p class="text-sm">اگر داده‌های آموزش دارای سوگیری باشند، خروجی مدل نیز ممکن است آن را
+                                بازتاب دهد یا تقویت کند.</p>
+                        </div>
+                        <div class="warning rounded-xl p-5">
+                            <h4 class="font-black">ج) Privacy – حریم خصوصی</h4>
+                            <p class="text-sm">واردکردن اطلاعات محرمانه یا شخصی در سرویس‌های AI می‌تواند خطر افشای
+                                اطلاعات یا پردازش نامناسب داده را ایجاد کند. باید سیاست داده و تنظیمات سرویس بررسی شود.
+                            </p>
+                        </div>
+                        <div class="warning rounded-xl p-5">
+                            <h4 class="font-black">د) Copyright – حق نشر</h4>
+                            <p class="text-sm">استفاده از داده‌های دارای حق نشر، بازتولید سبک یا محتوای مشابه و مالکیت
+                                خروجی‌ها مسائل حقوقی و اخلاقی پیچیده‌ای ایجاد می‌کند.</p>
+                        </div>
+                        <div class="warning rounded-xl p-5">
+                            <h4 class="font-black">هـ) Security – امنیت</h4>
+                            <p class="text-sm">مدل‌ها و سامانه‌های متصل به ابزار ممکن است در معرض سوءاستفاده، Prompt
+                                Injection، نشت اطلاعات یا اجرای دستورهای ناخواسته قرار گیرند.</p>
+                        </div>
+                        <div class="warning rounded-xl p-5">
+                            <h4 class="font-black">و) Cost and Latency – هزینه و تأخیر</h4>
+                            <p class="text-sm">مدل‌های بزرگ ممکن است به منابع پردازشی، حافظه و زمان پاسخ بیشتری نیاز
+                                داشته باشند.</p>
+                        </div>
+                        <div class="warning rounded-xl p-5">
+                            <h4 class="font-black">ز) Human Evaluation – ارزیابی انسانی</h4>
+                            <p class="text-sm">در بسیاری از کاربردها، خروجی باید از نظر دقت، ارتباط، ایمنی و تناسب با
+                                هدف توسط انسان ارزیابی شود.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">7.10 ارزیابی کیفیت خروجی مولد</h3>
+                    <p>کیفیت یک خروجی مولد را نمی‌توان فقط با روان‌بودن متن یا جذابیت تصویر سنجید. چند معیار مهم
+                        عبارت‌اند از:</p>
+                    <ul class="list-disc pr-6 space-y-2">
+                        <li><strong>Accuracy:</strong> آیا اطلاعات صحیح است؟</li>
+                        <li><strong>Relevance:</strong> آیا پاسخ با درخواست مرتبط است؟</li>
+                        <li><strong>Completeness:</strong> آیا بخش‌های ضروری را پوشش داده است؟</li>
+                        <li><strong>Consistency:</strong> آیا در بخش‌های مختلف پاسخ تناقض وجود دارد؟</li>
+                        <li><strong>Safety:</strong> آیا خروجی خطرناک یا ناقض حریم خصوصی نیست؟</li>
+                        <li><strong>Usefulness:</strong> آیا واقعاً به انجام کار کاربر کمک می‌کند؟</li>
+                    </ul>
+
+                    <h3 class="text-xl font-black">7.11 آینده هوش مصنوعی مولد</h3>
+                    <div class="space-y-4">
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">AI Agents</h4>
+                            <p class="text-sm">عامل‌های هوشمند می‌توانند برای رسیدن به یک هدف، چند مرحله را برنامه‌ریزی
+                                کنند، از ابزارها استفاده کنند و نتیجه کار را بررسی کنند. سطح استقلال آن‌ها به طراحی و
+                                محدودیت‌های سیستم بستگی دارد.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Multimodal AI</h4>
+                            <p class="text-sm">مدل‌هایی که متن، تصویر، صدا و ویدئو را در یک سامانه ترکیب می‌کنند، تعامل
+                                طبیعی‌تری با انسان فراهم می‌سازند.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">On-device AI</h4>
+                            <p class="text-sm">اجرای مدل‌ها روی گوشی، رایانه یا دستگاه‌های محلی می‌تواند در برخی
+                                کاربردها تأخیر و وابستگی به سرویس ابری را کاهش دهد.</p>
+                        </div>
+                        <div class="border rounded-xl p-5">
+                            <h4 class="font-black">Human-AI Collaboration</h4>
+                            <p class="text-sm">در بسیاری از محیط‌ها، بهترین نتیجه از همکاری انسان و AI به دست می‌آید:
+                                مدل کارهای سریع و تکراری را انجام می‌دهد و انسان بر هدف، قضاوت و کنترل نهایی نظارت
+                                می‌کند.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SUMMARY -->
+            <section id="summary" class="scroll-mt-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div
+                        class="section-number rounded-2xl w-14 h-14 flex items-center justify-center text-2xl font-black">
+                        ✓</div>
+                    <div>
+                        <p class="text-indigo-600 text-sm font-bold">CHAPTER REVIEW</p>
+                        <h2 class="text-2xl md:text-3xl font-black">جمع‌بندی فصل</h2>
+                    </div>
+                </div>
+                <div class="section-card p-6 md:p-8 space-y-6 shadow-sm">
+                    <p>در این فصل، مسیر شکل‌گیری و مفاهیم بنیادی هوش مصنوعی را از پایه تا فناوری‌های مولد بررسی کردیم.
+                        مهم‌ترین نکات عبارت‌اند از:</p>
+                    <div class="space-y-3">
+                        <div class="flex gap-3"><span class="text-indigo-600 font-black">01</span>
+                            <p><strong>AI</strong> حوزه‌ای گسترده برای ساخت سیستم‌هایی است که وظایف مرتبط با هوشمندی را
+                                انجام می‌دهند.</p>
+                        </div>
+                        <div class="flex gap-3"><span class="text-indigo-600 font-black">02</span>
+                            <p>هوش مصنوعی طی چند دهه از سیستم‌های نمادین و قانون‌محور به یادگیری ماشین، یادگیری عمیق و
+                                مدل‌های مولد توسعه یافته است.</p>
+                        </div>
+                        <div class="flex gap-3"><span class="text-indigo-600 font-black">03</span>
+                            <p><strong>ML</strong> از داده‌ها یاد می‌گیرد و <strong>DL</strong> از شبکه‌های عصبی عمیق
+                                استفاده می‌کند.</p>
+                        </div>
+                        <div class="flex gap-3"><span class="text-indigo-600 font-black">04</span>
+                            <p>شبکه‌های عصبی با تنظیم وزن‌ها و بایاس‌ها و کاهش تابع زیان آموزش می‌بینند.</p>
+                        </div>
+                        <div class="flex gap-3"><span class="text-indigo-600 font-black">05</span>
+                            <p>Training برای یادگیری پارامترها، Inference برای استفاده از مدل و Fine-tuning برای
+                                سازگارکردن مدل با وظیفه خاص است.</p>
+                        </div>
+                        <div class="flex gap-3"><span class="text-indigo-600 font-black">06</span>
+                            <p>مدل‌های AI می‌توانند قانون‌محور، کلاسیک، عمیق، مولد، زبانی یا چندوجهی باشند.</p>
+                        </div>
+                        <div class="flex gap-3"><span class="text-indigo-600 font-black">07</span>
+                            <p>Generative AI می‌تواند متن، تصویر، صوت، ویدئو و کد تولید کند، اما به ارزیابی و نظارت نیاز
+                                دارد.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">نقشه مفهومی کل فصل</h3>
+                    <div class="bg-slate-50 rounded-2xl p-5 space-y-3 text-center">
+                        <div class="diagram-box max-w-md mx-auto">Artificial Intelligence</div>
+                        <div class="arrow">↓</div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="diagram-box">Rule-based AI</div>
+                            <div class="diagram-box">Machine Learning</div>
+                        </div>
+                        <div class="arrow">↓</div>
+                        <div class="diagram-box max-w-md mx-auto">Deep Learning</div>
+                        <div class="arrow">↓</div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                            <div class="diagram-box">CNN</div>
+                            <div class="diagram-box">RNN / LSTM</div>
+                            <div class="diagram-box">Transformer</div>
+                            <div class="diagram-box">Other Models</div>
+                        </div>
+                        <div class="arrow">↓</div>
+                        <div class="diagram-box max-w-md mx-auto bg-teal-50 border-teal-300">Generative AI</div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                            <div class="diagram-box">Text</div>
+                            <div class="diagram-box">Image</div>
+                            <div class="diagram-box">Audio</div>
+                            <div class="diagram-box">Video / Code</div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black">مسیر پیشنهادی یادگیری بعد از این فصل</h3>
+                    <ol class="list-decimal pr-6 space-y-2">
+                        <li>مبانی Python و کار با داده‌ها.</li>
+                        <li>مفاهیم پایه آمار، احتمال و جبر خطی.</li>
+                        <li>یادگیری ماشین و ارزیابی مدل‌ها.</li>
+                        <li>مبانی شبکه‌های عصبی و یادگیری عمیق.</li>
+                        <li>آشنایی با Transformer و مدل‌های زبانی.</li>
+                        <li>Prompt Engineering و Context Engineering.</li>
+                        <li>کاربردهای RAG، ابزارها و عامل‌های هوشمند.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- GLOSSARY -->
+            <section id="glossary" class="scroll-mt-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div
+                        class="section-number rounded-2xl w-14 h-14 flex items-center justify-center text-2xl font-black">
+                        Aa</div>
+                    <div>
+                        <p class="text-indigo-600 text-sm font-bold">KEY TERMINOLOGY</p>
+                        <h2 class="text-2xl md:text-3xl font-black">واژه‌نامه مفاهیم مهم</h2>
+                    </div>
+                </div>
+                <div class="section-card p-6 shadow-sm">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>اصطلاح</th>
+                                    <th>معادل یا توضیح فارسی</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Artificial Intelligence</td>
+                                    <td>هوش مصنوعی؛ ساخت سیستم‌های دارای رفتار هوشمند</td>
+                                </tr>
+                                <tr>
+                                    <td>Machine Learning</td>
+                                    <td>یادگیری ماشین؛ یادگیری الگو از داده</td>
+                                </tr>
+                                <tr>
+                                    <td>Deep Learning</td>
+                                    <td>یادگیری عمیق؛ یادگیری مبتنی بر شبکه‌های عصبی چندلایه</td>
+                                </tr>
+                                <tr>
+                                    <td>Generative AI</td>
+                                    <td>هوش مصنوعی مولد؛ تولید نمونه یا محتوای جدید</td>
+                                </tr>
+                                <tr>
+                                    <td>Neural Network</td>
+                                    <td>شبکه عصبی؛ مدل محاسباتی متشکل از نورون‌های مصنوعی</td>
+                                </tr>
+                                <tr>
+                                    <td>Neuron</td>
+                                    <td>واحد محاسباتی شبکه عصبی</td>
+                                </tr>
+                                <tr>
+                                    <td>Weight</td>
+                                    <td>وزن؛ میزان اثر ورودی بر محاسبه</td>
+                                </tr>
+                                <tr>
+                                    <td>Bias</td>
+                                    <td>بایاس؛ پارامتر قابل یادگیری برای جابه‌جایی تابع</td>
+                                </tr>
+                                <tr>
+                                    <td>Activation Function</td>
+                                    <td>تابع فعال‌سازی؛ ایجاد غیرخطی‌بودن در شبکه</td>
+                                </tr>
+                                <tr>
+                                    <td>Loss Function</td>
+                                    <td>تابع زیان؛ سنجش میزان خطای مدل</td>
+                                </tr>
+                                <tr>
+                                    <td>Backpropagation</td>
+                                    <td>پس‌انتشار خطا؛ محاسبه گرادیان‌ها در شبکه</td>
+                                </tr>
+                                <tr>
+                                    <td>Gradient Descent</td>
+                                    <td>گرادیان‌کاهشی؛ روش بهینه‌سازی پارامترها</td>
+                                </tr>
+                                <tr>
+                                    <td>Overfitting</td>
+                                    <td>بیش‌برازش؛ یادگیری بیش از حد الگوهای داده آموزشی</td>
+                                </tr>
+                                <tr>
+                                    <td>Underfitting</td>
+                                    <td>کم‌برازش؛ ناتوانی در یادگیری الگوهای اصلی داده</td>
+                                </tr>
+                                <tr>
+                                    <td>Epoch</td>
+                                    <td>یک عبور کامل از داده آموزشی</td>
+                                </tr>
+                                <tr>
+                                    <td>Batch</td>
+                                    <td>بخشی از داده که در یک مرحله پردازش می‌شود</td>
+                                </tr>
+                                <tr>
+                                    <td>Inference</td>
+                                    <td>استنتاج؛ استفاده از مدل آموزش‌دیده برای تولید خروجی</td>
+                                </tr>
+                                <tr>
+                                    <td>Fine-tuning</td>
+                                    <td>تنظیم دقیق؛ آموزش بیشتر مدل از پیش آموزش‌دیده</td>
+                                </tr>
+                                <tr>
+                                    <td>Embedding</td>
+                                    <td>بردار عددی برای نمایش داده یا معنا</td>
+                                </tr>
+                                <tr>
+                                    <td>Token</td>
+                                    <td>واحد پردازش متن در مدل زبانی</td>
+                                </tr>
+                                <tr>
+                                    <td>Context Window</td>
+                                    <td>ظرفیت زمینه قابل پردازش در یک نوبت</td>
+                                </tr>
+                                <tr>
+                                    <td>Attention</td>
+                                    <td>مکانیزم توجه برای مدل‌سازی ارتباط میان بخش‌های ورودی</td>
+                                </tr>
+                                <tr>
+                                    <td>Transformer</td>
+                                    <td>معماری مبتنی بر Attention</td>
+                                </tr>
+                                <tr>
+                                    <td>Latent Space</td>
+                                    <td>فضای نهفته؛ نمایش فشرده و آموخته‌شده داده</td>
+                                </tr>
+                                <tr>
+                                    <td>GAN</td>
+                                    <td>شبکه مولد تخاصمی</td>
+                                </tr>
+                                <tr>
+                                    <td>VAE</td>
+                                    <td>خودرمزگذار تغییرپذیر</td>
+                                </tr>
+                                <tr>
+                                    <td>Diffusion Model</td>
+                                    <td>مدل انتشار؛ مدل مولد مبتنی بر فرایند نویز و حذف نویز</td>
+                                </tr>
+                                <tr>
+                                    <td>Hallucination</td>
+                                    <td>تولید اطلاعات نادرست یا ساختگی با ظاهر قانع‌کننده</td>
+                                </tr>
+                                <tr>
+                                    <td>Multimodal</td>
+                                    <td>چندوجهی؛ پردازش یا تولید چند نوع داده</td>
+                                </tr>
+                                <tr>
+                                    <td>RAG</td>
+                                    <td>تولید تقویت‌شده با بازیابی اطلاعات</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- QUIZ -->
+            <section id="quiz" class="scroll-mt-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div
+                        class="section-number rounded-2xl w-14 h-14 flex items-center justify-center text-2xl font-black">
+                        ?</div>
+                    <div>
+                        <p class="text-indigo-600 text-sm font-bold">KNOWLEDGE CHECK</p>
+                        <h2 class="text-2xl md:text-3xl font-black">آزمون پایانی فصل</h2>
+                    </div>
+                </div>
+
+                <div class="section-card p-6 md:p-8 shadow-sm">
+                    <p class="mb-6">برای بررسی میزان یادگیری، به پرسش‌های زیر پاسخ بده. پس از انتخاب گزینه‌ها، دکمه
+                        بررسی پاسخ‌ها را بزن.</p>
+                    <form id="quizForm" class="space-y-8">
+                        <div class="quiz-question" data-answer="b">
+                            <p class="font-black mb-3">۱. کدام گزینه بهترین توصیف برای یادگیری ماشین است؟</p>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q1"
+                                    value="a" class="ml-2"> نوشتن تمام قواعد توسط برنامه‌نویس</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q1"
+                                    value="b" class="ml-2"> یادگیری الگوها از داده‌ها</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q1"
+                                    value="c" class="ml-2"> ذخیره‌سازی فایل‌ها</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q1"
+                                    value="d" class="ml-2"> افزایش سرعت اینترنت</label>
+                            <p class="answer hidden text-sm mt-2 font-bold"></p>
+                        </div>
+
+                        <div class="quiz-question" data-answer="c">
+                            <p class="font-black mb-3">۲. کدام مورد یکی از وظایف Backpropagation است؟</p>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q2"
+                                    value="a" class="ml-2"> جمع‌آوری داده‌های جدید</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q2"
+                                    value="b" class="ml-2"> تبدیل متن به تصویر</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q2"
+                                    value="c" class="ml-2"> محاسبه گرادیان خطا نسبت به پارامترهای شبکه</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q2"
+                                    value="d" class="ml-2"> ذخیره مدل روی دیسک</label>
+                            <p class="answer hidden text-sm mt-2 font-bold"></p>
+                        </div>
+
+                        <div class="quiz-question" data-answer="a">
+                            <p class="font-black mb-3">۳. کدام گزینه تفاوت Training و Inference را درست بیان می‌کند؟</p>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q3"
+                                    value="a" class="ml-2"> Training پارامترها را یاد می‌گیرد؛ Inference از مدل
+                                آموزش‌دیده استفاده می‌کند.</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q3"
+                                    value="b" class="ml-2"> هر دو همیشه وزن‌ها را تغییر می‌دهند.</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q3"
+                                    value="c" class="ml-2"> Inference فقط برای تصویر است.</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q3"
+                                    value="d" class="ml-2"> Training فقط پس از استقرار انجام می‌شود.</label>
+                            <p class="answer hidden text-sm mt-2 font-bold"></p>
+                        </div>
+
+                        <div class="quiz-question" data-answer="d">
+                            <p class="font-black mb-3">۴. کدام معماری به‌طور ویژه بر مکانیزم Attention تکیه دارد؟</p>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q4"
+                                    value="a" class="ml-2"> Decision Tree</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q4"
+                                    value="b" class="ml-2"> K-Means</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q4"
+                                    value="c" class="ml-2"> Linear Regression</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q4"
+                                    value="d" class="ml-2"> Transformer</label>
+                            <p class="answer hidden text-sm mt-2 font-bold"></p>
+                        </div>
+
+                        <div class="quiz-question" data-answer="b">
+                            <p class="font-black mb-3">۵. هدف اصلی Fine-tuning چیست؟</p>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q5"
+                                    value="a" class="ml-2"> حذف کامل داده‌های آموزشی</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q5"
+                                    value="b" class="ml-2"> سازگارکردن مدل از پیش آموزش‌دیده با یک وظیفه یا حوزه
+                                خاص</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q5"
+                                    value="c" class="ml-2"> تبدیل همه مدل‌ها به CNN</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q5"
+                                    value="d" class="ml-2"> افزایش خودکار پنجره زمینه</label>
+                            <p class="answer hidden text-sm mt-2 font-bold"></p>
+                        </div>
+
+                        <div class="quiz-question" data-answer="c">
+                            <p class="font-black mb-3">۶. کدام روش مولد بر فرایند افزودن و حذف تدریجی نویز متکی است؟</p>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q6"
+                                    value="a" class="ml-2"> RNN</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q6"
+                                    value="b" class="ml-2"> Decision Tree</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q6"
+                                    value="c" class="ml-2"> Diffusion Model</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q6"
+                                    value="d" class="ml-2"> Logistic Regression</label>
+                            <p class="answer hidden text-sm mt-2 font-bold"></p>
+                        </div>
+
+                        <div class="quiz-question" data-answer="a">
+                            <p class="font-black mb-3">۷. Hallucination در مدل مولد به چه معناست؟</p>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q7"
+                                    value="a" class="ml-2"> تولید اطلاعات نادرست با ظاهری قانع‌کننده</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q7"
+                                    value="b" class="ml-2"> افزایش دقت مدل</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q7"
+                                    value="c" class="ml-2"> کاهش اندازه فایل مدل</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q7"
+                                    value="d" class="ml-2"> تبدیل تصویر به متن</label>
+                            <p class="answer hidden text-sm mt-2 font-bold"></p>
+                        </div>
+
+                        <div class="quiz-question" data-answer="d">
+                            <p class="font-black mb-3">۸. کدام گزینه درباره یادگیری تقویتی درست است؟</p>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q8"
+                                    value="a" class="ml-2"> فقط از داده‌های دارای برچسب استفاده می‌کند.</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q8"
+                                    value="b" class="ml-2"> هیچ تعاملی با محیط ندارد.</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q8"
+                                    value="c" class="ml-2"> فقط برای طبقه‌بندی تصویر است.</label>
+                            <label class="block p-3 rounded-lg hover:bg-slate-50"><input type="radio" name="q8"
+                                    value="d" class="ml-2"> عامل با تعامل و دریافت پاداش از محیط یاد می‌گیرد.</label>
+                            <p class="answer hidden text-sm mt-2 font-bold"></p>
+                        </div>
+
+                        <button type="button" onclick="checkQuiz()"
+                            class="bg-indigo-700 text-white px-7 py-3 rounded-xl font-bold hover:bg-indigo-800">
+                            بررسی پاسخ‌ها
+                        </button>
+                        <button type="reset" onclick="resetQuiz()" class="border px-7 py-3 rounded-xl font-bold mr-2">
+                            شروع دوباره
+                        </button>
+                        <div id="quizResult" class="hidden rounded-xl p-5 bg-indigo-50 text-indigo-900 font-black">
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- PRACTICAL EXERCISES -->
+            <section class="scroll-mt-8">
+                <div class="section-card p-6 md:p-8 shadow-sm space-y-5">
+                    <h2 class="text-2xl font-black">تمرین‌های کاربردی</h2>
+                    <div class="border rounded-xl p-5">
+                        <h3 class="font-black">تمرین ۱: تشخیص نوع مسئله</h3>
+                        <p class="text-sm">برای هر سناریو مشخص کن کدام روش مناسب‌تر است و دلیل خود را بنویس:</p>
+                        <ul class="list-disc pr-6 text-sm mt-2 space-y-1">
+                            <li>پیش‌بینی قیمت یک خودرو با توجه به ویژگی‌های آن.</li>
+                            <li>گروه‌بندی مشتریان بر اساس رفتار خرید.</li>
+                            <li>تولید یک توضیح محصول بر اساس مشخصات آن.</li>
+                            <li>یادگیری حرکت یک عامل در محیط شبیه‌سازی‌شده با دریافت پاداش.</li>
+                        </ul>
+                    </div>
+                    <div class="border rounded-xl p-5">
+                        <h3 class="font-black">تمرین ۲: چرخه آموزش مدل</h3>
+                        <p class="text-sm">یک مسئله طبقه‌بندی ساده مانند تشخیص پیام اسپم انتخاب کن. داده آموزشی، برچسب،
+                            مجموعه اعتبارسنجی، مجموعه آزمون و معیار ارزیابی مناسب را مشخص کن.</p>
+                    </div>
+                    <div class="border rounded-xl p-5">
+                        <h3 class="font-black">تمرین ۳: مقایسه مدل‌های مولد</h3>
+                        <p class="text-sm">GAN، VAE، Autoregressive و Diffusion را از نظر نحوه تولید، مزیت، محدودیت و
+                            کاربرد مقایسه کن. سپس برای تولید متن و تولید تصویر گزینه‌های مناسب را توضیح بده.</p>
+                    </div>
+                </div>
+            </section>
+
+            
+
+        
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-nav">
+      <a href="index.html">نقشه راه</a>
+      <a href="#toc">فهرست مطالب</a>
+      <a href="#">بالای صفحه ↑</a>
+    </div>
+    Foundations of Artificial Intelligence · Chapter 01
+    <br>
+    <strong>M_Ai</strong>
+  </footer>
+
+  <script>
+    /* Theme */
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      try { localStorage.setItem('m-ai-theme', theme); } catch (e) {}
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#10101e' : '#f5f5fb');
+    }
+    try {
+      const saved = localStorage.getItem('m-ai-theme');
+      if (saved === 'light' || saved === 'dark') setTheme(saved);
+    } catch (e) {}
+    themeToggle.addEventListener('click', () => {
+      setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    /* Progress */
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      document.getElementById('progress').style.width = progress + '%';
+    });
+
+    /* Quiz */
+    const explanations = {
+      q1: 'یادگیری ماشین به مدل امکان می‌دهد الگوها را از داده‌ها بیاموزد.',
+      q2: 'Backpropagation گرادیان تابع زیان نسبت به پارامترهای شبکه را محاسبه می‌کند.',
+      q3: 'در Training پارامترها یاد گرفته می‌شوند؛ در Inference مدل آموزش‌دیده خروجی تولید می‌کند.',
+      q4: 'Transformer از مکانیزم Attention برای مدل‌سازی ارتباط میان بخش‌های ورودی استفاده می‌کند.',
+      q5: 'Fine-tuning مدل از پیش آموزش‌دیده را برای یک وظیفه یا حوزه خاص سازگار می‌کند.',
+      q6: 'Diffusion Model بر فرایند نویزدهی و یادگیری حذف نویز متکی است.',
+      q7: 'Hallucination یعنی تولید اطلاعات نادرست یا ساختگی با ظاهر قانع‌کننده.',
+      q8: 'در Reinforcement Learning عامل از تعامل با محیط و دریافت پاداش یاد می‌گیرد.'
+    };
+
+    function checkQuiz() {
+      const questions = document.querySelectorAll('.quiz-question');
+      let score = 0;
+      let answered = 0;
+      questions.forEach((question, index) => {
+        const number = index + 1;
+        const selected = document.querySelector('input[name="q' + number + '"]:checked');
+        const correct = question.dataset.answer;
+        const answerText = question.querySelector('.answer');
+        answerText.classList.remove('hidden');
+        if (!selected) {
+          answerText.textContent = 'پاسخ انتخاب نشده است. ' + explanations['q' + number];
+          answerText.className = 'answer text-sm mt-2 font-bold text-amber-700';
+          return;
+        }
+        answered++;
+        if (selected.value === correct) {
+          score++;
+          answerText.textContent = 'درست است! ' + explanations['q' + number];
+          answerText.className = 'answer text-sm mt-2 font-bold text-teal-700';
+        } else {
+          answerText.textContent = 'پاسخ صحیح نیست. ' + explanations['q' + number];
+          answerText.className = 'answer text-sm mt-2 font-bold text-rose-700';
+        }
+      });
+      const result = document.getElementById('quizResult');
+      result.classList.remove('hidden');
+      result.textContent = 'نتیجه: ' + score + ' پاسخ صحیح از ۸ سؤال. (' + answered + ' سؤال پاسخ داده شده است.)';
+    }
+
+    function resetQuiz() {
+      document.querySelectorAll('.answer').forEach(el => {
+        el.classList.add('hidden');
+        el.textContent = '';
+      });
+      const result = document.getElementById('quizResult');
+      result.classList.add('hidden');
+      result.textContent = '';
+    }
+  </script>
+</body>
+</html>

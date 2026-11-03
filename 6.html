@@ -1,0 +1,3203 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10101e">
+  <meta name="description" content="آموزش جامع هوش مصنوعی عامل‌محور — Agentic AI Fundamentals">
+  <title>Agentic AI Fundamentals | فصل ۶ — M_Ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --purple: #9275f5;
+      --purple-strong: #7657e8;
+      --cyan: #51cbdc;
+      --green: #49c9a3;
+      --radius: 18px;
+      --transition: .28s ease;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #10101e;
+      --bg-secondary: #151529;
+      --surface: #1b1b32;
+      --surface-hover: #242440;
+      --surface-soft: rgba(255, 255, 255, .045);
+      --text: #f5f3ff;
+      --text-secondary: #c3c1d5;
+      --muted: #9695ae;
+      --border: rgba(255, 255, 255, .09);
+      --border-strong: rgba(255, 255, 255, .15);
+      --header-bg: rgba(16, 16, 30, .92);
+      --shadow: 0 18px 50px rgba(0, 0, 0, .24);
+      --callout-bg: rgba(146, 117, 245, .1);
+      --callout-border: rgba(146, 117, 245, .45);
+      --tip-bg: rgba(81, 203, 220, .08);
+      --tip-border: rgba(81, 203, 220, .4);
+      --warning-bg: rgba(217, 119, 6, .1);
+      --warning-border: rgba(217, 119, 6, .45);
+      --code-bg: #0c0c18;
+      --code-text: #b8f0d8;
+      --diagram-bg: rgba(146, 117, 245, .1);
+      --diagram-border: rgba(146, 117, 245, .28);
+      --table-head: rgba(146, 117, 245, .12);
+      --table-alt: rgba(255, 255, 255, .03);
+      --tag-bg: rgba(146, 117, 245, .15);
+      --tag-text: #c4b5fd;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .22), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .12), transparent 45%);
+      --progress-track: rgba(255, 255, 255, .08);
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f5fb;
+      --bg-secondary: #eeeefa;
+      --surface: #fff;
+      --surface-hover: #f7f5ff;
+      --surface-soft: rgba(102, 78, 190, .045);
+      --text: #202039;
+      --text-secondary: #55556f;
+      --muted: #77778f;
+      --border: rgba(40, 35, 90, .10);
+      --border-strong: rgba(40, 35, 90, .17);
+      --header-bg: rgba(255, 255, 255, .92);
+      --shadow: 0 18px 50px rgba(45, 35, 100, .09);
+      --callout-bg: #f5f3ff;
+      --callout-border: #6658e8;
+      --tip-bg: #f0fdfa;
+      --tip-border: #0d9488;
+      --warning-bg: #fffbeb;
+      --warning-border: #d97706;
+      --code-bg: #111827;
+      --code-text: #d1fae5;
+      --diagram-bg: #eef2ff;
+      --diagram-border: #c7d2fe;
+      --table-head: #f3f4f6;
+      --table-alt: #fafafa;
+      --tag-bg: #ede9fe;
+      --tag-text: #5b21b6;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .15), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .1), transparent 45%);
+      --progress-track: rgba(40, 35, 90, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+      transition: background .35s, color .35s;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--progress-track);
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      z-index: 200;
+    }
+    #progress {
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      transition: width .1s linear;
+    }
+
+    /* HEADER */
+    .site-header {
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--header-bg);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(146, 117, 245, .24);
+    }
+    .site-header::after {
+      content: "";
+      position: absolute;
+      bottom: -1px; right: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent 3%, rgba(81, 203, 220, .35) 25%, rgba(146, 117, 245, .85) 50%, rgba(81, 203, 220, .35) 75%, transparent 97%);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      direction: ltr;
+      flex-shrink: 0;
+    }
+    .brand-mark {
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #a58cff, #6848df);
+      box-shadow: 0 4px 18px rgba(118, 87, 232, .28), inset 0 1px 0 rgba(255,255,255,.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-mark::before {
+      content: "";
+      position: absolute; inset: 1px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 11px;
+    }
+    .brand-mark svg { width: 26px; height: 26px; position: relative; z-index: 1; }
+    .brand-name { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--text); }
+    .brand-name span { color: var(--purple); }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: 12px;
+      display: grid; place-items: center;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    .theme-toggle:hover { border-color: var(--purple); transform: rotate(12deg); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-icon-sun { display: none; }
+    html[data-theme="light"] .theme-icon-moon { display: none; }
+    html[data-theme="light"] .theme-icon-sun { display: block; }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 11px;
+      background: rgba(146, 117, 245, .12);
+      border: 1px solid rgba(146, 117, 245, .32);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .back-home:hover { background: var(--purple); color: #fff; }
+    .back-home svg { width: 15px; height: 15px; }
+
+    /* CHAPTER HERO */
+    .chapter-hero {
+      position: relative;
+      padding: 48px 20px 40px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .chapter-hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--hero-overlay);
+      pointer-events: none;
+    }
+    .chapter-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .chapter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(146, 117, 245, .35);
+      background: rgba(146, 117, 245, .1);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .8px;
+      direction: ltr;
+      margin-bottom: 16px;
+    }
+    .chapter-badge::before {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .chapter-hero h1 {
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 900;
+      line-height: 1.45;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .chapter-hero .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 2.1;
+      max-width: 720px;
+    }
+    .chapter-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .meta-chip {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .meta-chip strong {
+      color: var(--text);
+      font-size: 15px;
+      margin-left: 6px;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    /* LAYOUT */
+    .page-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static !important; order: -1; }
+    }
+
+    /* SIDEBAR TOC */
+    .sidebar {
+      position: sticky;
+      top: 88px;
+    }
+    .toc-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 18px 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.04);
+    }
+    .toc-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-title::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .toc-link {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      transition: .2s;
+      border: 1px solid transparent;
+    }
+    .toc-link:hover {
+      color: var(--text);
+      background: rgba(146, 117, 245, .08);
+      border-color: rgba(146, 117, 245, .2);
+      padding-right: 14px;
+    }
+    .toc-link-strong { color: var(--purple); font-weight: 800; }
+    .toc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+    .print-btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 11px;
+      border-radius: 12px;
+      background: linear-gradient(115deg, #a18aff, #7558e8);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .print-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* MAIN CONTENT SURFACE */
+    .content-area { min-width: 0; }
+
+    .section-card {
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      background: var(--surface) !important;
+      color: var(--text);
+    }
+    .section-number {
+      background: linear-gradient(135deg, #9275f5, #51cbdc) !important;
+      color: white !important;
+    }
+
+    /* Override common Tailwind color utilities for theme */
+    .content-area {
+      color: var(--text);
+    }
+    .content-area .text-slate-800,
+    .content-area .text-slate-700,
+    .content-area .text-slate-900 { color: var(--text) !important; }
+    .content-area .text-slate-500,
+    .content-area .text-slate-400,
+    .content-area .text-slate-600 { color: var(--muted) !important; }
+    .content-area .text-indigo-600,
+    .content-area .text-indigo-700,
+    .content-area .text-indigo-800 { color: var(--purple) !important; }
+    .content-area .bg-white { background: var(--surface) !important; }
+    .content-area .bg-slate-50,
+    .content-area .bg-slate-100,
+    .content-area .hover\:bg-slate-50:hover { background: var(--surface-soft) !important; }
+    .content-area .border,
+    .content-area .border-slate-200,
+    .content-area .border-slate-100 { border-color: var(--border) !important; }
+    .content-area .shadow-sm { box-shadow: 0 6px 24px rgba(0,0,0,.05) !important; }
+
+    .callout {
+      border-right: 4px solid var(--callout-border) !important;
+      background: var(--callout-bg) !important;
+      color: var(--text);
+    }
+    .tip {
+      border-right: 4px solid var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .warning {
+      border-right: 4px solid var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .code {
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .86rem;
+      border: 1px solid var(--border);
+    }
+    .ltr { direction: ltr; text-align: left; }
+    .diagram-box {
+      border: 1px solid var(--diagram-border) !important;
+      background: var(--diagram-bg) !important;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .arrow { color: var(--purple) !important; font-size: 1.5rem; font-weight: 800; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      background: var(--tag-bg) !important;
+      color: var(--tag-text) !important;
+      padding: 3px 10px;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+    .table-wrap { overflow-x: auto; border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td {
+      border: 1px solid var(--border) !important;
+      padding: 12px;
+      text-align: right;
+      vertical-align: top;
+      color: var(--text);
+    }
+    th { background: var(--table-head) !important; font-weight: 800; }
+    tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+    .content-area h2, .content-area h3, .content-area h4 {
+      color: var(--text);
+    }
+    .content-area p, .content-area li { color: var(--text-secondary); }
+    .content-area strong { color: var(--text); }
+
+    .content-area .bg-indigo-50,
+    .content-area .bg-teal-50 { background: var(--surface-soft) !important; }
+    .content-area .border-teal-300 { border-color: var(--diagram-border) !important; }
+    .content-area .text-teal-700 { color: var(--green) !important; }
+    .content-area .text-rose-700 { color: #f87171 !important; }
+    .content-area .text-amber-700 { color: #fbbf24 !important; }
+    .content-area .bg-indigo-700,
+    .content-area .hover\:bg-indigo-800:hover {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+    }
+    .content-area .text-indigo-900 { color: var(--text) !important; }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 2;
+    }
+    .site-footer strong {
+      color: var(--purple);
+      direction: ltr;
+      display: inline-block;
+      font-size: 15px;
+    }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .footer-nav a {
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      transition: .2s;
+    }
+    .footer-nav a:hover {
+      color: var(--purple);
+      border-color: rgba(146,117,245,.4);
+    }
+
+    @media print {
+      .site-header, .sidebar, .progress-bar, .no-print, .theme-toggle, .back-home { display: none !important; }
+      .page-layout { grid-template-columns: 1fr; }
+      .section-card { break-inside: avoid; }
+      body { background: white; color: black; }
+    }
+
+    @media (max-width: 640px) {
+      .chapter-hero { padding: 32px 16px 28px; }
+      .header-inner { padding: 0 14px; }
+      .back-home span.label { display: none; }
+      .page-layout { padding: 18px 14px 40px; }
+    }
+
+
+    .content-area .section-card {
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 18px !important;
+      padding: 28px !important;
+      margin-bottom: 28px !important;
+      box-shadow: 0 5px 20px rgba(0,0,0,.04) !important;
+      color: var(--text);
+    }
+    .content-area .section-title {
+      font-size: 1.45rem !important;
+      font-weight: 800 !important;
+      color: var(--text) !important;
+      border-right: 5px solid var(--purple) !important;
+      padding-right: 14px !important;
+      margin-bottom: 22px !important;
+    }
+    .content-area .sub-title {
+      font-size: 1.12rem !important;
+      font-weight: 750 !important;
+      color: var(--purple) !important;
+      margin: 28px 0 12px !important;
+    }
+    .content-area .callout {
+      background: var(--callout-bg) !important;
+      border-right: 4px solid var(--callout-border) !important;
+      border-radius: 10px; padding: 16px 20px; margin: 18px 0;
+    }
+    .content-area .warning {
+      background: var(--warning-bg) !important;
+      border-right: 4px solid var(--warning-border) !important;
+      border-radius: 10px; padding: 16px 20px; margin: 18px 0;
+    }
+    .content-area .success {
+      background: var(--tip-bg) !important;
+      border-right: 4px solid var(--tip-border) !important;
+      border-radius: 10px; padding: 16px 20px; margin: 18px 0;
+    }
+    .content-area .code-wrap {
+      direction: ltr; text-align: left;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      padding: 20px; border-radius: 12px; overflow-x: auto;
+      margin: 18px 0; font-family: Consolas, Monaco, monospace;
+      font-size: .88rem; line-height: 1.8; white-space: pre-wrap;
+      border: 1px solid var(--border);
+    }
+    .content-area code {
+      direction: ltr; unicode-bidi: embed;
+      background: rgba(146,117,245,.12) !important;
+      color: var(--purple) !important;
+      padding: 2px 6px; border-radius: 5px;
+      font-family: Consolas, monospace; font-size: .9em;
+    }
+    .content-area .code-wrap code {
+      background: transparent !important; color: inherit !important; padding: 0;
+    }
+    .content-area .tag {
+      display: inline-block;
+      background: rgba(146,117,245,.15) !important;
+      color: var(--purple) !important;
+      border-radius: 30px; padding: 3px 10px;
+      font-size: .78rem; font-weight: 700; margin: 3px;
+    }
+    .content-area .flow {
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 9px; margin: 22px 0;
+    }
+    .content-area .flow-box {
+      background: rgba(146,117,245,.12) !important;
+      border: 1px solid rgba(146,117,245,.3) !important;
+      color: var(--text) !important;
+      border-radius: 10px; padding: 10px 14px;
+      font-weight: 700; text-align: center; min-width: 110px;
+    }
+    .content-area .arrow { color: var(--muted); font-weight: 900; font-size: 1.2rem; }
+    .content-area .quiz-option {
+      display: block; padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 9px; margin: 8px 0; cursor: pointer;
+      color: var(--text-secondary);
+    }
+    .content-area .quiz-option:hover { background: var(--surface-soft); }
+    .content-area .correct {
+      background: rgba(73,201,163,.15) !important;
+      border-color: var(--green) !important;
+    }
+    .content-area .incorrect {
+      background: rgba(239,68,68,.12) !important;
+      border-color: #ef4444 !important;
+    }
+    .content-area .quiz-explanation {
+      display: none; color: var(--text-secondary);
+      margin: 8px 0 16px; font-size: .9rem;
+    }
+    .content-area .diagram {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      padding: 20px; border-radius: 14px; margin: 20px 0; overflow-x: auto;
+    }
+    .content-area .small-note { color: var(--muted); font-size: .85rem; }
+    .content-area th { background: var(--table-head) !important; color: var(--text) !important; }
+    .content-area td { border-color: var(--border) !important; color: var(--text-secondary); }
+    .content-area tr:nth-child(even) td { background: var(--table-alt) !important; }
+    .content-area .bg-indigo-100, .content-area .bg-emerald-100,
+    .content-area .bg-slate-800 { }
+    .content-area .text-indigo-800 { color: var(--purple) !important; }
+    .content-area .bg-indigo-700, .content-area .hover\:bg-indigo-600:hover {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="progress-bar no-print"><div id="progress"></div></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="M_Ai Home">
+        <div class="brand-name"><span>M_Ai</span></div>
+        <div class="brand-mark">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 29V10L15 22L20 15L25 22L35 10V29" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 15V8" stroke="#DDFBFF" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="20" cy="6" r="2.5" fill="#DDFBFF"/>
+          </svg>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="تغییر تم">
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>
+          </svg>
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>
+          </svg>
+        </button>
+        <a href="index.html" class="back-home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/>
+          </svg>
+          <span class="label">صفحه اصلی</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="chapter-hero">
+    <div class="chapter-hero-inner">
+      <div class="chapter-badge">CHAPTER 06 · AGENTIC AI FUNDAMENTALS</div>
+      <h1>Agentic AI Fundamentals</h1>
+      <p class="subtitle">
+        از دستیارهای هوشمند تا عامل‌های خودمختار؛
+        معماری، استدلال، برنامه‌ریزی، ابزارها، حافظه و هماهنگی سیستم‌های چندعاملی
+      </p>
+      <div class="chapter-meta">
+        <div class="meta-chip"><strong>15</strong> سرفصل اصلی</div>
+        <div class="meta-chip"><strong>06</strong> از ۱۲ فصل</div>
+        <div class="meta-chip"><strong>Agent</strong> محور</div>
+        <div class="meta-chip"><strong>12</strong> سؤال آزمون</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-layout">
+    <aside class="sidebar no-print">
+      <div class="toc-card">
+        <div class="toc-title">فهرست مطالب</div>
+        <nav class="toc-nav" id="toc">
+<a class="toc-link" href="#chapter1">۱. مبانی Agentic AI</a>
+<a class="toc-link" href="#chapter2">۲. Assistant vs Agent vs System</a>
+<a class="toc-link" href="#chapter3">۳. معماری AI Agent</a>
+<a class="toc-link" href="#chapter4">۴. چرخه Agent Loop</a>
+<a class="toc-link" href="#chapter5">۵. استدلال و برنامه‌ریزی</a>
+<a class="toc-link" href="#chapter6">۶. ابزارها و Tool Calling</a>
+<a class="toc-link" href="#chapter7">۷. حافظه Agent</a>
+<a class="toc-link" href="#chapter8">۸. State Management</a>
+<a class="toc-link" href="#chapter9">۹. Goal-oriented Agents</a>
+<a class="toc-link" href="#chapter10">۱۰. Autonomous Agents</a>
+<a class="toc-link" href="#chapter11">۱۱. Human-in-the-loop</a>
+<a class="toc-link" href="#chapter12">۱۲. Agent Orchestration</a>
+<a class="toc-link" href="#chapter13">۱۳. مثال عملی و کدنویسی</a>
+<a class="toc-link" href="#chapter14">۱۴. ارزیابی و ایمنی</a>
+<div class="toc-divider"></div>
+<a class="toc-link toc-link-strong" href="#chapter15">۱۵. تمرین‌ها و آزمون</a>
+<a class="toc-link toc-link-strong" href="#glossary">واژه‌نامه</a>
+<a class="toc-link toc-link-strong" href="#quiz">آزمون ارزیابی</a>
+        </nav>
+        <button class="print-btn" type="button" onclick="window.print()">چاپ یا ذخیره PDF</button>
+      </div>
+    </aside>
+
+    <main class="content-area min-w-0">
+
+
+        <!-- CHAPTER 1 -->
+        <section id="chapter1" class="section-card">
+          <h2 class="section-title">۱. مبانی Agentic AI و مسئله‌ای که حل می‌کند</h2>
+
+          <h3 class="sub-title">Agentic AI چیست؟</h3>
+          <p>
+            اصطلاح <strong>Agentic AI</strong> به رویکردی در طراحی سیستم‌های هوش مصنوعی اشاره دارد
+            که در آن مدل یا مجموعه‌ای از مدل‌ها می‌توانند برای رسیدن به یک هدف،
+            مراحل مختلفی از تصمیم‌گیری و اجرا را انجام دهند.
+            این سیستم‌ها صرفاً به یک ورودی پاسخ نمی‌دهند؛ آن‌ها ممکن است هدف را تحلیل کنند،
+            کار را به چند مرحله تقسیم کنند، ابزار مناسب را انتخاب کنند،
+            نتیجه ابزار را بررسی کنند و در صورت نیاز برنامه خود را تغییر دهند.
+          </p>
+
+          <p>
+            برای درک بهتر، یک مدل زبانی معمولی را تصور کنید که از آن می‌پرسید:
+            «برای سفر کاری من برنامه‌ریزی کن.»
+            ممکن است مدل یک برنامه پیشنهادی بنویسد.
+            اما یک سیستم Agentic می‌تواند در محدوده مجوزهای خود،
+            اطلاعات پرواز را جست‌وجو کند، تقویم را بررسی کند،
+            گزینه‌ها را مقایسه کند، پیش‌نویس برنامه سفر بسازد
+            و برای تأیید نهایی به کاربر مراجعه کند.
+          </p>
+
+          <div class="callout">
+            <strong>تعریف کاربردی:</strong>
+            یک AI Agent سیستمی است که با توجه به هدف و وضعیت فعلی،
+            تصمیم می‌گیرد چه اقدامی انجام دهد، آن اقدام را اجرا می‌کند،
+            نتیجه را مشاهده می‌کند و بر اساس نتیجه، مرحله بعدی را انتخاب می‌کند.
+          </div>
+
+          <h3 class="sub-title">تفاوت پاسخ‌گویی با اقدام‌محوری</h3>
+          <table>
+            <tr>
+              <th>سیستم پاسخ‌گو</th>
+              <th>سیستم عامل‌محور</th>
+            </tr>
+            <tr>
+              <td>ورودی را دریافت و پاسخ تولید می‌کند.</td>
+              <td>هدف را دریافت و برای رسیدن به آن اقدام می‌کند.</td>
+            </tr>
+            <tr>
+              <td>معمولاً یک مرحله تولید دارد.</td>
+              <td>می‌تواند چندین مرحله تصمیم و اجرا داشته باشد.</td>
+            </tr>
+            <tr>
+              <td>خروجی اصلی آن متن یا محتوای تولیدشده است.</td>
+              <td>خروجی ممکن است شامل تغییر وضعیت در یک سیستم خارجی باشد.</td>
+            </tr>
+            <tr>
+              <td>معمولاً منتظر پیام بعدی کاربر می‌ماند.</td>
+              <td>ممکن است در محدوده مأموریت خود مراحل بعدی را آغاز کند.</td>
+            </tr>
+            <tr>
+              <td>به ابزارها وابسته نیست.</td>
+              <td>ممکن است از API، پایگاه داده، مرورگر یا نرم‌افزار استفاده کند.</td>
+            </tr>
+          </table>
+
+          <h3 class="sub-title">چرا Agentic AI اهمیت پیدا کرده است؟</h3>
+          <p>
+            بسیاری از کارهای واقعی با یک پاسخ متنی تمام نمی‌شوند.
+            برای مثال، رسیدگی به یک درخواست پشتیبانی ممکن است به بررسی حساب مشتری،
+            پیدا کردن سفارش، بررسی سیاست بازپرداخت، محاسبه مبلغ و ثبت درخواست نیاز داشته باشد.
+            مدل زبانی می‌تواند درباره این مراحل توضیح دهد؛
+            اما سیستم عامل‌محور می‌تواند آن‌ها را به شکل کنترل‌شده اجرا کند.
+          </p>
+
+          <h3 class="sub-title">نمونه‌هایی از کاربردها</h3>
+          <div class="grid md:grid-cols-2 gap-4 mt-5">
+            <div class="border rounded-xl p-4">
+              <h4 class="font-extrabold text-indigo-800">پشتیبانی مشتری</h4>
+              <p class="text-sm">بررسی سفارش، یافتن سیاست مرتبط، تشخیص مسئله، تهیه پاسخ و ایجاد تیکت.</p>
+            </div>
+            <div class="border rounded-xl p-4">
+              <h4 class="font-extrabold text-indigo-800">تحلیل‌گر داده</h4>
+              <p class="text-sm">دریافت سؤال، ساخت Query، اجرای آن، بررسی نتایج و تهیه گزارش.</p>
+            </div>
+            <div class="border rounded-xl p-4">
+              <h4 class="font-extrabold text-indigo-800">دستیار توسعه نرم‌افزار</h4>
+              <p class="text-sm">تحلیل Issue، بررسی کد، پیشنهاد تغییر، اجرای تست و گزارش نتیجه.</p>
+            </div>
+            <div class="border rounded-xl p-4">
+              <h4 class="font-extrabold text-indigo-800">دستیار عملیات سازمانی</h4>
+              <p class="text-sm">بررسی درخواست‌ها، هماهنگی تقویم، ساخت پیش‌نویس و پیگیری تأییدها.</p>
+            </div>
+          </div>
+
+          <h3 class="sub-title">آیا هر استفاده از LLM یک Agent است؟</h3>
+          <p>
+            خیر. اگر یک برنامه فقط یک prompt را به مدل ارسال کند و پاسخ آن را نمایش دهد،
+            معمولاً با یک کاربرد ساده از LLM روبه‌رو هستیم.
+            اگر مدل بتواند بر اساس هدف و وضعیت، میان چند اقدام انتخاب کند،
+            ابزارها را به کار بگیرد و از نتایج برای تصمیم بعدی استفاده کند،
+            به الگوی Agent نزدیک‌تر می‌شویم.
+          </p>
+
+          <div class="warning">
+            <strong>نکته مهم:</strong>
+            «عامل‌محور بودن» به معنی هوشیاری، آگاهی یا استقلال نامحدود نیست.
+            Agent همچنان نرم‌افزاری است که در چارچوب مدل، ابزارها، داده‌ها،
+            مجوزها و محدودیت‌هایی که طراحان تعریف کرده‌اند عمل می‌کند.
+          </div>
+        </section>
+
+        <!-- CHAPTER 2 -->
+        <section id="chapter2" class="section-card">
+          <h2 class="section-title">۲. AI Assistant vs AI Agent vs Agentic System</h2>
+
+          <p>
+            سه اصطلاح Assistant، Agent و Agentic System گاهی به جای یکدیگر استفاده می‌شوند،
+            اما از نظر طراحی سیستم بهتر است میان آن‌ها تمایز قائل شویم.
+          </p>
+
+          <h3 class="sub-title">AI Assistant چیست؟</h3>
+          <p>
+            <strong>AI Assistant</strong> یک دستیار هوشمند است که معمولاً در تعامل مستقیم
+            با کاربر قرار دارد. وظیفه آن فهم درخواست، ارائه اطلاعات، تولید محتوا
+            و کمک به انجام کار است.
+            یک Assistant ممکن است ابزار هم داشته باشد؛ بنابراین وجود Tool Calling
+            به تنهایی برای تبدیل آن به یک Agent کافی نیست.
+          </p>
+          <p>
+            مثال: کاربر از دستیار می‌خواهد یک ایمیل رسمی بنویسد.
+            دستیار متن ایمیل را تولید می‌کند و کاربر خودش آن را ارسال می‌کند.
+          </p>
+
+          <h3 class="sub-title">AI Agent چیست؟</h3>
+          <p>
+            <strong>AI Agent</strong> یک واحد اجرایی و تصمیم‌گیر است که یک هدف یا وظیفه مشخص
+            دارد و می‌تواند در یک چرخه تصمیم‌گیری و اقدام، از ابزارها استفاده کند.
+            Agent معمولاً ورودی، هدف، وضعیت، مجموعه ابزارها و معیار پایان دارد.
+          </p>
+          <p>
+            مثال: عامل پشتیبانی ابتدا سفارش را پیدا می‌کند، سپس وضعیت ارسال را بررسی می‌کند،
+            سیاست مربوط را می‌خواند و بعد تصمیم می‌گیرد چه پاسخی مناسب است.
+          </p>
+
+          <h3 class="sub-title">Agentic System چیست؟</h3>
+          <p>
+            <strong>Agentic System</strong> یک سیستم کامل است که ممکن است یک یا چند Agent،
+            ابزارها، حافظه، پایگاه داده، صف وظایف، کنترل دسترسی، مانیتورینگ
+            و سازوکار تأیید انسانی را کنار هم قرار دهد.
+            در این سطح، تمرکز فقط روی رفتار یک Agent نیست؛
+            بلکه روی همکاری اجزا و مدیریت کل فرایند است.
+          </p>
+
+          <table>
+            <tr>
+              <th>ویژگی</th>
+              <th>AI Assistant</th>
+              <th>AI Agent</th>
+              <th>Agentic System</th>
+            </tr>
+            <tr>
+              <td>تمرکز اصلی</td>
+              <td>کمک به کاربر</td>
+              <td>انجام هدف یا وظیفه</td>
+              <td>اجرای فرایند کامل</td>
+            </tr>
+            <tr>
+              <td>تصمیم‌گیری چندمرحله‌ای</td>
+              <td>ممکن است محدود باشد</td>
+              <td>ویژگی رایج</td>
+              <td>در سطح سیستم</td>
+            </tr>
+            <tr>
+              <td>استفاده از ابزار</td>
+              <td>اختیاری</td>
+              <td>معمولاً مهم</td>
+              <td>از طریق اجزای مختلف</td>
+            </tr>
+            <tr>
+              <td>حافظه و وضعیت</td>
+              <td>ممکن است ساده باشد</td>
+              <td>برای ادامه وظیفه مهم است</td>
+              <td>می‌تواند مشترک و توزیع‌شده باشد</td>
+            </tr>
+            <tr>
+              <td>هماهنگی چند جزء</td>
+              <td>معمولاً محدود</td>
+              <td>اختیاری</td>
+              <td>از ویژگی‌های کلیدی</td>
+            </tr>
+          </table>
+
+          <h3 class="sub-title">مثال مقایسه‌ای: درخواست بازپرداخت</h3>
+          <div class="diagram">
+            <div class="font-bold text-center mb-4">یک درخواست، سه سطح از پیاده‌سازی</div>
+            <div class="space-y-3">
+              <div class="bg-white border rounded-lg p-4">
+                <strong class="text-indigo-800">Assistant:</strong>
+                <p class="text-sm">توضیح می‌دهد چگونه می‌توان درخواست بازپرداخت ثبت کرد.</p>
+              </div>
+              <div class="bg-white border rounded-lg p-4">
+                <strong class="text-indigo-800">Agent:</strong>
+                <p class="text-sm">شماره سفارش را دریافت می‌کند، سفارش را بررسی می‌کند،
+                  شرایط را می‌سنجد و درخواست بازپرداخت را در صورت مجاز بودن ثبت می‌کند.</p>
+              </div>
+              <div class="bg-white border rounded-lg p-4">
+                <strong class="text-indigo-800">Agentic System:</strong>
+                <p class="text-sm">چند Agent برای بررسی سفارش، سیاست‌ها، تقلب احتمالی،
+                  محاسبه مبلغ و ثبت درخواست با یکدیگر همکاری می‌کنند؛
+                  سیستم نیز مجوزها، گزارش رخدادها و تأیید انسانی را مدیریت می‌کند.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout">
+            <strong>قاعده طراحی:</strong>
+            برای یک وظیفه ساده، ساخت یک Agent پیچیده یا معماری چندعاملی الزاماً بهتر نیست.
+            ابتدا ساده‌ترین معماری‌ای را انتخاب کنید که نیازهای واقعی را برآورده می‌کند.
+          </div>
+        </section>
+
+        <!-- CHAPTER 3 -->
+        <section id="chapter3" class="section-card">
+          <h2 class="section-title">۳. معماری AI Agent</h2>
+
+          <p>
+            معماری Agent مشخص می‌کند سیستم چگونه ورودی را دریافت می‌کند،
+            هدف را می‌فهمد، وضعیت را نگه می‌دارد، تصمیم می‌گیرد،
+            ابزار را اجرا می‌کند و نتیجه را ارزیابی می‌کند.
+            در یک طراحی معمول، چند جزء اصلی با یکدیگر همکاری می‌کنند.
+          </p>
+
+          <h3 class="sub-title">اجزای اصلی معماری</h3>
+
+          <h4 class="font-bold mt-5">۱. User Interface یا ورودی</h4>
+          <p>
+            نقطه تعامل با کاربر یا سیستم دیگر است.
+            ورودی می‌تواند متن، فایل، رویداد، درخواست API یا پیام یک سیستم خارجی باشد.
+            رابط ورودی باید اطلاعات لازم را اعتبارسنجی کند و درخواست را به ساختار قابل پردازش تبدیل کند.
+          </p>
+
+          <h4 class="font-bold mt-5">۲. Agent Controller یا Runtime</h4>
+          <p>
+            کنترل‌کننده، چرخه اجرای Agent را مدیریت می‌کند.
+            تعیین می‌کند چه زمانی مدل فراخوانی شود، چه زمانی ابزار اجرا شود،
+            نتیجه چگونه ثبت شود و چه زمانی فرایند متوقف شود.
+            در بسیاری از پیاده‌سازی‌ها، این بخش شامل کد معمولی و منطق کنترلی است،
+            نه صرفاً یک prompt.
+          </p>
+
+          <h4 class="font-bold mt-5">۳. LLM یا مدل تصمیم‌گیر</h4>
+          <p>
+            مدل زبانی می‌تواند درخواست را تفسیر کند، گزینه‌های اقدام را پیشنهاد دهد،
+            پارامترهای ابزار را تولید کند، نتیجه مشاهده‌شده را تحلیل کند
+            و پاسخ نهایی را بسازد.
+            با این حال، مدل نباید تنها مرجع اجرای سیاست‌های امنیتی باشد.
+          </p>
+
+          <h4 class="font-bold mt-5">۴. Tools یا ابزارها</h4>
+          <p>
+            ابزارها قابلیت انجام عملیات واقعی را فراهم می‌کنند:
+            جست‌وجو، خواندن فایل، اجرای Query، ارسال پیام، ثبت سفارش،
+            فراخوانی API یا تغییر وضعیت یک سامانه.
+          </p>
+
+          <h4 class="font-bold mt-5">۵. Memory و State</h4>
+          <p>
+            حافظه می‌تواند اطلاعات مفید گذشته را نگه دارد؛
+            State نیز وضعیت جاری اجرای یک وظیفه را ثبت می‌کند.
+            این دو مفهوم مرتبط‌اند، اما یکسان نیستند.
+          </p>
+
+          <h4 class="font-bold mt-5">۶. Planner یا برنامه‌ریز</h4>
+          <p>
+            برنامه‌ریز هدف را به مراحل کوچک‌تر تبدیل می‌کند،
+            وابستگی میان مراحل را مشخص می‌کند و ترتیب اجرای آن‌ها را پیشنهاد می‌دهد.
+            برنامه‌ریزی ممکن است توسط خود LLM، یک الگوریتم مشخص یا ترکیبی از آن‌ها انجام شود.
+          </p>
+
+          <h4 class="font-bold mt-5">۷. Guardrails و Policy Engine</h4>
+          <p>
+            این لایه محدودیت‌های سیستم را اعمال می‌کند:
+            چه ابزارهایی مجازند، چه داده‌هایی قابل دسترسی‌اند،
+            چه عملیات‌هایی نیازمند تأیید هستند و چه درخواست‌هایی باید رد شوند.
+          </p>
+
+          <h3 class="sub-title">نمای کلی معماری</h3>
+          <div class="diagram">
+            <div class="flow">
+              <div class="flow-box">User / Event</div>
+              <div class="arrow">←</div>
+              <div class="flow-box">Input Layer</div>
+              <div class="arrow">←</div>
+              <div class="flow-box">Agent Runtime</div>
+            </div>
+            <div class="text-center text-slate-400 text-2xl">↓</div>
+            <div class="grid md:grid-cols-3 gap-3">
+              <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-center">
+                <strong>LLM / Reasoner</strong>
+                <p class="text-xs mt-2">تحلیل، تصمیم و انتخاب اقدام</p>
+              </div>
+              <div class="bg-sky-50 border border-sky-200 rounded-xl p-4 text-center">
+                <strong>Planner</strong>
+                <p class="text-xs mt-2">تقسیم هدف و ترتیب مراحل</p>
+              </div>
+              <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center">
+                <strong>Memory / State</strong>
+                <p class="text-xs mt-2">زمینه، تاریخچه و وضعیت</p>
+              </div>
+            </div>
+            <div class="text-center text-slate-400 text-2xl">↓</div>
+            <div class="flow">
+              <div class="flow-box">Policy Check</div>
+              <div class="arrow">←</div>
+              <div class="flow-box">Tool Execution</div>
+              <div class="arrow">←</div>
+              <div class="flow-box">Observation</div>
+            </div>
+            <div class="text-center text-slate-400 text-2xl">↓</div>
+            <div class="bg-slate-800 text-white text-center rounded-xl p-4">
+              ارزیابی نتیجه، ادامه چرخه یا تولید پاسخ نهایی
+            </div>
+          </div>
+
+          <h3 class="sub-title">مرز مسئولیت مدل و نرم‌افزار</h3>
+          <p>
+            یکی از اصول مهم معماری Agentic این است که همه چیز را به مدل واگذار نکنیم.
+            مدل برای فهم زبان طبیعی و انتخاب معنایی مناسب است؛
+            اما کنترل دسترسی، اعتبارسنجی ورودی، محاسبات حساس،
+            اجرای تراکنش، محدودیت بودجه و ثبت رخدادها باید با منطق قابل آزمون نرم‌افزاری کنترل شوند.
+          </p>
+
+          <table>
+            <tr>
+              <th>مسئولیت</th>
+              <th>جایگاه مناسب</th>
+            </tr>
+            <tr>
+              <td>فهم درخواست کاربر</td>
+              <td>LLM و لایه ورودی</td>
+            </tr>
+            <tr>
+              <td>انتخاب ابزار مناسب</td>
+              <td>LLM همراه با محدودیت‌های Runtime</td>
+            </tr>
+            <tr>
+              <td>کنترل مجوز دسترسی</td>
+              <td>Policy Engine و سیستم احراز هویت</td>
+            </tr>
+            <tr>
+              <td>اجرای عملیات بانکی یا مالی</td>
+              <td>سرویس تراکنش با کنترل قطعی</td>
+            </tr>
+            <tr>
+              <td>ذخیره وضعیت اجرای وظیفه</td>
+              <td>State Store یا پایگاه داده</td>
+            </tr>
+            <tr>
+              <td>تفسیر نتیجه و تولید پاسخ</td>
+              <td>LLM</td>
+            </tr>
+          </table>
+        </section>
+
+        <!-- CHAPTER 4 -->
+        <section id="chapter4" class="section-card">
+          <h2 class="section-title">۴. Agent Loop یا چرخه اجرای Agent</h2>
+
+          <p>
+            مهم‌ترین الگوی اجرایی در بسیاری از Agentها، یک چرخه تکرارشونده است.
+            Agent وضعیت فعلی را بررسی می‌کند، تصمیم می‌گیرد چه کاری انجام دهد،
+            آن کار را اجرا می‌کند، نتیجه را می‌بیند و سپس تصمیم بعدی را می‌گیرد.
+          </p>
+
+          <h3 class="sub-title">مراحل چرخه</h3>
+          <ol class="list-decimal pr-6 space-y-3">
+            <li><strong>Observe:</strong> دریافت ورودی، وضعیت، پیام‌ها و نتایج اقدامات قبلی.</li>
+            <li><strong>Interpret:</strong> درک شرایط و شناسایی مسئله فعلی.</li>
+            <li><strong>Decide:</strong> انتخاب اقدام بعدی یا تصمیم به پایان کار.</li>
+            <li><strong>Act:</strong> اجرای ابزار یا تولید خروجی مورد نیاز.</li>
+            <li><strong>Evaluate:</strong> بررسی نتیجه و مقایسه آن با هدف.</li>
+            <li><strong>Continue or Stop:</strong> ادامه چرخه، اصلاح برنامه یا پایان دادن به وظیفه.</li>
+          </ol>
+
+          <div class="diagram">
+            <div class="flex flex-col items-center gap-2">
+              <div class="flow-box w-64">۱. Observe — مشاهده وضعیت</div>
+              <div class="text-2xl text-slate-400">↓</div>
+              <div class="flow-box w-64">۲. Reason — تحلیل شرایط</div>
+              <div class="text-2xl text-slate-400">↓</div>
+              <div class="flow-box w-64">۳. Decide — انتخاب اقدام</div>
+              <div class="text-2xl text-slate-400">↓</div>
+              <div class="flow-box w-64">۴. Act — اجرای ابزار</div>
+              <div class="text-2xl text-slate-400">↓</div>
+              <div class="flow-box w-64">۵. Evaluate — ارزیابی نتیجه</div>
+              <div class="text-2xl text-slate-400">↓</div>
+              <div class="bg-emerald-100 border border-emerald-300 rounded-xl p-3 w-64 text-center font-bold">
+                هدف تکمیل شده است؟
+              </div>
+              <div class="grid grid-cols-2 gap-8 w-full max-w-sm text-center">
+                <div class="text-emerald-700 font-bold">بله ↓<br>پایان</div>
+                <div class="text-indigo-700 font-bold">خیر ↺<br>چرخه بعدی</div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="sub-title">یک مثال واقعی: پیدا کردن وضعیت سفارش</h3>
+          <p>فرض کنید کاربر می‌گوید: «سفارشم هنوز نرسیده؛ لطفاً بررسی کن.»</p>
+          <table>
+            <tr>
+              <th>مرحله</th>
+              <th>رفتار Agent</th>
+            </tr>
+            <tr>
+              <td>Observe</td>
+              <td>درخواست کاربر و شناسه سفارش را دریافت می‌کند.</td>
+            </tr>
+            <tr>
+              <td>Reason</td>
+              <td>متوجه می‌شود برای پاسخ دقیق باید سفارش و وضعیت ارسال را بررسی کند.</td>
+            </tr>
+            <tr>
+              <td>Decide</td>
+              <td>ابزار جست‌وجوی سفارش را انتخاب می‌کند.</td>
+            </tr>
+            <tr>
+              <td>Act</td>
+              <td>API سفارش را فراخوانی می‌کند.</td>
+            </tr>
+            <tr>
+              <td>Evaluate</td>
+              <td>می‌بیند سفارش ارسال شده، اما هنوز تحویل نشده است.</td>
+            </tr>
+            <tr>
+              <td>Next action</td>
+              <td>در صورت نیاز ابزار رهگیری مرسوله را فراخوانی می‌کند.</td>
+            </tr>
+            <tr>
+              <td>Finish</td>
+              <td>وضعیت و اطلاعات قابل استناد را به کاربر اعلام می‌کند.</td>
+            </tr>
+          </table>
+
+          <h3 class="sub-title">شرایط توقف چرخه</h3>
+          <p>
+            چرخه Agent نباید بدون محدودیت ادامه پیدا کند.
+            باید شرایط پایان مشخص باشند؛ برای مثال:
+          </p>
+          <ul class="list-disc pr-6 space-y-2">
+            <li>هدف به شکل قابل قبول تکمیل شده باشد.</li>
+            <li>Agent به اطلاعاتی نیاز داشته باشد که کاربر باید فراهم کند.</li>
+            <li>اقدام بعدی به تأیید انسانی نیاز داشته باشد.</li>
+            <li>تعداد گام‌ها یا زمان مجاز تمام شده باشد.</li>
+            <li>ابزارها به شکل مکرر خطا بدهند.</li>
+            <li>Agent تشخیص دهد ادامه دادن امن یا مفید نیست.</li>
+          </ul>
+
+          <div class="warning">
+            <strong>خطر حلقه بی‌نهایت:</strong>
+            اگر Agent نتواند تشخیص دهد که اقدام‌های قبلی شکست خورده‌اند،
+            ممکن است بارها یک ابزار را با ورودی مشابه فراخوانی کند.
+            محدودیت تعداد گام‌ها، timeout، تشخیص تکرار و سقف هزینه ضروری‌اند.
+          </div>
+
+          <h3 class="sub-title">شبه‌کد Agent Loop</h3>
+          <pre class="code-wrap"><code>state = initialize_task(user_request)
+
+for step in range(MAX_STEPS):
+
+    observation = collect_observation(state)
+
+    decision = model_decide(
+        goal=state.goal,
+        history=state.history,
+        observation=observation,
+        available_tools=tool_schemas
+    )
+
+    if decision.type == "final":
+        return decision.answer
+
+    if decision.type == "tool_call":
+        validate_tool_call(decision)
+        result = execute_tool(decision.tool, decision.arguments)
+        state = update_state(state, result)
+
+    if decision.type == "need_human":
+        return request_human_approval(decision)
+
+return stop_with_limit_message(state)</code></pre>
+
+          <p class="small-note">
+            این شبه‌کد برای نمایش الگو است؛ در سامانه واقعی باید مدیریت خطا،
+            احراز هویت، ثبت رخداد، کنترل مجوز و ذخیره پایدار وضعیت نیز اضافه شود.
+          </p>
+        </section>
+
+        <!-- CHAPTER 5 -->
+        <section id="chapter5" class="section-card">
+          <h2 class="section-title">۵. Reasoning and Planning — استدلال و برنامه‌ریزی</h2>
+
+          <h3 class="sub-title">Reasoning چیست؟</h3>
+          <p>
+            Reasoning یا استدلال، فرایند تحلیل مسئله و انتخاب پاسخ یا اقدام مناسب است.
+            در یک Agent، استدلال می‌تواند شامل فهم هدف، بررسی اطلاعات موجود،
+            شناسایی اطلاعات ناقص، مقایسه گزینه‌ها و ارزیابی پیامدهای احتمالی باشد.
+          </p>
+
+          <p>
+            برای مثال، اگر هدف «آماده‌سازی گزارش فروش ماهانه» باشد،
+            Agent باید تشخیص دهد که احتمالاً به داده‌های فروش،
+            بازه زمانی، تعریف شاخص‌ها و قالب گزارش نیاز دارد.
+            سپس باید مشخص کند کدام داده‌ها موجودند و چه اقداماتی لازم است.
+          </p>
+
+          <h3 class="sub-title">Planning چیست؟</h3>
+          <p>
+            Planning یا برنامه‌ریزی، تبدیل هدف کلی به مجموعه‌ای از گام‌های مشخص است.
+            برنامه باید ترتیب اجرا، وابستگی مراحل، ورودی‌های مورد نیاز
+            و شرایط موفقیت را مشخص کند.
+          </p>
+
+          <div class="callout">
+            <strong>تفاوت اصلی:</strong>
+            Reasoning کمک می‌کند بفهمیم چه چیزی مناسب است؛
+            Planning مشخص می‌کند برای رسیدن به هدف، چه مراحلی باید طی شوند.
+            در عمل این دو به‌شدت به هم وابسته‌اند.
+          </div>
+
+          <h3 class="sub-title">مثال: تهیه گزارش فروش</h3>
+          <p>هدف کلی: «گزارش فروش سه ماه اخیر را آماده کن و عوامل افت فروش را توضیح بده.»</p>
+          <div class="diagram">
+            <div class="bg-indigo-100 rounded-xl p-4 text-center font-extrabold text-indigo-900 mb-4">
+              هدف اصلی: تحلیل فروش سه ماه اخیر
+            </div>
+            <div class="grid md:grid-cols-2 gap-3">
+              <div class="bg-white border rounded-xl p-3">
+                <strong>گام ۱: جمع‌آوری داده</strong>
+                <p class="text-sm">بازیابی داده‌های فروش و تاریخ‌ها</p>
+              </div>
+              <div class="bg-white border rounded-xl p-3">
+                <strong>گام ۲: اعتبارسنجی</strong>
+                <p class="text-sm">بررسی داده‌های ناقص و تکراری</p>
+              </div>
+              <div class="bg-white border rounded-xl p-3">
+                <strong>گام ۳: تحلیل</strong>
+                <p class="text-sm">محاسبه روند، رشد و افت شاخص‌ها</p>
+              </div>
+              <div class="bg-white border rounded-xl p-3">
+                <strong>گام ۴: بررسی علت‌ها</strong>
+                <p class="text-sm">مقایسه محصولات، مناطق و کانال‌ها</p>
+              </div>
+              <div class="bg-white border rounded-xl p-3">
+                <strong>گام ۵: تولید گزارش</strong>
+                <p class="text-sm">ساخت جدول، نمودار و توضیحات</p>
+              </div>
+              <div class="bg-white border rounded-xl p-3">
+                <strong>گام ۶: کنترل نهایی</strong>
+                <p class="text-sm">بررسی سازگاری اعداد و نتیجه‌گیری</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="sub-title">برنامه‌ریزی ثابت در برابر برنامه‌ریزی پویا</h3>
+          <table>
+            <tr>
+              <th>نوع</th>
+              <th>توضیح</th>
+              <th>کاربرد</th>
+            </tr>
+            <tr>
+              <td>Static Plan</td>
+              <td>مراحل از ابتدا مشخص‌اند و معمولاً تغییر نمی‌کنند.</td>
+              <td>فرایندهای تکراری و قابل پیش‌بینی</td>
+            </tr>
+            <tr>
+              <td>Dynamic Plan</td>
+              <td>برنامه با توجه به نتایج مراحل قبلی اصلاح می‌شود.</td>
+              <td>مسائل پیچیده و دارای عدم قطعیت</td>
+            </tr>
+          </table>
+
+          <h3 class="sub-title">برنامه‌ریزی سلسله‌مراتبی</h3>
+          <p>
+            در مسائل بزرگ، بهتر است هدف به چند زیرهدف تقسیم شود.
+            هر زیرهدف نیز می‌تواند به کارهای کوچک‌تر تبدیل شود.
+            این ساختار باعث می‌شود وظایف پیچیده قابل مدیریت‌تر شوند.
+          </p>
+          <pre class="code-wrap"><code>Goal: Prepare a market research report
+
+  Subgoal 1: Understand the market
+    - Identify market scope
+    - Find relevant sources
+    - Extract market signals
+
+  Subgoal 2: Analyze competitors
+    - Identify competitors
+    - Compare product features
+    - Compare positioning
+
+  Subgoal 3: Prepare conclusions
+    - Summarize findings
+    - Identify uncertainties
+    - Draft recommendations</code></pre>
+
+          <h3 class="sub-title">برنامه‌ریزی و عدم قطعیت</h3>
+          <p>
+            برنامه‌ریزی Agent باید انعطاف‌پذیر باشد.
+            ممکن است یک API در دسترس نباشد، داده‌ای وجود نداشته باشد،
+            کاربر اطلاعات ناقص داده باشد یا نتیجه یک مرحله با انتظار اولیه متفاوت باشد.
+            بنابراین برنامه‌ریز باید بتواند:
+          </p>
+          <ul class="list-disc pr-6 space-y-2">
+            <li>مرحله شکست‌خورده را دوباره اجرا کند، اگر تکرار امن باشد.</li>
+            <li>از ابزار جایگزین استفاده کند.</li>
+            <li>برنامه را با توجه به اطلاعات جدید تغییر دهد.</li>
+            <li>در صورت نیاز از کاربر سؤال تکمیلی بپرسد.</li>
+            <li>وقتی هدف دیگر قابل دستیابی نیست، شفاف متوقف شود.</li>
+          </ul>
+
+          <div class="warning">
+            استدلال تولیدشده توسط مدل همیشه درست نیست.
+            سیستم باید تصمیم‌های مهم را با داده واقعی، قوانین قطعی،
+            خروجی ابزارها و اعتبارسنجی مستقل کنترل کند.
+          </div>
+        </section>
+
+        <!-- CHAPTER 6 -->
+        <section id="chapter6" class="section-card">
+          <h2 class="section-title">۶. Tool Use and Tool Calling — استفاده از ابزارها</h2>
+
+          <h3 class="sub-title">Tool چیست؟</h3>
+          <p>
+            Tool یک قابلیت خارجی است که Agent می‌تواند برای انجام یک عملیات مشخص از آن استفاده کند.
+            مدل زبانی به تنهایی ممکن است نتواند اطلاعات لحظه‌ای را بخواند،
+            یک فایل را در فضای ذخیره‌سازی تغییر دهد یا در نرم‌افزار سازمانی تراکنش ثبت کند.
+            ابزار این توانایی را از طریق یک رابط مشخص فراهم می‌کند.
+          </p>
+
+          <h3 class="sub-title">نمونه دسته‌بندی ابزارها</h3>
+          <table>
+            <tr>
+              <th>دسته ابزار</th>
+              <th>نمونه</th>
+              <th>عملکرد</th>
+            </tr>
+            <tr>
+              <td>Search</td>
+              <td>جست‌وجوی وب یا اسناد</td>
+              <td>بازیابی اطلاعات</td>
+            </tr>
+            <tr>
+              <td>Database</td>
+              <td>SQL Query</td>
+              <td>خواندن یا ثبت داده</td>
+            </tr>
+            <tr>
+              <td>Communication</td>
+              <td>Email، Slack API</td>
+              <td>ارسال پیام</td>
+            </tr>
+            <tr>
+              <td>Productivity</td>
+              <td>Calendar API</td>
+              <td>مدیریت رویدادها</td>
+            </tr>
+            <tr>
+              <td>Code Execution</td>
+              <td>Python sandbox</td>
+              <td>اجرای محاسبات یا کد محدود</td>
+            </tr>
+            <tr>
+              <td>File</td>
+              <td>Document parser</td>
+              <td>خواندن و پردازش فایل</td>
+            </tr>
+            <tr>
+              <td>Business API</td>
+              <td>CRM یا ERP</td>
+              <td>عملیات سازمانی</td>
+            </tr>
+          </table>
+
+          <h3 class="sub-title">Tool Calling چگونه کار می‌کند؟</h3>
+          <p>
+            در یک پیاده‌سازی رایج، ابزار با نام، توضیح و schema ورودی به مدل معرفی می‌شود.
+            مدل می‌تواند درخواست فراخوانی ابزار را در قالب ساختاریافته تولید کند.
+            سپس برنامه میزبان، ورودی را اعتبارسنجی و ابزار را اجرا می‌کند.
+            خروجی ابزار به مکالمه یا وضعیت Agent بازگردانده می‌شود.
+          </p>
+
+          <div class="diagram">
+            <div class="flow">
+              <div class="flow-box">User Request</div>
+              <div class="arrow">←</div>
+              <div class="flow-box">LLM</div>
+              <div class="arrow">←</div>
+              <div class="flow-box">Tool Call</div>
+            </div>
+            <div class="text-center text-slate-400 text-xl">↓</div>
+            <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-center">
+              Runtime: بررسی schema، مجوز، محدودیت و اعتبار ورودی
+            </div>
+            <div class="text-center text-slate-400 text-xl">↓</div>
+            <div class="flow">
+              <div class="flow-box">External Tool</div>
+              <div class="arrow">←</div>
+              <div class="flow-box">Tool Result</div>
+              <div class="arrow">←</div>
+              <div class="flow-box">LLM</div>
+            </div>
+            <div class="text-center text-slate-400 text-xl">↓</div>
+            <div class="bg-emerald-100 border border-emerald-300 rounded-xl p-4 text-center font-bold">
+              تصمیم بعدی یا پاسخ نهایی
+            </div>
+          </div>
+
+          <h3 class="sub-title">تعریف یک ابزار با schema</h3>
+          <p>
+            فرض کنید Agent به ابزاری برای جست‌وجوی سفارش نیاز دارد.
+            قرارداد ابزار باید مشخص کند چه ورودی‌ای می‌پذیرد و چه خروجی‌ای برمی‌گرداند.
+          </p>
+
+          <pre class="code-wrap"><code>{
+  "name": "get_order_status",
+  "description": "Retrieve the status of an order",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "order_id": {
+        "type": "string",
+        "description": "Unique order identifier"
+      }
+    },
+    "required": ["order_id"],
+    "additionalProperties": false
+  }
+}</code></pre>
+
+          <h3 class="sub-title">نمونه ساده اجرای ابزار در Python</h3>
+          <pre class="code-wrap"><code>def get_order_status(order_id: str):
+    if not isinstance(order_id, str) or not order_id.strip():
+        raise ValueError("Invalid order ID")
+
+    # In a real application, call an authenticated backend API.
+    return {
+        "order_id": order_id,
+        "status": "shipped",
+        "tracking_available": True
+    }
+
+
+def execute_tool(name, arguments):
+    if name == "get_order_status":
+        return get_order_status(**arguments)
+
+    raise ValueError("Unknown tool")</code></pre>
+
+          <h3 class="sub-title">اصول طراحی Tool خوب</h3>
+          <ul class="list-disc pr-6 space-y-2">
+            <li><strong>Single responsibility:</strong> هر ابزار یک وظیفه روشن داشته باشد.</li>
+            <li><strong>Clear schema:</strong> ورودی و خروجی ساختاریافته و قابل اعتبارسنجی باشند.</li>
+            <li><strong>Predictable errors:</strong> خطاها مشخص و قابل تفسیر باشند.</li>
+            <li><strong>Authentication:</strong> ابزار از هویت و مجوز معتبر استفاده کند.</li>
+            <li><strong>Idempotency:</strong> برای عملیات حساس، امکان جلوگیری از اجرای تکراری فراهم شود.</li>
+            <li><strong>Observability:</strong> زمان، ورودی مجاز، نتیجه و خطا ثبت شوند.</li>
+            <li><strong>Least privilege:</strong> ابزار فقط دسترسی لازم برای همان کار را داشته باشد.</li>
+          </ul>
+
+          <h3 class="sub-title">ابزارهای خواندنی و نوشتنی</h3>
+          <table>
+            <tr>
+              <th>نوع ابزار</th>
+              <th>مثال</th>
+              <th>ریسک نسبی</th>
+            </tr>
+            <tr>
+              <td>Read-only</td>
+              <td>خواندن وضعیت سفارش</td>
+              <td>معمولاً کمتر</td>
+            </tr>
+            <tr>
+              <td>Write</td>
+              <td>ثبت یادداشت در CRM</td>
+              <td>بالاتر؛ وضعیت تغییر می‌کند</td>
+            </tr>
+            <tr>
+              <td>External side effect</td>
+              <td>ارسال ایمیل یا پرداخت</td>
+              <td>بسیار وابسته به زمینه و پیامد</td>
+            </tr>
+          </table>
+
+          <div class="warning">
+            هرگز صرفاً به این دلیل که مدل یک Tool Call تولید کرده است، آن را اجرا نکنید.
+            Runtime باید مجوز، نوع عملیات، پارامترها، محدوده داده و نیاز به تأیید انسانی را بررسی کند.
+          </div>
+        </section>
+
+        <!-- CHAPTER 7 -->
+        <section id="chapter7" class="section-card">
+          <h2 class="section-title">۷. Agent Memory — حافظه عامل</h2>
+
+          <h3 class="sub-title">چرا Agent به حافظه نیاز دارد؟</h3>
+          <p>
+            یک Agent ممکن است برای انجام یک وظیفه به چندین مرحله نیاز داشته باشد.
+            اگر در هر مرحله فقط درخواست اولیه را ببیند و هیچ اطلاعاتی از مراحل قبلی نداشته باشد،
+            نمی‌تواند به‌خوبی کار را ادامه دهد.
+            حافظه کمک می‌کند اطلاعات مهم، ترجیحات، نتایج قبلی و زمینه لازم برای تصمیم‌های بعدی حفظ شوند.
+          </p>
+
+          <p>
+            برای مثال، در یک فرایند برنامه‌ریزی سفر، Agent باید بداند مقصد چیست،
+            چه تاریخ‌هایی انتخاب شده‌اند، کدام گزینه‌ها بررسی شده‌اند،
+            چه محدودیت‌هایی وجود دارد و کدام بخش هنوز تأیید نشده است.
+          </p>
+
+          <h3 class="sub-title">حافظه چه چیزهایی را می‌تواند نگه دارد؟</h3>
+          <ul class="list-disc pr-6 space-y-2">
+            <li>اطلاعات مرتبط با مکالمه جاری</li>
+            <li>ترجیحات کاربر که مجاز به نگهداری آن‌ها هستیم</li>
+            <li>خلاصه وظایف و اقدامات قبلی</li>
+            <li>نتایج ابزارها و شناسه منابع</li>
+            <li>دانش بازیابی‌شده از پایگاه دانش</li>
+            <li>تجربه‌های عملیاتی یا الگوهای تکرارشونده، در صورت طراحی و کنترل مناسب</li>
+          </ul>
+
+          <h3 class="sub-title">انواع حافظه در Agent</h3>
+          <table>
+            <tr>
+              <th>نوع</th>
+              <th>توضیح</th>
+              <th>مثال</th>
+            </tr>
+            <tr>
+              <td>Conversation Memory</td>
+              <td>حفظ پیام‌های مکالمه جاری</td>
+              <td>درخواست قبلی کاربر</td>
+            </tr>
+            <tr>
+              <td>Working Memory</td>
+              <td>اطلاعات لازم برای کار در حال اجرا</td>
+              <td>مرحله فعلی و نتایج میانی</td>
+            </tr>
+            <tr>
+              <td>Episodic Memory</td>
+              <td>ثبت تجربه‌ها یا رخدادهای گذشته</td>
+              <td>وظیفه‌ای که قبلاً انجام شده است</td>
+            </tr>
+            <tr>
+              <td>Semantic Memory</td>
+              <td>دانش عمومی یا حقایق ذخیره‌شده</td>
+              <td>قوانین یا اطلاعات دامنه</td>
+            </tr>
+            <tr>
+              <td>Procedural Memory</td>
+              <td>روش‌ها و دستورالعمل‌های انجام کار</td>
+              <td>مراحل رسیدگی به یک نوع درخواست</td>
+            </tr>
+          </table>
+
+          <h3 class="sub-title">Conversation Memory</h3>
+          <p>
+            ساده‌ترین شکل حافظه، نگهداری پیام‌های قبلی مکالمه است.
+            این روش برای مکالمات کوتاه مناسب است، اما با طولانی شدن تاریخچه،
+            هزینه پردازش و حجم context افزایش می‌یابد.
+            همچنین ممکن است اطلاعات غیرضروری زیادی وارد context شوند.
+          </p>
+
+          <h3 class="sub-title">Working Memory</h3>
+          <p>
+            حافظه کاری شامل اطلاعاتی است که Agent برای تکمیل وظیفه جاری لازم دارد.
+            این حافظه معمولاً از کل تاریخچه مکالمه کوچک‌تر و ساختاریافته‌تر است.
+            برای مثال، می‌تواند شامل هدف، کارهای انجام‌شده، کارهای باقی‌مانده،
+            نتیجه آخرین ابزار و محدودیت‌های فعال باشد.
+          </p>
+
+          <h3 class="sub-title">Episodic Memory</h3>
+          <p>
+            حافظه اپیزودیک به رخدادها یا تجربه‌های قبلی اشاره دارد.
+            یک سیستم ممکن است خلاصه کند که در اجرای قبلی چه اتفاقی افتاده،
+            کدام روش موفق بوده و چه خطایی رخ داده است.
+            ذخیره این اطلاعات باید با سیاست نگهداری داده و حریم خصوصی هماهنگ باشد.
+          </p>
+
+          <h3 class="sub-title">Semantic Memory</h3>
+          <p>
+            حافظه معنایی شامل دانش نسبتاً پایدار است؛
+            مانند تعاریف، روابط مفهومی، اطلاعات دامنه یا حقایقی که برای چندین وظیفه کاربرد دارند.
+            در برخی معماری‌ها، RAG نقش مهمی در دسترسی به چنین دانشی دارد.
+          </p>
+
+          <h3 class="sub-title">Procedural Memory</h3>
+          <p>
+            حافظه رویه‌ای درباره چگونگی انجام کار است.
+            برای مثال، یک Agent پشتیبانی می‌تواند دستورالعمل رسیدگی به شکایت را
+            از طریق یک workflow تعریف‌شده یا مجموعه‌ای از رویه‌های مجاز دریافت کند.
+            این حافظه نباید جایگزین کنترل‌های قطعی و قوانین امنیتی شود.
+          </p>
+
+          <div class="callout">
+            حافظه به تنهایی به معنی یادگیری مدل نیست.
+            ذخیره اطلاعات در پایگاه داده یا بازیابی آن در prompt،
+            لزوماً وزن‌های مدل را تغییر نمی‌دهد.
+          </div>
+        </section>
+
+        <!-- CHAPTER 8 -->
+        <section id="chapter8" class="section-card">
+          <h2 class="section-title">۸. Short-term and Long-term Memory</h2>
+
+          <p>
+            یکی از تقسیم‌بندی‌های رایج حافظه، تفاوت میان حافظه کوتاه‌مدت و بلندمدت است.
+            این تقسیم‌بندی بیشتر درباره مدت و دامنه نگهداری اطلاعات صحبت می‌کند،
+            نه اینکه الزاماً از دو فناوری کاملاً جدا استفاده شود.
+          </p>
+
+          <h3 class="sub-title">Short-term Memory</h3>
+          <p>
+            حافظه کوتاه‌مدت اطلاعات مورد نیاز در مکالمه یا وظیفه جاری را نگه می‌دارد.
+            این حافظه معمولاً شامل پیام‌های اخیر، نتایج ابزارها،
+            تصمیم‌های موقت و وضعیت اجرای فعلی است.
+          </p>
+          <p><strong>نمونه:</strong> Agent در حال رزرو یک جلسه است.
+            باید زمان انتخاب‌شده، شرکت‌کنندگان و اتاق‌های بررسی‌شده را در همان فرایند به خاطر بسپارد.</p>
+
+          <h3 class="sub-title">Long-term Memory</h3>
+          <p>
+            حافظه بلندمدت اطلاعاتی را نگه می‌دارد که ممکن است در وظایف آینده نیز مفید باشند.
+            این اطلاعات می‌توانند ترجیحات مجاز، خلاصه تجربه‌های گذشته،
+            دانش دامنه یا داده‌های ساختاریافته باشند.
+          </p>
+          <p><strong>نمونه:</strong> یک دستیار سازمانی ممکن است تنظیمات عمومی و مجاز
+            مربوط به قالب گزارش‌های یک تیم را برای استفاده در دفعات بعد نگه دارد.</p>
+
+          <table>
+            <tr>
+              <th>ویژگی</th>
+              <th>Short-term</th>
+              <th>Long-term</th>
+            </tr>
+            <tr>
+              <td>دامنه</td>
+              <td>وظیفه یا مکالمه جاری</td>
+              <td>چندین وظیفه یا نشست</td>
+            </tr>
+            <tr>
+              <td>ماندگاری</td>
+              <td>معمولاً محدود</td>
+              <td>بیشتر و وابسته به سیاست نگهداری</td>
+            </tr>
+            <tr>
+              <td>نمونه داده</td>
+              <td>گام فعلی، نتیجه آخرین ابزار</td>
+              <td>ترجیحات مجاز، دانش پایدار</td>
+            </tr>
+            <tr>
+              <td>روش ذخیره</td>
+              <td>Context، State Store یا Cache</td>
+              <td>Database، Vector Store یا مخزن دانش</td>
+            </tr>
+            <tr>
+              <td>چالش اصلی</td>
+              <td>مدیریت context و وضعیت جاری</td>
+              <td>کیفیت، تازگی، حریم خصوصی و بازیابی</td>
+            </tr>
+          </table>
+
+          <h3 class="sub-title">چه چیزی را باید به حافظه بلندمدت منتقل کرد؟</h3>
+          <p>
+            همه اطلاعات کوتاه‌مدت نباید به حافظه بلندمدت منتقل شوند.
+            انتخاب باید بر اساس ارزش آینده، مجوز نگهداری، حساسیت اطلاعات،
+            قابلیت اصلاح و زمان انقضا انجام شود.
+          </p>
+
+          <div class="success">
+            <strong>یک الگوی مناسب:</strong>
+            اطلاعات موقت را در State نگه دارید؛
+            اطلاعات پایدار و مجاز را با ساختار و سیاست نگهداری مشخص ذخیره کنید؛
+            و هنگام نیاز فقط بخش مرتبط را بازیابی کنید.
+          </div>
+
+          <h3 class="sub-title">نمونه ساختار حافظه بلندمدت</h3>
+          <pre class="code-wrap"><code>{
+  "memory_id": "mem_1042",
+  "type": "preference",
+  "subject_id": "user_123",
+  "content": "Prefers concise project status reports",
+  "source": "explicit_user_preference",
+  "created_at": "2026-10-01T10:00:00Z",
+  "expires_at": null,
+  "sensitivity": "low",
+  "status": "active"
+}</code></pre>
+
+          <p class="small-note">
+            این فقط نمونه‌ای آموزشی است. در سامانه واقعی باید رضایت و مجوز مناسب،
+            امکان اصلاح یا حذف، کنترل دسترسی و سیاست retention پیاده‌سازی شود.
+          </p>
+        </section>
+
+        <!-- CHAPTER 9 -->
+        <section id="chapter9" class="section-card">
+          <h2 class="section-title">۹. State Management — مدیریت وضعیت</h2>
+
+          <h3 class="sub-title">State چیست؟</h3>
+          <p>
+            State یا وضعیت، مجموعه اطلاعاتی است که نشان می‌دهد Agent یا وظیفه در حال حاضر
+            در چه شرایطی قرار دارد.
+            State می‌تواند هدف، مرحله فعلی، نتایج ابزارها، تصمیم‌های گرفته‌شده،
+            کارهای باقی‌مانده، خطاها و وضعیت تأیید انسانی را در بر بگیرد.
+          </p>
+
+          <p>
+            حافظه معمولاً برای نگهداری اطلاعات مفید از گذشته به کار می‌رود؛
+            اما State وضعیت جاری فرایند را مشخص می‌کند.
+            یک Agent ممکن است حافظه بلندمدت داشته باشد،
+            اما بدون State دقیق نتواند اجرای نیمه‌تمام یک وظیفه را به درستی ادامه دهد.
+          </p>
+
+          <h3 class="sub-title">نمونه State یک وظیفه</h3>
+          <pre class="code-wrap"><code>{
+  "task_id": "task_9081",
+  "goal": "Prepare quarterly sales report",
+  "status": "in_progress",
+  "current_step": "analyze_sales",
+  "completed_steps": [
+    "load_sales_data",
+    "validate_data"
+  ],
+  "pending_steps": [
+    "analyze_sales",
+    "generate_charts",
+    "write_summary"
+  ],
+  "tool_results": {
+    "row_count": 12500,
+    "validation_status": "passed"
+  },
+  "approval_status": "not_required",
+  "retry_count": 0
+}</code></pre>
+
+          <h3 class="sub-title">چرخه عمر State</h3>
+          <div class="flow">
+            <div class="flow-box">Created</div>
+            <div class="arrow">←</div>
+            <div class="flow-box">Running</div>
+            <div class="arrow">←</div>
+            <div class="flow-box">Waiting</div>
+            <div class="arrow">←</div>
+            <div class="flow-box">Completed</div>
+          </div>
+          <p>
+            در عمل، وضعیت‌های بیشتری نیز ممکن است لازم باشند:
+            <code>failed</code>، <code>cancelled</code>، <code>paused</code>،
+            <code>needs_approval</code> و <code>retrying</code>.
+            وضعیت‌ها باید به شکل روشن تعریف شوند تا اجزای مختلف سیستم تفسیر یکسانی داشته باشند.
+          </p>
+
+          <h3 class="sub-title">چرا State Management اهمیت دارد؟</h3>
+          <ul class="list-disc pr-6 space-y-2">
+            <li>ادامه اجرای وظایف بعد از قطع ارتباط یا restart.</li>
+            <li>جلوگیری از اجرای دوباره مراحل تکمیل‌شده.</li>
+            <li>تشخیص اینکه وظیفه منتظر کاربر یا تأیید انسانی است.</li>
+            <li>مدیریت retry و خطاهای موقت.</li>
+            <li>ثبت سابقه تصمیم‌ها و اقدامات برای audit.</li>
+            <li>هماهنگی میان چند Agent یا سرویس.</li>
+          </ul>
+
+          <h3 class="sub-title">State و Idempotency</h3>
+          <p>
+            فرض کنید Agent یک درخواست پرداخت را ارسال می‌کند، اما قبل از دریافت پاسخ،
+            ارتباط شبکه قطع می‌شود.
+            Agent نمی‌داند پرداخت انجام شده است یا نه.
+            اگر بدون بررسی دوباره همان عملیات را اجرا کند،
+            ممکن است پرداخت تکراری رخ دهد.
+          </p>
+          <p>
+            برای چنین مواردی، استفاده از شناسه یکتای عملیات یا
+            <strong>Idempotency Key</strong> کمک می‌کند درخواست تکراری
+            به اجرای تکراری اثر مالی منجر نشود.
+            همچنین باید وضعیت عملیات از سرویس مرجع استعلام شود.
+          </p>
+
+          <h3 class="sub-title">الگوی ذخیره‌سازی امن State</h3>
+          <ul class="list-disc pr-6 space-y-2">
+            <li>برای هر وظیفه شناسه یکتا در نظر بگیرید.</li>
+            <li>تغییرات مهم State را به شکل اتمیک ذخیره کنید.</li>
+            <li>وضعیت و تاریخچه رویدادها را از هم تفکیک کنید.</li>
+            <li>اطلاعات حساس را بدون ضرورت در State ذخیره نکنید.</li>
+            <li>برای وظایف طولانی checkpoint ایجاد کنید.</li>
+            <li>برای Stateهای قدیمی سیاست انقضا و پاک‌سازی داشته باشید.</li>
+          </ul>
+        </section>
+
+        <!-- CHAPTER 10 -->
+        <section id="chapter10" class="section-card">
+          <h2 class="section-title">۱۰. Goal-oriented Agents — عامل‌های هدف‌محور</h2>
+
+          <h3 class="sub-title">هدف‌محوری به چه معناست؟</h3>
+          <p>
+            یک Agent هدف‌محور، اقدامات خود را با توجه به یک وضعیت مطلوب انتخاب می‌کند.
+            به جای اینکه فقط به پیام بعدی واکنش نشان دهد،
+            تلاش می‌کند فاصله میان وضعیت فعلی و وضعیت مورد نظر را کاهش دهد.
+          </p>
+
+          <p>
+            برای مثال، هدف «تهیه گزارش نهایی» است.
+            وضعیت فعلی ممکن است شامل داده خام و چند منبع ناقص باشد.
+            Agent باید تشخیص دهد برای رسیدن به وضعیت نهایی چه مراحلی باقی مانده‌اند.
+          </p>
+
+          <h3 class="sub-title">هدف خوب چه ویژگی‌هایی دارد؟</h3>
+          <ul class="list-disc pr-6 space-y-2">
+            <li><strong>Clarity:</strong> هدف باید روشن و قابل تفسیر باشد.</li>
+            <li><strong>Measurability:</strong> تا حد امکان معیار موفقیت داشته باشد.</li>
+            <li><strong>Feasibility:</strong> با ابزارها و مجوزهای موجود قابل انجام باشد.</li>
+            <li><strong>Constraints:</strong> محدودیت‌ها و مرزهای اجرا مشخص باشند.</li>
+            <li><strong>Completion criteria:</strong> معلوم باشد چه زمانی کار تمام شده است.</li>
+          </ul>
+
+          <h3 class="sub-title">Goal، Task و Action چه تفاوتی دارند؟</h3>
+          <table>
+            <tr>
+              <th>مفهوم</th>
+              <th>معنا</th>
+              <th>مثال</th>
+            </tr>
+            <tr>
+              <td>Goal</td>
+              <td>نتیجه نهایی مورد نظر</td>
+              <td>تهیه گزارش فروش</td>
+            </tr>
+            <tr>
+              <td>Task</td>
+              <td>یک بخش قابل مدیریت از هدف</td>
+              <td>جمع‌آوری داده فروش</td>
+            </tr>
+            <tr>
+              <td>Action</td>
+              <td>یک اقدام اجرایی مشخص</td>
+              <td>اجرای Query روی دیتابیس</td>
+            </tr>
+          </table>
+
+          <h3 class="sub-title">Goal Decomposition</h3>
+          <p>
+            در Goal Decomposition، هدف اصلی به چند هدف فرعی تقسیم می‌شود.
+            این کار برای جلوگیری از مبهم ماندن وظیفه و کنترل پیشرفت ضروری است.
+          </p>
+
+          <pre class="code-wrap"><code>Goal:
+  Resolve customer complaint
+
+Subgoals:
+  1. Identify customer
+  2. Retrieve relevant order
+  3. Understand complaint category
+  4. Retrieve applicable policy
+  5. Determine eligible resolution
+  6. Obtain approval if required
+  7. Execute approved action
+  8. Confirm result to customer</code></pre>
+
+          <h3 class="sub-title">Goal Conflict</h3>
+          <p>
+            ممکن است چند هدف با یکدیگر تعارض داشته باشند.
+            برای مثال، هدف کاهش هزینه با هدف افزایش کیفیت خدمات،
+            یا هدف سرعت با هدف بررسی دقیق امنیتی در تعارض قرار گیرد.
+            سیستم باید اولویت‌ها و محدودیت‌ها را از قبل مشخص کند.
+          </p>
+
+          <div class="callout">
+            یک Agent خوب صرفاً برای رسیدن به هدف تلاش نمی‌کند؛
+            بلکه باید بداند کدام راه‌ها برای رسیدن به هدف مجاز نیستند.
+          </div>
+        </section>
+
+        <!-- CHAPTER 11 -->
+        <section id="chapter11" class="section-card">
+          <h2 class="section-title">۱۱. Autonomous Agents — عامل‌های خودمختار</h2>
+
+          <h3 class="sub-title">Autonomy چیست؟</h3>
+          <p>
+            خودمختاری یا Autonomy به میزان توانایی Agent در انتخاب و اجرای اقدامات
+            بدون نیاز به دستور جداگانه برای هر مرحله اشاره دارد.
+            یک Agent با خودمختاری بیشتر می‌تواند پس از دریافت هدف،
+            چند مرحله را خودش برنامه‌ریزی و اجرا کند.
+          </p>
+
+          <p>
+            خودمختاری یک ویژگی صفر و یک نیست.
+            سیستم می‌تواند برای اقدامات کم‌خطر مستقل باشد،
+            اما برای اقدامات حساس به تأیید انسان نیاز داشته باشد.
+          </p>
+
+          <h3 class="sub-title">طیف خودمختاری</h3>
+          <table>
+            <tr>
+              <th>سطح</th>
+              <th>شرح</th>
+              <th>نمونه</th>
+            </tr>
+            <tr>
+              <td>سطح ۱: پیشنهاددهنده</td>
+              <td>فقط پیشنهاد اقدام می‌دهد.</td>
+              <td>پیشنهاد پاسخ به ایمیل</td>
+            </tr>
+            <tr>
+              <td>سطح ۲: اجرای تأییدشده</td>
+              <td>اقدام را آماده می‌کند و پیش از اجرا تأیید می‌گیرد.</td>
+              <td>پیش‌نویس ایمیل و درخواست تأیید ارسال</td>
+            </tr>
+            <tr>
+              <td>سطح ۳: خودمختاری محدود</td>
+              <td>اقدامات کم‌خطر را در محدوده مجاز اجرا می‌کند.</td>
+              <td>دسته‌بندی و برچسب‌گذاری تیکت</td>
+            </tr>
+            <tr>
+              <td>سطح ۴: خودمختاری مشروط</td>
+              <td>چند مرحله را مستقل اجرا می‌کند، اما برای نقاط حساس متوقف می‌شود.</td>
+              <td>رسیدگی به درخواست با تأیید بازپرداخت</td>
+            </tr>
+            <tr>
+              <td>سطح ۵: خودمختاری گسترده</td>
+              <td>در محدوده سیاست‌های سخت‌گیرانه، وظایف طولانی را مدیریت می‌کند.</td>
+              <td>پایش و مدیریت یک workflow عملیاتی</td>
+            </tr>
+          </table>
+          <p class="small-note">
+            این سطوح یک مدل آموزشی برای مقایسه‌اند، نه یک استاندارد رسمی یا طبقه‌بندی جهان‌شمول.
+          </p>
+
+          <h3 class="sub-title">چه عواملی خودمختاری را محدود می‌کنند؟</h3>
+          <ul class="list-disc pr-6 space-y-2">
+            <li>مجوزهای دسترسی به ابزارها</li>
+            <li>سطح ریسک عملیات</li>
+            <li>میزان اطمینان به اطلاعات</li>
+            <li>هزینه اجرای مراحل</li>
+            <li>قوانین سازمان و الزامات قانونی</li>
+            <li>امکان بازگشت از اقدام یا اصلاح آن</li>
+            <li>محدودیت زمان و تعداد گام‌ها</li>
+          </ul>
+
+          <h3 class="sub-title">خطر خودمختاری بیش از حد</h3>
+          <p>
+            اگر Agent به ابزارهای قدرتمند دسترسی داشته باشد،
+            اما محدودیت کافی نداشته باشد، ممکن است اقدام اشتباه را در مقیاس بزرگ اجرا کند.
+            برای مثال، یک عامل مدیریت ایمیل ممکن است پیام نادرستی ارسال کند،
+            یا عامل مالی ممکن است تراکنش نامناسبی ثبت کند.
+          </p>
+
+          <div class="warning">
+            خودمختاری بیشتر الزاماً به معنی کیفیت بیشتر نیست.
+            میزان استقلال باید با سطح ریسک، قابلیت نظارت و امکان جبران خطا متناسب باشد.
+          </div>
+
+          <h3 class="sub-title">الگوی Autonomy با محدوده امن</h3>
+          <pre class="code-wrap"><code>Allowed without approval:
+  - Search internal documentation
+  - Read order status
+  - Classify support tickets
+  - Draft customer responses
+
+Requires approval:
+  - Send external messages
+  - Issue refunds
+  - Modify customer account data
+  - Delete business records
+
+Always blocked:
+  - Access data outside the user's permissions
+  - Bypass security controls
+  - Execute prohibited operations</code></pre>
+        </section>
+
+        <!-- CHAPTER 12 -->
+        <section id="chapter12" class="section-card">
+          <h2 class="section-title">۱۲. Human-in-the-loop — انسان در حلقه تصمیم‌گیری</h2>
+
+          <h3 class="sub-title">Human-in-the-loop چیست؟</h3>
+          <p>
+            Human-in-the-loop یا HITL به رویکردی گفته می‌شود که در آن انسان
+            در بخشی از فرایند تصمیم‌گیری یا اجرا نقش دارد.
+            این نقش می‌تواند تأیید یک اقدام، اصلاح نتیجه،
+            ارائه اطلاعات تکمیلی یا داوری درباره خروجی باشد.
+          </p>
+
+          <p>
+            هدف HITL حذف کامل خودکارسازی نیست؛
+            بلکه ایجاد تعادل میان سرعت سیستم و کنترل انسانی است.
+          </p>
+
+          <h3 class="sub-title">سه الگوی رایج مشارکت انسان</h3>
+          <table>
+            <tr>
+              <th>الگو</th>
+              <th>نقش انسان</th>
+              <th>مثال</th>
+            </tr>
+            <tr>
+              <td>Human-in-the-loop</td>
+              <td>پیش از اقدام یا در حین آن تصمیم می‌گیرد.</td>
+              <td>تأیید پرداخت</td>
+            </tr>
+            <tr>
+              <td>Human-on-the-loop</td>
+              <td>سیستم را نظارت می‌کند و در صورت نیاز مداخله می‌کند.</td>
+              <td>نظارت بر عامل رسیدگی به تیکت‌ها</td>
+            </tr>
+            <tr>
+              <td>Human-in-command</td>
+              <td>انسان کنترل کلان و اختیار توقف یا تغییر سیاست را دارد.</td>
+              <td>مدیریت و کنترل سیاست‌های سیستم</td>
+            </tr>
+          </table>
+
+          <h3 class="sub-title">چه زمانی تأیید انسانی ضروری است؟</h3>
+          <ul class="list-disc pr-6 space-y-2">
+            <li>وقتی عملیات مالی یا حقوقی انجام می‌شود.</li>
+            <li>وقتی داده حساس یا شخصی تغییر می‌کند.</li>
+            <li>وقتی اقدام بیرونی و دشوار برای بازگشت است.</li>
+            <li>وقتی تصمیم پیامد مهمی برای فرد یا سازمان دارد.</li>
+            <li>وقتی شواهد کافی نیستند یا منابع با هم تعارض دارند.</li>
+            <li>وقتی Agent از محدوده مجوز یا سیاست خود خارج می‌شود.</li>
+          </ul>
+
+          <h3 class="sub-title">نمونه فرایند تأیید انسانی</h3>
+          <div class="diagram">
+            <div class="space-y-3">
+              <div class="bg-indigo-50 border rounded-lg p-3 text-center font-bold">Agent درخواست را تحلیل می‌کند</div>
+              <div class="text-center text-slate-400">↓</div>
+              <div class="bg-indigo-50 border rounded-lg p-3 text-center">اطلاعات و اقدام پیشنهادی را آماده می‌کند</div>
+              <div class="text-center text-slate-400">↓</div>
+              <div class="bg-amber-50 border border-amber-300 rounded-lg p-3 text-center font-bold">درخواست تأیید انسانی
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-center">
+                  <strong class="text-emerald-800">تأیید</strong>
+                  <p class="text-sm">اجرای عملیات مجاز</p>
+                </div>
+                <div class="bg-rose-50 border border-rose-200 rounded-lg p-3 text-center">
+                  <strong class="text-rose-800">رد</strong>
+                  <p class="text-sm">توقف یا اصلاح برنامه</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="sub-title">طراحی درست Approval Workflow</h3>
+          <p>
+            درخواست تأیید باید اطلاعات کافی داشته باشد تا انسان بتواند تصمیم بگیرد.
+            نمایش یک دکمه «تأیید» بدون توضیح اقدام، ریسک و پیامد آن کافی نیست.
+          </p>
+          <ul class="list-disc pr-6 space-y-2">
+            <li>شرح دقیق عملیات پیشنهادی</li>
+            <li>داده‌ها یا منابعی که تصمیم بر اساس آن‌ها گرفته شده است</li>
+            <li>پیامدهای احتمالی و میزان برگشت‌پذیری</li>
+            <li>هویت Agent و شناسه وظیفه</li>
+            <li>گزینه‌های تأیید، رد یا درخواست اصلاح</li>
+            <li>ثبت تصمیم انسان در audit log</li>
+          </ul>
+
+          <div class="success">
+            <strong>اصل کلیدی:</strong>
+            تأیید انسانی باید پیش از اجرای عملیات حساس اتفاق بیفتد،
+            نه صرفاً بعد از اینکه Agent اقدام را انجام داده است.
+          </div>
+        </section>
+
+        <!-- CHAPTER 13 -->
+        <section id="chapter13" class="section-card">
+          <h2 class="section-title">۱۳. Agent Orchestration — هماهنگی و ارکستریشن عامل‌ها</h2>
+
+          <h3 class="sub-title">Orchestration چیست؟</h3>
+          <p>
+            Orchestration به مدیریت جریان کار میان Agentها، ابزارها و سرویس‌های مختلف گفته می‌شود.
+            در یک سیستم ساده، یک Agent ممکن است تمام کار را انجام دهد.
+            اما در سیستم‌های بزرگ‌تر، وظیفه می‌تواند میان چند Agent یا چند جزء تخصصی تقسیم شود.
+          </p>
+
+          <p>
+            برای مثال، یک سیستم تحلیل بازار ممکن است شامل عامل جست‌وجوی اطلاعات،
+            عامل تحلیل رقبا، عامل بررسی داده‌ها و عامل تهیه گزارش باشد.
+            Orchestrator مشخص می‌کند هر عامل چه کاری انجام دهد،
+            چه زمانی اجرا شود و خروجی آن به کدام بخش منتقل شود.
+          </p>
+
+          <h3 class="sub-title">چه زمانی به Multi-Agent نیاز داریم؟</h3>
+          <ul class="list-disc pr-6 space-y-2">
+            <li>وقتی وظیفه به حوزه‌های تخصصی مستقل تقسیم می‌شود.</li>
+            <li>وقتی چند فعالیت می‌توانند هم‌زمان اجرا شوند.</li>
+            <li>وقتی جداسازی دسترسی‌ها و مسئولیت‌ها مهم است.</li>
+            <li>وقتی یک Agent واحد بیش از حد پیچیده شده است.</li>
+            <li>وقتی لازم است نتایج چند تحلیل مستقل با هم ترکیب شوند.</li>
+          </ul>
+
+          <div class="warning">
+            Multi-Agent همیشه بهتر از Single-Agent نیست.
+            ارتباط میان Agentها، هزینه فراخوانی مدل، هماهنگی State،
+            مدیریت خطا و احتمال ناسازگاری خروجی‌ها می‌تواند پیچیدگی را افزایش دهد.
+          </div>
+
+          <h3 class="sub-title">الگوی ۱: Sequential Orchestration</h3>
+          <p>
+            در این الگو، Agentها یا مراحل به ترتیب اجرا می‌شوند.
+            خروجی یک مرحله، ورودی مرحله بعدی است.
+          </p>
+          <div class="diagram">
+            <div class="flow">
+              <div class="flow-box">Research Agent</div>
+              <div class="arrow">→</div>
+              <div class="flow-box">Analysis Agent</div>
+              <div class="arrow">→</div>
+              <div class="flow-box">Writer Agent</div>
+              <div class="arrow">→</div>
+              <div class="flow-box">Final Report</div>
+            </div>
+          </div>
+          <p><strong>کاربرد:</strong> تولید گزارش، پردازش اسناد، تحلیل و تهیه خروجی نهایی.</p>
+
+          <h3 class="sub-title">الگوی ۲: Parallel Orchestration</h3>
+          <p>
+            در این روش، چند Agent وظایف مستقل را هم‌زمان انجام می‌دهند.
+            پس از تکمیل، خروجی‌ها جمع‌آوری و ترکیب می‌شوند.
+          </p>
+          <div class="diagram">
+            <div class="bg-indigo-100 rounded-lg p-3 text-center font-bold">Orchestrator</div>
+            <div class="text-center text-slate-400 text-2xl">↓</div>
+            <div class="grid grid-cols-3 gap-2">
+              <div class="bg-white border rounded-lg p-3 text-center text-sm">Agent A<br>تحلیل قیمت</div>
+              <div class="bg-white border rounded-lg p-3 text-center text-sm">Agent B<br>تحلیل رقبا</div>
+              <div class="bg-white border rounded-lg p-3 text-center text-sm">Agent C<br>تحلیل بازار</div>
+            </div>
+            <div class="text-center text-slate-400 text-2xl">↓</div>
+            <div class="bg-emerald-100 rounded-lg p-3 text-center font-bold">Aggregator / Synthesizer</div>
+          </div>
+          <p><strong>کاربرد:</strong> بررسی هم‌زمان چند منبع یا تحلیل چند جنبه مستقل از یک مسئله.</p>
+
+          <h3 class="sub-title">الگوی ۳: Supervisor Pattern</h3>
+          <p>
+            یک Agent ناظر یا Supervisor وظایف را میان Agentهای تخصصی توزیع می‌کند.
+            Supervisor خروجی‌ها را بررسی می‌کند و ممکن است کار را دوباره به یک Agent ارجاع دهد.
+          </p>
+          <div class="diagram">
+            <div class="bg-indigo-100 border border-indigo-300 rounded-xl p-4 text-center font-bold">
+              Supervisor Agent
+            </div>
+            <div class="text-center text-slate-400 text-2xl">↓</div>
+            <div class="grid grid-cols-3 gap-2">
+              <div class="bg-white border rounded-lg p-3 text-center">Research Agent</div>
+              <div class="bg-white border rounded-lg p-3 text-center">Data Agent</div>
+              <div class="bg-white border rounded-lg p-3 text-center">Writing Agent</div>
+            </div>
+            <div class="text-center text-slate-400 text-2xl">↓</div>
+            <div class="bg-emerald-100 rounded-xl p-3 text-center font-bold">Supervisor reviews results</div>
+          </div>
+
+          <h3 class="sub-title">الگوی ۴: Handoff</h3>
+          <p>
+            در Handoff، یک Agent تشخیص می‌دهد که بخش بعدی کار باید به Agent تخصصی دیگری واگذار شود.
+            برای مثال، Agent عمومی درخواست را دریافت می‌کند و متوجه می‌شود
+            موضوع به امور مالی مربوط است؛ سپس کنترل را به Finance Agent می‌سپارد.
+          </p>
+
+          <h3 class="sub-title">الگوی ۵: Hierarchical Agents</h3>
+          <p>
+            در ساختار سلسله‌مراتبی، یک Agent سطح بالا هدف کلی را مدیریت می‌کند
+            و زیرعامل‌ها مسئول زیرهدف‌های مشخص هستند.
+            این ساختار برای پروژه‌های بزرگ مفید است،
+            اما به قراردادهای روشن میان عامل‌ها نیاز دارد.
+          </p>
+
+          <h3 class="sub-title">مقایسه الگوهای Orchestration</h3>
+          <table>
+            <tr>
+              <th>الگو</th>
+              <th>مزیت</th>
+              <th>چالش</th>
+            </tr>
+            <tr>
+              <td>Sequential</td>
+              <td>قابل فهم و قابل ردیابی</td>
+              <td>زمان اجرای بیشتر در زنجیره‌های طولانی</td>
+            </tr>
+            <tr>
+              <td>Parallel</td>
+              <td>سرعت بیشتر برای کارهای مستقل</td>
+              <td>هماهنگی و ترکیب خروجی‌ها</td>
+            </tr>
+            <tr>
+              <td>Supervisor</td>
+              <td>کنترل متمرکز و تخصیص پویا</td>
+              <td>وابستگی به کیفیت Supervisor</td>
+            </tr>
+            <tr>
+              <td>Handoff</td>
+              <td>تفکیک تخصص و مسئولیت</td>
+              <td>انتقال صحیح context و state</td>
+            </tr>
+            <tr>
+              <td>Hierarchical</td>
+              <td>مناسب اهداف پیچیده</td>
+              <td>پیچیدگی کنترل و مدیریت وابستگی‌ها</td>
+            </tr>
+          </table>
+
+          <h3 class="sub-title">قرارداد ارتباطی میان Agentها</h3>
+          <p>
+            عامل‌ها نباید صرفاً متن‌های آزاد و مبهم را به یکدیگر تحویل دهند.
+            بهتر است پیام‌ها و خروجی‌ها تا حد امکان ساختاریافته باشند.
+          </p>
+          <pre class="code-wrap"><code>{
+  "task_id": "market_report_01",
+  "from_agent": "research_agent",
+  "to_agent": "analysis_agent",
+  "status": "completed",
+  "output": {
+    "sources": 8,
+    "key_findings": [
+      "Demand increased in segment A",
+      "Competitor B reduced pricing"
+    ],
+    "uncertainties": [
+      "Limited data for segment C"
+    ]
+  }
+}</code></pre>
+
+          <h3 class="sub-title">چه چیزهایی باید توسط Orchestrator کنترل شوند؟</h3>
+          <ul class="list-disc pr-6 space-y-2">
+            <li>تخصیص وظیفه و انتخاب Agent مناسب</li>
+            <li>مدیریت وابستگی میان مراحل</li>
+            <li>جمع‌آوری و اعتبارسنجی خروجی‌ها</li>
+            <li>مدیریت timeout، retry و شکست Agentها</li>
+            <li>کنترل بودجه، تعداد فراخوانی‌ها و زمان اجرا</li>
+            <li>مدیریت State مشترک یا تبادل پیام</li>
+            <li>اعمال سیاست‌های دسترسی و تأیید انسانی</li>
+          </ul>
+        </section>
+
+        <!-- CHAPTER 14 -->
+        <section id="chapter14" class="section-card">
+          <h2 class="section-title">۱۴. ساخت یک Agent عملی از ابتدا تا انتها</h2>
+
+          <h3 class="sub-title">سناریو: دستیار هوشمند پشتیبانی مشتری</h3>
+          <p>
+            فرض کنید می‌خواهیم یک Agent بسازیم که درخواست‌های پشتیبانی را بررسی کند.
+            این Agent باید بتواند سفارش را پیدا کند، وضعیت آن را بخواند،
+            سیاست مرتبط را بازیابی کند و پاسخ مناسب تهیه کند.
+            اگر نیاز به بازپرداخت باشد، باید پیش از اجرای آن تأیید انسانی بگیرد.
+          </p>
+
+          <h3 class="sub-title">نیازمندی‌های سیستم</h3>
+          <table>
+            <tr>
+              <th>جزء</th>
+              <th>وظیفه</th>
+            </tr>
+            <tr>
+              <td>LLM</td>
+              <td>فهم درخواست و انتخاب اقدام بعدی</td>
+            </tr>
+            <tr>
+              <td>Order Tool</td>
+              <td>خواندن اطلاعات سفارش</td>
+            </tr>
+            <tr>
+              <td>Policy Retrieval</td>
+              <td>بازیابی سیاست‌های بازپرداخت</td>
+            </tr>
+            <tr>
+              <td>Memory</td>
+              <td>حفظ زمینه مکالمه</td>
+            </tr>
+            <tr>
+              <td>State Store</td>
+              <td>ثبت مرحله و نتیجه وظیفه</td>
+            </tr>
+            <tr>
+              <td>Approval Service</td>
+              <td>گرفتن تأیید برای اقدام حساس</td>
+            </tr>
+            <tr>
+              <td>Runtime</td>
+              <td>اجرای چرخه و کنترل ابزارها</td>
+            </tr>
+          </table>
+
+          <h3 class="sub-title">جریان اجرای سناریو</h3>
+          <ol class="list-decimal pr-6 space-y-2">
+            <li>کاربر درخواست خود را ارسال می‌کند.</li>
+            <li>Agent موضوع درخواست را تشخیص می‌دهد.</li>
+            <li>شناسه سفارش را دریافت یا در صورت لزوم درخواست می‌کند.</li>
+            <li>Order Tool وضعیت سفارش را بازیابی می‌کند.</li>
+            <li>Agent سیاست مربوط به مسئله را از دانش سازمانی می‌خواند.</li>
+            <li>Agent بررسی می‌کند چه گزینه‌هایی مجاز هستند.</li>
+            <li>اگر اقدام فقط خواندنی باشد، نتیجه را به کاربر اعلام می‌کند.</li>
+            <li>اگر اقدام حساسی مانند بازپرداخت لازم باشد، درخواست تأیید می‌سازد.</li>
+            <li>پس از تأیید معتبر، سرویس مجاز عملیات را اجرا می‌کند.</li>
+            <li>Agent نتیجه واقعی را بررسی و به کاربر گزارش می‌کند.</li>
+          </ol>
+
+          <h3 class="sub-title">نمونه کد آموزشی: ساختار ساده Agent</h3>
+          <pre class="code-wrap"><code>class SupportAgent:
+
+    def __init__(self, llm, tools, state_store):
+        self.llm = llm
+        self.tools = tools
+        self.state_store = state_store
+
+    def run(self, user_request, task_id):
+
+        state = self.state_store.load(task_id)
+
+        if state is None:
+            state = {
+                "task_id": task_id,
+                "goal": user_request,
+                "history": [],
+                "status": "running"
+            }
+
+        for step in range(8):
+
+            decision = self.llm.decide(
+                goal=state["goal"],
+                history=state["history"],
+                tools=self.tools.schemas()
+            )
+
+            if decision["type"] == "final":
+                state["status"] = "completed"
+                self.state_store.save(task_id, state)
+                return decision["answer"]
+
+            if decision["type"] == "tool_call":
+
+                tool_name = decision["tool_name"]
+                arguments = decision["arguments"]
+
+                self.tools.validate(
+                    tool_name,
+                    arguments
+                )
+
+                result = self.tools.execute(
+                    tool_name,
+                    arguments
+                )
+
+                state["history"].append({
+                    "tool": tool_name,
+                    "result": result
+                })
+
+                self.state_store.save(task_id, state)
+
+            elif decision["type"] == "needs_approval":
+
+                state["status"] = "needs_approval"
+                self.state_store.save(task_id, state)
+
+                return {
+                    "status": "needs_approval",
+                    "proposal": decision["proposal"]
+                }
+
+        state["status"] = "max_steps_reached"
+        self.state_store.save(task_id, state)
+
+        return {
+            "status": "incomplete",
+            "message": "Execution limit reached"
+        }</code></pre>
+
+          <div class="warning">
+            این کد یک اسکلت آموزشی است و مستقیماً برای محیط Production آماده نیست.
+            در نسخه واقعی باید احراز هویت، کنترل دسترسی، مدیریت خطا،
+            اعتبارسنجی دقیق schema، اجرای امن ابزارها، ذخیره پایدار،
+            جلوگیری از عملیات تکراری و کنترل انسانی اضافه شوند.
+            متد <code>llm.decide</code> نیز نمایشی است و به پیاده‌سازی واقعی مدل وابسته است.
+          </div>
+
+          <h3 class="sub-title">تست سناریوهای مختلف</h3>
+          <table>
+            <tr>
+              <th>سناریو</th>
+              <th>رفتار مورد انتظار</th>
+            </tr>
+            <tr>
+              <td>شناسه سفارش وجود ندارد</td>
+              <td>Agent باید سؤال تکمیلی بپرسد.</td>
+            </tr>
+            <tr>
+              <td>سفارش پیدا نمی‌شود</td>
+              <td>Agent نباید اطلاعات سفارش را حدس بزند.</td>
+            </tr>
+            <tr>
+              <td>سیاست بازپرداخت مبهم است</td>
+              <td>باید عدم قطعیت را اعلام یا ارجاع دهد.</td>
+            </tr>
+            <tr>
+              <td>ابزار خطای موقت می‌دهد</td>
+              <td>Retry محدود و کنترل‌شده انجام شود.</td>
+            </tr>
+            <tr>
+              <td>بازپرداخت نیازمند تأیید است</td>
+              <td>پیش از اجرا، تأیید معتبر گرفته شود.</td>
+            </tr>
+            <tr>
+              <td>تأیید رد می‌شود</td>
+              <td>عملیات اجرا نشود و وضعیت ثبت شود.</td>
+            </tr>
+            <tr>
+              <td>درخواست تکراری ارسال می‌شود</td>
+              <td>از اجرای دوباره اثر جانبی جلوگیری شود.</td>
+            </tr>
+          </table>
+        </section>
+
+        <!-- CHAPTER 15 -->
+        <section id="chapter15" class="section-card">
+          <h2 class="section-title">۱۵. ارزیابی، امنیت و چالش‌های Agentic AI</h2>
+
+          <h3 class="sub-title">چرا ارزیابی Agent دشوارتر از ارزیابی یک پاسخ متنی است؟</h3>
+          <p>
+            در یک سیستم ساده، ممکن است کیفیت پاسخ را بررسی کنیم.
+            اما در Agent، باید علاوه بر پاسخ نهایی، مسیر رسیدن به پاسخ را نیز ارزیابی کنیم:
+            آیا ابزار مناسب انتخاب شده؟ آیا ورودی ابزار صحیح بوده؟
+            آیا سیستم مجوز داشته؟ آیا هدف تکمیل شده؟
+            آیا عملیات ناخواسته‌ای رخ داده است؟
+          </p>
+
+          <h3 class="sub-title">معیارهای مهم ارزیابی</h3>
+          <table>
+            <tr>
+              <th>معیار</th>
+              <th>مفهوم</th>
+            </tr>
+            <tr>
+              <td>Task Success Rate</td>
+              <td>درصد وظایفی که به نتیجه مورد انتظار رسیده‌اند.</td>
+            </tr>
+            <tr>
+              <td>Tool Selection Accuracy</td>
+              <td>درستی انتخاب ابزار برای وضعیت فعلی.</td>
+            </tr>
+            <tr>
+              <td>Argument Accuracy</td>
+              <td>درستی پارامترهای ارسال‌شده به ابزار.</td>
+            </tr>
+            <tr>
+              <td>Step Efficiency</td>
+              <td>تعداد گام‌ها و میزان اقدام اضافی.</td>
+            </tr>
+            <tr>
+              <td>Policy Compliance</td>
+              <td>میزان رعایت سیاست‌ها و محدودیت‌ها.</td>
+            </tr>
+            <tr>
+              <td>Human Escalation Quality</td>
+              <td>درستی تشخیص موارد نیازمند انسان.</td>
+            </tr>
+            <tr>
+              <td>Latency</td>
+              <td>زمان لازم برای تکمیل وظیفه.</td>
+            </tr>
+            <tr>
+              <td>Cost</td>
+              <td>هزینه مدل، ابزار و زیرساخت.</td>
+            </tr>
+          </table>
+
+          <h3 class="sub-title">امنیت Agentic System</h3>
+          <p>
+            Agentها می‌توانند به داده‌ها و ابزارهای واقعی دسترسی داشته باشند.
+            به همین دلیل، یک اشتباه در طراحی آن‌ها ممکن است فراتر از تولید پاسخ اشتباه باشد
+            و به تغییر داده، افشای اطلاعات یا اجرای عملیات ناخواسته منجر شود.
+          </p>
+
+          <h4 class="font-bold mt-5">۱. Least Privilege</h4>
+          <p>
+            هر Agent باید فقط به ابزارها و داده‌هایی دسترسی داشته باشد
+            که برای وظیفه‌اش لازم‌اند.
+            عامل تحلیل گزارش نباید به ابزار حذف حساب مشتری دسترسی داشته باشد.
+          </p>
+
+          <h4 class="font-bold mt-5">۲. Prompt Injection</h4>
+          <p>
+            ممکن است محتوای بازیابی‌شده از یک سند، صفحه وب یا ایمیل شامل دستورهای مخرب باشد؛
+            برای مثال، به Agent بگوید دستورهای قبلی را نادیده بگیرد یا اطلاعات محرمانه را ارسال کند.
+            سیستم باید محتوای خارجی را داده غیرقابل اعتماد تلقی کند،
+            نه دستور معتبر برای تغییر سیاست‌ها.
+          </p>
+
+          <h4 class="font-bold mt-5">۳. Tool Permission</h4>
+          <p>
+            کنترل دسترسی باید در لایه اجرای ابزار اعمال شود.
+            نباید فرض کنیم که چون Agent در prompt گفته شده «فقط داده مجاز را بخوان»،
+            دیگر نیازی به کنترل دسترسی واقعی وجود ندارد.
+          </p>
+
+          <h4 class="font-bold mt-5">۴. Data Isolation</h4>
+          <p>
+            در سیستم‌های چندمستاجری، داده‌های هر سازمان یا کاربر باید جدا بمانند.
+            Agent نباید بتواند از طریق جست‌وجو یا حافظه مشترک به اطلاعات دیگران دسترسی پیدا کند.
+          </p>
+
+          <h4 class="font-bold mt-5">۵. Auditability</h4>
+          <p>
+            اقدامات مهم باید با شناسه وظیفه، هویت اجراکننده، ابزار، زمان،
+            وضعیت تأیید و نتیجه ثبت شوند.
+            اطلاعات حساس نباید بی‌دلیل در logها ذخیره شوند.
+          </p>
+
+          <h3 class="sub-title">Observability یا مشاهده‌پذیری</h3>
+          <p>
+            برای فهم رفتار Agent باید بتوانیم مسیر اجرای آن را مشاهده کنیم.
+            ثبت صرف پاسخ نهایی کافی نیست.
+            بهتر است trace هر وظیفه نشان دهد چه تصمیمی گرفته شده،
+            کدام ابزار فراخوانی شده، چقدر طول کشیده و چه نتیجه‌ای برگشته است.
+          </p>
+
+          <pre class="code-wrap"><code>{
+  "trace_id": "trace_1009",
+  "task_id": "task_9081",
+  "step": 3,
+  "component": "tool_runtime",
+  "tool_name": "get_order_status",
+  "duration_ms": 240,
+  "status": "success",
+  "retry_count": 0
+}</code></pre>
+
+          <h3 class="sub-title">چالش‌های رایج و راه‌حل‌ها</h3>
+          <table>
+            <tr>
+              <th>چالش</th>
+              <th>علت احتمالی</th>
+              <th>راهکار</th>
+            </tr>
+            <tr>
+              <td>Agent در حلقه می‌ماند</td>
+              <td>شرط پایان ضعیف</td>
+              <td>حد گام، timeout و تشخیص تکرار</td>
+            </tr>
+            <tr>
+              <td>ابزار اشتباه انتخاب می‌شود</td>
+              <td>توضیح مبهم ابزارها</td>
+              <td>schema و توضیح دقیق، تست انتخاب ابزار</td>
+            </tr>
+            <tr>
+              <td>پارامتر اشتباه است</td>
+              <td>ورودی ناقص یا hallucination</td>
+              <td>اعتبارسنجی schema و داده مرجع</td>
+            </tr>
+            <tr>
+              <td>هزینه زیاد است</td>
+              <td>فراخوانی‌های بیش از حد</td>
+              <td>سقف بودجه، cache و محدودیت گام</td>
+            </tr>
+            <tr>
+              <td>وظیفه نیمه‌تمام می‌ماند</td>
+              <td>State پایدار وجود ندارد</td>
+              <td>Checkpoint و ذخیره وضعیت</td>
+            </tr>
+            <tr>
+              <td>اقدام ناخواسته اجرا می‌شود</td>
+              <td>کنترل مجوز ناکافی</td>
+              <td>Policy Engine و تأیید انسانی</td>
+            </tr>
+            <tr>
+              <td>Agent اطلاعات اشتباه به خاطر می‌سپارد</td>
+              <td>حافظه بدون اعتبارسنجی</td>
+              <td>ثبت منبع، تاریخ و اعتبار اطلاعات</td>
+            </tr>
+          </table>
+        </section>
+
+        <!-- ADVANCED -->
+        <section class="section-card">
+          <h2 class="section-title">۱۶. الگوهای پیشرفته در Agentic AI</h2>
+
+          <h3 class="sub-title">۱. ReAct</h3>
+          <p>
+            ReAct نام الگویی است که Reasoning و Action را در یک چرخه به هم پیوند می‌دهد.
+            سیستم با توجه به وضعیت، اقدام بعدی را انتخاب می‌کند،
+            نتیجه اقدام را دریافت می‌کند و بر اساس مشاهده جدید ادامه می‌دهد.
+            این الگو برای وظایفی مفید است که نیاز به تعامل مرحله‌ای با ابزارها دارند.
+          </p>
+          <pre class="code-wrap"><code>Question
+  ↓
+Reason about next step
+  ↓
+Choose an action
+  ↓
+Execute tool
+  ↓
+Observe result
+  ↓
+Reason again
+  ↓
+Final response</code></pre>
+
+          <h3 class="sub-title">۲. Reflection</h3>
+          <p>
+            در الگوی Reflection، سیستم خروجی یا اقدام قبلی خود را دوباره بررسی می‌کند.
+            برای مثال، Agent پس از تهیه گزارش، آن را از نظر کامل بودن،
+            سازگاری اعداد و رعایت قالب ارزیابی می‌کند.
+            اگر ایرادی پیدا شود، خروجی را اصلاح می‌کند.
+          </p>
+
+          <h3 class="sub-title">۳. Planning-based Agents</h3>
+          <p>
+            در این رویکرد، Agent پیش از اجرا برنامه‌ای از مراحل مورد نیاز می‌سازد.
+            سپس هر مرحله را اجرا و نتیجه را با برنامه مقایسه می‌کند.
+            برنامه ممکن است ثابت باشد یا با مشاهده اطلاعات جدید اصلاح شود.
+          </p>
+
+          <h3 class="sub-title">۴. RAG-based Agents</h3>
+          <p>
+            این عامل‌ها هنگام تصمیم‌گیری یا پاسخ‌گویی از یک سامانه بازیابی دانش استفاده می‌کنند.
+            برای مثال، Agent پشتیبانی ابتدا سیاست بازپرداخت را بازیابی می‌کند
+            و سپس بر اساس آن تصمیم می‌گیرد.
+            در این معماری، RAG منبع اطلاعات است و Agent چرخه تصمیم و اقدام را مدیریت می‌کند.
+          </p>
+
+          <h3 class="sub-title">۵. Multi-Agent Debate یا Review</h3>
+          <p>
+            چند Agent ممکن است یک مسئله را از زاویه‌های مختلف بررسی کنند.
+            سپس یک Agent دیگر یا یک مرحله ارزیابی، اختلاف‌ها و شواهد را مقایسه می‌کند.
+            این روش می‌تواند برای بازبینی مفید باشد،
+            اما توافق چند Agent به معنی درست بودن نتیجه نیست؛
+            همه آن‌ها ممکن است از یک داده ناقص یا فرض اشتباه استفاده کنند.
+          </p>
+
+          <h3 class="sub-title">۶. Event-driven Agents</h3>
+          <p>
+            در سیستم‌های رویدادمحور، Agent با وقوع یک رویداد فعال می‌شود؛
+            مثلاً ثبت سفارش جدید، دریافت پیام، تغییر وضعیت یک پرونده
+            یا عبور یک شاخص از حد مشخص.
+            این معماری برای پایش و عملیات تکرارشونده کاربرد دارد.
+          </p>
+
+          <h3 class="sub-title">۷. Multimodal Agents</h3>
+          <p>
+            عامل چندوجهی می‌تواند با انواع مختلف داده مانند متن، تصویر،
+            صوت یا ویدئو کار کند؛ البته قابلیت‌های دقیق به مدل‌ها و ابزارهای در دسترس وابسته است.
+            برای مثال، Agent تعمیر و نگهداری ممکن است تصویر یک قطعه را تحلیل کند،
+            سوابق تعمیر را بخواند و یک دستورالعمل مرتبط را بازیابی کند.
+          </p>
+
+          <h3 class="sub-title">۸. Agentic Workflow در برابر Agent کاملاً پویا</h3>
+          <p>
+            همه فرایندهای عامل‌محور نیازمند تصمیم‌گیری کاملاً آزاد نیستند.
+            گاهی یک Workflow مشخص با چند نقطه تصمیم‌گیری، امن‌تر و قابل پیش‌بینی‌تر است.
+            برای کارهای حساس، می‌توان مسیر کلی را از پیش تعیین کرد
+            و فقط انتخاب‌های محدود را به مدل سپرد.
+          </p>
+        </section>
+
+        <!-- DESIGN -->
+        <section class="section-card">
+          <h2 class="section-title">۱۷. چگونه یک Agent Production-ready طراحی کنیم؟</h2>
+
+          <p>
+            ساخت یک نمونه آزمایشی Agent نسبتاً ساده است؛
+            اما تبدیل آن به یک سرویس قابل اعتماد نیازمند طراحی دقیق است.
+            باید از ابتدا به رفتارهای شکست، امنیت، کنترل هزینه و نگهداری فکر کرد.
+          </p>
+
+          <h3 class="sub-title">چک‌لیست طراحی</h3>
+          <div class="space-y-3">
+            <label class="flex gap-3 items-start"><input type="checkbox" class="mt-2"> <span>هدف و معیار موفقیت Agent
+                به‌صورت روشن تعریف شده‌اند.</span></label>
+            <label class="flex gap-3 items-start"><input type="checkbox" class="mt-2"> <span>وظایف و مسئولیت‌های Agent
+                مشخص‌اند.</span></label>
+            <label class="flex gap-3 items-start"><input type="checkbox" class="mt-2"> <span>ابزارها schema ورودی و
+                خروجی مشخص دارند.</span></label>
+            <label class="flex gap-3 items-start"><input type="checkbox" class="mt-2"> <span>مجوزها در زمان اجرای ابزار
+                کنترل می‌شوند.</span></label>
+            <label class="flex gap-3 items-start"><input type="checkbox" class="mt-2"> <span>برای عملیات حساس تأیید
+                انسانی وجود دارد.</span></label>
+            <label class="flex gap-3 items-start"><input type="checkbox" class="mt-2"> <span>شرط توقف، حداکثر گام و
+                timeout تعریف شده‌اند.</span></label>
+            <label class="flex gap-3 items-start"><input type="checkbox" class="mt-2"> <span>State به شکل پایدار ذخیره
+                می‌شود.</span></label>
+            <label class="flex gap-3 items-start"><input type="checkbox" class="mt-2"> <span>Retry و Idempotency برای
+                عملیات لازم پیاده‌سازی شده‌اند.</span></label>
+            <label class="flex gap-3 items-start"><input type="checkbox" class="mt-2"> <span>خطاها، تصمیم‌ها و فراخوانی
+                ابزارها قابل مشاهده‌اند.</span></label>
+            <label class="flex gap-3 items-start"><input type="checkbox" class="mt-2"> <span>سناریوهای ناموفق و مخرب
+                آزمایش شده‌اند.</span></label>
+            <label class="flex gap-3 items-start"><input type="checkbox" class="mt-2"> <span>سیاست نگهداری و حذف داده‌ها
+                مشخص است.</span></label>
+            <label class="flex gap-3 items-start"><input type="checkbox" class="mt-2"> <span>هزینه و زمان اجرای هر وظیفه
+                پایش می‌شود.</span></label>
+          </div>
+
+          <h3 class="sub-title">معماری پیشنهادی برای شروع</h3>
+          <p>
+            برای اولین پروژه، بهتر است با یک Agent و تعداد محدودی ابزار شروع کنید.
+            پس از جمع‌آوری داده ارزیابی و مشاهده محدودیت‌های واقعی،
+            می‌توانید بخش‌هایی را به Agentهای تخصصی مستقل تبدیل کنید.
+          </p>
+          <div class="diagram">
+            <div class="bg-slate-800 text-white rounded-xl p-4 text-center font-bold">Client / User</div>
+            <div class="text-center text-slate-400 text-2xl">↓</div>
+            <div class="bg-indigo-100 rounded-xl p-4 text-center font-bold">Agent Runtime</div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3">
+              <div class="bg-white border rounded-lg p-3 text-center text-sm">LLM</div>
+              <div class="bg-white border rounded-lg p-3 text-center text-sm">Tools</div>
+              <div class="bg-white border rounded-lg p-3 text-center text-sm">Memory</div>
+              <div class="bg-white border rounded-lg p-3 text-center text-sm">State DB</div>
+            </div>
+            <div class="text-center text-slate-400 text-2xl">↓</div>
+            <div class="bg-emerald-100 rounded-xl p-4 text-center font-bold">Policy / Approval / Observability</div>
+          </div>
+        </section>
+
+        <!-- EXERCISES -->
+        <section class="section-card">
+          <h2 class="section-title">۱۸. تمرین‌های عملی برای تسلط بر Agentic AI</h2>
+
+          <h3 class="sub-title">تمرین ۱: طراحی Agent ساده</h3>
+          <p><strong>هدف:</strong> یک Agent طراحی کنید که بتواند اطلاعات آب‌وهوا را برای یک شهر دریافت کند و خلاصه‌ای از
+            وضعیت ارائه دهد.</p>
+          <p><strong>کارهایی که باید مشخص کنید:</strong></p>
+          <ul class="list-disc pr-6">
+            <li>هدف Agent چیست؟</li>
+            <li>چه ابزاری لازم دارد؟</li>
+            <li>ورودی ابزار چیست؟</li>
+            <li>خروجی ابزار چه ساختاری دارد؟</li>
+            <li>اگر شهر مشخص نشده باشد، چه می‌کند؟</li>
+            <li>شرط پایان چرخه چیست؟</li>
+          </ul>
+
+          <h3 class="sub-title">تمرین ۲: طراحی حافظه</h3>
+          <p>
+            یک Agent برنامه‌ریز پروژه طراحی کنید.
+            مشخص کنید کدام اطلاعات باید در حافظه کوتاه‌مدت،
+            کدام اطلاعات در حافظه بلندمدت و کدام اطلاعات در State ذخیره شوند.
+          </p>
+
+          <h3 class="sub-title">تمرین ۳: طراحی Human-in-the-loop</h3>
+          <p>
+            Agentی بسازید که بتواند پیش‌نویس ایمیل را تهیه کند،
+            اما برای ارسال آن تأیید انسانی بگیرد.
+            طراحی کنید که چه اطلاعاتی باید در صفحه تأیید نمایش داده شود.
+          </p>
+
+          <h3 class="sub-title">تمرین ۴: Multi-Agent Orchestration</h3>
+          <p>
+            یک سیستم تولید گزارش بازار طراحی کنید که شامل Research Agent،
+            Analysis Agent و Writing Agent باشد.
+            مشخص کنید داده‌ها چگونه میان عامل‌ها منتقل می‌شوند،
+            چه کسی مسئول کنترل کیفیت است و در صورت شکست یک عامل چه اتفاقی می‌افتد.
+          </p>
+
+          <h3 class="sub-title">تمرین ۵: تحلیل خطا</h3>
+          <p>
+            فرض کنید Agent سه بار پشت سر هم یک ابزار را با پارامتر اشتباه فراخوانی می‌کند.
+            علت‌های احتمالی را بررسی کنید و راهکارهایی برای جلوگیری از تکرار این خطا پیشنهاد دهید.
+          </p>
+        </section>
+
+        <!-- QUIZ -->
+        <section id="quiz" class="section-card">
+          <h2 class="section-title">۱۹. آزمون ارزیابی دانش</h2>
+          <p class="mb-5">برای هر سؤال یک گزینه انتخاب کن و در پایان نتیجه را ببین.</p>
+
+          <div id="quizContainer"></div>
+          <button onclick="gradeQuiz()"
+            class="no-print mt-5 bg-indigo-700 hover:bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold">
+            محاسبه نتیجه آزمون
+          </button>
+          <button onclick="resetQuiz()"
+            class="no-print mt-5 mr-2 border border-slate-300 px-6 py-3 rounded-xl font-bold">
+            شروع مجدد
+          </button>
+          <div id="quizResult" class="mt-6 text-lg font-bold"></div>
+        </section>
+
+        <!-- GLOSSARY -->
+        <section id="glossary" class="section-card">
+          <h2 class="section-title">۲۰. واژه‌نامه تخصصی Agentic AI</h2>
+          <table>
+            <tr>
+              <th>اصطلاح</th>
+              <th>معنی</th>
+            </tr>
+            <tr>
+              <td>Agent</td>
+              <td>عامل نرم‌افزاری هدف‌محور که تصمیم و اقدام انجام می‌دهد.</td>
+            </tr>
+            <tr>
+              <td>Agentic AI</td>
+              <td>رویکرد طراحی سیستم‌های هوش مصنوعی با قابلیت اقدام و پیگیری هدف.</td>
+            </tr>
+            <tr>
+              <td>Agentic System</td>
+              <td>سیستم کامل شامل Agentها، ابزارها، حافظه و کنترل‌ها.</td>
+            </tr>
+            <tr>
+              <td>Agent Loop</td>
+              <td>چرخه مشاهده، تصمیم، اقدام و ارزیابی.</td>
+            </tr>
+            <tr>
+              <td>Reasoning</td>
+              <td>تحلیل مسئله و انتخاب اقدام یا پاسخ.</td>
+            </tr>
+            <tr>
+              <td>Planning</td>
+              <td>تقسیم هدف به مراحل و تعیین ترتیب اجرا.</td>
+            </tr>
+            <tr>
+              <td>Tool Calling</td>
+              <td>درخواست ساختاریافته برای اجرای یک ابزار.</td>
+            </tr>
+            <tr>
+              <td>Observation</td>
+              <td>نتیجه یا اطلاعاتی که پس از یک اقدام دریافت می‌شود.</td>
+            </tr>
+            <tr>
+              <td>Memory</td>
+              <td>اطلاعات ذخیره‌شده برای استفاده در مراحل یا وظایف دیگر.</td>
+            </tr>
+            <tr>
+              <td>Short-term Memory</td>
+              <td>حافظه مربوط به مکالمه یا وظیفه جاری.</td>
+            </tr>
+            <tr>
+              <td>Long-term Memory</td>
+              <td>حافظه برای نگهداری اطلاعات مفید در بازه طولانی‌تر.</td>
+            </tr>
+            <tr>
+              <td>State</td>
+              <td>وضعیت جاری یک Agent یا وظیفه.</td>
+            </tr>
+            <tr>
+              <td>Goal</td>
+              <td>نتیجه مطلوبی که Agent باید به آن برسد.</td>
+            </tr>
+            <tr>
+              <td>Autonomy</td>
+              <td>میزان استقلال Agent در انتخاب و اجرای مراحل.</td>
+            </tr>
+            <tr>
+              <td>Human-in-the-loop</td>
+              <td>مشارکت انسان در تصمیم یا اجرای فرایند.</td>
+            </tr>
+            <tr>
+              <td>Orchestration</td>
+              <td>هماهنگی و مدیریت جریان کار میان Agentها و ابزارها.</td>
+            </tr>
+            <tr>
+              <td>Handoff</td>
+              <td>واگذاری کنترل یا وظیفه از یک Agent به Agent دیگر.</td>
+            </tr>
+            <tr>
+              <td>Supervisor Agent</td>
+              <td>عامل ناظر که کار را میان عامل‌های دیگر توزیع و کنترل می‌کند.</td>
+            </tr>
+            <tr>
+              <td>Guardrails</td>
+              <td>محدودیت‌ها و کنترل‌های ایمنی سیستم.</td>
+            </tr>
+            <tr>
+              <td>Idempotency</td>
+              <td>ویژگی‌ای که اجرای تکراری یک درخواست را از ایجاد اثر تکراری ناخواسته بازمی‌دارد.</td>
+            </tr>
+            <tr>
+              <td>Checkpoint</td>
+              <td>نقطه ذخیره وضعیت برای ادامه اجرای وظیفه.</td>
+            </tr>
+            <tr>
+              <td>Reflection</td>
+              <td>بازبینی و ارزیابی خروجی یا اقدام قبلی.</td>
+            </tr>
+            <tr>
+              <td>ReAct</td>
+              <td>الگوی پیوند Reasoning و Action در چرخه عامل.</td>
+            </tr>
+            <tr>
+              <td>Multi-Agent</td>
+              <td>سیستمی متشکل از چند عامل با وظایف یا نقش‌های متفاوت.</td>
+            </tr>
+          </table>
+        </section>
+
+        <section class="section-card">
+          <h2 class="section-title">جمع‌بندی نهایی</h2>
+          <p>
+            Agentic AI را می‌توان مرحله‌ای فراتر از تولید پاسخ متنی دانست:
+            سیستمی که هدف را دریافت می‌کند، وضعیت را می‌فهمد،
+            برای رسیدن به هدف برنامه می‌ریزد، ابزار مناسب را فراخوانی می‌کند،
+            نتیجه را مشاهده می‌کند و در صورت نیاز مسیر خود را تغییر می‌دهد.
+          </p>
+          <p>
+            برای ساخت یک Agent قابل اعتماد، صرفاً انتخاب یک مدل قدرتمند کافی نیست.
+            باید معماری مناسب، ابزارهای خوش‌تعریف، حافظه و State قابل کنترل،
+            شرایط توقف، محدودیت دسترسی، تأیید انسانی و روش ارزیابی دقیق طراحی شوند.
+          </p>
+
+          <div class="success">
+            <strong>نکته کلیدی این دوره:</strong>
+            یک Agent خوب فقط نمی‌داند چه کاری می‌تواند انجام دهد؛
+            باید بداند چه کاری را مجاز است انجام دهد،
+            چگونه نتیجه آن را بررسی کند و چه زمانی باید متوقف شود یا از انسان کمک بگیرد.
+          </div>
+        </section>
+
+        
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-nav">
+      <a href="index.html">نقشه راه</a>
+      <a href="5.html">فصل قبل</a>
+      <a href="#chapter1">فهرست مطالب</a>
+      <a href="#">بالای صفحه ↑</a>
+    </div>
+    Agentic AI Fundamentals · Chapter 06
+    <br>
+    <strong>M_Ai</strong>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      try { localStorage.setItem('m-ai-theme', theme); } catch (e) {}
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#10101e' : '#f5f5fb');
+    }
+    try {
+      const saved = localStorage.getItem('m-ai-theme');
+      if (saved === 'light' || saved === 'dark') setTheme(saved);
+    } catch (e) {}
+    themeToggle.addEventListener('click', () => {
+      setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      const el = document.getElementById('progress');
+      if (el) el.style.width = progress + '%';
+    });
+  </script>
+<script>
+
+    const questions = [
+      {
+        q: "مهم‌ترین تفاوت یک AI Agent با یک سیستم پاسخ‌گوی ساده چیست؟",
+        options: [
+          "Agent همیشه از مدل بزرگ‌تری استفاده می‌کند",
+          "Agent می‌تواند هدف را دنبال کند و در چرخه تصمیم و اقدام قرار بگیرد",
+          "Agent فقط به صورت آفلاین کار می‌کند",
+          "Agent نیازی به ورودی کاربر ندارد"
+        ],
+        answer: 1,
+        explanation: "ویژگی مهم Agent، توانایی دنبال کردن هدف از طریق تصمیم‌گیری، اقدام و مشاهده نتیجه است."
+      },
+      {
+        q: "کدام گزینه تعریف مناسب‌تری از Agentic System است؟",
+        options: [
+          "یک prompt طولانی",
+          "فقط یک مدل زبانی",
+          "سیستمی شامل Agentها، ابزارها، وضعیت، حافظه و کنترل‌ها",
+          "یک پایگاه داده برداری"
+        ],
+        answer: 2,
+        explanation: "Agentic System یک معماری کامل است و می‌تواند چندین جزء نرم‌افزاری را هماهنگ کند."
+      },
+      {
+        q: "کدام مورد یکی از مراحل اصلی Agent Loop است؟",
+        options: [
+          "Observe",
+          "Compile",
+          "Train",
+          "Deploy"
+        ],
+        answer: 0,
+        explanation: "Observe مرحله دریافت وضعیت و نتیجه اقدامات است و در چرخه تصمیم‌گیری نقش دارد."
+      },
+      {
+        q: "Planning در یک Agent چه کاری انجام می‌دهد؟",
+        options: [
+          "فقط متن پاسخ را زیباتر می‌کند",
+          "هدف را به مراحل و زیرهدف‌ها تقسیم می‌کند",
+          "مدل را دوباره آموزش می‌دهد",
+          "مجوزهای سیستم‌عامل را حذف می‌کند"
+        ],
+        answer: 1,
+        explanation: "برنامه‌ریزی، مسیر رسیدن از وضعیت فعلی به هدف را به گام‌های قابل اجرا تبدیل می‌کند."
+      },
+      {
+        q: "Tool Calling معمولاً به چه معناست؟",
+        options: [
+          "مدل به صورت خودکار کد را روی هر سروری اجرا می‌کند",
+          "مدل درخواست ساختاریافته‌ای برای اجرای یک ابزار تولید می‌کند",
+          "مدل حافظه خود را حذف می‌کند",
+          "کاربر باید تمام کد ابزار را بنویسد"
+        ],
+        answer: 1,
+        explanation: "مدل درخواست فراخوانی ابزار را تولید می‌کند؛ Runtime باید آن را اعتبارسنجی و اجرا کند."
+      },
+      {
+        q: "کدام مورد نمونه‌ای از Working Memory است؟",
+        options: [
+          "مرحله فعلی یک وظیفه",
+          "یک قانون عمومی دانش سازمانی",
+          "مدل زبانی پایه",
+          "نسخه سیستم‌عامل"
+        ],
+        answer: 0,
+        explanation: "Working Memory اطلاعات مورد نیاز برای پیشبرد وظیفه جاری را نگه می‌دارد."
+      },
+      {
+        q: "تفاوت اصلی State و Memory چیست؟",
+        options: [
+          "هیچ تفاوتی ندارند",
+          "State وضعیت جاری وظیفه را نشان می‌دهد؛ Memory اطلاعات قابل استفاده از گذشته را نگه می‌دارد",
+          "Memory فقط برای ابزارهاست",
+          "State فقط برای آموزش مدل استفاده می‌شود"
+        ],
+        answer: 1,
+        explanation: "این دو مفهوم مرتبط‌اند اما یکی نیستند؛ State روی وضعیت جاری و Memory روی نگهداری اطلاعات تمرکز دارد."
+      },
+      {
+        q: "Idempotency در اجرای ابزارها چه اهمیتی دارد؟",
+        options: [
+          "افزایش طول prompt",
+          "جلوگیری از اثر تکراری ناخواسته هنگام اجرای دوباره درخواست",
+          "افزایش تعداد Agentها",
+          "حذف نیاز به احراز هویت"
+        ],
+        answer: 1,
+        explanation: "این ویژگی به‌ویژه در عملیات مالی یا نوشتنی برای جلوگیری از اجرای تکراری مهم است."
+      },
+      {
+        q: "کدام مورد نمونه‌ای از Human-in-the-loop است؟",
+        options: [
+          "Agent بدون محدودیت ایمیل ارسال کند",
+          "انسان پیش از اجرای بازپرداخت، آن را تأیید کند",
+          "Agent تاریخچه را حذف کند",
+          "مدل ابزارها را بدون بررسی اجرا کند"
+        ],
+        answer: 1,
+        explanation: "در HITL انسان در بخشی از تصمیم یا اجرا مشارکت می‌کند."
+      },
+      {
+        q: "در Parallel Orchestration چه اتفاقی می‌افتد؟",
+        options: [
+          "همه مراحل الزاماً پشت سر هم اجرا می‌شوند",
+          "چند وظیفه مستقل می‌توانند هم‌زمان اجرا شوند",
+          "فقط یک Agent وجود دارد",
+          "هیچ خروجی‌ای ترکیب نمی‌شود"
+        ],
+        answer: 1,
+        explanation: "وظایف مستقل به شکل هم‌زمان اجرا می‌شوند و نتایج در مرحله بعد ترکیب می‌شوند."
+      },
+      {
+        q: "چرا کنترل دسترسی نباید فقط در prompt تعریف شود؟",
+        options: [
+          "چون prompt همیشه کوتاه است",
+          "چون مدل جایگزین کنترل امنیتی واقعی و قابل اعمال در زمان اجرا نیست",
+          "چون ابزارها نباید schema داشته باشند",
+          "چون Agent نباید حافظه داشته باشد"
+        ],
+        answer: 1,
+        explanation: "کنترل دسترسی باید در لایه اجرای ابزار و سرویس مقصد اعمال شود."
+      },
+      {
+        q: "کدام طراحی برای یک عملیات حساس مناسب‌تر است؟",
+        options: [
+          "اجرای آزادانه توسط Agent",
+          "حذف logها برای افزایش سرعت",
+          "اعتبارسنجی، کنترل مجوز، تأیید انسانی و ثبت رخداد",
+          "افزایش تعداد ابزارهای در دسترس"
+        ],
+        answer: 2,
+        explanation: "عملیات حساس به کنترل چندلایه، تأیید مناسب و قابلیت ممیزی نیاز دارد."
+      }
+    ];
+
+    function renderQuiz() {
+      const container = document.getElementById("quizContainer");
+      container.innerHTML = "";
+
+      questions.forEach((item, index) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "border-b border-slate-200 py-5";
+
+        const title = document.createElement("h3");
+        title.className = "font-bold mb-3";
+        title.textContent = (index + 1) + ". " + item.q;
+        wrapper.appendChild(title);
+
+        item.options.forEach((option, optionIndex) => {
+          const label = document.createElement("label");
+          label.className = "quiz-option";
+
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = "q" + index;
+          input.value = optionIndex;
+
+          const span = document.createElement("span");
+          span.textContent = option;
+
+          label.appendChild(input);
+          label.appendChild(span);
+          wrapper.appendChild(label);
+        });
+
+        const explanation = document.createElement("div");
+        explanation.className = "quiz-explanation";
+        explanation.id = "explanation" + index;
+        explanation.textContent = item.explanation;
+        wrapper.appendChild(explanation);
+
+        container.appendChild(wrapper);
+      });
+    }
+
+    function gradeQuiz() {
+      let score = 0;
+      let unanswered = 0;
+
+      questions.forEach((item, index) => {
+        const selected = document.querySelector('input[name="q' + index + '"]:checked');
+        const labels = document.querySelectorAll('input[name="q' + index + '"]');
+
+        labels.forEach((input, optionIndex) => {
+          const label = input.closest("label");
+          label.classList.remove("correct", "incorrect");
+
+          if (optionIndex === item.answer) {
+            label.classList.add("correct");
+          }
+          if (input.checked && optionIndex !== item.answer) {
+            label.classList.add("incorrect");
+          }
+        });
+
+        if (!selected) {
+          unanswered++;
+        } else if (Number(selected.value) === item.answer) {
+          score++;
+        }
+
+        document.getElementById("explanation" + index).style.display = "block";
+      });
+
+      const percentage = Math.round((score / questions.length) * 100);
+      let message = "";
+
+      if (percentage >= 90) {
+        message = "عالی! درک بسیار خوبی از مفاهیم Agentic AI داری.";
+      } else if (percentage >= 70) {
+        message = "خوب است! مفاهیم اصلی را یاد گرفته‌ای؛ چند بخش را مرور کن.";
+      } else if (percentage >= 50) {
+        message = "پایه‌ها را تا حدی می‌دانی؛ پیشنهاد می‌شود فصل‌های معماری، حافظه و Orchestration را دوباره بخوانی.";
+      } else {
+        message = "بهتر است یک بار دیگر جزوه را مرور کنی و سپس آزمون را تکرار کنی.";
+      }
+
+      document.getElementById("quizResult").innerHTML =
+        "امتیاز: " + score + " از " + questions.length +
+        " (" + percentage + "%)<br>" +
+        "سؤال‌های بی‌پاسخ: " + unanswered + "<br>" +
+        message;
+    }
+
+    function resetQuiz() {
+      renderQuiz();
+      document.getElementById("quizResult").textContent = "";
+    }
+
+    renderQuiz();
+  
+</script>
+</body>
+</html>

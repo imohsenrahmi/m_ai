@@ -1,0 +1,3311 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10101e">
+  <meta name="description" content="آموزش جامع مدل‌های زبانی بزرگ (LLM)؛ از Token و Transformer تا RAG و Hallucination">
+  <title>Understanding Large Language Models | آموزش جامع LLM — M_Ai</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Vazirmatn', 'sans-serif'] },
+          colors: {
+            ink: '#17233d',
+            brand: '#6558d3',
+            accent: '#12a89d'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --purple: #9275f5;
+      --purple-strong: #7657e8;
+      --cyan: #51cbdc;
+      --green: #49c9a3;
+      --radius: 18px;
+      --transition: .28s ease;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #10101e;
+      --bg-secondary: #151529;
+      --surface: #1b1b32;
+      --surface-hover: #242440;
+      --surface-soft: rgba(255, 255, 255, .045);
+      --text: #f5f3ff;
+      --text-secondary: #c3c1d5;
+      --muted: #9695ae;
+      --border: rgba(255, 255, 255, .09);
+      --border-strong: rgba(255, 255, 255, .15);
+      --header-bg: rgba(16, 16, 30, .92);
+      --shadow: 0 18px 50px rgba(0, 0, 0, .24);
+      --callout-bg: rgba(146, 117, 245, .1);
+      --callout-border: rgba(146, 117, 245, .45);
+      --tip-bg: rgba(81, 203, 220, .08);
+      --tip-border: rgba(81, 203, 220, .4);
+      --warning-bg: rgba(217, 119, 6, .1);
+      --warning-border: rgba(217, 119, 6, .45);
+      --code-bg: #0c0c18;
+      --code-text: #b8f0d8;
+      --diagram-bg: rgba(146, 117, 245, .1);
+      --diagram-border: rgba(146, 117, 245, .28);
+      --table-head: rgba(146, 117, 245, .12);
+      --table-alt: rgba(255, 255, 255, .03);
+      --tag-bg: rgba(146, 117, 245, .15);
+      --tag-text: #c4b5fd;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .22), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .12), transparent 45%);
+      --progress-track: rgba(255, 255, 255, .08);
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f5fb;
+      --bg-secondary: #eeeefa;
+      --surface: #fff;
+      --surface-hover: #f7f5ff;
+      --surface-soft: rgba(102, 78, 190, .045);
+      --text: #202039;
+      --text-secondary: #55556f;
+      --muted: #77778f;
+      --border: rgba(40, 35, 90, .10);
+      --border-strong: rgba(40, 35, 90, .17);
+      --header-bg: rgba(255, 255, 255, .92);
+      --shadow: 0 18px 50px rgba(45, 35, 100, .09);
+      --callout-bg: #f5f3ff;
+      --callout-border: #6658e8;
+      --tip-bg: #f0fdfa;
+      --tip-border: #0d9488;
+      --warning-bg: #fffbeb;
+      --warning-border: #d97706;
+      --code-bg: #111827;
+      --code-text: #d1fae5;
+      --diagram-bg: #eef2ff;
+      --diagram-border: #c7d2fe;
+      --table-head: #f3f4f6;
+      --table-alt: #fafafa;
+      --tag-bg: #ede9fe;
+      --tag-text: #5b21b6;
+      --hero-overlay: radial-gradient(ellipse at 20% 0%, rgba(146, 117, 245, .15), transparent 50%),
+                       radial-gradient(ellipse at 80% 100%, rgba(81, 203, 220, .1), transparent 45%);
+      --progress-track: rgba(40, 35, 90, .08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.9;
+      transition: background .35s, color .35s;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    .progress-bar {
+      height: 3px;
+      background: var(--progress-track);
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      z-index: 200;
+    }
+    #progress {
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      transition: width .1s linear;
+    }
+
+    /* HEADER */
+    .site-header {
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--header-bg);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(146, 117, 245, .24);
+    }
+    .site-header::after {
+      content: "";
+      position: absolute;
+      bottom: -1px; right: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent 3%, rgba(81, 203, 220, .35) 25%, rgba(146, 117, 245, .85) 50%, rgba(81, 203, 220, .35) 75%, transparent 97%);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      direction: ltr;
+      flex-shrink: 0;
+    }
+    .brand-mark {
+      width: 40px; height: 40px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #a58cff, #6848df);
+      box-shadow: 0 4px 18px rgba(118, 87, 232, .28), inset 0 1px 0 rgba(255,255,255,.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-mark::before {
+      content: "";
+      position: absolute; inset: 1px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 11px;
+    }
+    .brand-mark svg { width: 26px; height: 26px; position: relative; z-index: 1; }
+    .brand-name { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--text); }
+    .brand-name span { color: var(--purple); }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      border-radius: 12px;
+      display: grid; place-items: center;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    .theme-toggle:hover { border-color: var(--purple); transform: rotate(12deg); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-icon-sun { display: none; }
+    html[data-theme="light"] .theme-icon-moon { display: none; }
+    html[data-theme="light"] .theme-icon-sun { display: block; }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 11px;
+      background: rgba(146, 117, 245, .12);
+      border: 1px solid rgba(146, 117, 245, .32);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .back-home:hover { background: var(--purple); color: #fff; }
+    .back-home svg { width: 15px; height: 15px; }
+
+    /* CHAPTER HERO */
+    .chapter-hero {
+      position: relative;
+      padding: 48px 20px 40px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .chapter-hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--hero-overlay);
+      pointer-events: none;
+    }
+    .chapter-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .chapter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(146, 117, 245, .35);
+      background: rgba(146, 117, 245, .1);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .8px;
+      direction: ltr;
+      margin-bottom: 16px;
+    }
+    .chapter-badge::before {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .chapter-hero h1 {
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 900;
+      line-height: 1.45;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .chapter-hero .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 2.1;
+      max-width: 720px;
+    }
+    .chapter-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .meta-chip {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .meta-chip strong {
+      color: var(--text);
+      font-size: 15px;
+      margin-left: 6px;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    /* LAYOUT */
+    .page-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static !important; order: -1; }
+    }
+
+    /* SIDEBAR TOC */
+    .sidebar {
+      position: sticky;
+      top: 88px;
+    }
+    .toc-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 18px 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.04);
+    }
+    .toc-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc-title::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .toc-link {
+      display: block;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      transition: .2s;
+      border: 1px solid transparent;
+    }
+    .toc-link:hover {
+      color: var(--text);
+      background: rgba(146, 117, 245, .08);
+      border-color: rgba(146, 117, 245, .2);
+      padding-right: 14px;
+    }
+    .toc-link-strong { color: var(--purple); font-weight: 800; }
+    .toc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+    .print-btn {
+      margin-top: 14px;
+      width: 100%;
+      padding: 11px;
+      border-radius: 12px;
+      background: linear-gradient(115deg, #a18aff, #7558e8);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      transition: var(--transition);
+    }
+    .print-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* MAIN CONTENT SURFACE */
+    .content-area { min-width: 0; }
+
+    .section-card {
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      background: var(--surface) !important;
+      color: var(--text);
+    }
+    .section-number {
+      background: linear-gradient(135deg, #9275f5, #51cbdc) !important;
+      color: white !important;
+    }
+
+    /* Override common Tailwind color utilities for theme */
+    .content-area {
+      color: var(--text);
+    }
+    .content-area .text-slate-800,
+    .content-area .text-slate-700,
+    .content-area .text-slate-900 { color: var(--text) !important; }
+    .content-area .text-slate-500,
+    .content-area .text-slate-400,
+    .content-area .text-slate-600 { color: var(--muted) !important; }
+    .content-area .text-indigo-600,
+    .content-area .text-indigo-700,
+    .content-area .text-indigo-800 { color: var(--purple) !important; }
+    .content-area .bg-white { background: var(--surface) !important; }
+    .content-area .bg-slate-50,
+    .content-area .bg-slate-100,
+    .content-area .hover\:bg-slate-50:hover { background: var(--surface-soft) !important; }
+    .content-area .border,
+    .content-area .border-slate-200,
+    .content-area .border-slate-100 { border-color: var(--border) !important; }
+    .content-area .shadow-sm { box-shadow: 0 6px 24px rgba(0,0,0,.05) !important; }
+
+    .callout {
+      border-right: 4px solid var(--callout-border) !important;
+      background: var(--callout-bg) !important;
+      color: var(--text);
+    }
+    .tip {
+      border-right: 4px solid var(--tip-border) !important;
+      background: var(--tip-bg) !important;
+    }
+    .warning {
+      border-right: 4px solid var(--warning-border) !important;
+      background: var(--warning-bg) !important;
+    }
+    .code {
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: var(--code-bg) !important;
+      color: var(--code-text) !important;
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .86rem;
+      border: 1px solid var(--border);
+    }
+    .ltr { direction: ltr; text-align: left; }
+    .diagram-box {
+      border: 1px solid var(--diagram-border) !important;
+      background: var(--diagram-bg) !important;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .arrow { color: var(--purple) !important; font-size: 1.5rem; font-weight: 800; }
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      background: var(--tag-bg) !important;
+      color: var(--tag-text) !important;
+      padding: 3px 10px;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+    .table-wrap { overflow-x: auto; border-radius: 12px; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    th, td {
+      border: 1px solid var(--border) !important;
+      padding: 12px;
+      text-align: right;
+      vertical-align: top;
+      color: var(--text);
+    }
+    th { background: var(--table-head) !important; font-weight: 800; }
+    tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+    .content-area h2, .content-area h3, .content-area h4 {
+      color: var(--text);
+    }
+    .content-area p, .content-area li { color: var(--text-secondary); }
+    .content-area strong { color: var(--text); }
+
+    .content-area .bg-indigo-50,
+    .content-area .bg-teal-50 { background: var(--surface-soft) !important; }
+    .content-area .border-teal-300 { border-color: var(--diagram-border) !important; }
+    .content-area .text-teal-700 { color: var(--green) !important; }
+    .content-area .text-rose-700 { color: #f87171 !important; }
+    .content-area .text-amber-700 { color: #fbbf24 !important; }
+    .content-area .bg-indigo-700,
+    .content-area .hover\:bg-indigo-800:hover {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+    }
+    .content-area .text-indigo-900 { color: var(--text) !important; }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 2;
+    }
+    .site-footer strong {
+      color: var(--purple);
+      direction: ltr;
+      display: inline-block;
+      font-size: 15px;
+    }
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .footer-nav a {
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      transition: .2s;
+    }
+    .footer-nav a:hover {
+      color: var(--purple);
+      border-color: rgba(146,117,245,.4);
+    }
+
+    @media print {
+      .site-header, .sidebar, .progress-bar, .no-print, .theme-toggle, .back-home { display: none !important; }
+      .page-layout { grid-template-columns: 1fr; }
+      .section-card { break-inside: avoid; }
+      body { background: white; color: black; }
+    }
+
+    @media (max-width: 640px) {
+      .chapter-hero { padding: 32px 16px 28px; }
+      .header-inner { padding: 0 14px; }
+      .back-home span.label { display: none; }
+      .page-layout { padding: 18px 14px 40px; }
+    }
+
+    /* chapter 2 extra semantic colors */
+    .content-area .text-brand { color: var(--purple) !important; }
+    .content-area .text-ink { color: var(--text) !important; }
+    .content-area .bg-indigo-50,
+    .content-area .bg-teal-50,
+    .content-area .bg-amber-50,
+    .content-area .bg-rose-50 { background: var(--surface-soft) !important; }
+    .content-area .text-indigo-900,
+    .content-area .text-teal-900,
+    .content-area .text-amber-900,
+    .content-area .text-rose-900,
+    .content-area .text-indigo-950,
+    .content-area .text-amber-950 { color: var(--text) !important; }
+    .content-area .bg-slate-950 { background: #0c0c18 !important; }
+    .content-area .note {
+      border-right: 4px solid var(--callout-border);
+      background: var(--callout-bg);
+      border-radius: 1rem;
+      padding: 1rem 1.25rem;
+    }
+    .content-area .example {
+      border-right: 4px solid var(--tip-border);
+      background: var(--tip-bg);
+      border-radius: 1rem;
+      padding: 1rem 1.25rem;
+    }
+    .content-area .term { color: var(--purple) !important; font-weight: 800; }
+    .content-area .bg-brand,
+    .content-area .hover\:bg-indigo-700:hover {
+      background: linear-gradient(115deg, #a18aff, #7558e8) !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-bar no-print"><div id="progress"></div></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="M_Ai Home">
+        <div class="brand-name"><span>M_Ai</span></div>
+        <div class="brand-mark">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 29V10L15 22L20 15L25 22L35 10V29" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 15V8" stroke="#DDFBFF" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="20" cy="6" r="2.5" fill="#DDFBFF"/>
+          </svg>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="تغییر تم">
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>
+          </svg>
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>
+          </svg>
+        </button>
+        <a href="index.html" class="back-home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/>
+          </svg>
+          <span class="label">صفحه اصلی</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="chapter-hero">
+    <div class="chapter-hero-inner">
+      <div class="chapter-badge">CHAPTER 02 · LARGE LANGUAGE MODELS</div>
+      <h1>درک مدل‌های زبانی بزرگ (LLM)</h1>
+      <p class="subtitle">
+        از مبانی پردازش زبان و معماری Transformer تا آموزش، استدلال،
+        مدل‌های چندوجهی و استفاده مسئولانه از هوش مصنوعی.
+      </p>
+      <div class="chapter-meta">
+        <div class="meta-chip"><strong>11</strong> سرفصل اصلی</div>
+        <div class="meta-chip"><strong>02</strong> از ۱۲ فصل</div>
+        <div class="meta-chip"><strong>LLM</strong> هسته زبانی</div>
+        <div class="meta-chip"><strong>Transformer</strong> معماری</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-layout">
+    <aside class="sidebar no-print">
+      <div class="toc-card">
+        <div class="toc-title">فهرست مطالب</div>
+        <nav class="toc-nav" id="toc">
+
+          <a class="toc-link" href="#intro">۱. آشنایی با LLM</a>
+          <a class="toc-link" href="#language">۲. زبان و پردازش متن</a>
+          <a class="toc-link" href="#neural">۳. شبکه‌های عصبی</a>
+          <a class="toc-link" href="#transformer">۴. معماری Transformer</a>
+          <a class="toc-link" href="#generation">۵. تولید متن و پیش‌بینی</a>
+          <a class="toc-link" href="#prompt">۶. تعامل و Prompt Engineering</a>
+          <a class="toc-link" href="#training">۷. آموزش و تنظیم مدل</a>
+          <a class="toc-link" href="#reasoning">۸. مدل‌های استدلال‌گر</a>
+          <a class="toc-link" href="#multimodal">۹. مدل‌های چندوجهی</a>
+          <a class="toc-link" href="#limitations">۱۰. محدودیت‌ها و ایمنی</a>
+          <a class="toc-link" href="#applications">۱۱. کاربردها و آینده</a>
+          <div class="toc-divider"></div>
+          <a class="toc-link toc-link-strong" href="#glossary">واژه‌نامه</a>
+          <a class="toc-link toc-link-strong" href="#quiz">آزمون نهایی</a>
+
+        </nav>
+        <button class="print-btn" type="button" onclick="window.print()">چاپ یا ذخیره PDF</button>
+      </div>
+    </aside>
+
+    <main class="content-area chapter-content min-w-0 space-y-10">
+
+      <section class="section-card rounded-3xl bg-white p-7 md:p-10">
+        <span class="text-sm font-bold text-brand">راهنمای مطالعه</span>
+        <h2 class="mb-5 mt-2 text-3xl font-black text-ink">در این فصل چه چیزی یاد می‌گیریم؟</h2>
+
+        <p class="leading-9 text-slate-600">
+          مدل‌های زبانی بزرگ یا Large Language Models یکی از مهم‌ترین فناوری‌های هوش مصنوعی
+          در سال‌های اخیر هستند. ابزارهایی مانند ChatGPT، Gemini، Claude و بسیاری از
+          دستیارهای هوشمند بر پایه مدل‌های زبانی یا معماری‌های نزدیک به آن‌ها ساخته شده‌اند.
+        </p>
+
+        <p class="mt-4 leading-9 text-slate-600">
+          هدف این فصل فقط آشنایی با نام LLM نیست؛ بلکه می‌خواهیم بفهمیم این مدل‌ها چگونه
+          متن را پردازش می‌کنند، چگونه آموزش می‌بینند، چگونه پاسخ تولید می‌کنند، چرا گاهی
+          اشتباه می‌کنند و چه تفاوتی میان یک مدل زبانی معمولی و یک سیستم هوشمند مجهز به ابزار وجود دارد.
+        </p>
+
+        <div class="note mt-6 rounded-2xl p-5">
+          <b class="text-indigo-900">پیش‌نیاز:</b>
+          <p class="mt-2 leading-8 text-indigo-950">
+            برای مطالعه این فصل لازم نیست برنامه‌نویس یا متخصص ریاضی باشید.
+            مفاهیم ابتدا با زبان ساده توضیح داده می‌شوند و سپس به‌تدریج وارد جزئیات فنی‌تر می‌شویم.
+          </p>
+        </div>
+
+        <div class="mt-7 grid gap-4 sm:grid-cols-3">
+          <div class="rounded-2xl bg-indigo-50 p-5">
+            <div class="text-2xl">🧠</div>
+            <b class="mt-3 block text-indigo-900">درک مفاهیم</b>
+            <p class="mt-2 text-sm leading-7 text-slate-600">شناخت سازوکار داخلی مدل‌های زبانی.</p>
+          </div>
+          <div class="rounded-2xl bg-teal-50 p-5">
+            <div class="text-2xl">⚙️</div>
+            <b class="mt-3 block text-teal-900">درک فناوری</b>
+            <p class="mt-2 text-sm leading-7 text-slate-600">آشنایی با Token، Attention و Transformer.</p>
+          </div>
+          <div class="rounded-2xl bg-amber-50 p-5">
+            <div class="text-2xl">🚀</div>
+            <b class="mt-3 block text-amber-900">استفاده عملی</b>
+            <p class="mt-2 text-sm leading-7 text-slate-600">کاربرد صحیح مدل‌ها در مسائل واقعی.</p>
+          </div>
+        </div>
+      </section>
+      <!-- SECTION 1 -->
+      <section id="intro" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-brand">بخش اول</span>
+          <h2 class="mt-2 text-3xl font-black text-ink md:text-4xl">آشنایی با مدل‌های زبانی بزرگ</h2>
+          <p class="mt-3 text-slate-500">Introduction to Large Language Models</p>
+        </div>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۱.۱ مدل زبانی چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            مدل زبانی یا Language Model یک سیستم محاسباتی است که الگوهای موجود در زبان را
+            یاد می‌گیرد و می‌تواند احتمال رخ دادن کلمات یا توکن‌ها را در یک توالی متنی تخمین بزند.
+            به بیان ساده، مدل زبانی یاد می‌گیرد که با توجه به متن قبلی، چه چیزی احتمالاً در ادامه می‌آید.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <div class="text-sm text-slate-400">مثال پیش‌بینی کلمه بعدی</div>
+            <p class="mt-4 text-xl font-bold leading-10">
+              امروز هوا بسیار ...
+            </p>
+            <div class="mt-5 flex flex-wrap gap-3">
+              <span class="rounded-xl bg-indigo-500/30 px-4 py-3">خوب <b class="mr-2 text-teal-300">۴۵٪</b></span>
+              <span class="rounded-xl bg-white/10 px-4 py-3">سرد <b class="mr-2 text-teal-300">۳۰٪</b></span>
+              <span class="rounded-xl bg-white/10 px-4 py-3">گرم <b class="mr-2 text-teal-300">۲۰٪</b></span>
+              <span class="rounded-xl bg-white/10 px-4 py-3">بارانی <b class="mr-2 text-teal-300">۵٪</b></span>
+            </div>
+            <p class="mt-4 text-sm leading-7 text-slate-400">
+              اعداد بالا صرفاً یک مثال فرضی برای توضیح توزیع احتمال هستند، نه خروجی واقعی یک مدل.
+            </p>
+          </div>
+
+          <p class="leading-9 text-slate-600">
+            مدل زبانی الزاماً جمله را مانند انسان از نظر معنا درک نمی‌کند.
+            این مدل با یادگیری روابط آماری و ساختارهای پیچیده در داده‌های آموزشی،
+            می‌تواند توالی‌هایی تولید کند که از نظر زبانی و معنایی طبیعی به نظر برسند.
+          </p>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۱.۲ منظور از Large در LLM چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            واژه Large به بزرگ بودن مدل از نظر مقیاس اشاره دارد. این بزرگی می‌تواند در چند جنبه
+            دیده شود: تعداد پارامترها، حجم داده‌های آموزشی، هزینه محاسباتی، طول ورودی قابل پردازش
+            و پیچیدگی معماری.
+          </p>
+
+          <div class="mt-6 grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <h4 class="font-extrabold text-indigo-900">Parameters</h4>
+              <p class="mt-2 leading-8 text-slate-700">
+                مقادیر عددی قابل یادگیری در شبکه عصبی که هنگام آموزش تنظیم می‌شوند.
+              </p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <h4 class="font-extrabold text-teal-900">Training Data</h4>
+              <p class="mt-2 leading-8 text-slate-700">
+                مجموعه بزرگی از داده‌ها که مدل از آن‌ها الگوهای زبان را یاد می‌گیرد.
+              </p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-5">
+              <h4 class="font-extrabold text-amber-900">Compute</h4>
+              <p class="mt-2 leading-8 text-slate-700">
+                توان پردازشی موردنیاز برای آموزش و اجرای مدل.
+              </p>
+            </div>
+            <div class="rounded-2xl bg-rose-50 p-5">
+              <h4 class="font-extrabold text-rose-900">Context Window</h4>
+              <p class="mt-2 leading-8 text-slate-700">
+                تعداد توکن‌هایی که مدل می‌تواند در یک درخواست در نظر بگیرد.
+              </p>
+            </div>
+          </div>
+
+          <div class="warning mt-6 rounded-2xl p-5">
+            <b class="text-amber-900">نکته مهم:</b>
+            <p class="mt-2 leading-8 text-amber-950">
+              بزرگ‌تر بودن مدل همیشه به معنای بهتر بودن آن نیست. کیفیت داده، معماری،
+              روش آموزش، بهینه‌سازی و نوع وظیفه نیز اهمیت زیادی دارند.
+            </p>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-5 text-2xl font-extrabold text-ink">۱.۳ تفاوت AI، ML، Deep Learning و LLM</h3>
+
+          <p class="mb-6 leading-9 text-slate-600">
+            این چهار اصطلاح به یک معنا نیستند. رابطه آن‌ها را می‌توان به شکل مجموعه‌های تو‌در‌تو در نظر گرفت.
+          </p>
+
+          <div class="rounded-2xl bg-slate-950 p-6 text-white">
+            <div class="mx-auto max-w-2xl rounded-3xl border-2 border-indigo-400 bg-indigo-500/10 p-5 text-center">
+              <b class="text-xl">Artificial Intelligence</b>
+              <div class="mx-auto mt-5 max-w-xl rounded-3xl border-2 border-teal-400 bg-teal-500/10 p-5">
+                <b>Machine Learning</b>
+                <div class="mx-auto mt-5 max-w-md rounded-3xl border-2 border-amber-400 bg-amber-500/10 p-5">
+                  <b>Deep Learning</b>
+                  <div class="mx-auto mt-5 max-w-xs rounded-2xl border-2 border-rose-400 bg-rose-500/10 p-5">
+                    <b>LLMs</b>
+                    <p class="mt-2 text-sm text-slate-300">یکی از خانواده‌های مدل‌های یادگیری عمیق</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 space-y-4">
+            <p class="leading-8 text-slate-600"><b class="text-ink">AI:</b> حوزه کلی ساخت سیستم‌هایی با رفتار هوشمند.
+            </p>
+            <p class="leading-8 text-slate-600"><b class="text-ink">Machine Learning:</b> روش‌هایی که در آن‌ها سیستم از
+              داده‌ها الگو می‌آموزد.</p>
+            <p class="leading-8 text-slate-600"><b class="text-ink">Deep Learning:</b> یادگیری ماشین مبتنی بر شبکه‌های
+              عصبی چندلایه.</p>
+            <p class="leading-8 text-slate-600"><b class="text-ink">LLM:</b> مدل یادگیری عمیقی که برای پردازش و تولید
+              زبان
+              آموزش دیده است.</p>
+          </div>
+        </article>
+
+        <article class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-5 text-2xl font-extrabold text-ink">۱.۴ مدل زبانی با موتور جست‌وجو چه تفاوتی دارد؟</h3>
+
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[620px] text-right">
+              <thead class="bg-slate-100">
+                <tr>
+                  <th class="rounded-tr-xl p-4">ویژگی</th>
+                  <th class="p-4">مدل زبانی</th>
+                  <th class="rounded-tl-xl p-4">موتور جست‌وجو</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr>
+                  <td class="p-4 font-bold">وظیفه اصلی</td>
+                  <td class="p-4">تولید و پردازش زبان</td>
+                  <td class="p-4">پیدا کردن منابع اطلاعاتی</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">نوع خروجی</td>
+                  <td class="p-4">پاسخ تولیدشده</td>
+                  <td class="p-4">صفحه‌ها و لینک‌ها</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">منبع اطلاعات</td>
+                  <td class="p-4">الگوهای آموخته‌شده و زمینه ورودی</td>
+                  <td class="p-4">اسناد و صفحات قابل بازیابی</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">تازگی اطلاعات</td>
+                  <td class="p-4">وابسته به ابزار و داده‌های در دسترس</td>
+                  <td class="p-4">قابل جست‌وجو در وب به‌روز</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="example mt-6 rounded-2xl p-5">
+            <b class="text-teal-900">مثال:</b>
+            <p class="mt-2 leading-8 text-teal-950">
+              موتور جست‌وجو می‌تواند چند مقاله درباره Transformer پیدا کند.
+              مدل زبانی می‌تواند مفهوم Transformer را توضیح دهد.
+              یک سیستم ترکیبی می‌تواند ابتدا منابع معتبر را پیدا کند و سپس آن‌ها را خلاصه کند.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <!-- SECTION 2 -->
+      <section id="language" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-accent">بخش دوم</span>
+          <h2 class="mt-2 text-3xl font-black text-ink md:text-4xl">زبان، توکن‌سازی و نمایش عددی متن</h2>
+          <p class="mt-3 text-slate-500">Language Processing, Tokenization & Embeddings</p>
+        </div>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۲.۱ چرا کامپیوتر به Token نیاز دارد؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            کامپیوتر متن را دقیقاً مانند انسان نمی‌خواند. برای پردازش زبان، متن ابتدا به واحدهای
+            کوچک‌تری به نام Token تبدیل می‌شود. این واحد ممکن است یک کلمه کامل، بخشی از یک کلمه،
+            عدد، نشانه نگارشی یا حتی یک کاراکتر باشد.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <p class="text-sm text-slate-400">نمونه ساده Tokenization</p>
+            <p class="mt-4 text-xl font-bold">مدل‌های زبانی بسیار جالب هستند.</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+              <span class="rounded-lg bg-indigo-500/30 px-3 py-2">مدل‌های</span>
+              <span class="rounded-lg bg-teal-500/30 px-3 py-2">زبانی</span>
+              <span class="rounded-lg bg-amber-500/30 px-3 py-2">بسیار</span>
+              <span class="rounded-lg bg-rose-500/30 px-3 py-2">جالب</span>
+              <span class="rounded-lg bg-slate-700 px-3 py-2">هستند</span>
+              <span class="rounded-lg bg-slate-700 px-3 py-2">.</span>
+            </div>
+            <p class="mt-4 text-sm leading-7 text-slate-400">
+              این فقط یک نمایش آموزشی است؛ توکن‌ساز واقعی ممکن است واژه‌ها را به شکل متفاوتی تقسیم کند.
+            </p>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۲.۲ انواع روش‌های Tokenization</h3>
+
+          <div class="space-y-4">
+            <div class="rounded-2xl border p-5">
+              <h4 class="font-extrabold text-ink">Word-Level Tokenization</h4>
+              <p class="mt-2 leading-8 text-slate-600">
+                هر کلمه به‌عنوان یک واحد مستقل در نظر گرفته می‌شود.
+                این روش ساده است اما با کلمات جدید و شکل‌های صرفی متعدد مشکل دارد.
+              </p>
+            </div>
+            <div class="rounded-2xl border p-5">
+              <h4 class="font-extrabold text-ink">Character-Level Tokenization</h4>
+              <p class="mt-2 leading-8 text-slate-600">
+                هر حرف یا نویسه یک توکن محسوب می‌شود. این روش می‌تواند واژه‌های جدید را
+                نمایش دهد، اما توالی‌ها را طولانی‌تر می‌کند.
+              </p>
+            </div>
+            <div class="rounded-2xl border p-5">
+              <h4 class="font-extrabold text-ink">Subword Tokenization</h4>
+              <p class="mt-2 leading-8 text-slate-600">
+                کلمات به واحدهای کوچک‌تر اما معنادار تقسیم می‌شوند.
+                بسیاری از مدل‌های زبانی مدرن از روش‌هایی در این خانواده استفاده می‌کنند.
+              </p>
+            </div>
+          </div>
+
+          <div class="note mt-6 rounded-2xl p-5">
+            <b class="text-indigo-900">چرا Subword مهم است؟</b>
+            <p class="mt-2 leading-8 text-indigo-950">
+              فرض کنید مدل واژه‌ای را قبلاً ندیده باشد. اگر بتواند آن را به چند بخش شناخته‌شده
+              تقسیم کند، همچنان امکان پردازش آن را خواهد داشت.
+            </p>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۲.۳ Vocabulary و Token ID</h3>
+
+          <p class="leading-9 text-slate-600">
+            مدل برای کار با توکن‌ها به یک واژگان یا Vocabulary نیاز دارد.
+            هر توکن در این واژگان معمولاً یک شناسه عددی دارد که به آن Token ID گفته می‌شود.
+          </p>
+
+          <div class="mt-5 overflow-x-auto">
+            <table class="w-full min-w-[480px] text-right">
+              <thead class="bg-slate-100">
+                <tr>
+                  <th class="p-4">Token</th>
+                  <th class="p-4">Token ID فرضی</th>
+                  <th class="p-4">توضیح</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y">
+                <tr>
+                  <td class="p-4">سلام</td>
+                  <td class="p-4">105</td>
+                  <td class="p-4">یک واحد واژگانی</td>
+                </tr>
+                <tr>
+                  <td class="p-4">مدل</td>
+                  <td class="p-4">208</td>
+                  <td class="p-4">یک واحد واژگانی</td>
+                </tr>
+                <tr>
+                  <td class="p-4">هوش</td>
+                  <td class="p-4">317</td>
+                  <td class="p-4">یک واحد واژگانی</td>
+                </tr>
+                <tr>
+                  <td class="p-4">مصنوعی</td>
+                  <td class="p-4">421</td>
+                  <td class="p-4">یک واحد واژگانی</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="mt-3 text-sm text-slate-500">شناسه‌ها کاملاً فرضی هستند و به Tokenizer مشخصی تعلق ندارند.</p>
+          </div>
+
+          <div class="example mt-6 rounded-2xl p-5">
+            <b class="text-teal-900">فرایند کلی:</b>
+            <div class="mt-4 flex flex-wrap items-center justify-center gap-3 text-center">
+              <span class="rounded-xl bg-white px-4 py-3 font-bold">متن</span>
+              <span class="text-brand">←</span>
+              <span class="rounded-xl bg-white px-4 py-3 font-bold">Tokenizer</span>
+              <span class="text-brand">←</span>
+              <span class="rounded-xl bg-white px-4 py-3 font-bold">Token IDs</span>
+              <span class="text-brand">←</span>
+              <span class="rounded-xl bg-white px-4 py-3 font-bold">مدل</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۲.۴ Embedding چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            پس از تبدیل توکن‌ها به شناسه عددی، مدل به نمایش‌هایی نیاز دارد که بتواند روابط
+            میان آن‌ها را یاد بگیرد. Embedding برداری از اعداد است که یک توکن را در فضایی
+            چندبعدی نمایش می‌دهد.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <h4 class="mb-4 font-bold">یک Embedding فرضی</h4>
+            <div class="formula text-lg text-teal-300">
+              [0.21, -0.48, 0.73, 0.12, -0.09, ...]
+            </div>
+            <p class="mt-4 leading-8 text-slate-400">
+              این اعداد به‌تنهایی برای انسان معنای مستقیمی ندارند؛ مدل در جریان آموزش
+              روابط مفید را در این فضا یاد می‌گیرد.
+            </p>
+          </div>
+
+          <h4 class="mb-3 font-bold text-ink">چرا Embedding مهم است؟</h4>
+          <ul class="list-inside list-disc space-y-2 leading-8 text-slate-600">
+            <li>تبدیل داده متنی به ورودی عددی قابل استفاده برای شبکه عصبی.</li>
+            <li>کمک به نمایش شباهت‌ها و تفاوت‌های معنایی.</li>
+            <li>فراهم کردن بستری برای پردازش زمینه و روابط میان توکن‌ها.</li>
+            <li>استفاده در جست‌وجوی معنایی، بازیابی اطلاعات و سیستم‌های توصیه‌گر.</li>
+          </ul>
+        </article>
+
+        <article class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۲.۵ Context Window چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            پنجره زمینه یا Context Window به محدوده توکن‌هایی گفته می‌شود که مدل در یک
+            مرحله از پردازش می‌تواند در نظر بگیرد. این محدوده معمولاً شامل دستورها،
+            پیام‌های قبلی، متن بازیابی‌شده و پاسخ در حال تولید است.
+          </p>
+
+          <div class="mt-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <h4 class="mb-4 font-bold">نمای ساده پنجره زمینه</h4>
+            <div class="grid grid-cols-4 gap-2 text-center text-xs sm:text-sm">
+              <div class="rounded-xl bg-indigo-500/30 p-4">System Prompt</div>
+              <div class="rounded-xl bg-teal-500/30 p-4">User Input</div>
+              <div class="rounded-xl bg-amber-500/30 p-4">Conversation</div>
+              <div class="rounded-xl bg-rose-500/30 p-4">Output</div>
+            </div>
+            <div class="mt-3 rounded-xl border border-white/20 p-3 text-center text-sm text-slate-300">
+              مجموع توکن‌ها باید در محدوده قابل پشتیبانی مدل قرار بگیرد.
+            </div>
+          </div>
+
+          <div class="warning mt-6 rounded-2xl p-5">
+            <b class="text-amber-900">نکته:</b>
+            <p class="mt-2 leading-8 text-amber-950">
+              Context Window با حافظه دائمی یکسان نیست. بزرگ بودن پنجره زمینه به این معنا نیست
+              که مدل تمام اطلاعات را برای همیشه به خاطر می‌سپارد.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <!-- SECTION 3 -->
+      <section id="neural" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-brand">بخش سوم</span>
+          <h2 class="mt-2 text-3xl font-black text-ink md:text-4xl">شبکه‌های عصبی و یادگیری عمیق</h2>
+          <p class="mt-3 text-slate-500">Neural Networks & Deep Learning</p>
+        </div>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۳.۱ شبکه عصبی چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            شبکه عصبی مصنوعی یک مدل محاسباتی است که از واحدهایی به نام Neuron و ارتباط میان
+            آن‌ها تشکیل می‌شود. این شبکه با تنظیم وزن‌ها و پارامترهای خود می‌تواند الگوهای
+            موجود در داده را یاد بگیرد.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <h4 class="mb-4 font-bold">ساختار ساده شبکه عصبی</h4>
+            <svg viewBox="0 0 700 290" class="w-full" role="img" aria-label="شبکه عصبی چندلایه">
+              <g stroke="#64748b" stroke-width="1.5" opacity=".7">
+                <path d="M100 75 L330 45 M100 75 L330 115 M100 75 L330 185
+                                     M100 145 L330 45 M100 145 L330 115 M100 145 L330 185
+                                     M100 215 L330 45 M100 215 L330 115 M100 215 L330 185
+                                     M350 45 L580 85 M350 115 L580 85 M350 185 L580 85
+                                     M350 45 L580 165 M350 115 L580 165 M350 185 L580 165" />
+              </g>
+              <g fill="#8b7cff" stroke="#c4b5fd" stroke-width="2">
+                <circle cx="100" cy="75" r="16" />
+                <circle cx="100" cy="145" r="16" />
+                <circle cx="100" cy="215" r="16" />
+              </g>
+              <g fill="#12a89d" stroke="#99f6e4" stroke-width="2">
+                <circle cx="340" cy="45" r="16" />
+                <circle cx="340" cy="115" r="16" />
+                <circle cx="340" cy="185" r="16" />
+              </g>
+              <g fill="#f59e0b" stroke="#fde68a" stroke-width="2">
+                <circle cx="580" cy="85" r="16" />
+                <circle cx="580" cy="165" r="16" />
+              </g>
+              <g fill="white" font-size="14" text-anchor="middle" font-family="Vazirmatn">
+                <text x="100" y="270">لایه ورودی</text>
+                <text x="340" y="270">لایه پنهان</text>
+                <text x="580" y="270">لایه خروجی</text>
+              </g>
+            </svg>
+          </div>
+
+          <p class="leading-9 text-slate-600">
+            اطلاعات از لایه ورودی وارد شبکه می‌شود، در لایه‌های میانی پردازش می‌شود
+            و در نهایت خروجی تولید می‌گردد. شبکه با مشاهده نمونه‌های آموزشی و اصلاح
+            وزن‌های خود، عملکردش را بهبود می‌دهد.
+          </p>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۳.۲ نورون مصنوعی چگونه کار می‌کند؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            یک نورون مصنوعی چند ورودی دریافت می‌کند. هر ورودی در یک وزن ضرب می‌شود؛
+            سپس مقادیر با هم جمع شده و یک مقدار Bias به آن اضافه می‌شود.
+            در پایان تابع فعال‌سازی روی نتیجه اعمال می‌شود.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-center text-white">
+            <div class="formula text-2xl font-bold text-teal-300">
+              y = f(w₁x₁ + w₂x₂ + ... + b)
+            </div>
+            <p class="mt-4 text-sm text-slate-400">
+              x ورودی، w وزن، b بایاس و f تابع فعال‌سازی است.
+            </p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <b class="text-indigo-900">Weights</b>
+              <p class="mt-2 leading-8 text-slate-700">اهمیت نسبی هر ورودی در محاسبه خروجی را تعیین می‌کنند.</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <b class="text-teal-900">Bias</b>
+              <p class="mt-2 leading-8 text-slate-700">به شبکه اجازه می‌دهد مرزهای تصمیم منعطف‌تری یاد بگیرد.</p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-5">
+              <b class="text-amber-900">Activation Function</b>
+              <p class="mt-2 leading-8 text-slate-700">غیرخطی بودن را به شبکه اضافه می‌کند.</p>
+            </div>
+            <div class="rounded-2xl bg-rose-50 p-5">
+              <b class="text-rose-900">Output</b>
+              <p class="mt-2 leading-8 text-slate-700">نتیجه محاسبه نورون است که به بخش بعدی منتقل می‌شود.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۳.۳ آموزش شبکه عصبی چگونه انجام می‌شود؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            آموزش شبکه عصبی فرایندی تکرارشونده است. مدل پیش‌بینی می‌کند، پیش‌بینی آن با
+            مقدار هدف مقایسه می‌شود، خطا محاسبه می‌گردد و سپس پارامترها برای کاهش خطا
+            به‌روزرسانی می‌شوند.
+          </p>
+
+          <div class="my-6 grid gap-3 md:grid-cols-5">
+            <div class="rounded-2xl bg-indigo-50 p-4 text-center">
+              <div class="text-2xl">📥</div>
+              <b class="mt-2 block">ورودی</b>
+              <p class="mt-1 text-xs text-slate-600">داده وارد شبکه می‌شود</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-4 text-center">
+              <div class="text-2xl">⚙️</div>
+              <b class="mt-2 block">پیش‌بینی</b>
+              <p class="mt-1 text-xs text-slate-600">Forward Pass</p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-4 text-center">
+              <div class="text-2xl">📊</div>
+              <b class="mt-2 block">محاسبه خطا</b>
+              <p class="mt-1 text-xs text-slate-600">Loss</p>
+            </div>
+            <div class="rounded-2xl bg-rose-50 p-4 text-center">
+              <div class="text-2xl">🔙</div>
+              <b class="mt-2 block">پس‌انتشار</b>
+              <p class="mt-1 text-xs text-slate-600">Backpropagation</p>
+            </div>
+            <div class="rounded-2xl bg-violet-50 p-4 text-center">
+              <div class="text-2xl">🔧</div>
+              <b class="mt-2 block">به‌روزرسانی</b>
+              <p class="mt-1 text-xs text-slate-600">Optimizer</p>
+            </div>
+          </div>
+
+          <h4 class="mb-3 mt-7 font-bold text-ink">مفاهیم مهم در آموزش</h4>
+          <ul class="list-inside list-disc space-y-2 leading-8 text-slate-600">
+            <li><b>Loss Function:</b> معیاری برای اندازه‌گیری میزان خطای مدل.</li>
+            <li><b>Gradient:</b> اطلاعاتی درباره جهت و مقدار تغییر خطا نسبت به پارامترها.</li>
+            <li><b>Learning Rate:</b> اندازه گام به‌روزرسانی پارامترها.</li>
+            <li><b>Epoch:</b> یک بار عبور کامل از مجموعه داده آموزشی.</li>
+            <li><b>Batch:</b> بخشی از داده که در یک مرحله پردازش می‌شود.</li>
+          </ul>
+        </article>
+
+        <article class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۳.۴ Overfitting و Underfitting</h3>
+
+          <div class="grid gap-5 md:grid-cols-2">
+            <div class="rounded-2xl border border-rose-200 bg-rose-50 p-6">
+              <h4 class="text-xl font-black text-rose-900">Overfitting</h4>
+              <p class="mt-3 leading-8 text-rose-950">
+                مدل داده‌های آموزشی را بیش از حد حفظ می‌کند و در مواجهه با داده‌های جدید
+                عملکرد ضعیفی دارد.
+              </p>
+              <p class="mt-3 text-sm text-rose-700">نشانه: عملکرد عالی روی آموزش، عملکرد ضعیف روی آزمون.</p>
+            </div>
+            <div class="rounded-2xl border border-amber-200 bg-amber-50 p-6">
+              <h4 class="text-xl font-black text-amber-900">Underfitting</h4>
+              <p class="mt-3 leading-8 text-amber-950">
+                مدل به اندازه کافی الگوهای داده را یاد نگرفته است و حتی روی داده آموزشی
+                نیز عملکرد مناسبی ندارد.
+              </p>
+              <p class="mt-3 text-sm text-amber-700">نشانه: خطای بالا در آموزش و آزمون.</p>
+            </div>
+          </div>
+
+          <div class="note mt-6 rounded-2xl p-5">
+            <b class="text-indigo-900">ارتباط با LLM:</b>
+            <p class="mt-2 leading-8 text-indigo-950">
+              مدل‌های زبانی بزرگ نیز با چالش تعمیم‌پذیری مواجه‌اند.
+              هدف آموزش فقط حفظ نمونه‌ها نیست، بلکه یادگیری الگوهایی است که در موقعیت‌های جدید
+              نیز قابل استفاده باشند.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <!-- SECTION 4 -->
+      <section id="transformer" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-accent">بخش چهارم</span>
+          <h2 class="mt-2 text-3xl font-black text-ink md:text-4xl">معماری Transformer</h2>
+          <p class="mt-3 text-slate-500">The Transformer Architecture</p>
+        </div>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۴.۱ چرا Transformer اهمیت دارد؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            Transformer معماری‌ای برای پردازش توالی‌هاست که در مقاله مشهور
+            <span class="english font-bold">Attention Is All You Need</span>
+            در سال ۲۰۱۷ معرفی شد.
+            این معماری با استفاده از مکانیزم Attention می‌تواند ارتباط میان بخش‌های مختلف
+            یک توالی را محاسبه کند.
+          </p>
+
+          <p class="mt-4 leading-9 text-slate-600">
+            پیش از Transformer، معماری‌هایی مانند RNN و LSTM در پردازش زبان کاربرد داشتند.
+            این معماری‌ها معمولاً اطلاعات را به شکل ترتیبی پردازش می‌کردند.
+            Transformer امکان پردازش موازی‌تر توکن‌ها در مرحله آموزش و مدل‌سازی
+            وابستگی‌های دورتر را فراهم کرد.
+          </p>
+
+          <div class="mt-6 grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <b class="text-indigo-900">RNN / LSTM</b>
+              <p class="mt-2 leading-8 text-slate-700">
+                پردازش ترتیبی؛ اطلاعات از گام‌های قبلی به گام‌های بعدی منتقل می‌شود.
+              </p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <b class="text-teal-900">Transformer</b>
+              <p class="mt-2 leading-8 text-slate-700">
+                استفاده از Attention برای محاسبه ارتباط میان موقعیت‌های مختلف توالی.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۴.۲ Self-Attention چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            Self-Attention مکانیزمی است که به هر توکن اجازه می‌دهد هنگام پردازش،
+            میزان ارتباط خود را با توکن‌های دیگر همان ورودی محاسبه کند.
+            به کمک این مکانیزم، مدل می‌تواند وابستگی‌های معنایی و ساختاری را بهتر شناسایی کند.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <h4 class="mb-4 font-bold">مثال وابستگی معنایی</h4>
+            <p class="text-lg leading-10">
+              «علی کتاب را به رضا داد، چون او به آن نیاز داشت.»
+            </p>
+            <p class="mt-3 leading-8 text-slate-400">
+              برای تفسیر جمله، مدل باید روابط میان «او»، «رضا»، «علی» و سایر بخش‌ها را بررسی کند.
+              Attention به محاسبه چنین ارتباط‌هایی کمک می‌کند.
+            </p>
+          </div>
+
+          <h4 class="mb-3 font-bold text-ink">سه بردار اصلی Attention</h4>
+          <div class="grid gap-4 md:grid-cols-3">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <h4 class="text-xl font-black text-indigo-900">Query (Q)</h4>
+              <p class="mt-2 leading-8 text-slate-700">این توکن به دنبال چه اطلاعاتی است؟</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <h4 class="text-xl font-black text-teal-900">Key (K)</h4>
+              <p class="mt-2 leading-8 text-slate-700">هر توکن چه اطلاعاتی برای تطبیق ارائه می‌دهد؟</p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-5">
+              <h4 class="text-xl font-black text-amber-900">Value (V)</h4>
+              <p class="mt-2 leading-8 text-slate-700">چه محتوایی در صورت توجه باید منتقل شود؟</p>
+            </div>
+          </div>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-center text-white">
+            <div class="text-sm text-slate-400">فرمول Scaled Dot-Product Attention</div>
+            <div class="formula mt-4 text-2xl font-bold text-teal-300">
+              Attention(Q,K,V) = softmax(QKᵀ / √dₖ)V
+            </div>
+            <p class="mt-4 text-sm leading-7 text-slate-400">
+              ابتدا شباهت Query و Key محاسبه می‌شود، سپس با Softmax به وزن‌های توجه تبدیل
+              شده و در نهایت برای ترکیب Valueها استفاده می‌شود.
+            </p>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۴.۳ Multi-Head Attention</h3>
+
+          <p class="leading-9 text-slate-600">
+            در Multi-Head Attention چند سازوکار توجه به‌صورت موازی اجرا می‌شوند.
+            هر Head می‌تواند روابط متفاوتی را در داده بررسی کند؛ برای مثال روابط نزدیک،
+            وابستگی‌های دور، ساختار دستوری یا ارتباط معنایی.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <h4 class="mb-5 text-center font-bold">نمای مفهومی Multi-Head Attention</h4>
+            <div class="mx-auto max-w-xl rounded-xl bg-indigo-500/20 p-4 text-center">Input Embedding</div>
+            <div class="my-3 text-center text-2xl">↓</div>
+            <div class="grid grid-cols-3 gap-3">
+              <div class="rounded-xl bg-indigo-500/30 p-4 text-center">
+                <b>Head 1</b>
+                <p class="mt-2 text-xs text-slate-300">Attention</p>
+              </div>
+              <div class="rounded-xl bg-teal-500/30 p-4 text-center">
+                <b>Head 2</b>
+                <p class="mt-2 text-xs text-slate-300">Attention</p>
+              </div>
+              <div class="rounded-xl bg-amber-500/30 p-4 text-center">
+                <b>Head 3</b>
+                <p class="mt-2 text-xs text-slate-300">Attention</p>
+              </div>
+            </div>
+            <div class="my-3 text-center text-2xl">↓</div>
+            <div class="rounded-xl bg-rose-500/30 p-4 text-center">Concatenate + Linear Projection</div>
+            <div class="my-3 text-center text-2xl">↓</div>
+            <div class="rounded-xl bg-white/10 p-4 text-center">Output Representation</div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۴.۴ Positional Encoding</h3>
+
+          <p class="leading-9 text-slate-600">
+            Attention به‌تنهایی ترتیب توکن‌ها را به شکل ذاتی مشخص نمی‌کند.
+            به همین دلیل Transformer به روشی برای وارد کردن اطلاعات موقعیت نیاز دارد.
+            این اطلاعات می‌تواند به شکل Positional Encoding یا روش‌های موقعیت‌یابی دیگر ارائه شود.
+          </p>
+
+          <div class="note mt-5 rounded-2xl p-5">
+            <b class="text-indigo-900">مثال ساده:</b>
+            <p class="mt-2 leading-8 text-indigo-950">
+              دو جمله «سگ گربه را دنبال کرد» و «گربه سگ را دنبال کرد»
+              کلمات مشابهی دارند، اما ترتیب آن‌ها معنا را تغییر می‌دهد.
+              مدل باید اطلاعات ترتیب را نیز دریافت کند.
+            </p>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۴.۵ اجزای یک Transformer Block</h3>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <div class="mx-auto max-w-md space-y-3 text-center">
+              <div class="rounded-xl bg-indigo-500/30 p-4">Input</div>
+              <div class="text-xl">↓</div>
+              <div class="rounded-xl bg-teal-500/30 p-4">Multi-Head Attention</div>
+              <div class="text-xl">↓</div>
+              <div class="rounded-xl bg-white/10 p-4">Residual Connection + Normalization</div>
+              <div class="text-xl">↓</div>
+              <div class="rounded-xl bg-amber-500/30 p-4">Feed Forward Network</div>
+              <div class="text-xl">↓</div>
+              <div class="rounded-xl bg-white/10 p-4">Residual Connection + Normalization</div>
+              <div class="text-xl">↓</div>
+              <div class="rounded-xl bg-rose-500/30 p-4">Output</div>
+            </div>
+          </div>
+
+          <ul class="list-inside list-disc space-y-3 leading-8 text-slate-600">
+            <li><b>Attention:</b> ارتباط میان توکن‌ها را محاسبه می‌کند.</li>
+            <li><b>Feed Forward Network:</b> نمایش هر موقعیت را با شبکه‌ای از لایه‌های خطی و غیرخطی پردازش می‌کند.</li>
+            <li><b>Residual Connection:</b> مسیر مستقیمی برای عبور اطلاعات ایجاد می‌کند.</li>
+            <li><b>Normalization:</b> به پایداری و بهبود فرایند آموزش کمک می‌کند.</li>
+          </ul>
+        </article>
+
+        <article class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۴.۶ تفاوت Encoder، Decoder و Encoder-Decoder</h3>
+
+          <div class="grid gap-5 md:grid-cols-3">
+            <div class="rounded-2xl border border-indigo-100 bg-indigo-50 p-5">
+              <h4 class="font-black text-indigo-900">Encoder-Only</h4>
+              <p class="mt-3 leading-8 text-slate-700">
+                برای ساخت نمایش متنی و درک ورودی کاربرد دارد.
+              </p>
+              <p class="mt-3 text-sm text-indigo-700">نمونه شناخته‌شده: BERT</p>
+            </div>
+            <div class="rounded-2xl border border-teal-100 bg-teal-50 p-5">
+              <h4 class="font-black text-teal-900">Decoder-Only</h4>
+              <p class="mt-3 leading-8 text-slate-700">
+                برای تولید توکن بعدی بر اساس توکن‌های قبلی طراحی شده است.
+              </p>
+              <p class="mt-3 text-sm text-teal-700">نمونه: خانواده GPT</p>
+            </div>
+            <div class="rounded-2xl border border-amber-100 bg-amber-50 p-5">
+              <h4 class="font-black text-amber-900">Encoder-Decoder</h4>
+              <p class="mt-3 leading-8 text-slate-700">
+                ورودی را رمزگذاری و سپس خروجی را تولید می‌کند.
+              </p>
+              <p class="mt-3 text-sm text-amber-700">نمونه: T5</p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- SECTION 5 -->
+      <section id="generation" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-brand">بخش پنجم</span>
+          <h2 class="mt-2 text-3xl font-black text-ink md:text-4xl">مدل‌های زبانی چگونه متن تولید می‌کنند؟</h2>
+          <p class="mt-3 text-slate-500">Text Generation & Inference</p>
+        </div>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۵.۱ پیش‌بینی توکن بعدی</h3>
+
+          <p class="leading-9 text-slate-600">
+            بسیاری از LLMهای مولد از روش Autoregressive استفاده می‌کنند.
+            در این روش، مدل با توجه به توکن‌های قبلی، توکن بعدی را پیش‌بینی می‌کند.
+            سپس توکن انتخاب‌شده به ورودی اضافه می‌شود و این فرایند ادامه پیدا می‌کند.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <h4 class="mb-4 font-bold">مثال تولید مرحله‌ای</h4>
+            <div class="space-y-3">
+              <div class="rounded-xl bg-indigo-500/20 p-4">
+                <span class="text-sm text-indigo-200">مرحله اول</span>
+                <p class="mt-2 text-lg">هوش</p>
+              </div>
+              <div class="rounded-xl bg-teal-500/20 p-4">
+                <span class="text-sm text-teal-200">مرحله دوم</span>
+                <p class="mt-2 text-lg">هوش مصنوعی</p>
+              </div>
+              <div class="rounded-xl bg-amber-500/20 p-4">
+                <span class="text-sm text-amber-200">مرحله سوم</span>
+                <p class="mt-2 text-lg">هوش مصنوعی می‌تواند</p>
+              </div>
+              <div class="rounded-xl bg-rose-500/20 p-4">
+                <span class="text-sm text-rose-200">مرحله چهارم</span>
+                <p class="mt-2 text-lg">هوش مصنوعی می‌تواند متن تولید کند.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="my-6 rounded-2xl bg-indigo-50 p-5">
+            <div class="formula text-center text-xl font-bold text-indigo-900">
+              P(x₁, x₂, ..., xₙ) = ∏ P(xᵢ | x₁, ..., xᵢ₋₁)
+            </div>
+            <p class="mt-3 text-center text-sm leading-7 text-indigo-800">
+              احتمال یک توالی را می‌توان به حاصل‌ضرب احتمال هر توکن با توجه به توکن‌های قبلی تجزیه کرد.
+            </p>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۵.۲ Logits و Softmax</h3>
+
+          <p class="leading-9 text-slate-600">
+            مدل برای توکن بعدی ابتدا امتیازهایی به نام Logits تولید می‌کند.
+            سپس با اعمال Softmax این امتیازها به یک توزیع احتمال تبدیل می‌شوند.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <div class="formula text-center text-2xl font-bold text-teal-300">
+              Softmax(zᵢ) = eᶻⁱ / Σⱼ eᶻʲ
+            </div>
+            <p class="mt-4 text-center text-sm text-slate-400">
+              خروجی Softmax مقادیر نامنفی است که مجموع آن‌ها برابر یک می‌شود.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <div class="mb-2 flex justify-between text-sm">
+                <b>گزینه اول</b><span>۵۰٪</span>
+              </div>
+              <div class="h-3 overflow-hidden rounded-full bg-slate-100">
+                <div class="h-full w-1/2 rounded-full bg-indigo-500"></div>
+              </div>
+            </div>
+            <div>
+              <div class="mb-2 flex justify-between text-sm">
+                <b>گزینه دوم</b><span>۳۰٪</span>
+              </div>
+              <div class="h-3 overflow-hidden rounded-full bg-slate-100">
+                <div class="h-full w-[30%] rounded-full bg-teal-500"></div>
+              </div>
+            </div>
+            <div>
+              <div class="mb-2 flex justify-between text-sm">
+                <b>گزینه سوم</b><span>۲۰٪</span>
+              </div>
+              <div class="h-3 overflow-hidden rounded-full bg-slate-100">
+                <div class="h-full w-1/5 rounded-full bg-amber-500"></div>
+              </div>
+            </div>
+          </div>
+          <p class="mt-3 text-xs text-slate-500">درصدها صرفاً برای نمایش مفهوم توزیع احتمال هستند.</p>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۵.۳ روش‌های انتخاب توکن بعدی</h3>
+
+          <div class="space-y-4">
+            <div class="rounded-2xl border p-5">
+              <h4 class="font-extrabold text-ink">Greedy Decoding</h4>
+              <p class="mt-2 leading-8 text-slate-600">
+                در هر مرحله توکنی انتخاب می‌شود که بیشترین احتمال را دارد.
+                این روش ساده و سریع است، اما ممکن است خروجی تکراری یا کم‌تنوع ایجاد کند.
+              </p>
+            </div>
+            <div class="rounded-2xl border p-5">
+              <h4 class="font-extrabold text-ink">Beam Search</h4>
+              <p class="mt-2 leading-8 text-slate-600">
+                چند مسیر محتمل به‌صورت هم‌زمان نگهداری و بررسی می‌شوند.
+                این روش در برخی وظایف تولید توالی کاربرد دارد.
+              </p>
+            </div>
+            <div class="rounded-2xl border p-5">
+              <h4 class="font-extrabold text-ink">Top-k Sampling</h4>
+              <p class="mt-2 leading-8 text-slate-600">
+                انتخاب تصادفی از میان k گزینه دارای احتمال بالاتر انجام می‌شود.
+              </p>
+            </div>
+            <div class="rounded-2xl border p-5">
+              <h4 class="font-extrabold text-ink">Top-p Sampling</h4>
+              <p class="mt-2 leading-8 text-slate-600">
+                کوچک‌ترین مجموعه‌ای از گزینه‌ها انتخاب می‌شود که مجموع احتمال آن‌ها
+                به آستانه p برسد؛ سپس از آن مجموعه نمونه‌گیری انجام می‌شود.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۵.۴ Temperature چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            Temperature پارامتری است که میزان تمرکز یا پراکندگی توزیع احتمال را هنگام
+            نمونه‌گیری کنترل می‌کند.
+          </p>
+
+          <div class="grid gap-4 md:grid-cols-3">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <h4 class="font-black text-indigo-900">Temperature پایین</h4>
+              <p class="mt-2 leading-8 text-slate-700">
+                خروجی معمولاً قابل پیش‌بینی‌تر و متمرکزتر است.
+              </p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <h4 class="font-black text-teal-900">Temperature متوسط</h4>
+              <p class="mt-2 leading-8 text-slate-700">
+                تعادلی میان پیش‌بینی‌پذیری و تنوع ایجاد می‌شود.
+              </p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-5">
+              <h4 class="font-black text-amber-900">Temperature بالا</h4>
+              <p class="mt-2 leading-8 text-slate-700">
+                خروجی می‌تواند متنوع‌تر و غیرقابل‌پیش‌بینی‌تر شود.
+              </p>
+            </div>
+          </div>
+
+          <div class="warning mt-6 rounded-2xl p-5">
+            <b class="text-amber-900">توجه:</b>
+            <p class="mt-2 leading-8 text-amber-950">
+              Temperature دانش مدل را بیشتر نمی‌کند و به‌تنهایی باعث دقیق‌تر شدن پاسخ نمی‌شود.
+              فقط بر شیوه انتخاب خروجی اثر می‌گذارد.
+            </p>
+          </div>
+        </article>
+
+        <article class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۵.۵ Inference چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            Inference یا استنتاج به مرحله استفاده از مدل آموزش‌دیده برای تولید خروجی گفته می‌شود.
+            در این مرحله معمولاً وزن‌های اصلی مدل تغییر نمی‌کنند؛ مدل ورودی را دریافت می‌کند
+            و بر اساس پارامترهای یادگرفته‌شده خروجی می‌سازد.
+          </p>
+
+          <div class="example mt-5 rounded-2xl p-5">
+            <b class="text-teal-900">تفاوت Training و Inference</b>
+            <div class="mt-4 grid gap-4 md:grid-cols-2">
+              <div class="rounded-xl bg-white p-4">
+                <b>Training</b>
+                <p class="mt-2 leading-7 text-slate-600">یادگیری الگوها و تنظیم پارامترهای مدل.</p>
+              </div>
+              <div class="rounded-xl bg-white p-4">
+                <b>Inference</b>
+                <p class="mt-2 leading-7 text-slate-600">استفاده از مدل آموزش‌دیده برای پاسخ‌گویی.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- SECTION 6 -->
+      <section id="prompt" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-accent">بخش ششم</span>
+          <h2 class="mt-2 text-3xl font-black text-ink md:text-4xl">تعامل با LLM و مهندسی پرامپت</h2>
+          <p class="mt-3 text-slate-500">Prompt Engineering & Interaction</p>
+        </div>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۶.۱ Prompt چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            Prompt یا پرامپت ورودی‌ای است که کاربر یا سیستم به مدل ارائه می‌کند.
+            پرامپت می‌تواند شامل سؤال، دستور، متن زمینه، مثال، داده یا ترکیبی از این موارد باشد.
+          </p>
+
+          <div class="my-6 grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl border border-rose-200 bg-rose-50 p-5">
+              <b class="text-rose-800">پرامپت ضعیف</b>
+              <p class="mt-3 leading-8 text-rose-950">«درباره هوش مصنوعی توضیح بده.»</p>
+              <p class="mt-3 text-sm text-rose-700">وظیفه، مخاطب و قالب مشخص نیست.</p>
+            </div>
+            <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+              <b class="text-emerald-800">پرامپت بهتر</b>
+              <p class="mt-3 leading-8 text-emerald-950">
+                «هوش مصنوعی را برای یک دانشجوی مبتدی توضیح بده.
+                پنج مفهوم اصلی را تعریف کن، برای هرکدام مثال بزن و در پایان یک جدول مقایسه ارائه بده.»
+              </p>
+              <p class="mt-3 text-sm text-emerald-700">مخاطب، وظیفه و قالب مشخص شده‌اند.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-5 text-2xl font-extrabold text-ink">۶.۲ اجزای یک پرامپت حرفه‌ای</h3>
+
+          <div class="space-y-3">
+            <div class="rounded-xl border-r-4 border-indigo-500 bg-indigo-50 p-4">
+              <b>Role — نقش</b>
+              <p class="mt-2 leading-8 text-slate-700">مشخص می‌کند مدل از چه زاویه‌ای پاسخ دهد؛ مانند معلم، تحلیل‌گر یا
+                برنامه‌نویس.</p>
+            </div>
+            <div class="rounded-xl border-r-4 border-teal-500 bg-teal-50 p-4">
+              <b>Context — زمینه</b>
+              <p class="mt-2 leading-8 text-slate-700">اطلاعات لازم برای درک مسئله را فراهم می‌کند.</p>
+            </div>
+            <div class="rounded-xl border-r-4 border-amber-500 bg-amber-50 p-4">
+              <b>Task — وظیفه</b>
+              <p class="mt-2 leading-8 text-slate-700">به‌صورت روشن بیان می‌کند مدل باید چه کاری انجام دهد.</p>
+            </div>
+            <div class="rounded-xl border-r-4 border-rose-500 bg-rose-50 p-4">
+              <b>Constraints — محدودیت‌ها</b>
+              <p class="mt-2 leading-8 text-slate-700">محدودیت‌هایی مانند تعداد کلمات، سطح علمی یا موارد ممنوع را مشخص
+                می‌کند.</p>
+            </div>
+            <div class="rounded-xl border-r-4 border-violet-500 bg-violet-50 p-4">
+              <b>Output Format — قالب خروجی</b>
+              <p class="mt-2 leading-8 text-slate-700">مشخص می‌کند پاسخ به شکل جدول، فهرست، JSON یا متن عادی باشد.</p>
+            </div>
+            <div class="rounded-xl border-r-4 border-sky-500 bg-sky-50 p-4">
+              <b>Examples — نمونه‌ها</b>
+              <p class="mt-2 leading-8 text-slate-700">نمونه ورودی و خروجی مورد انتظار را به مدل نشان می‌دهند.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۶.۳ روش‌های مهم Prompting</h3>
+
+          <div class="space-y-5">
+            <div>
+              <h4 class="font-extrabold text-ink">Zero-Shot Prompting</h4>
+              <p class="mt-2 leading-8 text-slate-600">
+                مدل بدون دریافت مثال، مستقیماً وظیفه را انجام می‌دهد.
+              </p>
+              <div class="mt-3 rounded-xl bg-slate-50 p-4 text-sm">
+                «این جمله را به انگلیسی ترجمه کن: من امروز کتاب خواندم.»
+              </div>
+            </div>
+            <div>
+              <h4 class="font-extrabold text-ink">One-Shot Prompting</h4>
+              <p class="mt-2 leading-8 text-slate-600">
+                یک مثال برای نشان دادن الگوی مورد انتظار ارائه می‌شود.
+              </p>
+            </div>
+            <div>
+              <h4 class="font-extrabold text-ink">Few-Shot Prompting</h4>
+              <p class="mt-2 leading-8 text-slate-600">
+                چند مثال در اختیار مدل قرار می‌گیرد تا قالب یا الگوی پاسخ را بهتر تشخیص دهد.
+              </p>
+            </div>
+            <div>
+              <h4 class="font-extrabold text-ink">Structured Prompting</h4>
+              <p class="mt-2 leading-8 text-slate-600">
+                درخواست به بخش‌های مشخص مانند هدف، ورودی، محدودیت و خروجی تقسیم می‌شود.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۶.۴ System، User و Assistant Message</h3>
+
+          <p class="leading-9 text-slate-600">
+            در بسیاری از رابط‌های مدل زبانی، مکالمه از پیام‌هایی با نقش‌های مختلف تشکیل می‌شود.
+            هر نقش به سیستم کمک می‌کند تشخیص دهد پیام از کجا آمده و چه کاربردی دارد.
+          </p>
+
+          <div class="mt-5 space-y-3">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <b class="text-indigo-900">System Message</b>
+              <p class="mt-2 leading-8 text-slate-700">دستورها و قواعد سطح بالای رفتار مدل یا برنامه را مشخص می‌کند.</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <b class="text-teal-900">User Message</b>
+              <p class="mt-2 leading-8 text-slate-700">درخواست یا اطلاعاتی است که کاربر ارسال می‌کند.</p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-5">
+              <b class="text-amber-900">Assistant Message</b>
+              <p class="mt-2 leading-8 text-slate-700">پاسخی است که دستیار تولید می‌کند.</p>
+            </div>
+            <div class="rounded-2xl bg-rose-50 p-5">
+              <b class="text-rose-900">Tool Message</b>
+              <p class="mt-2 leading-8 text-slate-700">نتیجه‌ای است که از اجرای ابزار یا سرویس خارجی به مکالمه
+                بازمی‌گردد.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۶.۵ محدودیت پرامپت‌نویسی</h3>
+
+          <p class="leading-9 text-slate-600">
+            پرامپت خوب می‌تواند کیفیت پاسخ را بهبود دهد، اما نمی‌تواند همه محدودیت‌های مدل را برطرف کند.
+            اگر مدل اطلاعاتی را نیاموخته باشد یا به منبع معتبری دسترسی نداشته باشد،
+            صرفاً با طولانی‌تر کردن دستور الزاماً پاسخ صحیح تولید نمی‌کند.
+          </p>
+
+          <div class="warning mt-5 rounded-2xl p-5">
+            <b class="text-amber-900">اصل مهم:</b>
+            <p class="mt-2 leading-8 text-amber-950">
+              پرامپت دقیق، احتمال خروجی مناسب را افزایش می‌دهد؛ اما تضمین‌کننده حقیقت یا صحت پاسخ نیست.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <!-- SECTION 7 -->
+      <section id="training" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-brand">بخش هفتم</span>
+          <h2 class="mt-2 text-3xl font-black text-ink md:text-4xl">مدل‌های زبانی چگونه آموزش داده می‌شوند؟</h2>
+          <p class="mt-3 text-slate-500">Pre-training, Fine-tuning & Alignment</p>
+        </div>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۷.۱ Pre-training یا پیش‌آموزش</h3>
+
+          <p class="leading-9 text-slate-600">
+            پیش‌آموزش مرحله‌ای است که در آن مدل با حجم بزرگی از داده‌ها مواجه می‌شود
+            و الگوهای آماری، زبانی و ساختاری را یاد می‌گیرد.
+            در مدل‌های خودرگرسیو، هدف رایج پیش‌بینی توکن بعدی با توجه به توکن‌های قبلی است.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <div class="space-y-3">
+              <div class="rounded-xl bg-indigo-500/30 p-4 text-center">مجموعه داده‌های متنی</div>
+              <div class="text-center text-2xl">↓</div>
+              <div class="rounded-xl bg-teal-500/30 p-4 text-center">Tokenization</div>
+              <div class="text-center text-2xl">↓</div>
+              <div class="rounded-xl bg-amber-500/30 p-4 text-center">مدل Transformer</div>
+              <div class="text-center text-2xl">↓</div>
+              <div class="rounded-xl bg-rose-500/30 p-4 text-center">پیش‌بینی توکن بعدی و محاسبه Loss</div>
+              <div class="text-center text-2xl">↓</div>
+              <div class="rounded-xl bg-violet-500/30 p-4 text-center">به‌روزرسانی پارامترها</div>
+            </div>
+          </div>
+
+          <p class="leading-9 text-slate-600">
+            در پایان این مرحله، مدل معمولاً توانایی‌های زبانی و دانشی قابل‌توجهی به دست می‌آورد؛
+            اما هنوز لزوماً برای پیروی از دستورهای کاربران یا ارائه پاسخ ایمن و مفید بهینه نشده است.
+          </p>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۷.۲ Supervised Fine-Tuning یا SFT</h3>
+
+          <p class="leading-9 text-slate-600">
+            در مرحله تنظیم دقیق نظارت‌شده، مدل با نمونه‌هایی از دستورها و پاسخ‌های مطلوب آموزش داده می‌شود.
+            این نمونه‌ها به مدل کمک می‌کنند به جای صرفاً ادامه دادن متن،
+            درخواست کاربر را بهتر تشخیص دهد و پاسخ مناسب‌تری تولید کند.
+          </p>
+
+          <div class="example mt-5 rounded-2xl p-5">
+            <b class="text-teal-900">نمونه آموزشی</b>
+            <p class="mt-3 font-bold">دستور:</p>
+            <p class="mt-2 leading-8">«فتوسنتز را در دو جمله توضیح بده.»</p>
+            <p class="mt-3 font-bold">پاسخ مطلوب:</p>
+            <p class="mt-2 leading-8">
+              «فتوسنتز فرایندی است که گیاهان با استفاده از نور خورشید، آب و دی‌اکسیدکربن،
+              مواد غذایی تولید می‌کنند. در این فرایند اکسیژن نیز آزاد می‌شود.»
+            </p>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۷.۳ RLHF چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            RLHF مخفف Reinforcement Learning from Human Feedback است.
+            در این روش از بازخورد انسان برای بهبود رفتار مدل استفاده می‌شود.
+            هدف می‌تواند مفیدتر، مرتبط‌تر و مناسب‌تر شدن پاسخ‌ها باشد.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <h4 class="mb-4 text-center font-bold">نمای ساده RLHF</h4>
+            <div class="space-y-3 text-center">
+              <div class="rounded-xl bg-indigo-500/30 p-4">مدل پاسخ‌های مختلف تولید می‌کند</div>
+              <div class="text-2xl">↓</div>
+              <div class="rounded-xl bg-teal-500/30 p-4">انسان پاسخ‌ها را مقایسه و رتبه‌بندی می‌کند</div>
+              <div class="text-2xl">↓</div>
+              <div class="rounded-xl bg-amber-500/30 p-4">مدل پاداش آموزش داده می‌شود</div>
+              <div class="text-2xl">↓</div>
+              <div class="rounded-xl bg-rose-500/30 p-4">سیاست مدل به کمک یادگیری تقویتی بهبود می‌یابد</div>
+            </div>
+          </div>
+
+          <h4 class="mb-3 font-bold text-ink">چرا بازخورد انسانی مهم است؟</h4>
+          <ul class="list-inside list-disc space-y-2 leading-8 text-slate-600">
+            <li>تشخیص پاسخ مفیدتر در میان چند پاسخ ممکن.</li>
+            <li>بهبود پیروی مدل از دستورهای کاربر.</li>
+            <li>کاهش برخی پاسخ‌های نامناسب یا ناایمن.</li>
+            <li>بهبود سبک، ارتباط و کیفیت تعامل.</li>
+          </ul>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۷.۴ DPO و روش‌های جایگزین</h3>
+
+          <p class="leading-9 text-slate-600">
+            DPO یا Direct Preference Optimization روشی برای بهینه‌سازی مدل با استفاده از
+            داده‌های ترجیحی است. در این روش می‌توان مدل را به‌صورت مستقیم با جفت‌های
+            پاسخ ترجیح‌داده‌شده و پاسخ نامطلوب آموزش داد، بدون آنکه الزاماً یک مدل پاداش
+            جداگانه و فرایند کامل RLHF کلاسیک موردنیاز باشد.
+          </p>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <b class="text-indigo-900">RLHF</b>
+              <p class="mt-2 leading-8 text-slate-700">معمولاً شامل مدل پاداش و مرحله یادگیری تقویتی است.</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <b class="text-teal-900">DPO</b>
+              <p class="mt-2 leading-8 text-slate-700">از داده‌های ترجیحی برای بهینه‌سازی مستقیم سیاست استفاده می‌کند.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۷.۵ Fine-tuning چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            Fine-tuning یا تنظیم دقیق به ادامه آموزش یک مدل از پیش آموزش‌دیده با داده‌هایی
+            مرتبط با یک وظیفه، دامنه یا سبک خاص گفته می‌شود.
+          </p>
+
+          <div class="mt-5 grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl border p-5">
+              <h4 class="font-extrabold text-ink">Full Fine-tuning</h4>
+              <p class="mt-2 leading-8 text-slate-600">بخش بزرگی از پارامترهای مدل یا همه آن‌ها به‌روزرسانی می‌شوند.</p>
+            </div>
+            <div class="rounded-2xl border p-5">
+              <h4 class="font-extrabold text-ink">Parameter-Efficient Fine-tuning</h4>
+              <p class="mt-2 leading-8 text-slate-600">فقط بخشی از پارامترها یا پارامترهای افزوده‌شده آموزش می‌بینند.
+              </p>
+            </div>
+            <div class="rounded-2xl border p-5">
+              <h4 class="font-extrabold text-ink">LoRA</h4>
+              <p class="mt-2 leading-8 text-slate-600">با افزودن ماتریس‌های کم‌رتبه، هزینه تنظیم مدل را کاهش می‌دهد.</p>
+            </div>
+            <div class="rounded-2xl border p-5">
+              <h4 class="font-extrabold text-ink">Adapters</h4>
+              <p class="mt-2 leading-8 text-slate-600">لایه‌های کوچک قابل آموزش را به معماری مدل اضافه می‌کند.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۷.۶ RAG در برابر Fine-tuning</h3>
+
+          <p class="leading-9 text-slate-600">
+            RAG مخفف Retrieval-Augmented Generation است.
+            در این روش، سیستم پیش از تولید پاسخ، اطلاعات مرتبط را از منابع بیرونی بازیابی
+            می‌کند و آن‌ها را در اختیار مدل قرار می‌دهد.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <h4 class="mb-4 text-center font-bold">معماری ساده RAG</h4>
+            <div class="space-y-3 text-center">
+              <div class="rounded-xl bg-indigo-500/30 p-4">پرسش کاربر</div>
+              <div class="text-2xl">↓</div>
+              <div class="rounded-xl bg-teal-500/30 p-4">جست‌وجو در اسناد و پایگاه دانش</div>
+              <div class="text-2xl">↓</div>
+              <div class="rounded-xl bg-amber-500/30 p-4">بازیابی اطلاعات مرتبط</div>
+              <div class="text-2xl">↓</div>
+              <div class="rounded-xl bg-rose-500/30 p-4">ارسال پرسش و اطلاعات به LLM</div>
+              <div class="text-2xl">↓</div>
+              <div class="rounded-xl bg-violet-500/30 p-4">تولید پاسخ مبتنی بر منابع بازیابی‌شده</div>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[600px] text-right">
+              <thead class="bg-slate-100">
+                <tr>
+                  <th class="p-4">ویژگی</th>
+                  <th class="p-4">RAG</th>
+                  <th class="p-4">Fine-tuning</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y">
+                <tr>
+                  <td class="p-4 font-bold">هدف</td>
+                  <td class="p-4">افزودن اطلاعات مرتبط در زمان پاسخ</td>
+                  <td class="p-4">تغییر رفتار یا توانایی مدل</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">اطلاعات جدید</td>
+                  <td class="p-4">با به‌روزرسانی منبع قابل افزودن است</td>
+                  <td class="p-4">معمولاً نیازمند آموزش مجدد یا تنظیم است</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">کاربرد</td>
+                  <td class="p-4">پرسش از اسناد و اطلاعات سازمانی</td>
+                  <td class="p-4">سبک، قالب یا وظیفه تخصصی</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note mt-6 rounded-2xl p-5">
+            <b class="text-indigo-900">نکته کلیدی:</b>
+            <p class="mt-2 leading-8 text-indigo-950">
+              RAG و Fine-tuning رقیب مستقیم یکدیگر نیستند. در بسیاری از سیستم‌ها می‌توان
+              از هر دو روش در کنار هم استفاده کرد.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <!-- SECTION 8 -->
+      <section id="reasoning" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-accent">بخش هشتم</span>
+          <h2 class="mt-2 text-3xl font-black text-ink md:text-4xl">مدل‌های استدلال‌گر و Reasoning Models</h2>
+          <p class="mt-3 text-slate-500">Reasoning, Planning & Tool Use</p>
+        </div>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۸.۱ استدلال در مدل‌های زبانی چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            استدلال به توانایی حل مسئله از طریق ترکیب اطلاعات، دنبال کردن مراحل منطقی،
+            مقایسه گزینه‌ها و رسیدن به نتیجه گفته می‌شود.
+            در مدل‌های زبانی، برخی روش‌های آموزش و تولید می‌توانند عملکرد مدل را در
+            مسائل چندمرحله‌ای مانند ریاضی، برنامه‌نویسی و تحلیل منطقی بهبود دهند.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <h4 class="mb-4 font-bold">نمونه مسئله چندمرحله‌ای</h4>
+            <p class="leading-9">اگر قیمت یک کالا ۲۰۰ هزار تومان باشد و ۱۵ درصد تخفیف بخورد، قیمت نهایی چقدر است؟</p>
+            <div class="mt-5 space-y-3">
+              <div class="rounded-xl bg-indigo-500/20 p-4">مرحله ۱: محاسبه تخفیف</div>
+              <div class="rounded-xl bg-teal-500/20 p-4">۲۰۰٬۰۰۰ × ۰٫۱۵ = ۳۰٬۰۰۰</div>
+              <div class="rounded-xl bg-amber-500/20 p-4">مرحله ۲: کم کردن تخفیف از قیمت اولیه</div>
+              <div class="rounded-xl bg-rose-500/20 p-4">۲۰۰٬۰۰۰ − ۳۰٬۰۰۰ = ۱۷۰٬۰۰۰</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۸.۲ تفاوت مدل‌های معمولی و مدل‌های استدلال‌گر</h3>
+
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[600px] text-right">
+              <thead class="bg-slate-100">
+                <tr>
+                  <th class="p-4">ویژگی</th>
+                  <th class="p-4">مدل عمومی</th>
+                  <th class="p-4">مدل استدلال‌گر</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y">
+                <tr>
+                  <td class="p-4 font-bold">تمرکز</td>
+                  <td class="p-4">پاسخ‌گویی عمومی و متنوع</td>
+                  <td class="p-4">حل مسائل چندمرحله‌ای</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">منابع محاسباتی</td>
+                  <td class="p-4">معمولاً پاسخ سریع‌تر</td>
+                  <td class="p-4">ممکن است محاسبات بیشتری صرف شود</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">کاربرد مناسب</td>
+                  <td class="p-4">نوشتن، خلاصه‌سازی و مکالمه</td>
+                  <td class="p-4">ریاضی، کدنویسی و تحلیل پیچیده</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="mt-5 leading-8 text-slate-600">
+            این تفاوت مطلق نیست. یک مدل عمومی نیز می‌تواند استدلال خوبی داشته باشد
+            و یک مدل استدلال‌گر نیز ممکن است در برخی وظایف ساده اشتباه کند.
+          </p>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۸.۳ Chain of Thought</h3>
+
+          <p class="leading-9 text-slate-600">
+            Chain of Thought به رویکردهایی اشاره دارد که در آن‌ها حل مسئله به مراحل میانی
+            تقسیم می‌شود. این روش می‌تواند در برخی مسائل پیچیده به بهبود عملکرد کمک کند.
+          </p>
+
+          <div class="note mt-5 rounded-2xl p-5">
+            <b class="text-indigo-900">توضیح مهم:</b>
+            <p class="mt-2 leading-8 text-indigo-950">
+              پاسخ مرحله‌بندی‌شده‌ای که مدل برای کاربر ارائه می‌کند الزاماً معادل تمام
+              فرایندهای داخلی مدل نیست. همچنین توضیح تولیدشده ممکن است نادرست یا ناقص باشد.
+            </p>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۸.۴ Tool Use و Function Calling</h3>
+
+          <p class="leading-9 text-slate-600">
+            مدل زبانی به‌تنهایی ممکن است نتواند عملیاتی مانند جست‌وجوی زنده در اینترنت،
+            اجرای کد یا خواندن داده از یک پایگاه اطلاعاتی را انجام دهد.
+            با اتصال ابزارها، سیستم می‌تواند این وظایف را به سرویس‌های تخصصی واگذار کند.
+          </p>
+
+          <div class="my-6 rounded-2xl bg-slate-950 p-6 text-white">
+            <h4 class="mb-4 text-center font-bold">چرخه استفاده از ابزار</h4>
+            <div class="space-y-3 text-center">
+              <div class="rounded-xl bg-indigo-500/30 p-4">کاربر درخواست می‌دهد</div>
+              <div class="text-2xl">↓</div>
+              <div class="rounded-xl bg-teal-500/30 p-4">مدل تشخیص می‌دهد ابزار لازم است</div>
+              <div class="text-2xl">↓</div>
+              <div class="rounded-xl bg-amber-500/30 p-4">سیستم ابزار را اجرا می‌کند</div>
+              <div class="text-2xl">↓</div>
+              <div class="rounded-xl bg-rose-500/30 p-4">نتیجه ابزار به مدل بازمی‌گردد</div>
+              <div class="text-2xl">↓</div>
+              <div class="rounded-xl bg-violet-500/30 p-4">مدل پاسخ نهایی را تولید می‌کند</div>
+            </div>
+          </div>
+
+          <h4 class="mb-3 font-bold text-ink">نمونه ابزارها</h4>
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="rounded-xl bg-slate-50 p-4">🌐 جست‌وجوی وب</div>
+            <div class="rounded-xl bg-slate-50 p-4">🧮 ماشین‌حساب</div>
+            <div class="rounded-xl bg-slate-50 p-4">💻 اجرای کد</div>
+            <div class="rounded-xl bg-slate-50 p-4">📁 خواندن فایل</div>
+            <div class="rounded-xl bg-slate-50 p-4">🗄️ پایگاه داده</div>
+            <div class="rounded-xl bg-slate-50 p-4">📅 تقویم و زمان‌بندی</div>
+          </div>
+        </article>
+
+        <article class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۸.۵ AI Agent چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            عامل هوش مصنوعی یا AI Agent سیستمی است که می‌تواند برای رسیدن به یک هدف،
+            وضعیت را بررسی کند، برنامه‌ریزی انجام دهد، از ابزارها استفاده کند
+            و بر اساس نتیجه مراحل بعدی را انتخاب کند.
+          </p>
+
+          <div class="mt-5 grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <b class="text-indigo-900">LLM ساده</b>
+              <p class="mt-2 leading-8 text-slate-700">عمدتاً ورودی را دریافت می‌کند و پاسخ متنی تولید می‌کند.</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <b class="text-teal-900">AI Agent</b>
+              <p class="mt-2 leading-8 text-slate-700">می‌تواند هدف را به مراحل تقسیم کند و ابزارها را برای انجام آن به
+                کار گیرد.</p>
+            </div>
+          </div>
+
+          <div class="warning mt-6 rounded-2xl p-5">
+            <b class="text-amber-900">نکته ایمنی:</b>
+            <p class="mt-2 leading-8 text-amber-950">
+              هرچه عامل اختیار بیشتری برای ارسال پیام، خرید، حذف فایل یا تغییر اطلاعات داشته باشد،
+              نیاز به مجوز، نظارت و کنترل انسانی بیشتر می‌شود.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <!-- SECTION 9 -->
+      <section id="multimodal" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-brand">بخش نهم</span>
+          <h2 class="mt-2 text-3xl font-black text-ink md:text-4xl">مدل‌های چندوجهی</h2>
+          <p class="mt-3 text-slate-500">Multimodal Large Language Models</p>
+        </div>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۹.۱ Multimodal AI چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            مدل چندوجهی می‌تواند با بیش از یک نوع داده کار کند.
+            در حالی که یک مدل زبانی متنی عمدتاً با متن سروکار دارد،
+            مدل چندوجهی ممکن است متن، تصویر، صدا و ویدئو را دریافت یا تولید کند.
+          </p>
+
+          <div class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div class="rounded-2xl bg-indigo-50 p-5 text-center">
+              <div class="mb-3 text-4xl">📝</div>
+              <b>متن</b>
+              <p class="mt-2 text-sm text-slate-600">Text</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5 text-center">
+              <div class="mb-3 text-4xl">🖼️</div>
+              <b>تصویر</b>
+              <p class="mt-2 text-sm text-slate-600">Image</p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-5 text-center">
+              <div class="mb-3 text-4xl">🎧</div>
+              <b>صوت</b>
+              <p class="mt-2 text-sm text-slate-600">Audio</p>
+            </div>
+            <div class="rounded-2xl bg-rose-50 p-5 text-center">
+              <div class="mb-3 text-4xl">🎬</div>
+              <b>ویدئو</b>
+              <p class="mt-2 text-sm text-slate-600">Video</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۹.۲ مدل‌های بینایی و زبان</h3>
+
+          <p class="leading-9 text-slate-600">
+            مدل‌های Vision-Language می‌توانند اطلاعات تصویری و متنی را به هم مرتبط کنند.
+            برای مثال کاربر می‌تواند تصویری ارسال کند و درباره محتوای آن سؤال بپرسد.
+          </p>
+
+          <div class="example mt-5 rounded-2xl p-5">
+            <b class="text-teal-900">مثال کاربردی</b>
+            <p class="mt-3 leading-8 text-teal-950">
+              ورودی: یک تصویر از نمودار فروش.
+            </p>
+            <p class="mt-2 leading-8 text-teal-950">
+              درخواست: «روند فروش در سه ماه گذشته را تحلیل کن و ماهی را که بیشترین فروش را داشته مشخص کن.»
+            </p>
+            <p class="mt-2 leading-8 text-teal-950">
+              خروجی مورد انتظار: توضیح نمودار، استخراج مقادیر قابل مشاهده و پاسخ به پرسش کاربر.
+            </p>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۹.۳ پردازش صوت</h3>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <h4 class="font-extrabold text-indigo-900">Speech-to-Text</h4>
+              <p class="mt-2 leading-8 text-slate-700">تبدیل گفتار به متن؛ مانند پیاده‌سازی یک جلسه.</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <h4 class="font-extrabold text-teal-900">Text-to-Speech</h4>
+              <p class="mt-2 leading-8 text-slate-700">تبدیل متن به گفتار مصنوعی.</p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-5">
+              <h4 class="font-extrabold text-amber-900">Speech Understanding</h4>
+              <p class="mt-2 leading-8 text-slate-700">درک محتوای گفتار، هدف گوینده و اطلاعات صوتی.</p>
+            </div>
+            <div class="rounded-2xl bg-rose-50 p-5">
+              <h4 class="font-extrabold text-rose-900">Audio Generation</h4>
+              <p class="mt-2 leading-8 text-slate-700">تولید صدا، گفتار یا محتوای صوتی.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۹.۴ پردازش ویدئو</h3>
+
+          <p class="leading-9 text-slate-600">
+            ویدئو از توالی فریم‌های تصویری تشکیل می‌شود و ممکن است همراه با صوت باشد.
+            یک مدل چندوجهی می‌تواند برای پاسخ به پرسش درباره رویدادها،
+            تشخیص اشیا، خلاصه‌سازی محتوای ویدئو یا تحلیل فعالیت‌ها استفاده شود.
+          </p>
+
+          <div class="my-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div class="rounded-xl bg-slate-100 p-5 text-center">
+              <div class="text-3xl">🎞️</div><b class="mt-2 block">Frame 1</b>
+            </div>
+            <div class="rounded-xl bg-slate-100 p-5 text-center">
+              <div class="text-3xl">🎞️</div><b class="mt-2 block">Frame 2</b>
+            </div>
+            <div class="rounded-xl bg-slate-100 p-5 text-center">
+              <div class="text-3xl">🎞️</div><b class="mt-2 block">Frame 3</b>
+            </div>
+            <div class="rounded-xl bg-slate-100 p-5 text-center">
+              <div class="text-3xl">🎞️</div><b class="mt-2 block">Frame 4</b>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۹.۵ چالش‌های مدل‌های چندوجهی</h3>
+
+          <ul class="list-inside list-disc space-y-3 leading-8 text-slate-600">
+            <li>هزینه بالاتر پردازش تصویر، صدا و ویدئو.</li>
+            <li>نیاز به هم‌تراز کردن اطلاعات میان وجه‌های مختلف.</li>
+            <li>احتمال اشتباه در تشخیص جزئیات تصویری یا صوتی.</li>
+            <li>چالش حفظ حریم خصوصی در داده‌های صوتی و تصویری.</li>
+            <li>پیچیدگی ارزیابی صحت خروجی‌های چندوجهی.</li>
+          </ul>
+        </article>
+      </section>
+
+      <!-- SECTION 10 -->
+      <section id="limitations" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-accent">بخش دهم</span>
+          <h2 class="mt-2 text-3xl font-black text-ink md:text-4xl">محدودیت‌ها، خطاها و ایمنی مدل‌های زبانی</h2>
+          <p class="mt-3 text-slate-500">Limitations, Hallucinations & AI Safety</p>
+        </div>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۱۰.۱ Hallucination یا توهم مدل چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            توهم زمانی رخ می‌دهد که مدل اطلاعات نادرست، ساختگی یا تأییدنشده تولید کند؛
+            در حالی که پاسخ ممکن است از نظر نگارش بسیار روان و مطمئن به نظر برسد.
+          </p>
+
+          <div class="my-6 rounded-2xl border border-rose-200 bg-rose-50 p-5">
+            <b class="text-rose-800">نمونه فرضی</b>
+            <p class="mt-3 leading-8 text-rose-950">
+              کاربر: «مقاله‌ای با عنوان مشخص از یک پژوهشگر ناشناخته معرفی کن.»
+            </p>
+            <p class="mt-2 leading-8 text-rose-950">
+              پاسخ نادرست احتمالی: مدل ممکن است عنوان، نام نویسنده و تاریخ انتشار ساختگی ارائه دهد.
+            </p>
+            <p class="mt-3 text-sm text-rose-700">
+              روان بودن پاسخ به معنای واقعی بودن اطلاعات آن نیست.
+            </p>
+          </div>
+
+          <h4 class="mb-3 font-bold text-ink">چرا Hallucination رخ می‌دهد؟</h4>
+          <ul class="list-inside list-disc space-y-2 leading-8 text-slate-600">
+            <li>مدل برای تولید توالی محتمل آموزش دیده است، نه تضمین حقیقت همه گزاره‌ها.</li>
+            <li>ممکن است اطلاعات کافی در زمینه ورودی وجود نداشته باشد.</li>
+            <li>پرسش مبهم یا دارای فرض نادرست باشد.</li>
+            <li>داده‌های آموزشی ناقص، قدیمی یا متناقض باشند.</li>
+            <li>مدل ممکن است به‌جای اعلام عدم اطمینان، پاسخی محتمل تولید کند.</li>
+          </ul>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۱۰.۲ Bias یا سوگیری</h3>
+
+          <p class="leading-9 text-slate-600">
+            سوگیری زمانی رخ می‌دهد که خروجی مدل به شکل غیرمنصفانه یا نامتوازن
+            تحت تأثیر ویژگی‌های داده‌های آموزشی، طراحی سیستم یا فرایند ارزیابی قرار گیرد.
+          </p>
+
+          <div class="grid gap-4 md:grid-cols-3">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <b class="text-indigo-900">Data Bias</b>
+              <p class="mt-2 leading-8 text-slate-700">سوگیری موجود در داده‌های آموزشی.</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <b class="text-teal-900">Representation Bias</b>
+              <p class="mt-2 leading-8 text-slate-700">بازنمایی نامتوازن گروه‌ها یا دیدگاه‌ها.</p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-5">
+              <b class="text-amber-900">Evaluation Bias</b>
+              <p class="mt-2 leading-8 text-slate-700">ارزیابی نامناسب یا ناقص عملکرد مدل.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۱۰.۳ حریم خصوصی و امنیت</h3>
+
+          <div class="space-y-3">
+            <div class="rounded-xl border-r-4 border-rose-400 bg-rose-50 p-4">
+              <b>Privacy</b>
+              <p class="mt-2 leading-8 text-slate-700">حفاظت از اطلاعات شخصی و داده‌های حساس کاربران.</p>
+            </div>
+            <div class="rounded-xl border-r-4 border-amber-400 bg-amber-50 p-4">
+              <b>Data Leakage</b>
+              <p class="mt-2 leading-8 text-slate-700">افشای ناخواسته اطلاعات محرمانه در ورودی یا خروجی سیستم.</p>
+            </div>
+            <div class="rounded-xl border-r-4 border-indigo-400 bg-indigo-50 p-4">
+              <b>Prompt Injection</b>
+              <p class="mt-2 leading-8 text-slate-700">تلاش برای دست‌کاری رفتار سیستم از طریق دستورهای مخرب در ورودی یا
+                محتوای بازیابی‌شده.</p>
+            </div>
+            <div class="rounded-xl border-r-4 border-teal-400 bg-teal-50 p-4">
+              <b>Unauthorized Tool Use</b>
+              <p class="mt-2 leading-8 text-slate-700">اجرای عملیاتی بدون مجوز یا کنترل مناسب.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۱۰.۴ محدودیت دانش و اطلاعات به‌روز</h3>
+
+          <p class="leading-9 text-slate-600">
+            دانش یک مدل ممکن است به داده‌های آموزشی و زمان پایان آموزش آن وابسته باشد.
+            اگر مدل به ابزار جست‌وجو، پایگاه داده یا منبع خارجی متصل نباشد،
+            ممکن است درباره رویدادهای جدید اطلاعات کافی نداشته باشد.
+          </p>
+
+          <div class="note mt-5 rounded-2xl p-5">
+            <b class="text-indigo-900">راهکار:</b>
+            <p class="mt-2 leading-8 text-indigo-950">
+              برای موضوعات حساس به زمان، از منابع معتبر و به‌روز استفاده کنید،
+              تاریخ اطلاعات را بررسی کنید و در صورت امکان پاسخ مدل را با شواهد مستقل تطبیق دهید.
+            </p>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۱۰.۵ ارزیابی مدل‌های زبانی</h3>
+
+          <p class="leading-9 text-slate-600">
+            ارزیابی LLM فقط با یک معیار انجام نمی‌شود. بسته به نوع کاربرد،
+            باید کیفیت زبانی، صحت اطلاعات، توانایی استدلال، ایمنی و عملکرد در شرایط واقعی بررسی شود.
+          </p>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <b class="text-indigo-900">Accuracy</b>
+              <p class="mt-2 leading-8 text-slate-700">درستی پاسخ در وظایف دارای پاسخ قابل بررسی.</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <b class="text-teal-900">Relevance</b>
+              <p class="mt-2 leading-8 text-slate-700">میزان ارتباط پاسخ با درخواست کاربر.</p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-5">
+              <b class="text-amber-900">Robustness</b>
+              <p class="mt-2 leading-8 text-slate-700">پایداری عملکرد در برابر ورودی‌های متفاوت.</p>
+            </div>
+            <div class="rounded-2xl bg-rose-50 p-5">
+              <b class="text-rose-900">Safety</b>
+              <p class="mt-2 leading-8 text-slate-700">میزان رعایت الزامات ایمنی و کاهش خروجی‌های آسیب‌زا.</p>
+            </div>
+            <div class="rounded-2xl bg-sky-50 p-5">
+              <b class="text-sky-900">Latency</b>
+              <p class="mt-2 leading-8 text-slate-700">زمان موردنیاز برای تولید پاسخ.</p>
+            </div>
+            <div class="rounded-2xl bg-violet-50 p-5">
+              <b class="text-violet-900">Cost</b>
+              <p class="mt-2 leading-8 text-slate-700">هزینه محاسباتی و عملیاتی استفاده از مدل.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۱۰.۶ اصول استفاده مسئولانه از LLM</h3>
+
+          <ul class="list-inside list-disc space-y-3 leading-8 text-slate-600">
+            <li>اطلاعات مهم را با منابع معتبر بررسی کنید.</li>
+            <li>اطلاعات محرمانه را بدون بررسی سیاست‌های حریم خصوصی وارد نکنید.</li>
+            <li>برای تصمیم‌های پزشکی، حقوقی و مالی به پاسخ مدل به‌تنهایی تکیه نکنید.</li>
+            <li>در عملیات حساس، تأیید انسان را در جریان کار قرار دهید.</li>
+            <li>سوگیری و خطاهای احتمالی خروجی را بررسی کنید.</li>
+            <li>برای استفاده از ابزارها، دسترسی‌ها را به حداقل موردنیاز محدود کنید.</li>
+          </ul>
+        </article>
+      </section>
+
+      <!-- SECTION 11 -->
+      <section id="applications" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-brand">بخش یازدهم</span>
+          <h2 class="mt-2 text-3xl font-black text-ink md:text-4xl">کاربردها، اکوسیستم و آینده LLMها</h2>
+          <p class="mt-3 text-slate-500">Applications, Ecosystem & Future</p>
+        </div>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-5 text-2xl font-extrabold text-ink">۱۱.۱ کاربردهای مدل‌های زبانی بزرگ</h3>
+
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <div class="text-3xl">✍️</div>
+              <b class="mt-3 block text-indigo-900">تولید محتوا</b>
+              <p class="mt-2 text-sm leading-7 text-slate-600">نوشتن مقاله، گزارش، ایمیل و محتوای تبلیغاتی.</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <div class="text-3xl">💻</div>
+              <b class="mt-3 block text-teal-900">برنامه‌نویسی</b>
+              <p class="mt-2 text-sm leading-7 text-slate-600">تولید کد، رفع خطا و توضیح ساختار برنامه.</p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-5">
+              <div class="text-3xl">🎓</div>
+              <b class="mt-3 block text-amber-900">آموزش</b>
+              <p class="mt-2 text-sm leading-7 text-slate-600">توضیح مفاهیم، طراحی تمرین و آموزش شخصی‌سازی‌شده.</p>
+            </div>
+            <div class="rounded-2xl bg-rose-50 p-5">
+              <div class="text-3xl">🏥</div>
+              <b class="mt-3 block text-rose-900">سلامت</b>
+              <p class="mt-2 text-sm leading-7 text-slate-600">کمک به خلاصه‌سازی و سازمان‌دهی اطلاعات پزشکی با نظارت
+                متخصص.</p>
+            </div>
+            <div class="rounded-2xl bg-sky-50 p-5">
+              <div class="text-3xl">🏢</div>
+              <b class="mt-3 block text-sky-900">کسب‌وکار</b>
+              <p class="mt-2 text-sm leading-7 text-slate-600">پشتیبانی مشتری، تحلیل اسناد و اتوماسیون فرایندها.</p>
+            </div>
+            <div class="rounded-2xl bg-violet-50 p-5">
+              <div class="text-3xl">🔍</div>
+              <b class="mt-3 block text-violet-900">تحقیق و پژوهش</b>
+              <p class="mt-2 text-sm leading-7 text-slate-600">خلاصه‌سازی مقالات، دسته‌بندی منابع و استخراج اطلاعات.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۱۱.۲ مدل‌های Open-Weight و Closed Models</h3>
+
+          <p class="leading-9 text-slate-600">
+            مدل‌ها از نظر نحوه انتشار و دسترسی نیز تفاوت دارند.
+            برخی مدل‌ها وزن‌های خود را در دسترس قرار می‌دهند و برخی دیگر از طریق API
+            یا سرویس‌های میزبانی‌شده قابل استفاده هستند.
+          </p>
+
+          <div class="grid gap-5 md:grid-cols-2">
+            <div class="rounded-2xl border border-indigo-100 bg-indigo-50 p-6">
+              <h4 class="text-xl font-black text-indigo-900">Open-Weight Models</h4>
+              <p class="mt-3 leading-8 text-slate-700">
+                وزن‌های مدل در دسترس قرار می‌گیرند و امکان اجرای محلی یا تنظیم مدل
+                ممکن است فراهم باشد؛ البته شرایط مجوز هر مدل متفاوت است.
+              </p>
+            </div>
+            <div class="rounded-2xl border border-teal-100 bg-teal-50 p-6">
+              <h4 class="text-xl font-black text-teal-900">Closed Models</h4>
+              <p class="mt-3 leading-8 text-slate-700">
+                دسترسی معمولاً از طریق API یا محصول ارائه‌دهنده انجام می‌شود
+                و وزن‌های اصلی مدل در اختیار عموم قرار نمی‌گیرند.
+              </p>
+            </div>
+          </div>
+
+          <div class="warning mt-6 rounded-2xl p-5">
+            <b class="text-amber-900">توجه:</b>
+            <p class="mt-2 leading-8 text-amber-950">
+              Open-Weight الزاماً به معنای Open-Source کامل نیست.
+              داده‌های آموزش، کد کامل، جزئیات فرایند آموزش و مجوز استفاده ممکن است محدود باشند.
+            </p>
+          </div>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۱۱.۳ Quantization چیست؟</h3>
+
+          <p class="leading-9 text-slate-600">
+            Quantization روشی برای کاهش دقت عددی پارامترها یا محاسبات مدل است.
+            برای مثال ممکن است برخی وزن‌ها به‌جای نمایش با دقت ۳۲ بیتی،
+            با دقت پایین‌تری نمایش داده شوند.
+            این کار می‌تواند حافظه موردنیاز و هزینه اجرای مدل را کاهش دهد.
+          </p>
+
+          <div class="grid gap-4 md:grid-cols-3">
+            <div class="rounded-2xl bg-indigo-50 p-5 text-center">
+              <b class="text-indigo-900">FP32</b>
+              <p class="mt-2 text-sm text-slate-600">دقت شناور ۳۲ بیتی</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5 text-center">
+              <b class="text-teal-900">FP16 / BF16</b>
+              <p class="mt-2 text-sm text-slate-600">نمایش ۱۶ بیتی</p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-5 text-center">
+              <b class="text-amber-900">INT8 / INT4</b>
+              <p class="mt-2 text-sm text-slate-600">نمایش عدد صحیح کم‌دقت‌تر</p>
+            </div>
+          </div>
+
+          <p class="mt-5 leading-8 text-slate-600">
+            Quantization می‌تواند با کاهش دقت، در برخی شرایط بر کیفیت خروجی اثر بگذارد.
+            بنابراین باید میان سرعت، حافظه و کیفیت تعادل برقرار شود.
+          </p>
+        </article>
+
+        <article class="section-card mb-7 rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۱۱.۴ مدل‌های کوچک و اجرای محلی</h3>
+
+          <p class="leading-9 text-slate-600">
+            همه کاربردها به مدل‌های بسیار بزرگ نیاز ندارند.
+            مدل‌های کوچک‌تر یا SLMها می‌توانند برای وظایف محدود و مشخص مناسب باشند.
+            اجرای محلی نیز می‌تواند در برخی کاربردها به کاهش وابستگی به سرویس‌های ابری
+            و کنترل بیشتر روی داده‌ها کمک کند.
+          </p>
+
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[600px] text-right">
+              <thead class="bg-slate-100">
+                <tr>
+                  <th class="p-4">ویژگی</th>
+                  <th class="p-4">مدل کوچک‌تر</th>
+                  <th class="p-4">مدل بزرگ‌تر</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y">
+                <tr>
+                  <td class="p-4 font-bold">منابع محاسباتی</td>
+                  <td class="p-4">معمولاً کمتر</td>
+                  <td class="p-4">معمولاً بیشتر</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">هزینه اجرا</td>
+                  <td class="p-4">ممکن است کمتر باشد</td>
+                  <td class="p-4">ممکن است بیشتر باشد</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">توانایی عمومی</td>
+                  <td class="p-4">وابسته به اندازه و آموزش</td>
+                  <td class="p-4">اغلب گسترده‌تر، نه لزوماً در همه وظایف</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">کاربرد مناسب</td>
+                  <td class="p-4">وظایف مشخص و محدود</td>
+                  <td class="p-4">کارهای متنوع و پیچیده</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <h3 class="mb-4 text-2xl font-extrabold text-ink">۱۱.۵ آینده مدل‌های زبانی</h3>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl bg-indigo-50 p-5">
+              <b class="text-indigo-900">Multimodal Intelligence</b>
+              <p class="mt-2 leading-8 text-slate-700">ترکیب بهتر متن، تصویر، صدا و ویدئو.</p>
+            </div>
+            <div class="rounded-2xl bg-teal-50 p-5">
+              <b class="text-teal-900">AI Agents</b>
+              <p class="mt-2 leading-8 text-slate-700">عامل‌هایی که وظایف چندمرحله‌ای را با ابزارها انجام می‌دهند.</p>
+            </div>
+            <div class="rounded-2xl bg-amber-50 p-5">
+              <b class="text-amber-900">Efficient Models</b>
+              <p class="mt-2 leading-8 text-slate-700">مدل‌هایی با مصرف حافظه و انرژی کمتر.</p>
+            </div>
+            <div class="rounded-2xl bg-rose-50 p-5">
+              <b class="text-rose-900">Personalized AI</b>
+              <p class="mt-2 leading-8 text-slate-700">سیستم‌هایی با قابلیت سازگاری بهتر با نیاز و ترجیحات کاربر.</p>
+            </div>
+            <div class="rounded-2xl bg-sky-50 p-5">
+              <b class="text-sky-900">AI Safety</b>
+              <p class="mt-2 leading-8 text-slate-700">روش‌های بهتر برای کنترل، ارزیابی و کاهش خطرات.</p>
+            </div>
+            <div class="rounded-2xl bg-violet-50 p-5">
+              <b class="text-violet-900">Human-AI Collaboration</b>
+              <p class="mt-2 leading-8 text-slate-700">همکاری انسان و هوش مصنوعی در تصمیم‌گیری و حل مسئله.</p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- SUMMARY -->
+      <section id="summary" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-brand">مرور نهایی</span>
+          <h2 class="mt-2 text-3xl font-black text-ink">جمع‌بندی فصل</h2>
+        </div>
+
+        <div class="section-card overflow-hidden rounded-3xl bg-white">
+          <div class="bg-[#17233d] p-7 text-white md:p-9">
+            <h3 class="text-2xl font-black">نقشه مفهومی LLM</h3>
+            <p class="mt-3 leading-8 text-slate-300">
+              ارتباط میان مفاهیم کلیدی که در این فصل مطالعه کردیم.
+            </p>
+          </div>
+
+          <div class="p-6 md:p-9">
+            <div class="mx-auto max-w-3xl space-y-3 text-center">
+              <div class="rounded-2xl bg-indigo-100 p-5 font-black text-indigo-900">Large Language Model</div>
+              <div class="text-2xl text-brand">↓</div>
+              <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+                <div class="rounded-xl bg-teal-50 p-4 font-bold">Tokenization</div>
+                <div class="rounded-xl bg-amber-50 p-4 font-bold">Embeddings</div>
+                <div class="rounded-xl bg-rose-50 p-4 font-bold">Transformer</div>
+                <div class="rounded-xl bg-violet-50 p-4 font-bold">Attention</div>
+              </div>
+              <div class="text-2xl text-brand">↓</div>
+              <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+                <div class="rounded-xl bg-indigo-50 p-4">Pre-training</div>
+                <div class="rounded-xl bg-teal-50 p-4">Fine-tuning</div>
+                <div class="rounded-xl bg-amber-50 p-4">Alignment</div>
+                <div class="rounded-xl bg-rose-50 p-4">Inference</div>
+              </div>
+              <div class="text-2xl text-brand">↓</div>
+              <div class="rounded-2xl bg-slate-950 p-5 font-bold text-white">
+                Text Generation • Reasoning • Multimodal AI • Tool Use
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card mt-7 overflow-hidden rounded-3xl bg-white">
+          <div class="overflow-x-auto p-5 md:p-8">
+            <table class="w-full min-w-[680px] text-right">
+              <thead class="bg-slate-100">
+                <tr>
+                  <th class="rounded-tr-xl p-4">مفهوم</th>
+                  <th class="p-4">تعریف کوتاه</th>
+                  <th class="rounded-tl-xl p-4">کاربرد یا اهمیت</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr>
+                  <td class="p-4 font-bold">LLM</td>
+                  <td class="p-4">مدل زبانی بزرگ</td>
+                  <td class="p-4">پردازش و تولید زبان</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">Token</td>
+                  <td class="p-4">واحد پردازش متن</td>
+                  <td class="p-4">ورودی مدل</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">Embedding</td>
+                  <td class="p-4">نمایش عددی توکن</td>
+                  <td class="p-4">پردازش برداری</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">Attention</td>
+                  <td class="p-4">مکانیزم توجه</td>
+                  <td class="p-4">ارتباط میان توکن‌ها</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">Transformer</td>
+                  <td class="p-4">معماری شبکه عصبی</td>
+                  <td class="p-4">ساخت بسیاری از LLMها</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">Pre-training</td>
+                  <td class="p-4">پیش‌آموزش</td>
+                  <td class="p-4">یادگیری الگوهای عمومی</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">Fine-tuning</td>
+                  <td class="p-4">تنظیم دقیق</td>
+                  <td class="p-4">تطبیق با وظیفه خاص</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">RLHF</td>
+                  <td class="p-4">یادگیری از بازخورد انسانی</td>
+                  <td class="p-4">بهبود رفتار مدل</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">RAG</td>
+                  <td class="p-4">بازیابی و تولید</td>
+                  <td class="p-4">استفاده از منابع بیرونی</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">Inference</td>
+                  <td class="p-4">استنتاج</td>
+                  <td class="p-4">اجرای مدل آموزش‌دیده</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">Multimodal</td>
+                  <td class="p-4">چندوجهی</td>
+                  <td class="p-4">پردازش متن، تصویر و صوت</td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold">Hallucination</td>
+                  <td class="p-4">تولید اطلاعات نادرست</td>
+                  <td class="p-4">یکی از محدودیت‌های LLM</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- GLOSSARY -->
+      <section id="glossary" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-accent">مرجع سریع</span>
+          <h2 class="mt-2 text-3xl font-black text-ink">واژه‌نامه تخصصی</h2>
+          <p class="mt-3 text-slate-500">Key Terms & Definitions</p>
+        </div>
+
+        <div class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <div class="grid gap-3 md:grid-cols-2">
+            <div class="border-b p-3"><b>AI</b><span class="mr-2 text-slate-500">Artificial Intelligence — هوش
+                مصنوعی</span></div>
+            <div class="border-b p-3"><b>ML</b><span class="mr-2 text-slate-500">Machine Learning — یادگیری ماشین</span>
+            </div>
+            <div class="border-b p-3"><b>DL</b><span class="mr-2 text-slate-500">Deep Learning — یادگیری عمیق</span>
+            </div>
+            <div class="border-b p-3"><b>LLM</b><span class="mr-2 text-slate-500">Large Language Model — مدل زبانی
+                بزرگ</span></div>
+            <div class="border-b p-3"><b>SLM</b><span class="mr-2 text-slate-500">Small Language Model — مدل زبانی
+                کوچک</span></div>
+            <div class="border-b p-3"><b>Token</b><span class="mr-2 text-slate-500">واحد پردازش متن</span></div>
+            <div class="border-b p-3"><b>Tokenizer</b><span class="mr-2 text-slate-500">ابزار تقسیم متن به توکن</span>
+            </div>
+            <div class="border-b p-3"><b>Vocabulary</b><span class="mr-2 text-slate-500">مجموعه توکن‌های
+                شناخته‌شده</span>
+            </div>
+            <div class="border-b p-3"><b>Embedding</b><span class="mr-2 text-slate-500">نمایش برداری داده</span></div>
+            <div class="border-b p-3"><b>Context Window</b><span class="mr-2 text-slate-500">پنجره زمینه</span></div>
+            <div class="border-b p-3"><b>Parameter</b><span class="mr-2 text-slate-500">پارامتر قابل یادگیری</span>
+            </div>
+            <div class="border-b p-3"><b>Attention</b><span class="mr-2 text-slate-500">مکانیزم توجه</span></div>
+            <div class="border-b p-3"><b>Transformer</b><span class="mr-2 text-slate-500">معماری ترنسفورمر</span></div>
+            <div class="border-b p-3"><b>Logits</b><span class="mr-2 text-slate-500">امتیازهای خام خروجی مدل</span>
+            </div>
+            <div class="border-b p-3"><b>Softmax</b><span class="mr-2 text-slate-500">تبدیل امتیازها به احتمال</span>
+            </div>
+            <div class="border-b p-3"><b>Inference</b><span class="mr-2 text-slate-500">استنتاج و اجرای مدل</span></div>
+            <div class="border-b p-3"><b>Pre-training</b><span class="mr-2 text-slate-500">پیش‌آموزش</span></div>
+            <div class="border-b p-3"><b>Fine-tuning</b><span class="mr-2 text-slate-500">تنظیم دقیق مدل</span></div>
+            <div class="border-b p-3"><b>SFT</b><span class="mr-2 text-slate-500">تنظیم دقیق نظارت‌شده</span></div>
+            <div class="border-b p-3"><b>RLHF</b><span class="mr-2 text-slate-500">یادگیری از بازخورد انسانی</span>
+            </div>
+            <div class="border-b p-3"><b>DPO</b><span class="mr-2 text-slate-500">بهینه‌سازی مستقیم ترجیحات</span></div>
+            <div class="border-b p-3"><b>RAG</b><span class="mr-2 text-slate-500">بازیابی تقویت‌شده با تولید</span>
+            </div>
+            <div class="border-b p-3"><b>LoRA</b><span class="mr-2 text-slate-500">تنظیم دقیق کم‌هزینه</span></div>
+            <div class="border-b p-3"><b>Quantization</b><span class="mr-2 text-slate-500">کاهش دقت عددی نمایش
+                مدل</span>
+            </div>
+            <div class="border-b p-3"><b>Prompt Engineering</b><span class="mr-2 text-slate-500">مهندسی پرامپت</span>
+            </div>
+            <div class="border-b p-3"><b>Hallucination</b><span class="mr-2 text-slate-500">توهم یا تولید اطلاعات
+                ساختگی</span></div>
+            <div class="border-b p-3"><b>Multimodal</b><span class="mr-2 text-slate-500">چندوجهی</span></div>
+            <div class="border-b p-3"><b>AI Agent</b><span class="mr-2 text-slate-500">عامل هوش مصنوعی</span></div>
+            <div class="border-b p-3"><b>Function Calling</b><span class="mr-2 text-slate-500">فراخوانی ابزار یا
+                تابع</span></div>
+            <div class="border-b p-3"><b>Prompt Injection</b><span class="mr-2 text-slate-500">دست‌کاری دستورهای
+                سیستم</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXERCISES -->
+      <section id="exercises" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-brand">یادگیری عملی</span>
+          <h2 class="mt-2 text-3xl font-black text-ink">تمرین‌های کاربردی</h2>
+        </div>
+
+        <div class="grid gap-5 md:grid-cols-2">
+          <article class="section-card rounded-3xl bg-white p-6">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 text-xl">۱</div>
+            <h3 class="text-lg font-extrabold">تمرین Tokenization</h3>
+            <p class="mt-3 leading-8 text-slate-600">
+              یک جمله فارسی و یک جمله انگلیسی انتخاب کنید. آن‌ها را به کلمات و سپس
+              به واحدهای کوچک‌تر تقسیم کنید. بررسی کنید چرا تعداد توکن‌ها الزاماً با تعداد کلمات برابر نیست.
+            </p>
+          </article>
+
+          <article class="section-card rounded-3xl bg-white p-6">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-100 text-xl">۲</div>
+            <h3 class="text-lg font-extrabold">تمرین Prompt Engineering</h3>
+            <p class="mt-3 leading-8 text-slate-600">
+              یک درخواست مبهم بنویسید و سپس آن را با مشخص کردن نقش، زمینه،
+              وظیفه، محدودیت‌ها و قالب خروجی به یک پرامپت حرفه‌ای تبدیل کنید.
+            </p>
+          </article>
+
+          <article class="section-card rounded-3xl bg-white p-6">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-xl">۳</div>
+            <h3 class="text-lg font-extrabold">تمرین RAG</h3>
+            <p class="mt-3 leading-8 text-slate-600">
+              یک فایل متنی درباره یک موضوع انتخاب کنید. سه سؤال درباره آن طراحی کنید
+              و توضیح دهید سیستم RAG چگونه می‌تواند بخش مرتبط فایل را پیدا کند.
+            </p>
+          </article>
+
+          <article class="section-card rounded-3xl bg-white p-6">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100 text-xl">۴</div>
+            <h3 class="text-lg font-extrabold">تمرین Hallucination</h3>
+            <p class="mt-3 leading-8 text-slate-600">
+              از یک مدل درباره موضوعی تخصصی سؤال کنید. سپس دست‌کم دو ادعای آن را
+              با منابع معتبر بررسی کنید و موارد نادرست یا تأییدنشده را مشخص کنید.
+            </p>
+          </article>
+
+          <article class="section-card rounded-3xl bg-white p-6">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-100 text-xl">۵</div>
+            <h3 class="text-lg font-extrabold">تمرین معماری Transformer</h3>
+            <p class="mt-3 leading-8 text-slate-600">
+              نقش Query، Key و Value را با یک مثال ساده توضیح دهید.
+              سپس بیان کنید چرا Multi-Head Attention می‌تواند مفید باشد.
+            </p>
+          </article>
+
+          <article class="section-card rounded-3xl bg-white p-6">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-100 text-xl">۶</div>
+            <h3 class="text-lg font-extrabold">تمرین AI Agent</h3>
+            <p class="mt-3 leading-8 text-slate-600">
+              یک وظیفه مانند برنامه‌ریزی سفر را انتخاب کنید. مشخص کنید عامل هوشمند
+              به چه ابزارهایی نیاز دارد، چه مراحلی را طی می‌کند و کجا باید تأیید انسان را دریافت کند.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- QUIZ -->
+      <section id="quiz" class="mb-16 scroll-mt-8">
+        <div class="mb-8">
+          <span class="text-sm font-bold text-accent">ارزیابی یادگیری</span>
+          <h2 class="mt-2 text-3xl font-black text-ink">آزمون جامع فصل</h2>
+          <p class="mt-3 text-slate-500">۱۵ سؤال چهارگزینه‌ای از مفاهیم اصلی LLM</p>
+        </div>
+
+        <div class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <form id="quizForm" class="space-y-8">
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۱. وظیفه اصلی یک مدل زبانی چیست؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q1" value="a" class="ml-2"> ذخیره
+                  فایل‌ها</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q1" value="b" class="ml-2"> مدل‌سازی و
+                  تولید زبان</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q1" value="c" class="ml-2"> مدیریت
+                  سخت‌افزار</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q1" value="d" class="ml-2"> ساخت پایگاه
+                  داده</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۲. Token به چه معناست؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q2" value="a" class="ml-2"> واحدی برای
+                  پردازش متن</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q2" value="b" class="ml-2"> نوعی
+                  پردازنده</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q2" value="c" class="ml-2"> یک پایگاه
+                  داده</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q2" value="d" class="ml-2"> یک زبان
+                  برنامه‌نویسی</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۳. Embedding چیست؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q3" value="a" class="ml-2"> یک نوع حافظه
+                  فیزیکی</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q3" value="b" class="ml-2"> نمایش عددی و
+                  برداری داده</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q3" value="c" class="ml-2"> یک مرورگر
+                  وب</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q3" value="d" class="ml-2"> یک نوع فایل
+                  متنی</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۴. کدام معماری در بسیاری از LLMهای مدرن استفاده می‌شود؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q4" value="a" class="ml-2">
+                  Transformer</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q4" value="b" class="ml-2"> FTP</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q4" value="c" class="ml-2"> HTML</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q4" value="d" class="ml-2"> CSS</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۵. Self-Attention چه کاری انجام می‌دهد؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q5" value="a" class="ml-2"> حذف تمام
+                  توکن‌ها</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q5" value="b" class="ml-2"> محاسبه ارتباط
+                  میان توکن‌ها</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q5" value="c" class="ml-2"> ذخیره
+                  تصاویر</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q5" value="d" class="ml-2"> فشرده‌سازی
+                  فایل‌ها</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۶. مدل Autoregressive چگونه متن تولید می‌کند؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q6" value="a" class="ml-2"> با پیش‌بینی
+                  توکن بعدی</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q6" value="b" class="ml-2"> با حذف همه
+                  کلمات</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q6" value="c" class="ml-2"> با جست‌وجوی
+                  تصویر</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q6" value="d" class="ml-2"> با اجرای
+                  سیستم‌عامل</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۷. Temperature بالا معمولاً چه اثری دارد؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q7" value="a" class="ml-2"> حذف دانش
+                  مدل</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q7" value="b" class="ml-2"> افزایش تنوع
+                  نمونه‌گیری</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q7" value="c" class="ml-2"> افزایش قطعی
+                  صحت</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q7" value="d" class="ml-2"> تغییر معماری
+                  مدل</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۸. Pre-training به چه معناست؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q8" value="a" class="ml-2"> اجرای
+                  مدل</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q8" value="b" class="ml-2"> پیش‌آموزش روی
+                  داده‌های گسترده</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q8" value="c" class="ml-2"> حذف
+                  پارامترها</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q8" value="d" class="ml-2"> جست‌وجوی
+                  وب</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۹. هدف SFT چیست؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q9" value="a" class="ml-2"> تنظیم مدل با
+                  نمونه‌های دستور و پاسخ</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q9" value="b" class="ml-2"> حذف داده‌های
+                  آموزشی</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q9" value="c" class="ml-2"> ساخت
+                  سخت‌افزار</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q9" value="d" class="ml-2"> تبدیل متن به
+                  تصویر</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۱۰. RLHF از چه چیزی استفاده می‌کند؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q10" value="a" class="ml-2"> بازخورد
+                  انسانی</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q10" value="b" class="ml-2"> فقط
+                  تصاویر</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q10" value="c" class="ml-2"> فقط کدهای
+                  برنامه‌نویسی</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q10" value="d" class="ml-2"> اطلاعات
+                  سخت‌افزاری</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۱۱. RAG چه کاری انجام می‌دهد؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q11" value="a" class="ml-2"> بازیابی
+                  اطلاعات و استفاده از آن در تولید پاسخ</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q11" value="b" class="ml-2"> حذف تمام
+                  داده‌ها</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q11" value="c" class="ml-2"> تغییر
+                  سیستم‌عامل</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q11" value="d" class="ml-2"> ساخت شبکه
+                  عصبی
+                  از صفر</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۱۲. Hallucination چیست؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q12" value="a" class="ml-2"> افزایش سرعت
+                  پردازش</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q12" value="b" class="ml-2"> تولید
+                  اطلاعات
+                  نادرست یا ساختگی</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q12" value="c" class="ml-2"> افزایش
+                  حافظه</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q12" value="d" class="ml-2"> تبدیل صدا به
+                  متن</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۱۳. مدل Multimodal چه ویژگی‌ای دارد؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q13" value="a" class="ml-2"> فقط متن
+                  می‌خواند</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q13" value="b" class="ml-2"> فقط کد اجرا
+                  می‌کند</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q13" value="c" class="ml-2"> با چند نوع
+                  داده کار می‌کند</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q13" value="d" class="ml-2"> فقط اعداد را
+                  ذخیره می‌کند</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۱۴. AI Agent چه تفاوتی با یک مدل متنی ساده دارد؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q14" value="a" class="ml-2"> می‌تواند
+                  برای
+                  انجام هدف از ابزارها استفاده کند</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q14" value="b" class="ml-2"> هیچ ورودی
+                  نمی‌گیرد</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q14" value="c" class="ml-2"> فقط یک کلمه
+                  تولید می‌کند</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q14" value="d" class="ml-2"> فاقد هرگونه
+                  مدل است</label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend class="mb-4 font-bold">۱۵. Quantization معمولاً با چه هدفی استفاده می‌شود؟</legend>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <label class="rounded-xl border p-4"><input type="radio" name="q15" value="a" class="ml-2"> افزایش تعداد
+                  زبان‌ها</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q15" value="b" class="ml-2"> کاهش حافظه و
+                  هزینه محاسباتی</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q15" value="c" class="ml-2"> حذف
+                  Tokenizer</label>
+                <label class="rounded-xl border p-4"><input type="radio" name="q15" value="d" class="ml-2"> تبدیل مدل به
+                  موتور جست‌وجو</label>
+              </div>
+            </fieldset>
+
+            <button type="submit"
+              class="no-print rounded-xl bg-brand px-7 py-3 font-bold text-white transition hover:bg-indigo-700">
+              بررسی پاسخ‌ها
+            </button>
+
+            <button type="reset"
+              class="no-print mr-2 rounded-xl border border-slate-300 px-7 py-3 font-bold text-slate-700 transition hover:bg-slate-50">
+              شروع دوباره
+            </button>
+
+            <div id="quizResult" class="hidden rounded-2xl bg-indigo-50 p-5 leading-8 text-indigo-950"
+              aria-live="polite">
+            </div>
+          </form>
+
+          <div class="mt-8 border-t pt-6">
+            <h3 class="mb-4 font-extrabold">کلید پاسخ‌ها</h3>
+            <div class="grid grid-cols-3 gap-3 sm:grid-cols-5 md:grid-cols-8">
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۱</b>
+                <p class="text-emerald-700">B</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۲</b>
+                <p class="text-emerald-700">A</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۳</b>
+                <p class="text-emerald-700">B</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۴</b>
+                <p class="text-emerald-700">A</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۵</b>
+                <p class="text-emerald-700">B</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۶</b>
+                <p class="text-emerald-700">A</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۷</b>
+                <p class="text-emerald-700">B</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۸</b>
+                <p class="text-emerald-700">B</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۹</b>
+                <p class="text-emerald-700">A</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۱۰</b>
+                <p class="text-emerald-700">A</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۱۱</b>
+                <p class="text-emerald-700">A</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۱۲</b>
+                <p class="text-emerald-700">B</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۱۳</b>
+                <p class="text-emerald-700">C</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۱۴</b>
+                <p class="text-emerald-700">A</p>
+              </div>
+              <div class="rounded-xl bg-slate-50 p-3 text-center"><b>۱۵</b>
+                <p class="text-emerald-700">B</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FINAL CHECKLIST -->
+      <section class="mb-16">
+        <div class="section-card rounded-3xl bg-white p-7 md:p-9">
+          <h2 class="mb-5 text-2xl font-black text-ink">چک‌لیست تسلط بر فصل</h2>
+          <p class="mb-6 leading-8 text-slate-600">
+            اگر بتوانید موارد زیر را بدون کمک توضیح دهید، درک مناسبی از مبانی LLM به دست آورده‌اید.
+          </p>
+
+          <div class="grid gap-3 md:grid-cols-2">
+            <label class="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+              <input type="checkbox" class="mt-1 h-4 w-4 accent-indigo-600">
+              <span>می‌توانم مفهوم LLM را توضیح دهم.</span>
+            </label>
+            <label class="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+              <input type="checkbox" class="mt-1 h-4 w-4 accent-indigo-600">
+              <span>تفاوت Token و Embedding را می‌دانم.</span>
+            </label>
+            <label class="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+              <input type="checkbox" class="mt-1 h-4 w-4 accent-indigo-600">
+              <span>نحوه کار Self-Attention را درک کرده‌ام.</span>
+            </label>
+            <label class="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+              <input type="checkbox" class="mt-1 h-4 w-4 accent-indigo-600">
+              <span>می‌توانم اجزای Transformer را نام ببرم.</span>
+            </label>
+            <label class="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+              <input type="checkbox" class="mt-1 h-4 w-4 accent-indigo-600">
+              <span>تفاوت Training و Inference را می‌دانم.</span>
+            </label>
+            <label class="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+              <input type="checkbox" class="mt-1 h-4 w-4 accent-indigo-600">
+              <span>می‌توانم یک پرامپت دقیق طراحی کنم.</span>
+            </label>
+            <label class="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+              <input type="checkbox" class="mt-1 h-4 w-4 accent-indigo-600">
+              <span>تفاوت Pre-training و Fine-tuning را می‌دانم.</span>
+            </label>
+            <label class="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+              <input type="checkbox" class="mt-1 h-4 w-4 accent-indigo-600">
+              <span>مفهوم RLHF و RAG را درک کرده‌ام.</span>
+            </label>
+            <label class="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+              <input type="checkbox" class="mt-1 h-4 w-4 accent-indigo-600">
+              <span>می‌توانم کاربرد مدل‌های چندوجهی را توضیح دهم.</span>
+            </label>
+            <label class="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+              <input type="checkbox" class="mt-1 h-4 w-4 accent-indigo-600">
+              <span>محدودیت‌ها و خطرات LLM را می‌شناسم.</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-nav">
+      <a href="index.html">نقشه راه</a>
+      <a href="1.html">فصل قبل</a>
+      <a href="#toc">فهرست مطالب</a>
+      <a href="#">بالای صفحه ↑</a>
+    </div>
+    Understanding Large Language Models · Chapter 02
+    <br>
+    <strong>M_Ai</strong>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      try { localStorage.setItem('m-ai-theme', theme); } catch (e) {}
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#10101e' : '#f5f5fb');
+    }
+    try {
+      const saved = localStorage.getItem('m-ai-theme');
+      if (saved === 'light' || saved === 'dark') setTheme(saved);
+    } catch (e) {}
+    themeToggle.addEventListener('click', () => {
+      setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+  </script>
+<script>
+
+      (function () {
+        const bar = document.getElementById('progress');
+        function updateProgress() {
+          const doc = document.documentElement;
+          const max = doc.scrollHeight - window.innerHeight;
+          const value = max > 0 ? (window.scrollY / max) * 100 : 0;
+          if (bar) bar.style.width = Math.min(100, Math.max(0, value)) + '%';
+        }
+        window.addEventListener('scroll', updateProgress, {passive: true});
+        window.addEventListener('resize', updateProgress);
+        updateProgress();
+        const links = [...document.querySelectorAll('#toc a[href^="#"]')];
+        const targets = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+        if ('IntersectionObserver' in window) {
+          const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id));
+              }
+            });
+          }, {rootMargin: '-18% 0px -70% 0px'});
+          targets.forEach(target => observer.observe(target));
+        }
+      })();
+  
+</script>
+<script>
+
+    const quizForm = document.getElementById('quizForm');
+    const result = document.getElementById('quizResult');
+
+    const answers = {
+      q1: 'b',
+      q2: 'a',
+      q3: 'b',
+      q4: 'a',
+      q5: 'b',
+      q6: 'a',
+      q7: 'b',
+      q8: 'b',
+      q9: 'a',
+      q10: 'a',
+      q11: 'a',
+      q12: 'b',
+      q13: 'c',
+      q14: 'a',
+      q15: 'b'
+    };
+
+    quizForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      let score = 0;
+      let answered = 0;
+      const total = Object.keys(answers).length;
+
+      Object.keys(answers).forEach(function (key) {
+        const selected = quizForm.querySelector(
+          'input[name="' + key + '"]:checked'
+        );
+
+        if (selected) {
+          answered++;
+
+          if (selected.value === answers[key]) {
+            score++;
+          }
+        }
+      });
+
+      result.classList.remove('hidden');
+
+      let message = '';
+
+      if (answered < total) {
+        message = 'برای محاسبه نتیجه کامل، به همه سؤال‌ها پاسخ دهید.';
+      } else if (score === total) {
+        message = 'عالی! همه پاسخ‌ها صحیح هستند. تسلط بسیار خوبی بر مفاهیم فصل دارید.';
+      } else if (score >= 12) {
+        message = 'بسیار خوب! بیشتر مفاهیم را یاد گرفته‌اید. چند بخش را دوباره مرور کنید.';
+      } else if (score >= 9) {
+        message = 'عملکرد قابل قبول است. پیشنهاد می‌شود بخش‌های مربوط به پاسخ‌های اشتباه را مرور کنید.';
+      } else if (score >= 6) {
+        message = 'بخشی از مفاهیم را یاد گرفته‌اید؛ بهتر است فصل را دوباره مطالعه کنید.';
+      } else {
+        message = 'پیشنهاد می‌شود از بخش اول شروع کنید و مفاهیم را به ترتیب مرور کنید.';
+      }
+
+      result.innerHTML =
+        '<strong class="text-lg">نتیجه آزمون</strong><br>' +
+        'تعداد سؤال‌ها: ' + total + '<br>' +
+        'پاسخ داده‌شده: ' + answered + ' از ' + total + '<br>' +
+        'پاسخ صحیح: ' + score + ' از ' + total + '<br>' +
+        'درصد موفقیت: ' + Math.round((score / total) * 100) + '%<br>' +
+        '<strong class="mt-3 block">' + message + '</strong>';
+    });
+
+    quizForm.addEventListener('reset', function () {
+      result.classList.add('hidden');
+      result.innerHTML = '';
+    });
+  
+</script>
+</body>
+</html>
