@@ -140,16 +140,6 @@
       background: linear-gradient(90deg, transparent 3%, rgba(81, 203, 220, .35) 25%, rgba(146, 117, 245, .85) 50%, rgba(81, 203, 220, .35) 75%, transparent 97%);
       pointer-events: none;
     }
-    .header-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
     .brand {
       display: inline-flex;
       align-items: center;
@@ -175,6 +165,25 @@
     .brand-mark svg { width: 26px; height: 26px; position: relative; z-index: 1; }
     .brand-name { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--text); }
     .brand-name span { color: var(--purple); }
+
+    
+    /* header-inner managed by edge-nav CSS */
+    @media (max-width: 900px) {
+      .chapter-nav-btn .nav-meta { display: none; }
+      .chapter-nav-btn { padding: 8px 10px; }
+    }
+    @media (max-width: 640px) {
+      .header-inner {
+        grid-template-columns: auto auto 1fr auto;
+        gap: 6px;
+      }
+      .header-inner > .brand { justify-self: start; }
+      .header-inner > .header-actions { justify-self: end; }
+      .chapter-nav-btn .nav-label { display: none; }
+      .chapter-nav-btn { padding: 8px; }
+      .back-home span.label { display: none; }
+    }
+
 
     .header-actions { display: flex; align-items: center; gap: 10px; }
     .theme-toggle {
@@ -207,6 +216,38 @@
     }
     .back-home:hover { background: var(--purple); color: #fff; }
     .back-home svg { width: 15px; height: 15px; }
+
+    
+    @media (min-width: 900px) {
+      .chapter-nav-btn .nav-meta { display: block; }
+      .chapter-nav-btn {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        padding: 7px 12px;
+      }
+      .chapter-nav-btn.nav-prev {
+        align-items: flex-end;
+        text-align: left;
+      }
+      .chapter-nav-btn.nav-next {
+        align-items: flex-start;
+        text-align: right;
+      }
+      .chapter-nav-btn .nav-row {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+    }
+    @media (max-width: 640px) {
+      .chapter-nav-btn .nav-label { display: none; }
+      .chapter-nav-btn {
+        padding: 8px 10px;
+        max-width: none;
+      }
+    }
+
 
     /* CHAPTER HERO */
     .chapter-hero {
@@ -517,7 +558,7 @@
     }
 
     @media print {
-      .site-header, .sidebar, .progress-bar, .no-print, .theme-toggle, .back-home { display: none !important; }
+      .site-header, .sidebar, .progress-bar, .no-print, .theme-toggle, .back-home, .chapter-edge-nav { display: none !important; }
       .page-layout { grid-template-columns: 1fr; }
       .section-card { break-inside: avoid; }
       body { background: white; color: black; }
@@ -673,6 +714,104 @@
     .content-area th { background: var(--table-head) !important; color: var(--text) !important; }
     .content-area td { border-color: var(--border) !important; color: var(--text-secondary); }
     .content-area tr:nth-child(even) td { background: var(--table-alt) !important; }
+
+  
+    /* ===== Chapter edge navigation (component) ===== */
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: relative;
+    }
+
+    .chapter-edge-nav {
+      position: fixed;
+      top: 0;
+      height: 72px;
+      z-index: 110;
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+    }
+    .chapter-edge-nav--prev { right: 0; padding-right: 10px; }
+    .chapter-edge-nav--next { left: 0; padding-left: 10px; }
+
+    .chapter-edge-btn {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 42px;
+      min-width: 42px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      box-shadow: 0 4px 16px rgba(0,0,0,.08);
+      transition: border-color .2s, color .2s, background .2s, transform .2s, opacity .2s;
+      text-decoration: none;
+    }
+    .chapter-edge-btn:hover:not([aria-disabled="true"]) {
+      border-color: rgba(146,117,245,.45);
+      color: var(--purple);
+      background: var(--surface-hover);
+      transform: translateY(-1px);
+    }
+    .chapter-edge-btn[aria-disabled="true"] {
+      opacity: .28;
+      pointer-events: none;
+    }
+    .chapter-edge-btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+    .chapter-edge-btn .edge-text {
+      display: none;
+      flex-direction: column;
+      gap: 1px;
+      line-height: 1.2;
+    }
+    .chapter-edge-btn .edge-text strong {
+      font-size: 11px;
+      font-weight: 800;
+      color: inherit;
+    }
+    .chapter-edge-btn .edge-text span {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      max-width: 110px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      direction: ltr;
+    }
+    .chapter-edge-nav--prev .chapter-edge-btn .edge-text { align-items: flex-end; text-align: left; }
+    .chapter-edge-nav--next .chapter-edge-btn .edge-text { align-items: flex-start; text-align: right; }
+
+    @media (min-width: 960px) {
+      .chapter-edge-btn .edge-text { display: flex; }
+      .chapter-edge-nav--prev { padding-right: 18px; }
+      .chapter-edge-nav--next { padding-left: 18px; }
+    }
+    @media (max-width: 640px) {
+      .chapter-edge-nav { height: 60px; }
+      .chapter-edge-btn {
+        height: 38px;
+        min-width: 38px;
+        padding: 0 10px;
+        border-radius: 10px;
+      }
+      .site-header { height: 60px; }
+    }
 
   </style>
 </head>
@@ -3903,6 +4042,79 @@ Price: 1200 EUR</pre>
 
     renderQuiz();
   
+
+
+/* ===== Chapter edge navigation component ===== */
+(function initChapterEdgeNav() {
+  const TOTAL = 12;
+  const TITLES = {
+    1: "Foundations of AI",
+    2: "Understanding LLMs",
+    3: "Prompt & Context",
+    4: "AI App Development",
+    5: "RAG",
+    6: "Agentic Fundamentals",
+    7: "Advanced Agentic",
+    8: "AI Frameworks",
+    9: "MCP & A2A",
+    10: "Spec-Driven Dev",
+    11: "Production",
+    12: "Future Tech"
+  };
+
+  const file = (location.pathname.split("/").pop() || "").replace(/\.html$/i, "");
+  const current = parseInt(file, 10);
+  if (!current || current < 1 || current > TOTAL) return;
+
+  // Remove any previous instance (safe re-run)
+  document.querySelectorAll(".chapter-edge-nav").forEach(el => el.remove());
+
+  const prev = current - 1;
+  const next = current + 1;
+
+  function makeBtn({ href, disabled, direction, title }) {
+    const a = document.createElement("a");
+    a.className = "chapter-edge-btn";
+    a.href = disabled ? "#" : href;
+    if (disabled) a.setAttribute("aria-disabled", "true");
+    a.setAttribute("aria-label", direction === "prev" ? "فصل قبل" : "فصل بعد");
+
+    const iconPrev = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+    const iconNext = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
+
+    const label = direction === "prev" ? "فصل قبل" : "فصل بعد";
+    const meta = title || "";
+
+    if (direction === "prev") {
+      a.innerHTML = iconPrev + '<span class="edge-text"><strong>' + label + '</strong><span>' + meta + '</span></span>';
+    } else {
+      a.innerHTML = '<span class="edge-text"><strong>' + label + '</strong><span>' + meta + '</span></span>' + iconNext;
+    }
+    return a;
+  }
+
+  const prevWrap = document.createElement("div");
+  prevWrap.className = "chapter-edge-nav chapter-edge-nav--prev";
+  prevWrap.appendChild(makeBtn({
+    href: prev + ".html",
+    disabled: prev < 1,
+    direction: "prev",
+    title: TITLES[prev] || ""
+  }));
+
+  const nextWrap = document.createElement("div");
+  nextWrap.className = "chapter-edge-nav chapter-edge-nav--next";
+  nextWrap.appendChild(makeBtn({
+    href: next + ".html",
+    disabled: next > TOTAL,
+    direction: "next",
+    title: TITLES[next] || ""
+  }));
+
+  document.body.appendChild(prevWrap);
+  document.body.appendChild(nextWrap);
+})();
+
 </script>
 </body>
 </html>
